@@ -5,41 +5,71 @@
 {% block content %}
     <div class="card col-lg-6 mx-auto">
         <div class="card-body">
+            <h4 class="mb-3 header-title text-center">Monitor Checklist</h4>
             <div class="row">
                 <h4>Monitor : {{ equipment.name }}</h4>
                 <h4>Serial Number : {{ equipment.serial_no }}</h4>
             </div>
             <div class="row">
+
                 <form method="post">
                     {% csrf_token %}
-                    <div class="form-group mb-2">
-                        <label for="phy_damage" class="form-label">Check for physical damage or other obvious
-                            problems:</label>
-                        <input type="checkbox" class="form-control switchery" name="phy_damage"
-                               {% if monitor_checklist and monitor_checklist.phy_damage %}checked{% endif %}>
-                    </div>
+                    <table class="table">
+                        <tr>
+                            <th colspan="2" class="text-center"><h5>Checklists</h5></th>
+                        </tr>
+                        <tr>
+                            <td><label for="phy_damage" class="form-label">Check for physical damage or other obvious
+                                problems:</label></td>
+                            <td><input type="checkbox" class="form-control switchery" name="phy_damage"
+                                       {% if monitor_checklist and monitor_checklist.phy_damage %}checked{% endif %}>
+                            </td>
+                        </tr>
 
-                    <div class="form-group mb-2">
-                        <label for="colour_display" class="form-label">Check color display:</label>
-                        <input type="checkbox" class="form-control switchery" name="colour_display"
-                               {% if monitor_checklist and monitor_checklist.colour_display %}checked{% endif %}>
-                    </div>
+                        <tr>
+                            <td><label for="colour_display" class="form-label">Check color display:</label></td>
+                            <td><input type="checkbox" class="form-control switchery" name="colour_display"
+                                       {% if monitor_checklist and monitor_checklist.colour_display %}checked{% endif %}>
+                            </td>
+                        </tr>
 
-                    <div class="form-group mb-2">
-                        <label for="vertical_lines" class="form-label">Check for vertical lines:</label>
-                        <input type="checkbox" class="form-control switchery" name="vertical_lines"
-                               {% if monitor_checklist and monitor_checklist.vertical_lines %}checked{% endif %}>
-                    </div>
+                        <tr>
+                            <td><label for="vertical_lines" class="form-label">Check for vertical lines:</label></td>
+                            <td><input type="checkbox" class="form-control switchery" name="vertical_lines"
+                                       {% if monitor_checklist and monitor_checklist.vertical_lines %}checked{% endif %}>
+                            </td>
+                        </tr>
 
-                    <div class="form-group mb-2">
-                        <label for="vga_cable" class="form-label">Confirm VGA Cable to be working okay:</label>
-                        <input type="checkbox" class="form-control switchery" name="vga_cable"
-                               {% if monitor_checklist and monitor_checklist.vga_cable %}checked{% endif %}>
+                        <tr>
+                            <td><label for="vga_cable" class "form-label">Confirm VGA Cable to be working okay:</label>
+                            </td>
+                            <td><input type="checkbox" class="form-control switchery" name="vga_cable"
+                                       {% if monitor_checklist and monitor_checklist.vga_cable %}checked{% endif %}>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="mb-3">
+                        <label for="recommendation" class="form-label">Recommendation:</label>
+                        <textarea class="form-control" name="recommendation"
+                                  rows="3">{{ monitor_checklist.recommendation }}</textarea>
                     </div>
-
-                    <div class="form-group mb-2">
+                    <div class="mb-3">
+                        <label for="observations" class="form-label">Observations:</label>
+                        <textarea class="form-control" name="observations"
+                                  rows="3">{{ monitor_checklist.observations }}</textarea>
+                    </div>
+                    <div class="mb-3">
                         <label for="status" class="form-label">Status:</label>
-                        <input type="text" class="form-control" name="status" value="{{ monitor_checklist.status }}">
+                        <select class="form-select" name="status">
+                        <option value="Pending" {% if monitor_checklist.status == "Pending" %}selected{% endif %}>Pending
+                            </option>
+                            <option value="Done" {% if monitor_checklist.status == "Done" %}selected{% endif %}>Done
+                            </option>
+                            <option value="Consider as soon as possible"
+                                    {% if monitor_checklist.status == "Consider as soon as possible" %}selected{% endif %}>
+                                Consider as soon as possible
+                            </option>
+                        </select>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Save</button>

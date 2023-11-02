@@ -3,49 +3,89 @@
 {% block title %}UPS Cheklist{% endblock %}
 {% block header %}UPS Cheklist{% endblock %}
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-check">
-            <label class="form-label">
-                Check input & output power
-            </label>
-            <input type="checkbox" class="form-check-input" name="power"
-                           {% if ups_checklist and ups_checklist.power %}checked{% endif %}>
+    <div class="card col-lg-6 mx-auto">
+        <div class="card-body">
+            <h4 class="mb-3 header-title text-center">UPS Cheklist</h4>
+            <div class="row">
+                <h4>UPS : {{ equipment.name }}</h4>
+                <h4>UPS Serial Number : {{ equipment.serial_no }}</h4>
+            </div>
+            <div class="row">
+                <form method="post">
+                    {% csrf_token %}
+                    <table class="table">
+                        <tr>
+                            <th colspan="2" class="text-center"><h5>Checklists</h5></th>
+                        </tr>
+                        <tr>
+                            <td><label class="form-label">Check input & output power</label></td>
+                            <td>
+                                <input type="checkbox" class="form-check-input" name="power"
+                                       {% if ups_checklist and ups_checklist.power %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-label">Check backup</label></td>
+                            <td>
+                                <input type="checkbox" class="form-check-input" name="backup"
+                                       {% if ups_checklist and ups_checklist.backup %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-label">Test all output ports</label></td>
+                            <td>
+                                <input type="checkbox" class="form-check-input" name="ports"
+                                       {% if ups_checklist and ups_checklist.ports %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-label">Check "last replaced" date</label></td>
+                            <td>
+                                <input type="checkbox" class="form-check-input" name="battery"
+                                       {% if ups_checklist and ups_checklist.battery %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-label">Check for physical damage or obvious problems</label></td>
+                            <td>
+                                <input type="checkbox" class="form-check-input" name="phy_damage"
+                                       {% if ups_checklist and ups_checklist.phy_damage %}checked{% endif %}>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="mb-3">
+                        <label for="recommendation" class="form-label">Recommendation:</label>
+                        <textarea class="form-control" name="recommendation"
+                                  rows="3">{{ ups_checklist.recommendation }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="observations" class="form-label">Observations:</label>
+                        <textarea class="form-control" name="observations"
+                                  rows="3">{{ ups_checklist.observations }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status:</label>
+                        <select class="form-select" name="status">
+                            <option value="Pending" {% if ups_checklist.status == "Pending" %}selected{% endif %}>Pending
+                            </option>
+                            <option value="Done" {% if ups_checklist.status == "Done" %}selected{% endif %}>Done
+                            </option>
+                            <option value="Consider as soon as possible"
+                                    {% if ups_checklist.status == "Consider as soon as possible" %}selected{% endif %}>
+                                Consider as soon as possible
+                            </option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
         </div>
-        <div class="form-check">
-            <label class="form-label">
-                Check backup
-            </label>
-            <input type="checkbox" class="form-check-input" name="backup"
-                           {% if ups_checklist and ups_checklist.backup %}checked{% endif %}>
-        </div>
-        <div class="form-check">
-            <label class="form-label">
-                Test all output ports
-            </label>
-            <input type="checkbox" class="form-check-input" name="ports"
-                           {% if ups_checklist and ups_checklist.ports %}checked{% endif %}>
-        </div>
-        <div class="form-check">
-            <label class="form-label">
-                Check "last replaced" date
-            </label>
-            <input type="checkbox" class="form-check-input" name="battery"
-                           {% if ups_checklist and ups_checklist.battery %}checked{% endif %}>
-        </div>
-        <div class="form-check">
-            <label class="form-label">
-                Check for physical damage or obvious problems
-            </label>
-            <input type="checkbox" class="form-check-input" name="phy_damage"
-                           {% if ups_checklist and ups_checklist.phy_damage %}checked{% endif %}>
-        </div>
-        <div class="form-group">
-            <label for="status">Status:</label>
-            <input type="text" class="form-control" name="status" value="{{ ups_checklist.status }}">
-        </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-    </form>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"
             integrity="sha512-lC8vSUSlXWqh7A/F+EUS3l77bdlj+rGMN4NB5XFAHnTR3jQtg4ibZccWpuSSIdPoPUlUxtnGktLyrWcDhG8RvA=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>

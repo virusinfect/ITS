@@ -68,7 +68,10 @@
     </div>
     <div class="card">
         <div class="card-body">
-
+            service count :{{ service_count }}
+            {% for client in service %}
+                {{ client.client.f_name }}
+            {% endfor %}
         </div>
     </div>
 

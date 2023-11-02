@@ -29,9 +29,12 @@ def ticket_view(request, schedule_id):
     service_schedule = get_object_or_404(ServiceSchedules, pk=schedule_id)
     ticket = get_object_or_404(ServiceTickets, ticket_id=service_schedule)
     clients = service_schedule.company.clients_set.all()
+    service_count = Service.objects.filter(ticket=ticket).count()
+    service = Service.objects.filter(ticket=ticket)
+
 
     context = {'service_schedule': service_schedule, 'ticket': ticket,
-               'clients': clients}  # Include 'ticket' in the context
+               'clients': clients,'service_count':service_count,'service':service}  # Include 'ticket' in the context
     return render(request, "service/ticket_view.html", context)
 
 
@@ -205,6 +208,8 @@ def create_or_edit_monitor_checklist(request, equipment_id, service_id, client_i
         vertical_lines = request.POST.get('vertical_lines') == 'on'
         vga_cable = request.POST.get('vga_cable') == 'on'
         status = request.POST.get('status')
+        observations = request.POST.get('observations')
+        recommendation = request.POST.get('recommendation')
 
         if monitor_checklist:
             # If a checklist already exists, update it
@@ -213,6 +218,8 @@ def create_or_edit_monitor_checklist(request, equipment_id, service_id, client_i
             monitor_checklist.vertical_lines = vertical_lines
             monitor_checklist.vga_cable = vga_cable
             monitor_checklist.status = status
+            monitor_checklist.observations = observations
+            monitor_checklist.recommendation = recommendation
             monitor_checklist.save()
         else:
             # If no checklist exists, create a new one
@@ -250,6 +257,8 @@ def create_or_edit_printer_checklist(request, equipment_id, service_id, client_i
         fuser_unit = request.POST.get('fuser_unit') == 'on'
         gears = request.POST.get('gears') == 'on'
         status = request.POST.get('status')
+        observations = request.POST.get('observations')
+        recommendation = request.POST.get('recommendation')
 
         printer_checklist.power = power
         printer_checklist.tone = tone
@@ -260,6 +269,8 @@ def create_or_edit_printer_checklist(request, equipment_id, service_id, client_i
         printer_checklist.fuser_unit = fuser_unit
         printer_checklist.gears = gears
         printer_checklist.status = status
+        printer_checklist.observations = observations
+        printer_checklist.recommendation = recommendation
         printer_checklist.save()
 
         # Redirect to a success page or the equipment or service detail page
@@ -283,6 +294,8 @@ def create_or_edit_ups_checklist(request, equipment_id, service_id, client_id, t
         battery = request.POST.get('battery') == 'on'
         phy_damage = request.POST.get('phy_damage') == 'on'
         status = request.POST.get('status')
+        observations = request.POST.get('observations')
+        recommendation = request.POST.get('recommendation')
 
         ups_checklist.power = power
         ups_checklist.backup = backup
@@ -290,6 +303,8 @@ def create_or_edit_ups_checklist(request, equipment_id, service_id, client_id, t
         ups_checklist.battery = battery
         ups_checklist.phy_damage = phy_damage
         ups_checklist.status = status
+        ups_checklist.observations = observations
+        ups_checklist.recommendation = recommendation
         ups_checklist.save()
 
         # Redirect to a success page or the equipment or service detail page
@@ -300,41 +315,28 @@ def create_or_edit_ups_checklist(request, equipment_id, service_id, client_id, t
                   {'equipment': equipment, 'service': service, 'ups_checklist': ups_checklist})
 
 
-def schedule_detail(request, schedule_id):
-    # Retrieve the service schedule for the given schedule_id
-    schedule = ServiceSchedules.objects.get(ss_id=schedule_id)
-    ticket = get_object_or_404(ServiceTickets, ticket_id=schedule)
-    service = Service.object.get(ticket=ticket)
+def service_report(request, schedule_id):
+    service_schedule = get_object_or_404(ServiceSchedules, pk=schedule_id)
+    ticket = get_object_or_404(ServiceTickets, ticket_id=service_schedule)
+    service_tickets = service_schedule.servicetickets_set.all()
+    services = Service.objects.filter(ticket=ticket)
+    checklists = []
 
-    # Retrieve associated clients and equipment for the schedule
-    clients_and_equipment = Equipment.objects.filter(client__company=schedule.company)
+    for service in services:
+        client = service.client
+        equipment = Equipment.objects.filter(client=client)
 
-    # Create an empty list to store equipment data
-    equipment_data = []
+        monitor_checklists = MonitorChecklist.objects.filter(equipment__in=equipment, service=service)
+        printer_checklists = PrinterChecklist.objects.filter(equipment__in=equipment, service=service)
+        ups_checklists = UpsChecklist.objects.filter(equipment__in=equipment, service=service)
 
-    for equipment in clients_and_equipment:
-        # Depending on the type of equipment, retrieve the relevant checklist
-        if equipment.type == 'Monitor':
-            checklist = MonitorChecklist.objects.get(equipment=equipment, service=service)
-        elif equipment.type == 'Printer':
-            checklist = PrinterChecklist.objects.get(equipment=equipment, service=service)
-        elif equipment.type == 'UPS':
-            checklist = UpsChecklist.objects.get(equipment=equipment, service=service)
-        else:
-            # Handle other equipment types as needed
-            checklist = None
-
-        # Append the equipment data to the list
-        equipment_data.append({
-            'client_name': equipment.client.f_name,
-            'equipment_name': equipment.name,
-            'observations': checklist.observations if checklist else '',
-            'recommendation': checklist.recommendation if checklist else '',
-            'status': checklist.status if checklist else '',
+        checklists.append({
+            'service': service,
+            'client': client,
+            'equipment': equipment,
+            'monitor_checklists': monitor_checklists,
+            'printer_checklists': printer_checklists,
+            'ups_checklists': ups_checklists,
         })
 
-    return render(request, 'service/schedule_detail.html', {
-        'schedule': schedule,
-        'equipment_data': equipment_data,
-    })
-
+    return render(request, 'service/service_report.html', {'checklists': checklists,'ticket':ticket,'service_schedule':service_schedule,'service_tickets':service_tickets})

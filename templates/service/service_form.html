@@ -33,7 +33,7 @@
                         {% for equipment in client.equipment_set.all %}
                             {% if equipment.type == "CPU" %}
                                 <a href="{% url 'create_or_edit_monitor_checklist' equipment.id service.id client.id ticket.id %}"
-                                   type="button" class="btn btn-success waves-effect waves-light">
+                                   type="button"  class="btn btn-success waves-effect waves-light">
                                     <span class="btn-label"><i class="mdi mdi-desktop-tower mdi-"></i></span>CPU
                                 </a>
                             {% elif equipment.type == "UPS" %}
@@ -72,28 +72,7 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="details" class="form-label">Details</label>
-                        <textarea name="details" class="form-control" rows="4" required>{{ service.details }}</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="observations" class="form-label">Observations</label>
-                        <textarea name="observations" class="form-control" rows="4"
-                                  required>{{ service.observations }}</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="recommendation" class="form-label">Recommendation</label>
-                        <textarea name="recommendation" class="form-control" rows="4"
-                                  required>{{ service.recommendation }}</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
-                        <input type="text" name="status" class="form-control" required value="{{ service.status }}">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Details</button>
-                </form>
+
 
             </div>
         </div>

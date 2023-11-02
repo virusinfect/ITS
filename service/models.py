@@ -67,7 +67,7 @@ class MonitorChecklist(models.Model):
     vertical_lines = models.BooleanField(null=True)
     vga_cable = models.BooleanField(null=True)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    status = models.TextField(null=True)
+    status = models.TextField(default="Pending")
     observations = models.TextField()
     recommendation = models.TextField()
 
@@ -83,7 +83,7 @@ class PrinterChecklist(models.Model):
     static_eliminator = models.BooleanField(null=True)
     fuser_unit = models.BooleanField(null=True)
     gears = models.BooleanField(null=True)
-    status = models.TextField(null=True)
+    status = models.TextField(default="Pending")
     observations = models.TextField()
     recommendation = models.TextField()
 
@@ -96,7 +96,7 @@ class UpsChecklist(models.Model):
     ports = models.BooleanField(null=True)
     battery = models.BooleanField(null=True)
     phy_damage = models.BooleanField(null=True)
-    status = models.TextField(null=True)
+    status = models.TextField(default="Pending")
     observations = models.TextField()
     recommendation = models.TextField()
 

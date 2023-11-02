@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" charset="utf8"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+    <!-- App css -->
+
+    <link href="{% static 'css/app.min.css' %}" rel="stylesheet" type="text/css" id="app-style"/>
+    <link href="{% static 'libs/toastr/build/toastr.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'libs/mohithg-switchery/switchery.min.css' %}" rel="stylesheet" type="text/css"/>
+    <!-- icons -->
+    <link href="{% static 'css/icons.min.css' %}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="row">
+    <div class="card">
+        <div class="card-body mx-auto">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center align-items-center">
+                    <img src="{% static 'logo.png' %}" alt="Company Logo" width="150" class="mx-auto">
+                </div>
+            </div>
+
+            <div class="row mt-5 border-bottom border-5 mb-2 border-dark">
+                <div class="col-6">
+                    <h5>{{ service_schedule.company }}</h5><h5>{{ service_schedule.company.address }}</h5>
+                </div>
+                <div class="col-6 text-end">
+                    <h5>DATE :{% now "d/m/Y" %}</h5>
+                    <h5>REF :ITLSR/{{ service_schedule.created|date:"d/m/y" }}/{{ service_schedule.ss_id }}</h5>
+                </div>
+            </div>
+            <div class="row mb-3  border-bottom"><h4 class="text-center">MAINTENANCE SERVICE REPORT</h4></div>
+            <div class="row">
+                <p>
+                    The service was carried out from {{ service_schedule.from_date }} to {{ service_schedule.to_date }}
+                    which included cleaning of  the following.
+                </p>
+
+            </div>
+            <div class="row mx-auto">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ITEM</th>
+                        <th>QTY</th>
+                        <th>SERVICE PERFOMED</th>
+                        <th>EXCEPTIONS</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ticket in service_tickets %}
+                        {% if ticket.servers %}
+                            <tr>
+                                <td>Servers</td>
+                                <td>{{ ticket.servers }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.cpus %}
+                            <tr>
+                                <td>CPUs</td>
+                                <td>{{ ticket.cpus }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.laptops %}
+                            <tr>
+                                <td>Laptops</td>
+                                <td>{{ ticket.laptops }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.printers %}
+                            <tr>
+                                <td>Printers</td>
+                                <td>{{ ticket.printers }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.scanners %}
+                            <tr>
+                                <td>Scanners</td>
+                                <td>{{ ticket.scanners }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.ups %}
+                            <tr>
+                                <td>UPS</td>
+                                <td>{{ ticket.ups }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.large_ups %}
+                            <tr>
+                                <td>Large UPS</td>
+                                <td>{{ ticket.large_ups }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.aios %}
+                            <tr>
+                                <td>AIOs</td>
+                                <td>{{ ticket.aios }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.biometrics %}
+                            <tr>
+                                <td>Biometrics</td>
+                                <td>{{ ticket.biometrics }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.cctvs %}
+                            <tr>
+                                <td>CCTVs</td>
+                                <td>{{ ticket.cctvs }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.highend_machines %}
+                            <tr>
+                                <td>High-end Machines</td>
+                                <td>{{ ticket.highend_machines }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                        {% if ticket.nas %}
+                            <tr>
+                                <td>NAS</td>
+                                <td>{{ ticket.nas }}</td>
+                                <td></td>
+                                <td>REFER TO OBSERVATION</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <table class="table table-bordered">
+                <h4 class="text-center">OBSERVATIONS AND RECOMENDATIONS</h4>
+                <thead class="table-dark">
+                <tr>
+                    <th>USER/DEPARTMENT/LOCATION</th>
+                    <th>ITEM/SERIAL NO:</th>
+                    <th>OBSERVATIONS</th>
+                    <th>RECOMMENDATIONS</th>
+                    <th>STATUS</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for checklist_data in checklists %}
+                    {% for equip in checklist_data.equipment %}
+                        <tr>
+                            <td rowspan="{{ forloop.parentloop.counter }}">{{ checklist_data.client }}</td>
+
+
+                            <td>{{ equip.name }} - {{ equip.serial_no }}</td>
+                            <td>
+                                {% if equip.type == "Monitor" %}
+                                    {% for monitor_checklist in checklist_data.monitor_checklists %}
+                                        {{ monitor_checklist.observations }}
+                                    {% endfor %}
+                                {% elif equip.type == "Printer" %}
+                                    {% for printer_checklist in checklist_data.printer_checklists %}
+                                        {{ printer_checklist.observations }}
+                                    {% endfor %}
+                                {% elif equip.type == "UPS" %}
+                                    {% for ups_checklist in checklist_data.ups_checklists %}
+                                        {{ ups_checklist.observations }}
+                                    {% endfor %}
+                                {% else %}
+
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if equip.type == "Monitor" %}
+                                    {% for monitor_checklist in checklist_data.monitor_checklists %}
+                                        {{ monitor_checklist.recommendation }}
+                                    {% endfor %}
+                                {% elif equip.type == "Printer" %}
+                                    <ul>
+                                        {% for printer_checklist in checklist_data.printer_checklists %}
+                                            {{ printer_checklist.recommendation }}
+                                        {% endfor %}
+                                    </ul>
+                                {% elif equip.type == "UPS" %}
+                                    <ul>
+                                        {% for ups_checklist in checklist_data.ups_checklists %}
+                                            {{ ups_checklist.recommendation }}
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

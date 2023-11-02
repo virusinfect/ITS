@@ -23,5 +23,5 @@ urlpatterns = [
          views.create_or_edit_printer_checklist, name='create_or_edit_printer_checklist'),
     path('create-or-edit-ups-checklist/<int:equipment_id>/<int:service_id>/<int:client_id>/<int:ticket_id>/', views.create_or_edit_ups_checklist,
          name='create_or_edit_ups_checklist'),
-    path('service-report/<int:schedule_id>/',views.schedule_detail,name='service_report')
+    path('service_report/<int:schedule_id>/',views.service_report,name='service_report')
 ]
