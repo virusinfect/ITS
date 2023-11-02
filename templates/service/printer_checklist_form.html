@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Printer Checklist{% endblock %}
+{% block header %}Printer Checklist{% endblock %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="power"
+                    {% if printer_checklist and printer_checklist.power %}checked{% endif %}>
+                Power
+            </label>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="tone"
+                    {% if printer_checklist and printer_checklist.tone %}checked{% endif %}>
+                Tone
+            </label>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="phy_damage"
+                    {% if printer_checklist and printer_checklist.phy_damage %}checked{% endif %}>
+                Physical Damage
+            </label>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="service_interior"
+                    {% if printer_checklist and printer_checklist.service_interior %}checked{% endif %}>
+                Service Interior
+            </label>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="service_roller"
+                    {% if printer_checklist and printer_checklist.service_roller %}checked{% endif %}>
+                Service Roller
+            </label>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="static_eliminator"
+                    {% if printer_checklist and printer_checklist.static_eliminator %}checked{% endif %}>
+                Static Eliminator
+            </label>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="fuser_unit"
+                    {% if printer_checklist and printer_checklist.fuser_unit %}checked{% endif %}>
+                Fuser Unit
+            </label>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="gears"
+                    {% if printer_checklist and printer_checklist.gears %}checked{% endif %}>
+                Gears
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <input type="text" class="form-control" name="status" value="{{ printer_checklist.status|default:'' }}">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <script src="{% static 'switchery/switchery.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'switchery/switchery.min.css' %}">
+    <script>
+        // Initialize Switchery on all checkbox inputs with the 'form-check-input' class
+        var elems = document.querySelectorAll('.form-check-input');
+        for (var i = 0; i < elems.length; i++) {
+            new Switchery(elems[i]);
+        }
+    </script>
+{% endblock %}

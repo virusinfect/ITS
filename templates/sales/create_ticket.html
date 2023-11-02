@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}Create Ticket{% endblock %}
+{% block header %}Create Ticket{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'sales_tickets' %}">Tickets</a></li>
+                    <li class="breadcrumb-item active">Create Ticket</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+
+
+    <div class="card">
+        <div class=" card-body col-11 mx-auto">
+            <h3 class="header-title mb-4">Create Ticket</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="company_id" class="form-label">Company:</label>
+                        <select name="company_id" class="form-select">
+                            {% for company in companies %}
+                                <option value="{{ company.id }}">
+                                    {{ company.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="contact" class="form-label">Contact:</label>
+                        <input type="text" class="form-control" name="contact"
+                               placeholder="Contact">
+                    </div>
+                </div>
+                <div class="row mx-auto mb-3">
+                    <label for="issue_summary" class="form-label">Issue Summary:</label>
+                    <textarea name="issue_summary"
+                              class="form-control" placeholder="Issues Summary"></textarea>
+
+                </div>
+                <div class="row mb-3 table-responsive mx-auto">
+                    <table class="table mb-3">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Part Number</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Currency</th>
+                            <th>Availability</th>
+                            <th>Supplier</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><input type="text" name="part_no[]"
+                                       value="{{ product.part_no }}"
+                                       class="form-control">
+                            </td>
+                            <td><input type="text" name="description[]"
+                                       value="{{ product.description }}"
+                                       class="form-control">
+                            </td>
+                            <td><input type="text" name="price[]"
+                                       value="0"
+                                       class="form-control">
+                            </td>
+                            <td><input type="text" name="quantity[]"
+                                       value="0"
+                                       class="form-control">
+                            </td>
+                            <td><select name="currency[]" class="form-select">
+                                <option value="">
+                                </option>
+                                <option value="USD">
+                                    USD
+                                </option>
+                                <option value="KES">
+                                    KES
+                                </option>
+                                <option value="CHF">
+                                    CHF
+                                </option>
+                                <!-- Add more currency options as needed -->
+                            </select></td>
+                            <td><select name="availability[]" class="form-select">
+                                <option value="">
+
+                                </option>
+                                <option value="Available">
+                                    Available
+                                </option>
+                                <option value="Expected">
+                                    Expected
+                                </option>
+                                <option value="Back to back order">
+                                    Back to back order
+                                </option>
+                                <option value="Limited">
+                                    Limited
+                                </option>
+                                <option value="">
+
+                                </option>
+                                <!-- Add more availability options as needed -->
+                            </select></td>
+                            <td><input type="text" name="supplier[]"
+                                       value="{{ product.supplier }}"
+                                       class="form-control">
+                            </td>
+                            <td><a class="add-row-button" onclick="addBlankRow(this)"
+                                   title="add row"
+                                   tabindex="0"
+                                   data-plugin="tippy" data-tippy-interactive="true"><i
+                                    class="s mdi mdi-plus-circle mdi-18px"></i>
+                            </a></td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label for="via" class="form-label" class>Via:</label>
+                        <select name="via" class="form-select">
+                            <option value="Call">
+                                Call
+                            </option>
+                            <option value="Email">
+                                Email
+                            </option>
+                            <option value="Facebook">
+                                Facebook
+                            </option>
+                            <option value="Instagram">
+                                Instagram
+                            </option>
+                            <option value="Twitter">
+                                Twitter
+                            </option>
+                            <option value="Walk-in">
+                                Walk-in
+                            </option>
+                            <option value="Website">
+                                Website
+                            </option>
+                            <option value="WhatsApp">
+                                WhatsApp
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="handler_id" class="form-label">Handler:</label>
+                        <select name="handler_id" class="form-select">
+                            {% for user in users %}
+                                <option value="{{ user.id }}">
+                                    {{ user.username }}
+                                </option>
+                            {% endfor %}
+                        </select><br>
+                    </div>
+                    <div class="col-4">
+                        <label for="status" class="form-label">Status:</label>
+                        <select name="status" class="form-select">
+                            <option value="Sourcing">
+                                Sourcing
+                            </option>
+                            <option value="Closed">
+                                Closed
+                            </option>
+                            <option value="Quote">
+                                Quote
+                            </option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3 mx-auto">
+                    <label for="issue_summary" class="form-label">More Details:</label>
+                    <textarea name="issue_summary" rows="4"
+                              class="form-control" placeholder="More Details"></textarea>
+
+                </div>
+                <button class="btn btn-primary" type="submit">Create
+                    Ticket
+                </button>
+            </form>
+        </div>
+    </div> <!-- end col -->
+    <script>
+        function addBlankRow(button) {
+            // Create a new row by cloning the current row
+            const currentRow = button.parentNode.parentNode;
+            const newRow = currentRow.cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Insert the new row below the current row
+            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+        }
+
+        function addBlankRowAtEnd() {
+            // Create a new row to add at the end
+            const tableBody = document.querySelector('table tbody');
+            const newRow = tableBody.children[0].cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Append the new row to the end of the table
+            tableBody.appendChild(newRow);
+        }
+    </script>
+{% endblock %}

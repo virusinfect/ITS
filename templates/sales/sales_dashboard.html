@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Dashboard{% endblock %}
+{% block content %}
+
+    <div class="row">
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="header-title mt-0 mb-4">Total Tasks</h4>
+
+                    <div class="widget-chart-1">
+                        <div class="widget-chart-box-1 float-start" dir="ltr">
+                            <input data-plugin="knob" data-width="70" data-height="70" data-fgColor="#f05050 "
+                                   data-bgColor="#F9B9B9" value="5"
+                                   data-skin="tron" data-angleOffset="180" data-readOnly=true
+                                   data-thickness=".15"/>
+                        </div>
+
+                        <div class="widget-detail-1 text-end">
+                            <h2 class="fw-normal pt-2 mb-1"> 12 </h2>
+                            <p class="text-muted mb-1">Tasks today</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end col -->
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+
+
+                    <h4 class="header-title mt-0 mb-3">Orders Analytics</h4>
+
+                    <div class="widget-box-2">
+                        <div class="widget-detail-2 text-end">
+                            <span class="badge bg-success rounded-pill float-start mt-3">32% <i
+                                    class="mdi mdi-trending-up"></i> </span>
+                            <h2 class="fw-normal mb-1"> 2 </h2>
+                            <p class="text-muted mb-3">Orders today</p>
+                        </div>
+                        <div class="progress progress-bar-alt-success progress-sm">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 aria-valuenow="77" aria-valuemin="0" aria-valuemax="100"
+                                 style="width: 77%;">
+                                <span class="visually-hidden">77% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end col -->
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="header-title mt-0 mb-4">Statistics</h4>
+
+                    <div class="widget-chart-1">
+                        <div class="widget-chart-box-1 float-start" dir="ltr">
+                            <input data-plugin="knob" data-width="70" data-height="70" data-fgColor="#ffbd4a"
+                                   data-bgColor="#FFE6BA" value="80"
+                                   data-skin="tron" data-angleOffset="180" data-readOnly=true
+                                   data-thickness=".15"/>
+                        </div>
+                        <div class="widget-detail-1 text-end">
+                            <h2 class="fw-normal pt-2 mb-1"> 4569 </h2>
+                            <p class="text-muted mb-1">Revenue today</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end col -->
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="header-title mt-0 mb-3">Daily Sales</h4>
+
+                    <div class="widget-box-2">
+                        <div class="widget-detail-2 text-end">
+                            <span class="badge bg-pink rounded-pill float-start mt-3">32% <i
+                                    class="mdi mdi-trending-up"></i> </span>
+                            <h2 class="fw-normal mb-1"> 158 </h2>
+                            <p class="text-muted mb-3">Revenue today</p>
+                        </div>
+                        <div class="progress progress-bar-alt-pink progress-sm">
+                            <div class="progress-bar bg-pink" role="progressbar"
+                                 aria-valuenow="77" aria-valuemin="0" aria-valuemax="100"
+                                 style="width: 77%;">
+                                <span class="visually-hidden">77% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end col -->
+
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="header-title mb-3">Tickets</h4>
+
+                    <div class="inbox-widget">
+                        <div class="inbox-item">
+                            <a href="#">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author">Open Tickets</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;"><strong>{{ open_count }}</strong></p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'tickets_in_status' 'Sourcing' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author">Sourcing Tickets</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ sourcing_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'tickets_in_status' 'Quote' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author">Quote Tickets</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ quote_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'tickets_in_status' 'Closed' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author">Closed Tickets</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ closed_count }}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end col -->
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">Quotes</h4>
+
+                    <div class="inbox-widget">
+
+                        <div class="inbox-item">
+                            <a href="{% url 'quotes_in_status' 'Follow up' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">Follow up</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ follow_up_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'quotes_in_status' 'Awaiting LPO' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">Awaiting LPO</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ awaiting_lpo_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'quotes_in_status' 'On hold' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">On hold</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ on_hold_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'quotes_in_status' 'Not interested' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">Not interested</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ not_interested_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'quotes_in_status' 'Done' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">Done</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ done_count }}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end col -->
+
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">Orders</h4>
+
+                    <div class="inbox-widget">
+
+                        <div class="inbox-item">
+                            <a href="{% url 'orders_in_status' 'Pending' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">Pending</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ pending_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'orders_in_status' 'Awaiting LPO' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">Awaiting LPO</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ order_awaiting_lpo_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'orders_in_status' 'Expected' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">Expected</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ expected_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'orders_in_status' 'Ordered' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">Ordered</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ ordered_count }}</p>
+                            </a>
+                        </div>
+
+                        <div class="inbox-item">
+                            <a href="{% url 'orders_in_status' 'Completed' %}">
+                                <div class="inbox-item-img"></div>
+                                <h5 class="inbox-item-author mt-0 mb-1">Completed</h5>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ completed_count }}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end col -->
+
+
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Tickets Overview</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="ticket-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end col-->
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Quotes Overview</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="quote-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end col-->
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Orders Overview</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="order-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end col-->
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card" height="50">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Tickets This Month</h4>
+                    <div class="chartjs-chart">
+                        <canvas id="donut-chart-ticket" height="50"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="header-title mt-0 mb-3">Quotes This Month</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="donut-chart-quotes" height="50"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="header-title mt-0 mb-3">Orders This Month</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="donut-chart-orders" height="50"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Array to map month numbers to month names
+        var monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        // Make an AJAX request to the view to get the data
+        fetch('{% url 'tickets_created_this_year' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => monthNames[item.month - 1]); // Map to month names
+                var ticketCounts = data.map(item => item.count);
+
+                var ctx = document.getElementById('ticket-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Tickets Created',
+                            data: ticketCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+    <script>
+        // Array to map month numbers to month names
+        var monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        // Make an AJAX request to the view to get the data
+        fetch('{% url 'quotes_created_this_year' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => monthNames[item.month - 1]); // Map to month names
+                var quoteCounts = data.map(item => item.count);
+
+                var ctx = document.getElementById('quote-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Quotes Created',
+                            data: quoteCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+    <script>
+        // Array to map month numbers to month names
+        var monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        // Make an AJAX request to the view to get the data
+        fetch('{% url 'orders_created_this_year' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => monthNames[item.month - 1]); // Map to month names
+                var orderCounts = data.map(item => item.count);
+
+                var ctx = document.getElementById('order-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Orders Created',
+                            data: orderCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+    <script>
+        // Make an AJAX request to the view to get the data
+        fetch('{% url 'donut_chart_data' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = ['Sourcing', 'Quote', 'Closed'];
+                var backgroundColors = ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)'];
+
+                var ctx = document.getElementById('donut-chart-ticket').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: backgroundColors
+                        }]
+                    }
+                });
+            });
+    </script>
+    <script>
+        // Make an AJAX request to the view to get the data
+        fetch('{% url 'donut_chart_quotes_data' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = ['Follow up', 'Awaiting LPO', 'On hold', 'Not interested', 'Done'];
+                var backgroundColors = ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)'];
+
+                var ctx = document.getElementById('donut-chart-quotes').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: backgroundColors
+                        }]
+                    }
+                });
+            });
+    </script>
+    <script>
+        // Make an AJAX request to the view to get the data
+        fetch('{% url 'donut_chart_orders_data' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = ['Pending', 'Awaiting LPO', 'Expected', 'Ordered', 'Completed', 'Cancelled'];
+                var backgroundColors = ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)'];
+
+                var ctx = document.getElementById('donut-chart-orders').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: backgroundColors
+                        }]
+                    }
+                });
+            });
+    </script>
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Client Details{% endblock %}
+{% block header %}Client Details{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item active">Client Details</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="card">
+        <div class="card-body ">
+            <h5>Client Details</h5>
+            <div class="row mx-auto">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="f_name" class="form-label">First Name:</label>
+                            <input type="text" name="f_name" class="form-control" id="f_name"
+                                   aria-describedby="emailHelp"
+                                   value="{{ client.f_name }}">
+                        </div>
+                        <div class="col-6">
+                            <label for="l_name" class="form-label">Last Name:</label>
+                            <input type="text" name="l_name" class="form-control" id="l_name"
+                                   aria-describedby="emailHelp"
+                                   value="{{ client.l_name }}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" name="email" class="form-control" id="email"
+                                   aria-describedby="emailHelp"
+                                   value="{{ client.email }}">
+                        </div>
+                        <div class="col-6">
+                            <label for="telephone" class="form-label">Telephone:</label>
+                            <input type="number" name="telephone" class="form-control" id="telephone"
+                                   aria-describedby="emailHelp"
+                                   value="{{ client.telephone }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description:</label>
+                        <textarea type="text" name="description" class="form-control" id="description"
+                                  aria-describedby="emailHelp"
+                        >{{ client.description }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Edit client Details</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+
+        <div class="card-body">
+            <h5>Equipment Details</h5>
+            <a type="button" class="btn btn-primary waves-effect waves-light mb-1"
+               href="{% url 'add_equipment' client.id %}">
+                <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New
+            </a>
+            <div>
+                {% if equipments %}
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>NO</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Serial Number</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for equipment in equipments %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ equipment.name }}</td>
+                                <td>{{ equipment.type }}</td>
+                                <td>{{ equipment.serial_no }}</td>
+                                <td>
+                                    <a href="{% url 'edit_equipment' equipment.id %}" title="Edit"
+                                       tabindex="0" data-plugin="tippy"
+                                       data-tippy-interactive="true">
+                                        <i class=" mdi mdi-square-edit-outline mdi-18px"></i></a>
+                                    {% if equipment.type == 'Laptop' or equipment.type == 'CPU' or equipment.type == 'Server' %}
+                                        <a href="{% url 'create_or_edit_equipment_specs' equipment.id %}" title="specs"
+                                           tabindex="0" data-plugin="tippy"
+                                           data-tippy-interactive="true">
+                                            <i class="mdi mdi-developer-board mdi-18px"></i>
+                                        </a>
+                                    {% endif %}
+                                    <a href="{% url 'delete_equipment' equipment.id %}" title="delete"
+                                       tabindex="0" data-plugin="tippy"
+                                       data-tippy-interactive="true">
+                                        <i class=" mdi mdi-delete-outline mdi-18px"></i></a>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                {% else %}
+                    <div class="text-center">
+                        <h2 class="mt-0">
+                            <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                        </h2>
+                        <h4 class="mt-0 mb-3">No Equipment Data Available </h4>
+
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="card">
+
+        <div class="card-body">
+            <h5>Software Details</h5>
+            {% if software %}
+                <a type="button" class="btn btn-primary waves-effect waves-light mb-1"
+                   href="{% url 'edit_software' client.id %}">
+                    <span class="btn-label"><i class="mdi mdi-plus"></i></span>Edit Software
+                </a>
+                <div class="col-lg-8">
+
+
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>SOFTWARE</th>
+                        <th>INFORMATION</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in software %}
+                        <tr>
+                            <td>Operating System</td>
+                            <td>{{ item.os }}</td>
+                        </tr>
+                        <tr>
+                            <td>Microsoft Office</td>
+                            <td>{{ item.mo }}</td>
+                        </tr>
+                        <tr>
+                            <td>Outlook</td>
+                            <td>{{ item.outlook }}</td>
+                        </tr>
+                        <tr>
+                            <td>Backup Software</td>
+                            <td>{{ item.backup }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+                <a type="button" class="btn btn-primary waves-effect waves-light mb-1"
+                   href="{% url 'add_software' client.id %}">
+                    <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New
+                </a>
+                <div class="text-center">
+                    <h2 class="mt-0">
+                        <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                    </h2>
+                    <h4 class="mt-0 mb-3">No Software Data Available </h4>
+
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

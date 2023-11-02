@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}Create Proforma{% endblock %}
+{% block header %}Create Proforma{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'active-invoice' %}">Proforma Invoces</a></li>
+                    <li class="breadcrumb-item active">Create Proforma</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="mx-auto">
+        <form method="post">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3 header-title">Create Proforma</h4>
+                    <tr>
+                        <td>
+                            Company :
+                        </td>
+                        <td>
+                            <h5> {{ ticket.company }}</h5>
+                        </td>
+                    </tr>
+
+
+                    <div class="row mt-3">
+                        <div class="col-lg-10 mx-auto ">
+                            <textarea id="editor" name="mail_text"
+                                      class="form-control">Dear {{ ticket.contact }}, <br><br>
+                      As per your request we are pleased to quote you on your  enquiry as follows:</textarea>
+                        </div>
+                    </div>
+                    <div class="row col-lg-10 mx-auto mt-5">
+                        <div class="table">
+                            <h4 class="text-center mb-2">Products</h4>
+                            <table class="table table-bordered ">
+                                <thead>
+                                <tr>
+                                    <th>Part No</th>
+                                    <th>Description</th>
+                                    <th>Price</th>
+                                    <th>Availability</th>
+                                    <th>Quantity</th>
+                                    <th>Currency</th>
+                                    <th>Att</th>
+                                    <!-- Add other table headers for additional fields -->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for product in ticket.salesticketproducts_set.all %}
+                                    <tr>
+                                        <td><input type="text" name="part_no[]" value="{{ product.part_no }}"
+                                                   class="form-control"></td>
+                                        <td><input type="text" name="description[]" value="{{ product.description }}"
+                                                   class="form-control">
+                                        </td>
+                                        <td><input type="text" name="price[]" value="{{ product.price }}"
+                                                   class="form-control"></td>
+                                        <td><select name="availability[]" class="form-select">
+                                            <option value="">Select availability</option>
+                                            <option value="AVAILABLE"
+                                                    {% if product.availability|lower == "available" %}selected{% endif %}>
+                                                AVAILABLE
+                                            </option>
+                                            <option value="EXPECTED"
+                                                    {% if product.availability|lower == "expected" %}selected{% endif %}>
+                                                EXPECTED
+                                            </option>
+                                            <option value="BACK TO BACK ORDER"
+                                                    {% if product.availability|lower == "back to back order" %}selected{% endif %}>
+                                                BACK TO BACK ORDER
+                                            </option>
+                                            <option value="LIMITED"
+                                                    {% if product.availability|lower == "limited" %}selected{% endif %}>
+                                                LIMITED
+                                            </option>
+                                        </select></td>
+                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}"
+                                                   class="form-control"></td>
+                                        <td><select name="currency[]" class="form-select">
+                                            <option value="">Select currency</option>
+                                            <option value="KES" {% if product.currency == "KES" %}selected{% endif %}>
+                                                KES
+                                            </option>
+                                            <option value="USD" {% if product.currency == "USD" %}selected{% endif %}>
+                                                USD
+                                            </option>
+                                            <option value="EUR" {% if product.currency == "EUR" %}selected{% endif %}>
+                                                EUR
+                                            </option>
+                                        </select></td>
+                                        <td><input type="file" class="form-control"></td>
+                                        <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
+                                               tabindex="0"
+                                               data-plugin="tippy" data-tippy-interactive="true"><i
+                                                class="s mdi mdi-plus-circle mdi-18px"></i>
+                                        </a></td>
+                                        <!-- Add other table cells for additional fields -->
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4">No products associated with this invoice.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row col-lg-10 mx-auto">
+                        <div class="col-lg-4">
+                            <label for="vat_stats" class="form-label">VAT Status:</label>
+                            <select name="vat_stats" class="form-select">
+                                <option value="">Select VAT status</option>
+                                <option value="Exclusive" {% if invoice.vat_stats == "Exclusive" %}selected{% endif %}>
+                                    Exclusive
+                                </option>
+                                <option value="Inclusive" {% if invoice.vat_stats == "Inclusive" %}selected{% endif %}>
+                                    Inclusive
+                                </option>
+                                <option value="Exempted" {% if invoice.vat_stats == "Exempted" %}selected{% endif %}>
+                                    Exempted
+                                </option>
+                            </select>
+
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="layout" class="form-label">Layout:</label>
+                            <select name="layout" class="form-select">
+                                <option value="">Select layout</option>
+                                <option value="Grouped" {% if invoice.layout == "Grouped" %}selected{% endif %}>Grouped
+                                </option>
+                                <option value="Separated" {% if invoice.layout == "Separated" %}selected{% endif %}>
+                                    Separated
+                                </option>
+                                <option value="Classified" {% if invoice.layout == "Classified" %}selected{% endif %}>
+                                    Classified
+                                </option>
+                            </select></div>
+                        <div class="col-lg-4">
+                            <label for="handler" class="form-label">Assignee:</label>
+                            <select name="handler" class="form-select">
+                                {% for user in users %}
+                                    <option value="{{ user.id }}"
+                                            {% if user.id == ticket.handler.id %}selected{% endif %}>
+                                        {{ user.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-lg-10 mx-auto">
+                            <textarea id="editor2" class="form-control" name="footer_note">                                                                                                                                                                                                                        <strong><u>NB</u></strong><br>
+                        Stock position changes daily. Kindly confirm availability before placing your order. <br><br>
+
+                        <strong><u>VALIDITY</u></strong><br>
+                        This Quotation is valid for a period of 7 days from the date indicated above OR while stock lasts. <br><br>
+
+                        <strong><u>Terms of Payment</u></strong><br>
+                        <strong><span class="text-danger">30 DAYS</span></strong><br><br>
+
+                        Should you require any further clarifications or details, please do not hesitate to contact us.<br>
+                        We look forward to doing business with you.<br><br>
+
+                        Yours faithfully,<br>
+                        <strong>A. A. KASSAMALI</strong><br>
+                        <strong>DIRECTOR</strong><br>
+                        <strong>INTELLITECH LTD.</strong><br></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Create
+                invoice
+            </button>
+
+        </form>
+    </div>
+    <!-- Include jQuery -->
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+
+
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                console.log(editor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor2'))
+            .then(editor2 => {
+                console.log(editor2);
+            })
+            .catch(error => {
+                console.error(error2);
+            });
+    </script>
+    <script>
+        function addBlankRow(button) {
+            // Create a new row by cloning the current row
+            const currentRow = button.parentNode.parentNode;
+            const newRow = currentRow.cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Insert the new row below the current row
+            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+        }
+
+        function addBlankRowAtEnd() {
+            // Create a new row to add at the end
+            const tableBody = document.querySelector('table tbody');
+            const newRow = tableBody.children[0].cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Append the new row to the end of the table
+            tableBody.appendChild(newRow);
+        }
+    </script>
+
+
+
+{% endblock %}

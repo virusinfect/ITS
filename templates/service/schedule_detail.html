@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Dashboard{% endblock %}
+{% block content %}
+    <h1>Service Schedule: {{ schedule.from_date }} - {{ schedule.to_date }}</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Client Name</th>
+            <th>Equipment</th>
+            <th>Observations</th>
+            <th>Recommendation</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for equipment in equipment_data %}
+            <tr>
+                <td>{{ equipment.client_name }}</td>
+                <td>{{ equipment.equipment_name }}</td>
+                <td>{{ equipment.observations }}</td>
+                <td>{{ equipment.recommendation }}</td>
+                <td>{{ equipment.status }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

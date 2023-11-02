@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Create Format Approval{% endblock %}
+{% block header %}Create Format Approval{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="card">
+            <div class="card-body col-lg-10 mx-auto">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label" for="app_info">App Info:</label>
+                        <textarea class="form-control" name="app_info" id="app_info" rows="4" cols="50" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="data_info">Data Info:</label>
+                    <textarea class="form-control" name="data_info" id="data_info" rows="4" cols="50" required></textarea>
+                    </div>
+
+                    <input type="submit" class="btn btn-primary" value="Create Format Approval">
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

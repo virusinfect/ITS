@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Add Part{% endblock %}
+{% block header %}Add Part{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'parts-list' %}">Parts</a></li>
+                    <li class="breadcrumb-item active">Add Part</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Add Part</h4>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3 col-md-4">
+                        <label for="category" class="form-label">Category:</label>
+
+                        <select name="category" id="category" class="form-select" required>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Code:</label>
+                        <input type="text" name="code" class="form-control" id="code" aria-describedby="emailHelp"
+                               placeholder="Enter Part Code">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Code:</label>
+                        <textarea type="text" name="description" class="form-control" id="description"
+                                  aria-describedby="emailHelp"
+                                  placeholder="Enter Part Code"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Add New</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

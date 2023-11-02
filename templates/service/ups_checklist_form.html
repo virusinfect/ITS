@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}UPS Cheklist{% endblock %}
+{% block header %}UPS Cheklist{% endblock %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-check">
+            <label class="form-label">
+                Check input & output power
+            </label>
+            <input type="checkbox" class="form-check-input" name="power"
+                           {% if ups_checklist and ups_checklist.power %}checked{% endif %}>
+        </div>
+        <div class="form-check">
+            <label class="form-label">
+                Check backup
+            </label>
+            <input type="checkbox" class="form-check-input" name="backup"
+                           {% if ups_checklist and ups_checklist.backup %}checked{% endif %}>
+        </div>
+        <div class="form-check">
+            <label class="form-label">
+                Test all output ports
+            </label>
+            <input type="checkbox" class="form-check-input" name="ports"
+                           {% if ups_checklist and ups_checklist.ports %}checked{% endif %}>
+        </div>
+        <div class="form-check">
+            <label class="form-label">
+                Check "last replaced" date
+            </label>
+            <input type="checkbox" class="form-check-input" name="battery"
+                           {% if ups_checklist and ups_checklist.battery %}checked{% endif %}>
+        </div>
+        <div class="form-check">
+            <label class="form-label">
+                Check for physical damage or obvious problems
+            </label>
+            <input type="checkbox" class="form-check-input" name="phy_damage"
+                           {% if ups_checklist and ups_checklist.phy_damage %}checked{% endif %}>
+        </div>
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <input type="text" class="form-control" name="status" value="{{ ups_checklist.status }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"
+            integrity="sha512-lC8vSUSlXWqh7A/F+EUS3l77bdlj+rGMN4NB5XFAHnTR3jQtg4ibZccWpuSSIdPoPUlUxtnGktLyrWcDhG8RvA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css"
+          integrity="sha512-uyGg6dZr3cE1PxtKOCGqKGTiZybe5iSq3LsqOolABqAWlIRLo/HKyrMMD8drX+gls3twJdpYX0gDKEdtf2dpmw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script>
+        // Initialize Switchery on all checkbox inputs with the 'form-check-input' class
+        var elems = document.querySelectorAll('.form-check-input');
+        for (var i = 0; i < elems.length; i++) {
+            new Switchery(elems[i]);
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Users List{% endblock %}
+{% block header %}Users List{% endblock %}
+{% block content %}
+    <h1>Delivery List</h1>
+    <ul>
+        {% for delivery in deliveries %}
+            <li>
+                <a href="{% url 'delivery_detail' delivery.delivery_id %}">Delivery ID: {{ delivery.delivery_id }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

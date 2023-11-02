@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Quotations List{% endblock %}
+{% block header %}Quotations List{% endblock %}
+{% block content %}
+    <style>
+        .static-action {
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            background-color: white;
+        }
+    </style>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'active-quotes' %}">Quotations</a></li>
+
+
+                </ol>
+            </div>
+
+        </div> <!-- end col -->
+
+    </div>
+
+    <div class="card">
+        <div class="card-body table-responsive">
+            <h4 class="mt-0 header-title">Quotations List</h4>
+            <table id="responsive-datatable" class="table table-bordered dt-responsive">
+
+                {#                <a type="button" class="btn btn-primary waves-effect waves-light mb-1" href="{% url 'add-part' %}">#}
+                {#                    <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New#}
+                {#                </a>#}
+                {% comment %}<a type="button" class="btn btn-primary waves-effect waves-light mb-1 me-1">
+                    <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New
+                </a>{% endcomment %}
+                {% comment %}
+                    <button type="button" class="btn btn-warning waves-effect waves-light mb-1 me-1" id="print-table">
+                        <span class="btn-label"><i class="mdi mdi-printer"></i></span>Print
+                    </button>{% endcomment %}
+                <thead class="table-dark">
+                <tr>
+                    <th width="5%">No.</th>
+                    <th Date
+                    </th>
+                    <th width="10%">Ref</th>
+                    <th>Company</th>
+                    <th>Client</th>
+                    <th width="12%">Product</th>
+                    <th width="10%">Status</th>
+                    <th>Remark</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for quote in quotes %}
+                    <tr>
+                        <td width="3%">{{ forloop.counter }}</td>
+                        <td width="15%">{{ quote.created }}</td>
+                        <td>ITLQ/{{ quote.created|date:"m/Y" }}/{{ quote.sq_id }}</td>
+                        <td>{{ quote.company.name }}</td>
+                        <td>{{ quote.ticket.contact }}</td>
+                        <td>
+                            <div class="product-list" data-quote-id="{{ quote.sq_id }}" style="display: none;">
+                                {% for product in quote.salesquoteproducts_set.all %}
+                                    <li>{{ product.description }}</li>
+                                    {% empty %}
+                                    No products associated
+                                {% endfor %}
+                            </div>
+                            <button class="show-more-btn btn btn-outline-primary py-0 px-3"
+                                    data-quote-id="{{ quote.sq_id }}">More
+                            </button>
+                        </td>
+                        <td>
+                            {% if quote.status == "Follow up" %}
+                                <i class="mdi  mdi-package btn-outline-info mdi-18px "> Follow up</i>
+                            {% elif quote.status == "Awaiting LPO" %}
+                                <i class="mdi mdi-file-document btn-outline-warning mdi-18px"> Awaiting LPO</i>
+                            {% elif quote.status == "On hold" %}
+                                <i class="mdi mdi-clock  btn-outline-danger mdi-18px"> On hold</i>
+                            {% elif quote.status == "Not interested" %}
+                                <i class="mdi mdi-cart btn-outline-dark mdi-18px"> Not interested</i>
+                            {% elif quote.status == "Done" %}
+                                <i class="mdi mdi-check-circle-outline btn-outline-success mdi-18px"> Done</i>
+                            {% else %}
+                                {{ quote.status }}
+                            {% endif %}
+                        </td>
+                        <td>{{ quote.remark }}</td>
+                        <td width="4%">
+                            <a href="{% url 'edit-quote' quote.sq_id %}" title="edit" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="mdi mdi-square-edit-outline mdi-18px"></i>
+                            </a>
+                            <a href="{% url 'delete-quote' quote.sq_id %}"
+                               title="delete" tabindex="0" data-plugin="tippy"
+                               data-tippy-interactive="true">
+                                <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('show-more-btn')) {
+                const quoteId = e.target.getAttribute('data-quote-id');
+                const productList = document.querySelector(`.product-list[data-quote-id="${quoteId}"]`);
+
+                if (productList.style.display === "none" || productList.style.display === "") {
+                    productList.style.display = "block";
+                    e.target.textContent = "Less";
+                } else {
+                    productList.style.display = "none";
+                    e.target.textContent = "More";
+                }
+            }
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    {#    <link href="{% static 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />#}
+    <link href="{% static 'libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'libs/datatables.net-select-bs5/css/select.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <!-- third party js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+    <!-- third party js ends -->
+
+    <!-- Datatables init -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+    <script>
+        jQuery(document).ready(function ($) {
+            $('#responsive-datatable').DataTable({
+                dom: 'Blfrtip',
+                buttons: [
+
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        className: 'btn btn-danger btn-bg-light mb-1'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>',
+                        className: 'btn btn-danger mb-1',
+                        title: 'Ticket List',
+                        customize: function (doc) {
+                            doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'];
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+
+                ]
+            });
+        });
+
+
+        jQuery(document).ready(function ($) {
+            var table = $('#responsive-datatable').DataTable();
+
+            $('#print-table').on('click', function () {
+                var win = window.open('', 'Print', 'width=800,height=600');
+                win.document.write('<html><head><title>Print</title></head><body>');
+                win.document.write('<h1>Ticket List</h1>');
+                win.document.write('<table style="border-collapse: collapse; width: 100%;">');
+
+                // Add table headers
+                win.document.write('<tr>');
+                table.columns().header().each(function (th) {
+                    win.document.write('<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">' + $(th).html() + '</th>');
+                });
+                win.document.write('</tr>');
+
+                // Loop through the DataTable rows and copy them to the new window
+                table.rows().every(function () {
+                    var row = this.data();
+                    win.document.write('<tr>');
+                    for (var i = 0; i < row.length; i++) {
+                        win.document.write('<td style="border: 1px solid #ddd; padding: 8px; text-align: left;">' + row[i] + '</td>');
+                    }
+                    win.document.write('</tr>');
+                });
+
+                win.document.write('</table>');
+                win.document.write('</body></html>');
+                win.document.close();
+                win.print();
+                win.close();
+            });
+        });
+
+
+    </script>
+
+{% endblock %}
+

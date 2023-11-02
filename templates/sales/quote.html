@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% block title %}Quote{% endblock %}
+{% block header %}Quote{% endblock %}
+{% load static %}
+{% block content %}
+    <style>
+    .scaled-content {
+    transform: scale(0.5); /* Adjust the scale factor as needed */
+  }
+    </style>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'active-quotes' %}">Quotations</a></li>
+                    <li class="breadcrumb-item active">Quote</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="mx-auto" >
+
+        <div class="card col-lg-9 p-2 mx-auto text-sm" id="delivery-note">
+            <div class="card-body ">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <img src="{% static 'logo.png' %}" alt="Company Logo" width="150">
+
+
+                    </div>
+                    <div class="col-6 text-end mt-4">
+
+                        <small>Ground Floor, Corporate Insurance Building </small><br>
+                        <small>Yusuf A. Karim Rd, East End, Treasury Square </small><br>
+                        <small> P.O. Box 42716 - 80100,</small><br>
+                        <small>Cell: 0728 786014 | 0732 786012 | 0773 963114</small><br>
+                        <small>Tel: +254 41 2221792 | 696/932/231500 | 2311364</small><br>
+                        <small><i class="mdi mdi-email-outline"></i> sales: sales@intellitech.co.ke | For support:
+                            support@intellitech.co.ke</small><br>
+                        <small>Website: www.intellitech.co.ke</small>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <p>Date: {{ quote.created|date:"d/m/Y" }}</p>
+                </div>
+                <div class="row mt-4 mx-auto">
+                    <div class="col-6 ">
+
+                        <h4>Client Information</h4>
+                        <small>{{ quote.company.name }}</small><br>
+                        <small>{{ quote.company.address }}</small>
+
+                    </div>
+                    <div class="col-6 text-end">
+                        <h4>REF:</h4>
+                        <small>ITLQ/{{ quote.created|date:"m/Y" }}/{{ quote.sq_id }}</small><br>
+
+                    </div>
+                </div>
+                <div class="text-center text-black border border-bottom-1 p-1 my-2"> RE: QUOATATION </div>
+                <div class="row mt-2">
+                    <div class="mx-auto ">
+                        {{ quote.mail_text|safe }}
+                    </div>
+                </div>
+                <div class="row mx-auto mt-1">
+                    <div class="table">
+                        <table class="table table-bordered text-sm">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Part No</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Availability</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
+                                <!-- Add other table headers for additional fields -->
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in items %}
+                                <tr>
+                                    <td>{{ item.part_no }}</td>
+                                    <td class="text-sm">{{ item.description }}</td>
+                                    <td>{{ item.price }}</td>
+                                    <td>{{ item.availability }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td> {{ item.total }}</td>
+                                    <!-- Add other table cells for additional fields -->
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5">No products associated with this quote.</td>
+                                </tr>
+                            {% endfor %}
+
+                            <tr>
+                                <td colspan="5" class="text-end  text-danger">ADD VAT 16%</td>
+                                <td class=" text-danger">{{ vat }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="text-end">TOTAL AMOUNT</td>
+                                <td>{{ total_amount }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="mx-auto">
+                        {{ quote.footer_note|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a type="button" class="btn btn-primary waves-effect waves-light  me-1" id="print-button">
+            <span class="btn-label"><i class="mdi mdi-printer" ></i></span>Print
+        </a>
+
+    </div>
+    <!-- Include jQuery -->
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+
+
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                console.log(editor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor2'))
+            .then(editor2 => {
+                console.log(editor2);
+            })
+            .catch(error => {
+                console.error(error2);
+            });
+    </script>
+    <script>
+        function addBlankRow(button) {
+            // Create a new row by cloning the current row
+            const currentRow = button.parentNode.parentNode;
+            const newRow = currentRow.cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Insert the new row below the current row
+            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+        }
+
+        function addBlankRowAtEnd() {
+            // Create a new row to add at the end
+            const tableBody = document.querySelector('table tbody');
+            const newRow = tableBody.children[0].cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Append the new row to the end of the table
+            tableBody.appendChild(newRow);
+        }
+    </script>
+    <script>
+        document.getElementById('print-button').addEventListener('click', function () {
+            printDeliveryNote();
+        });
+
+        function printDeliveryNote() {
+            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+            document.body.style.margin = "0";
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+
+
+{% endblock %}

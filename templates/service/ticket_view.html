@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Service Tickets{% endblock %}
+{% block header %}Service Tickets{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'service-tickets' %}">Services Tickets</a></li>
+                    <li class="breadcrumb-item active">Ticket View</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="border-bottom-1  col-9">Ticket View</h3>
+            <a type="button" class="btn btn-primary waves-effect waves-light mb-1"
+               href="{% url 'create-client' service_schedule.company.id %}">
+                <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New Client
+            </a>
+            <div class="card">
+
+                <div class="row col-8 mx-auto table">
+
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th colspan="2" class="text-center">Client List</th>
+                        </tr>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for client in clients %}
+                            <tr>
+                                <td>{{ client.f_name }}</td>
+                                <td>{{ client.email }}</td>
+
+                                <td><a href="{% url 'client_view' client.id %}" title="Edit"
+                                       tabindex="0" data-plugin="tippy"
+                                       data-tippy-interactive="true">
+                                    <i class=" mdi mdi-square-edit-outline mdi-18px"></i>
+                                </a>
+                                    <a href="{% url 'create_service_form' client.id ticket.id %}" title="checklist"
+                                       tabindex="0" data-plugin="tippy"
+                                       data-tippy-interactive="true">
+                                        <i class=" mdi mdi-format-list-checkbox mdi-18px"></i>
+                                    </a>
+                                    <a href="" title="delete"
+                                       tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                                        <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                    </a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Users List{% endblock %}
+{% block header %}Users List{% endblock %}
+{% block content %}
+    <h1>Delivery Detail</h1>
+    <p><strong>Delivery ID:</strong> {{ delivery.delivery_id }}</p>
+    <p><strong>Ticket:</strong> {{ delivery.ticket }}</p>
+    <p><strong>Signature:</strong></p>
+    <img src="{{ delivery.signature_image.url }}" alt="Signature">
+    <br>
+{% endblock %}

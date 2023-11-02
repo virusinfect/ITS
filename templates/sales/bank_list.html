@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Banks List{% endblock %}
+{% block header %}Banks List{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'bank-list' %}">Banks</a></li>
+
+
+                </ol>
+            </div>
+
+        </div> <!-- end col -->
+
+    </div>
+
+    <div class="card">
+        <div class="card-body table-responsive">
+            <h2 class="mt-0 header-title mb-3">Bank List</h2>
+            <table class="table mb-0">
+                <thead class="table-dark">
+                <tr>
+                    <th>No.</th>
+                    <th>Account NO.</th>
+                    <th>Bank Name</th>
+                    <th>Bank Code</th>
+                    <th>Branch</th>
+                    <th>Swift Code</th>
+                    <th>Currency</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for bank in banks %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ bank.ac_no }}</td>
+                        <td>{{ bank.bank }}</td>
+                        <td>{{ bank.bank_code }}</td>
+                        <td>{{ bank.branch }}</td>
+                        <td>{{ bank.swift_code }}</td>
+                        <td>{{ bank.currency }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+{% endblock %}

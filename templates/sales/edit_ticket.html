@@ -1,0 +1,550 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Ticket List{% endblock %}
+{% block header %}Ticket List{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'sales_tickets' %}">Tickets</a></li>
+                    <li class="breadcrumb-item active">Edit Ticket</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title">Edit Sales Ticket</h4>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mb-4">Tabs Justified</h4>
+
+                        <ul class="nav nav-pills navtab-bg nav-justified">
+                            <li class="nav-item">
+                                <a href="#Enquiry" data-bs-toggle="tab" aria-expanded="false"
+                                   class="nav-link active">
+                                    Enquiry
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#Sourcing" data-bs-toggle="tab" aria-expanded="true" class="nav-link ">
+                                    Sourcing
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#Quote" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                    Quote
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#Order" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                    Order
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#Invoice" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                    Pro-Forma Invoice
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane  show active" id="Enquiry">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="company_id" class="form-label">Company:</label>
+                                                    <select name="company_id" class="form-select">
+                                                        {% for company in companies %}
+                                                            <option value="{{ company.id }}"
+                                                                    {% if company.id == ticket.company.id %}selected{% endif %}>
+                                                                {{ company.name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="contact" class="form-label">Contact:</label>
+                                                    <input type="text" class="form-control" name="contact"
+                                                           value="{{ ticket.contact }}">
+                                                </div>
+                                            </div>
+                                            <div class="row mx-auto mb-3">
+                                                <label for="issue_summary" class="form-label">Issue Summary:</label>
+                                                <textarea name="issue_summary"
+                                                          class="form-control">{{ ticket.issue_summary }}</textarea>
+
+                                            </div>
+                                            <div class="row mb-3 table-responsive mx-auto">
+                                                <table class="table mb-3">
+                                                    <thead class="table-light">
+                                                    <tr>
+                                                        <th>Part Number</th>
+                                                        <th>Description</th>
+                                                        <th>Price</th>
+                                                        <th>Quantity</th>
+                                                        <th>Currency</th>
+                                                        <th>Availability</th>
+                                                        <th>Supplier</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for product in ticket.salesticketproducts_set.all %}
+                                                        <tr>
+                                                            <td><input type="text" name="part_no[]"
+                                                                       value="{{ product.part_no }}"
+                                                                       class="form-control">
+                                                            </td>
+                                                            <td><input type="text" name="description[]"
+                                                                       value="{{ product.description }}"
+                                                                       class="form-control">
+                                                            </td>
+                                                            <td><input type="text" name="price[]"
+                                                                       value="{{ product.price }}"
+                                                                       class="form-control">
+                                                            </td>
+                                                            <td><input type="text" name="quantity[]"
+                                                                       value="{{ product.quantity }}"
+                                                                       class="form-control">
+                                                            </td>
+                                                            <td><select name="currency[]" class="form-select">
+                                                                <option value="USD"
+                                                                        {% if "USD" == product.currency %}selected{% endif %}>
+                                                                    USD
+                                                                </option>
+                                                                <option value="KES"
+                                                                        {% if "KES" == product.currency %}selected{% endif %}>
+                                                                    KES
+                                                                </option>
+                                                                <option value="CHF"
+                                                                        {% if "CHF" == product.currency %}selected{% endif %}>
+                                                                    CHF
+                                                                </option>
+                                                                <option value=""
+                                                                        {% if "" == product.currency %}selected{% endif %}>
+
+                                                                </option>
+                                                                <!-- Add more currency options as needed -->
+                                                            </select></td>
+                                                            <td><select name="availability[]" class="form-select">
+                                                                <option value="Available"
+                                                                        {% if "Available" == product.availability %}selected{% endif %}>
+                                                                    Available
+                                                                </option>
+                                                                <option value="Expected"
+                                                                        {% if "Expected" == product.availability %}selected{% endif %}>
+                                                                    Expected
+                                                                </option>
+                                                                <option value="Back to back order"
+                                                                        {% if "Back to back order" == product.availability %}selected{% endif %}>
+                                                                    Back to back order
+                                                                </option>
+                                                                <option value="Limited"
+                                                                        {% if "Limited" == product.availability %}selected{% endif %}>
+                                                                    Limited
+                                                                </option>
+                                                                <option value=""
+                                                                        {% if "" == product.availability %}selected{% endif %}>
+
+                                                                </option>
+                                                                <!-- Add more availability options as needed -->
+                                                            </select></td>
+                                                            <td><input type="text" name="supplier[]"
+                                                                       value="{{ product.supplier }}"
+                                                                       class="form-control">
+                                                            </td>
+                                                            <td>
+                                                                <a class="add-row-button" onclick="addBlankRow(this)"
+                                                                   title="add row"
+                                                                   tabindex="0"
+                                                                   data-plugin="tippy" data-tippy-interactive="true"><i
+                                                                        class="s mdi mdi-plus-circle mdi-18px"></i>
+                                                                </a><a
+                                                                    href="{% url 'delete_row' product.product_id ticket.ticket_id %}"
+                                                                    title="delete" tabindex="0"
+                                                                    data-plugin="tippy" data-tippy-interactive="true">
+                                                                <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                                            </a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <td><input type="text" name="part_no[]"
+                                                                   value="{{ product.part_no }}"
+                                                                   class="form-control">
+                                                        </td>
+                                                        <td><input type="text" name="description[]"
+                                                                   value="{{ product.description }}"
+                                                                   class="form-control">
+                                                        </td>
+                                                        <td><input type="text" name="price[]"
+                                                                   value="{{ product.price }}"
+                                                                   class="form-control">
+                                                        </td>
+                                                        <td><input type="text" name="quantity[]"
+                                                                   value="{{ product.quantity }}"
+                                                                   class="form-control">
+                                                        </td>
+                                                        <td><select name="currency[]" class="form-select">
+                                                            <option value="USD"
+                                                                    {% if "USD" == product.currency %}selected{% endif %}>
+                                                                USD
+                                                            </option>
+                                                            <option value="KES"
+                                                                    {% if "KES" == product.currency %}selected{% endif %}>
+                                                                KES
+                                                            </option>
+                                                            <option value="CHF"
+                                                                    {% if "CHF" == product.currency %}selected{% endif %}>
+                                                                CHF
+                                                            </option>
+                                                            <option value=""
+                                                                    {% if "" == product.currency %}selected{% endif %}>
+
+                                                            </option>
+                                                            <!-- Add more currency options as needed -->
+                                                        </select></td>
+                                                        <td><select name="availability[]" class="form-select">
+                                                            <option value="Available"
+                                                                    {% if "Available" == product.availability %}selected{% endif %}>
+                                                                Available
+                                                            </option>
+                                                            <option value="Expected"
+                                                                    {% if "Expected" == product.availability %}selected{% endif %}>
+                                                                Expected
+                                                            </option>
+                                                            <option value="Back to back order"
+                                                                    {% if "Back to back order" == product.availability %}selected{% endif %}>
+                                                                Back to back order
+                                                            </option>
+                                                            <option value="Limited"
+                                                                    {% if "Limited" == product.availability %}selected{% endif %}>
+                                                                Limited
+                                                            </option>
+                                                            <option value=""
+                                                                    {% if "" == product.availability %}selected{% endif %}>
+
+                                                            </option>
+                                                            <!-- Add more availability options as needed -->
+                                                        </select></td>
+                                                        <td><input type="text" name="supplier[]"
+                                                                   value="{{ product.supplier }}"
+                                                                   class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <a class="add-row-button" onclick="addBlankRow(this)"
+                                                               title="add row"
+                                                               tabindex="0"
+                                                               data-plugin="tippy" data-tippy-interactive="true"><i
+                                                                    class="s mdi mdi-plus-circle mdi-18px"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-4">
+                                                    <label for="via" class="form-label" class>Via:</label>
+                                                    <select name="via" class="form-select">
+                                                        <option value="Call"
+                                                                {% if "Call" == ticket.via %}selected{% endif %}>Call
+                                                        </option>
+                                                        <option value="Email"
+                                                                {% if "Email" == ticket.via %}selected{% endif %}>Email
+                                                        </option>
+                                                        <option value="Facebook"
+                                                                {% if "Facebook" == ticket.via %}selected{% endif %}>
+                                                            Facebook
+                                                        </option>
+                                                        <option value="Instagram"
+                                                                {% if "Instagram" == ticket.via %}selected{% endif %}>
+                                                            Instagram
+                                                        </option>
+                                                        <option value="Twitter"
+                                                                {% if "Twitter" == ticket.via %}selected{% endif %}>
+                                                            Twitter
+                                                        </option>
+                                                        <option value="Walk-in"
+                                                                {% if "Walk-in" == ticket.via %}selected{% endif %}>
+                                                            Walk-in
+                                                        </option>
+                                                        <option value="Website"
+                                                                {% if "Website" == ticket.via %}selected{% endif %}>
+                                                            Website
+                                                        </option>
+                                                        <option value="WhatsApp"
+                                                                {% if "WhatsApp" == ticket.via %}selected{% endif %}>
+                                                            WhatsApp
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-4">
+                                                    <label for="handler_id" class="form-label">Handler:</label>
+                                                    <select name="handler_id" class="form-select">
+                                                        {% for user in users %}
+                                                            <option value="{{ user.id }}"
+                                                                    {% if user.id == ticket.handler.id %}selected{% endif %}>
+                                                                {{ user.username }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select><br>
+
+                                                </div>
+                                                <div class="col-4">
+                                                    <label for="status" class="form-label">Status:</label>
+                                                    <select name="status" class="form-select">
+                                                        <option value="Sourcing"
+                                                                {% if "Sourcing" == ticket.status %}selected{% endif %}>
+                                                            Sourcing
+                                                        </option>
+                                                        <option value="Closed"
+                                                                {% if "Closed" == ticket.status %}selected{% endif %}>
+                                                            Closed
+                                                        </option>
+                                                        <option value="Quote"
+                                                                {% if "Quote" == ticket.status %}selected{% endif %}>
+                                                            Quote
+                                                        </option>
+                                                        <!-- Add more options as needed -->
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 mx-auto">
+                                                <label for="more" class="form-label">More:</label>
+                                                <textarea name="more" rows="4"
+                                                          class="form-control">{{ ticket.more }}</textarea>
+
+                                            </div>
+                                        </div> <!-- end col -->
+                                    </div>
+                                    <button type="submit" class="btn btn-primary waves-effect waves-light">Update
+                                        changes
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="tab-pane" id="Sourcing">
+
+                            </div>
+                            <div class="tab-pane" id="Quote">
+                                <div class="row mb-3 table-responsive mx-auto">
+                                    {% if sales_quote %}
+                                        <table class="table">
+                                            <thead class="table-light">
+                                            <tr>
+                                                <th>Reference Number</th>
+                                                <th>Created Date</th>
+                                                <th>Status</th>
+                                                <th>Sent Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for quote in sales_quote %}
+                                                <tr>
+                                                    <td>
+                                                        ITLQ/{{ quote.created|date:"m/Y" }}/{{ quote.sq_id }}</td>
+                                                    <td>{{ quote.created }}</td>
+                                                    <td>{{ quote.status }}</td>
+                                                    <td>{% if quote.sent_stats %}
+                                                        <i class="mdi mdi-check-circle mdi-18px btn-outline-success">
+                                                            Sent</i>
+                                                    {% else %}
+                                                        <i class="mdi mdi-cancel mdi-18px btn-outline-info"> Not
+                                                            Sent</i>
+                                                    {% endif %}</td>
+                                                    <td><a href="{% url 'edit-quote' quote.sq_id %}"
+                                                           title="edit" tabindex="0"
+                                                           data-plugin="tippy" data-tippy-interactive="true">
+                                                        <i class="mdi mdi-square-edit-outline mdi-18px"></i>
+                                                    </a>
+                                                        <a href="{% url 'delete-quote-ticket' quote.sq_id ticket.ticket_id %}"
+                                                           title="delete" tabindex="0" data-plugin="tippy"
+                                                           data-tippy-interactive="true">
+                                                            <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                                        </a>
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <div class="text-center">
+                                            <h2 class="mt-0">
+                                                <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                                            </h2>
+                                            <h3 class="mt-0 mb-3">No Quotes Available </h3>
+                                            <h2><a href="{% url 'convert-to-quote' ticket.ticket_id %}"
+                                                   class="btn btn-primary"><span class="btn-label"><i
+                                                    class="mdi mdi-plus"></i></span> Create
+                                                Quote</a></h2>
+
+                                        </div>
+                                    {% endif %}
+                                </div> <!-- end row -->
+                            </div>
+                            <div class="tab-pane" id="Order">
+                                <div class="row mb-3 table-responsive mx-auto">
+                                    {% if sales_order %}
+                                        <table class="table">
+                                            <thead class="table-light">
+                                            <tr>
+                                                <th>Order Number</th>
+                                                <th>Status</th>
+                                                <th>Created Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for order in sales_order %}
+                                                <tr>
+                                                    <td>#{{ order.o_id }}</td>
+                                                    <td>{{ order.status }}</td>
+                                                    <td>{{ order.created }}</td>
+                                                    <td><a href="{% url 'edit-order' order.o_id %}"
+                                                           title="edit" tabindex="0"
+                                                           data-plugin="tippy" data-tippy-interactive="true">
+                                                        <i class="mdi mdi-square-edit-outline mdi-18px"></i>
+                                                    </a>
+                                                        <a href="{% url 'delete-order-ticket' order.o_id ticket.ticket_id %}"
+                                                           title="delete"
+                                                           tabindex="0" data-plugin="tippy"
+                                                           data-tippy-interactive="true">
+                                                            <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                                        </a></td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <div class="text-center">
+                                            <h2 class="mt-0">
+                                                <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                                            </h2>
+                                            <h3 class="mt-0 mb-3">No Orders Available </h3>
+                                            <h2><a href="{% url 'convert-to-order' ticket.ticket_id %}"
+                                                   class="btn btn-primary"><span class="btn-label"><i
+                                                    class="mdi mdi-plus"></i></span> Create
+                                                Order</a></h2>
+
+                                        </div>
+                                    {% endif %}
+                                </div> <!-- end row -->
+                            </div>
+                            <div class="tab-pane" id="Invoice">
+                                <div class="row mb-3 table-responsive mx-auto">
+                                    {% if sales_invoice %}
+                                        <table class="table">
+                                            <thead class="table-light">
+                                            <tr>
+                                                <th>Invoice Number</th>
+                                                <th>Status</th>
+                                                <th>Created Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for invoice in sales_invoice %}
+                                                <tr>
+                                                    <td>#{{ invoice.pfq_id }}</td>
+                                                    <td>{{ invoice.status }}</td>
+                                                    <td>{{ invoice.created }}</td>
+                                                    <td><a href="{% url 'view_invoice' invoice.pfq_id %}"
+                                                           title="edit" tabindex="0"
+                                                           data-plugin="tippy" data-tippy-interactive="true">
+                                                        <i class="mdi mdi-square-edit-outline mdi-18px"></i>
+                                                    </a>
+                                                        <a href="{% url 'delete_sales_invoice_ticket' invoice.pfq_id ticket.ticket_id %}"
+                                                           title="delete" tabindex="0" data-plugin="tippy"
+                                                           data-tippy-interactive="true">
+                                                            <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                                        </a></td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <div class="text-center">
+                                            <h2 class="mt-0">
+                                                <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                                            </h2>
+                                            <h3 class="mt-0 mb-3">No Invoice Available </h3>
+                                            <h2><a href="{% url 'convert-to-invoice' ticket.ticket_id %}"
+                                                   class="btn btn-primary"><span class="btn-label"><i
+                                                    class="mdi mdi-plus"></i></span> Create
+                                                Invoice</a></h2>
+
+                                        </div>
+                                    {% endif %}
+                                </div> <!-- end row -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <!-- Plugins js-->
+    <script src="{% static 'libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js' %}"></script>
+
+    <!-- Init js-->
+    <script src="{% static 'js/pages/form-wizard.init.js' %}"></script>
+    <script>
+        function addBlankRow(button) {
+            // Create a new row by cloning the current row
+            const currentRow = button.parentNode.parentNode;
+            const newRow = currentRow.cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Insert the new row below the current row
+            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+        }
+
+        function addBlankRowAtEnd() {
+            // Create a new row to add at the end
+            const tableBody = document.querySelector('table tbody');
+            const newRow = tableBody.children[0].cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Append the new row to the end of the table
+            tableBody.appendChild(newRow);
+        }
+    </script>
+{% endblock %}
+
+

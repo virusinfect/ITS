@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Edit Software Data{% endblock %}
+{% block header %}Edit Software Data{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item active">Edit Software Data</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="card row col-lg-6 mx-auto">
+        <div class="card-body">
+            <h5>Edit Software Data For : {{ client.f_name }}</h5>
+            <div class="row mt-3">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="os" class="form-label">Operating System</label>
+                        <select name="os" required class="form-select">
+                            <option value="">Select an operating system</option>
+                            <optgroup label="Windows 11">
+                                <option value="Windows 11 Home"
+                                        {% if software.os == 'Windows 11 Home' %}selected{% endif %}>Windows 11 Home
+                                </option>
+                                <option value="Windows 11 Pro"
+                                        {% if software.os == 'Windows 11 Pro' %}selected{% endif %}>Windows 11 Pro
+                                </option>
+                                <option value="Windows 11 Enterprise"
+                                        {% if software.os == 'Windows 11 Enterprise' %}selected{% endif %}>Windows 11
+                                    Enterprise
+                                </option>
+                                <!-- Add more editions for Windows 11 as needed -->
+                            </optgroup>
+                            <optgroup label="Windows 10">
+                                <option value="Windows 10 Home"
+                                        {% if software.os == 'Windows 10 Home' %}selected{% endif %}>Windows 10 Home
+                                </option>
+                                <option value="Windows 10 Pro"
+                                        {% if software.os == 'Windows 10 Pro' %}selected{% endif %}>Windows 10 Pro
+                                </option>
+                                <option value="Windows 10 Enterprise"
+                                        {% if software.os == 'Windows 10 Enterprise' %}selected{% endif %}>Windows 10 Enterprise
+                                </option>
+                                <!-- Add more editions for Windows 10 as needed -->
+                            </optgroup>
+                            <optgroup label="Windows 8.1">
+                                <option value="Windows 8.1" {% if software.os == 'Windows 8.1' %}selected{% endif %}>
+                                    Windows 8.1
+                                </option>
+                                <!-- Add more editions for Windows 8.1 as needed -->
+                            </optgroup>
+                            <optgroup label="Windows 8">
+                                <option value="Windows 8" {% if software.os == 'Windows 8' %}selected{% endif %}>Windows
+                                    8
+                                </option>
+                                <!-- Add more editions for Windows 8 as needed -->
+                            </optgroup>
+                            <optgroup label="Windows 7">
+                                <option value="Windows 7" {% if software.os == 'Windows 7' %}selected{% endif %}>Windows
+                                    7
+                                </option>
+                                <!-- Add more editions for Windows 7 as needed -->
+                            </optgroup>
+                            <!-- Add more Windows versions and editions as needed -->
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mo" class="form-label">Microsoft Office</label>
+                        <select name="mo" required class="form-select">
+                            <option value="">Select a Microsoft Office version</option>
+                            <optgroup label="Microsoft Office 2021">
+                                <option value="Microsoft Office 2021 Home and Student"
+                                        {% if software.mo == 'Microsoft Office 2021 Home and Student' %}selected{% endif %}>
+                                    Home and Student
+                                </option>
+                                <option value="Microsoft Office 2021 Home and Business"
+                                        {% if software.mo == 'Microsoft Office 2021 Home and Business' %}selected{% endif %}>
+                                    Home and Business
+                                </option>
+                                <option value="Microsoft Office 2021 Professional"
+                                        {% if software.mo == 'Microsoft Office 2021 Professional' %}selected{% endif %}>
+                                    Professional
+                                </option>
+                            </optgroup>
+                            <optgroup label="Microsoft Office 2019">
+                                <option value="Microsoft Office 2019 Home and Student"
+                                        {% if software.mo == 'Microsoft Office 2019 Home and Student' %}selected{% endif %}>
+                                    Home and Student
+                                </option>
+                                <option value="Microsoft Office 2019 Home and Business"
+                                        {% if software.mo == 'Microsoft Office 2019 Home and Business' %}selected{% endif %}>
+                                    Home and Business
+                                </option>
+                                <option value="Microsoft Office 2019 Professional"
+                                        {% if software.mo == 'Microsoft Office 2019 Professional' %}selected{% endif %}>
+                                    Professional
+                                </option>
+                            </optgroup>
+                            <optgroup label="Microsoft Office 2016">
+                                <option value="Microsoft Office 2016 Home and Student"
+                                        {% if software.mo == 'Microsoft Office 2016 Home and Student' %}selected{% endif %}>
+                                    Home and Student
+                                </option>
+                                <option value="Microsoft Office 2016 Home and Business"
+                                        {% if software.mo == 'Microsoft Office 2016 Home and Business' %}selected{% endif %}>
+                                    Home and Business
+                                </option>
+                                <option value="Microsoft Office 2016 Professional"
+                                        {% if software.mo == 'Microsoft Office 2016 Professional' %}selected{% endif %}>
+                                    Professional
+                                </option>
+                            </optgroup>
+                            <optgroup label="Microsoft Office 2013">
+                                <option value="Microsoft Office 2013 Home and Student"
+                                        {% if software.mo == 'Microsoft Office 2013 Home and Student' %}selected{% endif %}>
+                                    Home and Student
+                                </option>
+                                <option value="Microsoft Office 2013 Home and Business"
+                                        {% if software.mo == 'Microsoft Office 2013 Home and Business' %}selected{% endif %}>
+                                    Home and Business
+                                </option>
+                                <option value="Microsoft Office 2013 Professional"
+                                        {% if software.mo == 'Microsoft Office 2013 Professional' %}selected{% endif %}>
+                                    Professional
+                                </option>
+                            </optgroup>
+                            <optgroup label="Microsoft Office 2010">
+                                <option value="Microsoft Office 2010 Home and Student"
+                                        {% if software.mo == 'Microsoft Office 2010 Home and Student' %}selected{% endif %}>
+                                    Home and Student
+                                </option>
+                                <option value="Microsoft Office 2010 Home and Business"
+                                        {% if software.mo == 'Microsoft Office 2010 Home and Business' %}selected{% endif %}>
+                                    Home and Business
+                                </option>
+                                <option value="Microsoft Office 2010 Professional"
+                                        {% if software.mo == 'Microsoft Office 2010 Professional' %}selected{% endif %}>
+                                    Professional
+                                </option>
+                            </optgroup>
+                            <optgroup label="Microsoft Office 2007">
+                                <option value="Microsoft Office 2007 Home and Student"
+                                        {% if software.mo == 'Microsoft Office 2007 Home and Student' %}selected{% endif %}>
+                                    Home and Student
+                                </option>
+                                <option value="Microsoft Office 2007 Home and Business"
+                                        {% if software.mo == 'Microsoft Office 2007 Home and Business' %}selected{% endif %}>
+                                    Home and Business
+                                </option>
+                                <option value="Microsoft Office 2007 Professional"
+                                        {% if software.mo == 'Microsoft Office 2007 Professional' %}selected{% endif %}>
+                                    Professional
+                                </option>
+                            </optgroup>
+                            <!-- Add more Microsoft Office versions and editions as needed -->
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="backup" class="form-label">Backup Software</label>
+                        <input type="text" name="backup" required class="form-control" value="{{ software.backup }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="outlook" class="form-label">Outlook Version</label>
+                        <input type="text" name="outlook" required class="form-control" value="{{ software.outlook }}">
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Update Software Data">
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}

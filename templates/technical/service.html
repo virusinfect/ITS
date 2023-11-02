@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Service Schedule{% endblock %}
+{% block header %}Service Schedule{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'service' %}">Service Schedule</a></li>
+
+
+                </ol>
+            </div>
+
+        </div> <!-- end col -->
+
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <h2 class="border-bottom-1  col-9">Service List</h2>
+                        <a class="btn btn-primary waves-effect waves-light col-3"
+                           href="{% url 'create_service_schedule' %}">
+                            Create New</a>
+                    </div>
+
+                    {% for event in events %}
+                        <div class="card shadow-lg p-3 mb-3 bg-body-tertiary rounde">
+                            <div class="card-body">
+                                <div class="row">
+                                    <h4 class="card-title col-10">{{ event.company.name }}</h4>
+                                    <div class="col-2">
+                                        <a href="{% url 'edit_service_schedule' event.pk %}" title="Edit"
+                                           tabindex="0" data-plugin="tippy"
+                                           data-tippy-interactive="true">
+                                            <i class=" mdi mdi-square-edit-outline mdi-18px"></i>
+                                        </a>
+                                        <a href="{% url 'delete_service' event.pk %}" title="delete"
+                                           tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                                            <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+
+                                <p class="card-text">From: {{ event.from_date }} To:
+                                    {{ event.to_date }}</p>
+                                <p>Status : <i class="mdi "> {{ event.status }}</i></p>
+                                <p class="card-text">Technicians:
+                                    {% for tech in event.techs.all %}
+                                        <span class="badge badge-outline-primary">{{ tech.username }}</span>
+                                    {% endfor %}</p>
+
+
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row bg-body bg-black col-lg-8 mx-auto mb-5">
+            <div>
+                <div class="card">
+
+
+                    <div id="calendar" class="card-body p-2">
+                    </div><!-- end col -->
+                </div>
+            </div>
+
+        </div>
+        <!-- end row -->
+
+
+        <!-- end modal-->
+
+        <!-- end col-12 -->
+    </div> <!-- end row -->
+
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.9/index.global.min.js'></script>
+
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.9/index.global.min.js'></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: '{% url 'get_events' %}',  // Use the URL of the view
+            });
+            calendar.render();
+        });
+    </script>
+    <script>
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            themeSystem: 'bootstrap5'
+        });
+    </script>
+{% endblock %}

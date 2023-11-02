@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Add Parts Category{% endblock %}
+{% block header %}Add Parts Category{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'parts-categories-list' %}">Categories</a></li>
+                    <li class="breadcrumb-item active">Add Category</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Add Category</h4>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Category Name</label>
+                        <input type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp"
+                               placeholder="Enter Category Name">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Submit</button>
+                </form>
+
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div>
+
+
+
+{% endblock %}

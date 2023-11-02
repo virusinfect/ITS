@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Quote{% endblock %}
+{% block header %}Edit Quote{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'active-quotes' %}">Quotations</a></li>
+                    <li class="breadcrumb-item active">Edit Quote</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="mx-auto">
+        <form method="post">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3 header-title">Edit Quote</h4>
+                    <tr>
+                        <td>
+                            REF :
+                        </td>
+                        <td>
+                            <h5> ITLQ/{{ quote.created|date:"m/Y" }}/{{ quote.sq_id }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Company :
+                        </td>
+                        <td>
+                            <h5> {{ quote.company }}</h5>
+                        </td>
+                    </tr>
+
+
+                    <div class="row mt-3">
+                        <div class="col-lg-10 mx-auto ">
+                            <textarea id="editor" name="mail_text"
+                                      class="form-control">{{ quote.mail_text|safe }}</textarea>
+                        </div>
+                    </div>
+                    <div class="row col-lg-10 mx-auto mt-5">
+                        <div class="table">
+                            <h4 class="text-center mb-2">Products</h4>
+                            <table class="table table-bordered ">
+                                <thead>
+                                <tr>
+                                    <th>Part No</th>
+                                    <th>Description</th>
+                                    <th>Price</th>
+                                    <th>Availability</th>
+                                    <th>Quantity</th>
+                                    <th>Att</th>
+                                    <th>Action</th>
+                                    <!-- Add other table headers for additional fields -->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td><input type="text" name="part_no[]" value="{{ product.part_no }}"
+                                                   class="form-control"></td>
+                                        <td><input type="text" name="description[]" value="{{ product.description }}"
+                                                   class="form-control">
+                                        </td>
+                                        <td><input type="text" name="price[]" value="{{ product.price }}"
+                                                   class="form-control"></td>
+                                        <td><select name="availability[]" class="form-select">
+                                            <option value="">Select availability</option>
+                                            <option value="AVAILABLE"
+                                                    {% if product.availability|lower == "available" %}selected{% endif %}>
+                                                AVAILABLE
+                                            </option>
+                                            <option value="EXPECTED"
+                                                    {% if product.availability|lower == "expected" %}selected{% endif %}>
+                                                EXPECTED
+                                            </option>
+                                            <option value="BACK TO BACK ORDER"
+                                                    {% if product.availability|lower == "back to back order" %}selected{% endif %}>
+                                                BACK TO BACK ORDER
+                                            </option>
+                                            <option value="LIMITED"
+                                                    {% if product.availability|lower == "limited" %}selected{% endif %}>
+                                                LIMITED
+                                            </option>
+                                        </select></td>
+                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}"
+                                                   class="form-control"></td>
+                                        <td><input type="file" class="form-control"></td>
+                                        <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
+                                               tabindex="0"
+                                               data-plugin="tippy" data-tippy-interactive="true"><i
+                                                class="s mdi mdi-plus-circle mdi-18px"></i>
+                                        </a><a href="{% url 'delete_row_quote' product.product_id quote.sq_id %}"
+                                               title="delete" tabindex="0"
+                                           data-plugin="tippy" data-tippy-interactive="true">
+                                            <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                        </a></td>
+                                        <!-- Add other table cells for additional fields -->
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4">No products associated with this quote.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row col-lg-10 mx-auto">
+                        <div class="col-lg-4">
+                            <label for="vat_stats" class="form-label">VAT Status:</label>
+                            <select name="vat_stats" class="form-select">
+                                <option value="">Select VAT status</option>
+                                <option value="Exclusive" {% if quote.vat_stats == "Exclusive" %}selected{% endif %}>
+                                    Exclusive
+                                </option>
+                                <option value="Inclusive" {% if quote.vat_stats == "Inclusive" %}selected{% endif %}>
+                                    Inclusive
+                                </option>
+                                <option value="Exempted" {% if quote.vat_stats == "Exempted" %}selected{% endif %}>
+                                    Exempted
+                                </option>
+                            </select>
+
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="layout" class="form-label">Layout:</label>
+                            <select name="layout" class="form-select">
+                                <option value="">Select layout</option>
+                                <option value="Grouped" {% if quote.layout == "Grouped" %}selected{% endif %}>Grouped
+                                </option>
+                                <option value="Separated" {% if quote.layout == "Separated" %}selected{% endif %}>
+                                    Separated
+                                </option>
+                                <option value="Classified" {% if quote.layout == "Classified" %}selected{% endif %}>
+                                    Classified
+                                </option>
+                            </select>
+
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="currency" class="form-label">Currency:</label>
+                            <select name="currency" class="form-select">
+                                <option value="">Select currency</option>
+                                <option value="KES" {% if quote.currency == "KES" %}selected{% endif %}>KES</option>
+                                <option value="USD" {% if quote.currency == "USD" %}selected{% endif %}>USD</option>
+                                <option value="EUR" {% if quote.currency == "EUR" %}selected{% endif %}>EUR</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-lg-10 mx-auto">
+                            <textarea id="editor2" class="form-control"
+                                      name="footer_note">{{ quote.footer_note|safe }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-1">
+                <div class="card-body">
+                    <h4 class="mb-3 header-title">Miscellaneous</h4>
+
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <label for="status" class="form-label">Status:</label>
+                            <select name="status" class="form-select">
+                                <option value="">Select status</option>
+                                <option value="Follow up" {% if quote.status == "Follow up" %}selected{% endif %}>Follow
+                                    up
+                                </option>
+                                <option value="Awaiting LPO" {% if quote.status == "Awaiting LPO" %}selected{% endif %}>
+                                    Awaiting
+                                    LPO
+                                </option>
+                                <option value="On hold" {% if quote.status == "On hold" %}selected{% endif %}>On hold
+                                </option>
+                                <option value="Not interested"
+                                        {% if quote.status == "Not interested" %}selected{% endif %}>
+                                    Not
+                                    interested
+                                </option>
+                                <option value="Done" {% if quote.status == "Done" %}selected{% endif %}>Done</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                            <label for="quote_handler" class="form-label">Quote Handler:</label>
+                            <select name="quote_handler" class="form-select">
+                                <option value="">Select a Quote Handler</option>
+                                {% for user in users %}
+                                    <option value="{{ user.id }}"
+                                            {% if user.id == quote.quote_handler.id %}selected{% endif %}>{{ user.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="remark" class="form-label">Remark:</label>
+                            <textarea name="remark" rows="4" cols="50"
+                                      class="form-control">{{ quote.remark }}</textarea><br>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="notes" class="form-label">Notes:</label>
+                            <textarea name="notes" rows="4" cols="50"
+                                      class="form-control">{{ quote.notes }}</textarea><br>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <button class="btn btn-primary" type="submit">Update
+                Quote
+            </button>
+            <a type="button" class="btn btn-primary waves-effect waves-light me-1">
+                <span class="btn-label"><i class="mdi mdi-email-send-outline"></i></span>Send Mail
+            </a>
+            <a href="{% url 'quote' quote.sq_id %}" type="button" class="btn btn-primary waves-effect waves-light  me-1">
+                <span class="btn-label"><i class="mdi mdi-file-pdf-outline"></i></span>Generate Quote
+            </a>
+
+        </form>
+    </div>
+    <!-- Include jQuery -->
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+
+
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                console.log(editor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor2'))
+            .then(editor2 => {
+                console.log(editor2);
+            })
+            .catch(error => {
+                console.error(error2);
+            });
+    </script>
+    <script>
+        function addBlankRow(button) {
+            // Create a new row by cloning the current row
+            const currentRow = button.parentNode.parentNode;
+            const newRow = currentRow.cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Insert the new row below the current row
+            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+        }
+
+        function addBlankRowAtEnd() {
+            // Create a new row to add at the end
+            const tableBody = document.querySelector('table tbody');
+            const newRow = tableBody.children[0].cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Append the new row to the end of the table
+            tableBody.appendChild(newRow);
+        }
+    </script>
+
+
+
+{% endblock %}

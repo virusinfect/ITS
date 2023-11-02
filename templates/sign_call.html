@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Sign{% endblock %}
+{% block header %}Sign{% endblock %}
+{% block content %}
+    <div>
+        <canvas id="signature-pad" width="400" height="200" class="card mt-5 mx-auto"></canvas>
+        <button id="save-signature" class="btn btn-primary ">Submit Signature</button>
+        <input type="hidden" id="cc_id" value="{{ cc_id }}">
+    <a href="{% url 'edit_call_card' cc_id %}"> Back to Call Card</a>
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var canvas = document.getElementById('signature-pad');
+            var signaturePad = new SignaturePad(canvas);
+            var ccId = $('#cc_id').val();  // Get the delivery ID from the hidden input field
+
+            $('#save-signature').click(function () {
+                var signatureData = signaturePad.toDataURL();
+                $.ajax({
+                    url: '/save-signature-view-call/',  // Replace with the actual URL
+                    method: 'POST',
+                    data: {
+                        signature_data: signatureData,
+                        cc_id: ccId  // Include the delivery ID in the data
+                    },
+                    success: function (response) {
+                        // Check if the response indicates success (you can define this)
+                        if (response.success) {
+                            // Redirect to 'view_delivery_normal' with the 'delivery_id'
+                            var redirectTo = '/view_delivery_normal/' + ccId;
+                            window.location.href = redirectTo;
+                        } else {
+                            // Handle failure if needed
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+
+{% endblock %}

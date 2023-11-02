@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Order{% endblock %}
+{% block header %}Edit Order{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'active-orders' %}">Orders</a></li>
+                    <li class="breadcrumb-item active">Edit Order</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="mx-auto">
+        <div class="card">
+            <div class="card-body col-lg-11 mx-auto">
+                <h4 class="mb-3 header-title">Edit Order</h4>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-lg-6">
+                            <label for="client" class="form-label">Client:</label>
+                            <input class="form-control" value="{{ order.client }}">
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="ticket" class="form-label">Associated Ticket:</label>
+                            {% if order.ticket %}
+                                <input class="form-control" value="{{ order.ticket.ticket_id }}" placeholder="ffff" disabled>
+                            {% else %}
+                                <input class="form-control" value="No ticket associated" disabled>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-lg-6">
+                            <label for="lpo_no" class="form-label">LPO No:</label>
+                            <input type="text" name="lpo_no"
+                                   value="{{ order.lpo_no }}" class="form-control">
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="assignee" class="form-label">Assignee:</label>
+                            <select name="assignee" class="form-select">
+                                {% for user in users %}
+                                    <option value="{{ user.id }}"
+                                            {% if user.id == order.assignee.id %}selected{% endif %}>
+                                        {{ user.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row table-responsive mx-auto">
+                        <h4>Order Products:</h4>
+                        <table class="table mb-0">
+                            <thead class="table-light">
+                            <tr>
+
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Date Ordered</th>
+                                <th>Supplier</th>
+                                <th>Date Received</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for product in order.orderproducts_set.all %}
+                                {% if product.is_active %}
+                                    <tr>
+
+                                        <td><input type="text" name="product[]"
+                                                   value="{{ product.product }}" class="form-control">
+                                        </td>
+                                        <td><input type="number" name="quantity[]"
+                                                   value="{{ product.quantity }}" class="form-control"></td>
+                                        <td><input type="date" name="date_ordered[]"
+                                                   value="{{ product.date_ordered|date:'Y-m-d' }}"
+                                                   class="form-control"></td>
+                                        <td><input type="text" name="supplier[]"
+                                                   value="{{ product.supplier }}" class="form-control"></td>
+                                        <td><input type="date" name="date_received[]"
+                                                   value="{{ product.date_received|date:'Y-m-d' }}"
+                                                   class="form-control"></td>
+                                        <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
+                                               tabindex="0"
+                                               data-plugin="tippy" data-tippy-interactive="true"><i
+                                                class="s mdi mdi-plus-circle mdi-18px"></i>
+                                        </a>
+                                            <a href="{% url 'deactivate_order_product' product.op_id order.o_id %}"
+                                               title="receive" tabindex="0"
+                                               data-plugin="tippy" data-tippy-interactive="true">
+                                                <i class="s mdi mdi-call-received mdi-18px"></i>
+                                            </a>
+                                            <a href="{% url 'delete_row_order' product.op_id order.o_id %}"
+                                               title="delete" tabindex="0"
+                                               data-plugin="tippy" data-tippy-interactive="true">
+                                                <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <div class="row mb-3 mx-auto">
+                        <label for="status" class="form-label">Status:</label>
+                        <select name="status" class="form-select">
+                            <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending
+                            </option>
+                            <option value="Awaiting LPO" {% if order.status == 'Awaiting LPO' %}selected{% endif %}>
+                                Awaiting
+                                LPO
+                            </option>
+                            <option value="Expected" {% if order.status == 'Expected' %}selected{% endif %}>Expected
+                            </option>
+                            <option value="Ordered" {% if order.status == 'Ordered' %}selected{% endif %}>Ordered
+                            </option>
+                            <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed
+                            </option>
+                            <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled
+                            </option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Update Order</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addBlankRow(button) {
+            // Create a new row by cloning the current row
+            const currentRow = button.parentNode.parentNode;
+            const newRow = currentRow.cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Insert the new row below the current row
+            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+        }
+
+        function addBlankRowAtEnd() {
+            // Create a new row to add at the end
+            const tableBody = document.querySelector('table tbody');
+            const newRow = tableBody.children[0].cloneNode(true);
+
+            // Clear input values in the new row
+            const inputs = newRow.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+
+            // Clear select options in the new row (optional)
+            const selects = newRow.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+
+            // Append the new row to the end of the table
+            tableBody.appendChild(newRow);
+        }
+    </script>
+
+{% endblock %}

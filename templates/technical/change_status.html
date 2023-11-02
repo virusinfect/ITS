@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Requisition{% endblock %}
+
+{% block content %}
+
+
+    <div id="warning-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="dripicons-warning h1 text-warning"></i>
+                        <h1 class="mb-3">Change Requisition Status</h1>
+                        <p class="mb-4">Are you sure you want to change status of this Requisition?</p>
+
+                        <form method="post">
+                            {% csrf_token %}
+                            <p>Requisition ID: {{ requisition.req_id }}</p>
+                            <p>Ticket: ITL/TN/{{ requisition.ticket.ticket_id }}</p>
+                            <p>Ticket Equipment: {{ requisition.ticket.equipment }}</p>
+                            <p>Item: {{ requisition.part }}</p>
+                            <button type="submit" class="btn btn-danger mr-2 waves-effect waves-light mb-1">
+                                {% if requisition.req_status == 'Pending' %}
+                                    <span class="btn-label"><i class="mdi mdi-sticker-check"></i></span> Approve
+                                {% else %}
+                                    <span class="btn-label"><i class="mdi mdi-sticker-remove"></i></span> Decline
+                                {% endif %}
+                            </button>
+                            <a type="button" class="btn btn-primary waves-effect waves-light mb-1"
+                               href="{% url 'list_requisitions' %}">
+                                <span class="btn-label"><i class="mdi mdi-cancel"></i></span>Cancel
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#warning-alert-modal').modal('show');
+        });
+    </script>
+
+
+{% endblock %}

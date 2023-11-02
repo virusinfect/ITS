@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Add Service Schedule{% endblock %}
+{% block header %}Add Service Schedule{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'service' %}">Service Schedule</a></li>
+                    <li class="breadcrumb-item active">Add Service Schedule</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Create Service Schedule</h4>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="company_id" class="form-label">Company:</label>
+                        <select class="form-select" name="company_id" id="company_id">
+                            {% for company in companies %}
+                                <option value="{{ company.pk }}">{{ company.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="from_date" class="form-label">From Date:</label>
+                            <input type="date" class="form-control" name="from_date" id="from_date">
+                        </div>
+
+                        <div class="mb-3 col-6">
+                            <label for="to_date" class="form-label">To Date:</label>
+                            <input type="date" class="form-control" name="to_date" id="to_date">
+                        </div>
+
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label for="techs" class="form-label">Technicians:</label>
+                        <select class="form-select" name="techs" id="techs" multiple>
+                            {% for tech in technicians %}
+                                <option value="{{ tech.pk }}">{{ tech.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="justify-content-center text-center mb-3"><h3>Asset Count</h3></div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="servers" class="form-label">Servers:</label>
+                            <input type="number" class="form-control" name="servers" id="servers">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="cpus" class="form-label">CPUs:</label>
+                            <input type="number" class="form-control" name="cpus" id="cpus">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="laptops" class="form-label">Laptops:</label>
+                            <input type="number" class="form-control" name="laptops" id="laptops">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="printers" class="form-label">Printers:</label>
+                            <input type="number" class="form-control" name="printers" id="printers">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="scanners" class="form-label">Scanners:</label>
+                            <input type="number" class="form-control" name="scanners" id="scanners">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="ups" class="form-label">UPS:</label>
+                            <input type="number" class="form-control" name="ups" id="ups">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="large_ups" class="form-label">Large Ups:</label>
+                            <input type="number" class="form-control" name="large_ups" id="large_ups">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="aios" class="form-label">AIOs:</label>
+                            <input type="number" class="form-control" name="aios" id="aios">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="biometrics" class="form-label">Biometrics:</label>
+                            <input type="number" class="form-control" name="biometrics" id="biometrics">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="cctvs" class="form-label">CCTVs:</label>
+                            <input type="number" class="form-control" name="cctvs" id="cctvs">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="highend_machines" class="form-label">Highend Machines:</label>
+                            <input type="number" class="form-control" name="highend_machines" id="highend_machines">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="nas" class="form-label">NAS:</label>
+                            <input type="number" class="form-control" name="nas" id="nas">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <label for="remark" class="form-label">Remark:</label>
+                            <textarea class="form-control" name="remark" id="remark" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="notes" class="form-label">Notes:</label>
+                            <textarea class="form-control" name="notes" id="notes" rows="3"></textarea>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Create New</button>
+                </form>
+
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div>
+
+
+
+{% endblock %}
+
+
+
+
+

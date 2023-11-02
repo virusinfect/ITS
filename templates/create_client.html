@@ -1,0 +1,78 @@
+<!-- templates/create_client.html -->
+
+{% extends "base.html" %}
+
+{% block title %}Create Client{% endblock %}
+{% block header %}Create Client{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'company-list' %}">Companies</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'client-list' company.id %}">Clients</a></li>
+                    <li class="breadcrumb-item active">Add Client</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Add Client for {{ company.name }}</h4>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="f_name" class="form-label">First Name:</label>
+                        <input type="text" name="f_name" class="form-control" id="f_name" aria-describedby="emailHelp"
+                               placeholder="Enter First Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="l_name" class="form-label">Last Name:</label>
+                        <input type="text" name="l_name" class="form-control" id="l_name" aria-describedby="emailHelp"
+                               placeholder="Enter Last Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp"
+                               placeholder="Enter Email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="telephone" class="form-label">Telephone:</label>
+                        <input type="number" name="telephone" class="form-control" id="telephone" aria-describedby="emailHelp"
+                               placeholder="Enter Telephone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description:</label>
+                        <textarea type="text" name="description" class="form-control" id="description"
+                                  aria-describedby="emailHelp"
+                                  placeholder="Enter Description"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Add New</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+<form method="post">
+    {% csrf_token %}
+    <label for="f_name">First Name:</label>
+    <input type="text" name="f_name" id="f_name" required><br>
+    <label for="l_name">Last Name:</label>
+    <input type="text" name="l_name" id="l_name" required><br>
+    <label for="email">Email:</label>
+    <input type="text" name="email" id="email" required><br>
+    <label for="telephone">Telephone:</label>
+    <input type="text" name="telephone" id="telephone" required><br>
+    <label for="mobile">Mobile:</label>
+    <input type="text" name="mobile" id="mobile" required><br>
+    <label for="description">Description:</label>
+    <textarea name="description" id="description" required></textarea><br>
+    <button type="submit">Create</button>
+</form>

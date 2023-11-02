@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Report{% endblock %}
+{% block content %}
+    <div class="mx-auto col-9">
+        <div class="card p-2" id="delivery-note">
+            <div class="container">
+                <div class="mx-auto text-center tex-sm">
+                    <h3 style="font-size: 15px;">Technical Report</h3>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <img src="{% static 'logo.png' %}" alt="Company Logo" width="150">
+                    </div>
+                    <div class="col-6 text-end mt-4" style="font-size: 9px;">
+
+                        <small>Ground Floor, Corporate Insurance Building </small><br>
+                        <small>Yusuf A. Karim Rd, East End, Treasury Square </small><br>
+                        <small> P.O. Box 42716 - 80100,</small><br>
+                        <small>Cell: 0728 786014 | 0732 786012 | 0773 963114</small><br>
+                        <small>Tel: +254 41 2221792 | 696/932/231500 | 2311364</small><br>
+                        <small><i class="mdi mdi-email-outline"></i> sales: sales@intellitech.co.ke | For support:
+                            support@intellitech.co.ke</small><br>
+                        <small>Website: www.intellitech.co.ke</small>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <p>Date: {{ ticket.created }}</p>
+                </div>
+                <div class="row mt-2 mx-auto">
+                    <div class="col-6 ">
+
+                        <h4>Client Information</h4>
+                        <small>TO : {{ ticket.company }} / {{ ticket.client }}</small><br>
+                        <small> ADDRESS : {{ ticket.company.address }}</small><br><br>
+
+                    </div>
+                    <div class="col-6 text-end">
+                        <h4>Report Details</h4>
+                        <small>REF : ITL/TR-{{ ticket.created|date:"d/m/Y" }}/{{ ticket.ticket_id }}</small><br>
+                        <small>Ticket No: : ITL/TN/{{ ticket.ticket_id }}</small><br>
+
+                    </div>
+                </div>
+                <div class="row mt-2 ">
+                    <div class="col-6">
+                        <h5>Equipment Information</h5>
+                        <small>Equipment : {{ ticket.equipment }}</small><br>
+                        <small>Serial Number : {{ ticket.serial_no }}</small>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="table">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                            <tr>
+                                <th class="text-center p-1" colspan="2">
+                                    <h4>DETAILS</h4>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td width="20%">
+                                    Fault:
+                                </td>
+                                <td>
+                                    {{ ticket.fault }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Diagnosis:
+                                </td>
+                                <td>
+                                    {{ ticket.diagnosis }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Action:
+                                </td>
+                                <td>
+                                    {{ ticket.action }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Recommendation:
+                                </td>
+                                <td>
+                                    {{ ticket.recommendation }}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% if tquote_data %}
+                    <div class="row">
+                        <div class="card">
+                            <div class="mt-1">
+                                <div class="table-responsive">
+
+                                    <table class="table table-bordered">
+                                        <thead class="table-light">
+                                        <tr>
+                                            <th class="text-center" colspan="5">
+                                                NEW PRODUCT QUOTE
+                                            </th>
+                                        </tr>
+                                        <tr>
+
+                                            <th>Description</th>
+                                            <th>Part Number</th>
+                                            <th>Price</th>
+                                            <th>Qty</th>
+                                            <th>Amount</th>
+                                            <!-- Add more headers for other fields -->
+                                        </tr>
+                                        </thead>
+                                        <tbody id="table-body">
+                                        {% for item in tquote_data %}
+                                            <tr data-entry-id="{{ item.id }}">
+
+                                                <td>{{ item.description }}</td>
+                                                <td>{{ item.part_no }}</td>
+                                                <td>{{ item.price }}</td>
+                                                <td>{{ item.quantity }}</td>
+                                                <td>{{ item.total }}</td>
+                                                <!-- Add more cells for other fields -->
+                                            </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <td colspan="4" class="text-end">SUBTOTALS</td>
+                                            <td colspan="4">{{ quote_subtotals }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-end text-danger">VAT</td>
+                                            <td colspan="4" class="text-danger">{{ quote_vat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-end">TOTAL AMOUNT</td>
+                                            <td colspan="4">{{ quote_total_amount }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> <!-- end col -->
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <div class="row mb-3 mt-3 table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                            <tr>
+                                <th colspan="4" class="text-center">QUOTATION</th>
+                            </tr>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
+
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% if parts %}
+                                {% for requisition in parts %}
+                                    <tr>
+                                        <td>{{ requisition.part.code }}</td>
+                                        <td>{{ requisition.quantity }}</td>
+                                        <td>{{ requisition.price }}</td>
+                                        <td>{{ requisition.total }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td class="text-center" colspan="4">
+                                        <h4>No Parts Used</h4>
+                                    </td>
+                                </tr>
+
+                            {% endif %}
+                            <tr>
+                                <td colspan="3" class="text-end">LABOUR</td>
+                                <td colspan="3">{{ ticket.labour }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end">SUBTOTALS</td>
+                                <td colspan="3">{{ subtotals }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end text-danger">VAT</td>
+                                <td colspan="3" class="text-danger">{{ vat }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end">TOTAL AMOUNT</td>
+                                <td colspan="3">{{ total_amount }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card">
+                        <p>
+                        <p>Stock position changes daily. Kindly confirm availability before placing your order.</p>
+                        <p><strong>VALIDITY:</strong><br>
+                            This Quote is Valid for 7 days from the date indicated above.</p>
+                        <p>Feel free to contact us for any further clarifications.</p>
+                        <p><strong>Regards,</strong><br>
+                            IT SUPPORT - INTELLITECH LTD</p>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card p-4">
+        <div class="row">
+            <div class="col-lg-6 mb3">
+                <label class="form-label">
+                    Report Status:
+                </label>
+                <input class="form-control" value="{{ ticket.tr_status }}" disabled>
+            </div>
+            <div class="col-lg-6 mb3">
+                <label class="form-label">
+                    Approval Status:
+                </label>
+                <input class="form-control" value="{{ ticket.tr_approval }}" disabled>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <a href="{% url 'edit-ticket' ticket.ticket_id %}" class="btn btn-primary"><span class="btn-label"><i
+                class="mdi mdi-square-edit-outline"></i></span> Edit Ticket
+        </a>
+        <a id="print-button" class="btn btn-primary waves-effect waves-light me-1"><span class="btn-label"><i
+                class="mdi mdi-printer"></i></span>Print</a>
+    </div>
+
+    <script>
+        document.getElementById('print-button').addEventListener('click', function () {
+            printDeliveryNote();
+        });
+
+        function printDeliveryNote() {
+            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+            document.body.style.margin = "0";
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+{% endblock %}

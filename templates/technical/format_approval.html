@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Format Approval{% endblock %}
+{% block header %}Format Approval{% endblock %}
+{% block content %}
+
+    <div class="row col-10 mx-auto">
+        <div class="card">
+            <div class="card-body  col-10 mx-auto">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-center align-items-center">
+                        <img src="{% static 'logo.png' %}" alt="Company Logo" width="150" class="mx-auto">
+                    </div>
+                </div>
+                <div class="row mb-3"><h4 class="text-center">Format Approval Document</h4></div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <h4>COMPANY NAME : {{ format_approval.ticket.company }} </h4>
+                            <h4>ASSET : {{ format_approval.ticket.equipment }}</h4>
+                            <h4>SERIAL NUMBER : {{ format_approval.ticket.serial_no }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-6 text-end">
+                        <h4>JOB CARD : ITL/TN/{{ format_approval.ticket.ticket_id }} </h4>
+                        <h4>DATE : {{ format_approval.created }}</h4>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h5>Conditions:</h5>
+                    <p>
+                        Please note that during the formating process i.e Data, Software etc. Which is contained inyour
+                        hard disk will be lost and this process is not reversible.
+                        <strong>Only your data can be backed not your applications.</strong><br>
+                    <h4><strong>NOTE:</strong></h4> We do not guarantee that all your files will work properly. It
+                    depends upon the seriousness of damages acquired in your software applications and data files.<br>
+                    Below are the data files which are to be backed up before the formatting process.
+                    </p>
+                </div>
+                <div class="col-10 mx-auto table">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th colspan="2" class="text-center">FILES TO BE BACKED UP</th>
+                        </tr>
+                        <tr>
+                            <th>
+                                APPLICATION SOFTWARE
+                            </th>
+                            <th>
+                                FOLDERS THAT CONTAIN DATA
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{ format_approval.app_info }}
+                            </td>
+                            <td>
+                                {{ format_approval.data_info }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="col-6">
+                    <p>Collected By: {{ delivery.collected_by }}</p>
+                    <div class="card w-70 h-70 mt-3 shadow p-3 mb-5 bg-body-tertiary rounded">
+                        {% if signature %}
+                            <h5>APPROVED BY: {{ signature.approved }}</h5>
+                            <img src="{{ signature.signature_image.url }}" class="card-img-top" alt="Signature">
+
+                        {% else %}
+                            <div>
+                                <div class="mb-3">
+                                    <label for="approved">Approved BY : </label>
+                                    <input class="form-control" name="approved" id="approved" type="text" required>
+                                </div>
+                                <canvas id="signature-pad" width="400" height="200" class="card mt-5 mx-auto"></canvas>
+                                <button id="save-signature" class="btn btn-primary ">Submit Signature</button>
+                                <input type="hidden" id="format_id" value="{{ format_approval.id }}">
+                            </div>
+
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="row col-10 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="{% url 'send_format_email' format_approval.id %}">
+                    {% csrf_token %}
+                    <div class="row mb-3 col-6">
+                        <label class="form-label" for="recipient_email"> Approver Email:</label>
+                        <input type="email" name="recipient_email" class="form-control"
+                               placeholder="Please enter approver email." required>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><span
+                            class="btn-label"><i class="mdi mdi-email-send-outline"></i></span> Send Via Mail
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var canvas = document.getElementById('signature-pad');
+            var signaturePad = new SignaturePad(canvas);
+            var formatId = $('#format_id').val();
+            var approvedId = $('#approved').val();// Get the delivery ID from the hidden input field
+
+            $('#save-signature').click(function () {
+                var signatureData = signaturePad.toDataURL();
+                $.ajax({
+                    url: '/save-signature-view-format/',  // Replace with the actual URL
+                    method: 'POST',
+                    data: {
+                        signature_data: signatureData,
+                        format_id: formatId,
+                        approved: approvedId// Include the delivery ID in the data
+                    },
+                    success: function (response) {
+                        // Check if the response indicates success (you can define this)
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            // Handle failure if needed
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

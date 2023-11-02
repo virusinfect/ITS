@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Equipment Specs{% endblock %}
+{% block header %}Equipment Specs{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item active">Equipment Specs</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="card col-lg-8 mx-auto">
+        <div class="card-body">
+            <h5>Equipment Specification</h5>
+            <div class="row mt-3">
+                <!-- equipment_specs_form.html -->
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label for="comp_name" class="form-label">Computer Name</label>
+                                <input type="text" name="comp_name" class="form-control"
+                                       value="{{ equipment_specs.comp_name }}">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label for="ip_address" class="form-label">IP Address</label>
+                                <input type="text" name="ip_address" class="form-control"
+                                       value="{{ equipment_specs.ip_address }}">
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="antivirus" class="form-label">Antivirus</label>
+                            <input type="text" name="antivirus" class="form-control"
+                                   value="{{ equipment_specs.antivirus }}">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="psu" class="form-label">Power Supply Unit (PSU)</label>
+                            <input type="text" name="psu" class="form-control" value="{{ equipment_specs.psu }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="ram" class="form-label">RAM</label>
+                            <input type="text" name="ram" class="form-control" value="{{ equipment_specs.ram }}">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="cd_dvd" class="form-label">CD/DVD</label>
+                            <input type="text" name="cd_dvd" class="form-control" value="{{ equipment_specs.cd_dvd }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="processor" class="form-label">Processor</label>
+                            <input type="text" name="processor" class="form-control"
+                                   value="{{ equipment_specs.processor }}">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="hdd" class="form-label">HDD</label>
+                            <input type="text" name="hdd" class="form-control" value="{{ equipment_specs.hdd }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="hdd_status" class="form-label">HDD Status</label>
+                            <input type="text" name="hdd_status" class="form-control"
+                                   value="{{ equipment_specs.hdd_status }}">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="mainboard" class="form-label">Mainboard</label>
+                            <input type="text" name="mainboard" class="form-control"
+                                   value="{{ equipment_specs.mainboard }}">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Requisition{% endblock %}
+{% block header %}Edit Requisition{% endblock %}
+
+{% block content %}
+    <div class="col-md-6">
+        <div class="mb-4">
+
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'list_requisitions' %}">Requisitions</a></li>
+                <li class="breadcrumb-item active">Edit Requisition</li>
+            </ol>
+        </div>
+    </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Edit Requisition</h4>
+
+                <div>
+                    <form class="row g-3" method="post">
+                        {% csrf_token %}
+                        <div class="shadow p-3 mb-2   p-4">
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Ticket</label>
+                                {% if requisition.ticket %}
+                                    <input class="form-control" type="text"
+                                           value="ITL/TN/{{ requisition.ticket.ticket_id }} >> {{ requisition.ticket.company }} >> {{ requisition.ticket.equipment }}"
+                                           disabled>
+                                {% else %}
+                                    <input class="form-control" type="text"
+                                           value="No Ticket Attached"
+                                           disabled>
+                                {% endif %}
+
+
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-6">
+                                    <label for="exampleFormControlInput1" class="form-label">Category</label>
+                                    <input class="form-control" disabled value="{{ requisition.part.category }}">
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="exampleFormControlInput1" class="form-label">Item </label>
+                                    <input class="form-control" disabled value="{{ requisition.part }}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-lg-6">
+                                    <label for="serial_no" class="form-label">Serial No.</label>
+                                    <input name="serial_no" id="serial_no" class="form-control"
+                                           value="{{ requisition.serial_no }}">
+                                </div>
+                                <div class="mb-3 col-lg-6">
+                                    <label for="exampleFormControlInput1" class="form-label">Collected By</label>
+                                    <input class="form-control" disabled value="{{ requisition.collected_by }}">
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="remarks" class="form-label"> Remarks</label>
+                                <textarea class="form-control" id="remarks" name="remarks" rows="3"
+                                          placeholder="Enter your remarks.."
+                                          value="{{ requisition.remarks }}"></textarea>
+                            </div>
+                        </div>
+                        <div class="card mt-5 mb-5 shadow p-3 mb-2  p-4">
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="req_status" class="form-label">Requisition Status:</label>
+                                    <select name="req_status" class="form-select mb-3">
+                                        <option value="Approved"
+                                                {% if requisition.req_status == "Approved" %}selected{% endif %}>
+                                            Approved
+                                        </option>
+                                        <option value="Pending"
+                                                {% if requisition.req_status == "Pending" %}selected{% endif %}>Pending
+                                        </option>
+                                        <!-- Add more options as needed -->
+                                    </select>
+                                </div>
+                                {% if requisition.req_status == "Approved" %}
+                                    <div class="col-md-6 mt-3">
+                                        <label for="issue_status" class="form-label">Issue Status:</label>
+                                        <select name="issue_status" id="issue_status" class="form-select mb-3">
+                                            <option value="Pending"
+                                                    {% if requisition.issue_status == "Pending" %}selected{% endif %}>
+                                                Pending
+                                            </option>
+                                            <option value="Issue"
+                                                    {% if requisition.issue_status == "Issue" %}selected{% endif %}>
+                                                Issue
+                                            </option>
+                                            <option value="Returned"
+                                                    {% if requisition.issue_status == "Returned" %}selected{% endif %}>
+                                                Return
+                                            </option>
+
+                                            <!-- Add more options as needed -->
+                                        </select>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if requisition.issue_status == "Returned" %}
+                                <div>
+                                    <label for="return_status" class="form-label">Return Status:</label>
+                                    <select name="return_status" class="form-select mb-3" id="return_status">
+                                        <option value="Approved"
+                                                {% if requisition.return_status == "Received" %}selected{% endif %}>
+                                            Approved
+                                        </option>
+                                        <option value="Pending"
+                                                {% if requisition.return_status == "Not Received" %}selected{% endif %}>
+                                            Pending
+                                        </option>
+                                        <option value=""
+                                                {% if requisition.return_status is None %}selected{% endif %}>
+                                            None
+                                        </option>
+                                        <!-- Add more options as needed -->
+                                    </select>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Update Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

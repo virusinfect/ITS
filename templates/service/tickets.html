@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Service Tickets{% endblock %}
+{% block header %}Service Tickets{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'service-tickets' %}">Services Tickets</a></li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="mt-0 header-title">Service Ticket List</h4>
+            <div class="table-responsive">
+                <table id="responsive-datatable" class="table table-bordered dt-responsive nowrap">
+
+                    <thead class="table-dark">
+                    <tr>
+                        <th width="10%">No.</th>
+                        <th>Date From</th>
+                        <th>Date To</th>
+                        <th>Status</th>
+                        <th>Company</th>
+                        <th>Technicians</th>
+                        <th class="d-show d-md-table-cell">Action</th> <!-- Hide on small screens -->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ticket in tickets %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ ticket.from_date }}</td>
+                            <td>{{ ticket.to_date }}</td>
+                            <td>
+                                {% if ticket.status == "Awaiting confirmation" %}
+                                    <span class="badge badge-outline-warning">{{ ticket.status }}</span>
+                                {% elif ticket.status == "Confirmed" %}
+                                    <span class="badge badge-outline-success">{{ ticket.status }}</span>
+                                {% elif ticket.status == "Postponed" %}
+                                    <span class="badge badge-outline-dark ">{{ ticket.status }}</span>
+                                {% elif ticket.status == "Closed" %}
+                                    <span class="badge badge-outline-danger">{{ ticket.status }}</span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ ticket.company.name }}</td>
+                            <td>{% for tech in ticket.techs.all %}
+                                <span class="badge badge-outline-primary">{{ tech.username }}</span>
+                            {% endfor %}</td>
+                            <td class="d-show d-md-table-cell">
+                                <a href="{% url 'service_ticket_view' ticket.pk %}" title="edit" tabindex="0"
+                                   data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="mdi mdi-square-edit-outline mdi-18px"></i>
+                                </a>
+                                <a href="{% url 'edit_service_schedule' ticket.pk %}" title="Schedule" tabindex="0"
+                                   data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="mdi mdi-calendar-edit mdi-18px"></i>
+                                </a>
+                                <a href="{% url 'service_report' ticket.pk %}" title="report" tabindex="0" data-plugin="tippy"
+                                   data-tippy-interactive="true">
+                                    <i class="mdi mdi-file-document mdi-18px"></i>
+                                </a>
+                                <a href="{% url 'delete_service_ticket' ticket.pk %}" title="delete"
+                                   tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    {#    <link href="{% static 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />#}
+    <link href="{% static 'libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'libs/datatables.net-select-bs5/css/select.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <!-- third party js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+    <!-- third party js ends -->
+
+    <!-- Datatables init -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+    <script>
+        jQuery(document).ready(function ($) {
+            $('#responsive-datatable').DataTable({
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        text: 'Add Part', // Custom button text
+                        text: '<i class="fas fa-plus"> </i>',
+                        action: function () {
+                            window.location.href = '{% url "create_service_schedule" %}';
+                        },
+                        className: 'btn btn-danger mb-1 waves-effect waves-light'
+                    },
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        className: 'btn btn-danger btn-bg-light mb-1'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>',
+                        className: 'btn btn-danger mb-1',
+                        title: 'Ticket List',
+                        customize: function (doc) {
+                            doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'];
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+
+                ]
+            });
+        });
+
+
+        jQuery(document).ready(function ($) {
+            var table = $('#responsive-datatable').DataTable();
+
+            $('#print-table').on('click', function () {
+                var win = window.open('', 'Print', 'width=800,height=600');
+                win.document.write('<html><head><title>Print</title></head><body>');
+                win.document.write('<h1>Ticket List</h1>');
+                win.document.write('<table style="border-collapse: collapse; width: 100%;">');
+
+                // Add table headers
+                win.document.write('<tr>');
+                table.columns().header().each(function (th) {
+                    win.document.write('<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">' + $(th).html() + '</th>');
+                });
+                win.document.write('</tr>');
+
+                // Loop through the DataTable rows and copy them to the new window
+                table.rows().every(function () {
+                    var row = this.data();
+                    win.document.write('<tr>');
+                    for (var i = 0; i < row.length; i++) {
+                        win.document.write('<td style="border: 1px solid #ddd; padding: 8px; text-align: left;">' + row[i] + '</td>');
+                    }
+                    win.document.write('</tr>');
+                });
+
+                win.document.write('</table>');
+                win.document.write('</body></html>');
+                win.document.close();
+                win.print();
+                win.close();
+            });
+        });
+
+
+    </script>
+{% endblock %}

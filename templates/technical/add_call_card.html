@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Add Call Card{% endblock %}
+{% block header %}Add Call Card{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'active_call_cards' %}">Call Cards</a></li>
+                    <li class="breadcrumb-item active">Add Call Card</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Add Call Card</h4>
+                    <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="mb-3 col-lg-3">
+                            <label for="call_type" class="form-label">Call Type:</label>
+                            <select name="call_type" class="form-select">
+                                <option value="Remote">Remote</option>
+                                <option value="On-Site">On Site</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-5">
+                            <label for="company" class="form-label">Company :</label>
+                            <select name="company" class="form-select" id="company" required>
+                                <option value="" disabled selected>Select a company</option>
+                                {% for company in companies %}
+                                    <option value="{{ company.id }}">{{ company.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-4">
+                            <label for="client" class="form-label">Client :</label>
+                            <select name="client" class="form-control" id="client">
+                                <option value="" disabled selected>Select a client</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <label for="tech_id" class="form-label">Select a Technician:</label>
+                            <select name="tech_id" class="form-select">
+                                <option value="">-- Select Technician --</option>
+                                {% for technician in technicians %}
+                                    <option value="{{ technician.id }}">{{ technician.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="equipment" class="form-label">Equipment:</label>
+                            <input type="text" class="form-control" name="equipment" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fault" class="form-label">Fault:</label>
+                        <textarea class="form-control" name="fault" id="fault" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="remarks" class="form-label">Remarks:</label>
+                        <textarea class="form-control" name="remarks" required id="remarks" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Create Call Card</button>
+                </form>
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.getElementById('company').addEventListener('change', function () {
+            var companyId = this.value;
+            var clientSelect = document.getElementById('client');
+            clientSelect.innerHTML = '<option value="" disabled selected>Select a client</option>';
+
+            if (companyId) {
+                // Make an AJAX request to fetch clients based on the selected company.
+                // Replace the URL with your Django view or API endpoint.
+                fetch('/get_clients/?company_id=' + companyId)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.clients.forEach(function (client) {
+                            var option = document.createElement('option');
+                            option.value = client.id;
+                            option.textContent = client.f_name;
+                            clientSelect.appendChild(option);
+                        });
+                    });
+            }
+        });
+    </script>
+{% endblock %}

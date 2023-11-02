@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Monitor Checklist{% endblock %}
+{% block header %}Monitor Checklist{% endblock %}
+{% block content %}
+    <div class="card col-lg-6 mx-auto">
+        <div class="card-body">
+            <div class="row">
+                <h4>Monitor : {{ equipment.name }}</h4>
+                <h4>Serial Number : {{ equipment.serial_no }}</h4>
+            </div>
+            <div class="row">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group mb-2">
+                        <label for="phy_damage" class="form-label">Check for physical damage or other obvious
+                            problems:</label>
+                        <input type="checkbox" class="form-control switchery" name="phy_damage"
+                               {% if monitor_checklist and monitor_checklist.phy_damage %}checked{% endif %}>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label for="colour_display" class="form-label">Check color display:</label>
+                        <input type="checkbox" class="form-control switchery" name="colour_display"
+                               {% if monitor_checklist and monitor_checklist.colour_display %}checked{% endif %}>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label for="vertical_lines" class="form-label">Check for vertical lines:</label>
+                        <input type="checkbox" class="form-control switchery" name="vertical_lines"
+                               {% if monitor_checklist and monitor_checklist.vertical_lines %}checked{% endif %}>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label for="vga_cable" class="form-label">Confirm VGA Cable to be working okay:</label>
+                        <input type="checkbox" class="form-control switchery" name="vga_cable"
+                               {% if monitor_checklist and monitor_checklist.vga_cable %}checked{% endif %}>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label for="status" class="form-label">Status:</label>
+                        <input type="text" class="form-control" name="status" value="{{ monitor_checklist.status }}">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"
+            integrity="sha512-lC8vSUSlXWqh7A/F+EUS3l77bdlj+rGMN4NB5XFAHnTR3jQtg4ibZccWpuSSIdPoPUlUxtnGktLyrWcDhG8RvA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css"
+          integrity="sha512-uyGg6dZr3cE1PxtKOCGqKGTiZybe5iSq3LsqOolABqAWlIRLo/HKyrMMD8drX+gls3twJdpYX0gDKEdtf2dpmw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script>
+        // Initialize Switchery on all checkbox inputs with the 'switchery' class
+        var elems = document.querySelectorAll('.switchery');
+        for (var i = 0; i < elems.length; i++) {
+            new Switchery(elems[i]);
+        }
+    </script>
+{% endblock %}

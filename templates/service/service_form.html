@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Service Form{% endblock %}
+{% block header %}Service Form{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item active">Service Form</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h4>Client Details</h4>
+            <div class="row">
+                <h5>USER/DEPARTMENT: {{ client.f_name }}</h5>
+                <div class="row mt-3 mb-3">
+                    <strong>Software</strong>
+                    {% for software in client.software_set.all %}
+                        <h7>Operating System (OS): {{ software.os|default:"Not specified" }}</h7><br>
+                        <h7>Microsoft Office (MS) Version: {{ software.mo|default:"Not specified" }}</h7><br>
+                        <h7>BackUP Software : {{ software.backup|default:"Not specified" }}</h7><br>
+                    {% endfor %}
+                </div>
+                <p>Select Equipment:</p>
+                <div class="row mx-auto">
+                    <ul>
+                        {% for equipment in client.equipment_set.all %}
+                            {% if equipment.type == "CPU" %}
+                                <a href="{% url 'create_or_edit_monitor_checklist' equipment.id service.id client.id ticket.id %}"
+                                   type="button" class="btn btn-success waves-effect waves-light">
+                                    <span class="btn-label"><i class="mdi mdi-desktop-tower mdi-"></i></span>CPU
+                                </a>
+                            {% elif equipment.type == "UPS" %}
+                                <a href="{% url 'create_or_edit_ups_checklist' equipment.id service.id client.id ticket.id %}"
+                                   type="button" class="btn btn-success waves-effect waves-light">
+                                    <span class="btn-label"><i class="mdi mdi-power-socket-uk"></i></span>UPS
+                                </a>
+                            {% elif equipment.type == "Monitor" %}
+                                <a href="{% url 'create_or_edit_monitor_checklist' equipment.id service.id client.id ticket.id %}"
+                                   type="button" class="btn btn-success waves-effect waves-light">
+                                    <span class="btn-label"><i class="mdi mdi-monitor"></i></span>monitor
+                                </a>
+                            {% elif equipment.type == "Server" %}
+                                <a href="{% url 'create_or_edit_monitor_checklist' equipment.id service.id client.id ticket.id %}"
+                                   type="button" class="btn btn-success waves-effect waves-light">
+                                    <span class="btn-label"><i class="mdi mdi-server"></i></span>Server
+                                </a>
+                            {% elif equipment.type == "Printer" %}
+                                <a href="{% url 'create_or_edit_printer_checklist' equipment.id service.id client.id ticket.id %}"
+                                   type="button" class="btn btn-success waves-effect waves-light">
+                                    <span class="btn-label"><i class="mdi mdi-printer"></i></span>Printer
+                                </a>
+                            {% elif equipment.type == "Laptop" %}
+                                <a href="{% url 'create_or_edit_printer_checklist' equipment.id service.id client.id ticket.id %}"
+                                   type="button" class="btn btn-success waves-effect waves-light">
+                                    <span class="btn-label"><i class="mdi mdi-laptop-chromebook"></i></span>Laptop
+                                </a>
+                            {% endif %}
+
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="details" class="form-label">Details</label>
+                        <textarea name="details" class="form-control" rows="4" required>{{ service.details }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="observations" class="form-label">Observations</label>
+                        <textarea name="observations" class="form-control" rows="4"
+                                  required>{{ service.observations }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recommendation" class="form-label">Recommendation</label>
+                        <textarea name="recommendation" class="form-control" rows="4"
+                                  required>{{ service.recommendation }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <input type="text" name="status" class="form-control" required value="{{ service.status }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Details</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

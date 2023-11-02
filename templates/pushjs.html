@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Users List{% endblock %}
+{% block header %}Users List{% endblock %}
+{% block content %}
+    <div id="navbar"><span>Push.js Tutorial</span></div>
+    <div id="wrapper">
+
+        <button id="notify-button">Notify Me!!</button>
+        <button id="clear-button">Clear All!</button>
+        <button id="check-button">Check Permission</button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/serviceWorker.min.js" integrity="sha512-gZN7SatPzB7LiGjOd4Sree/ecjktoLPgWt22wfApKrzuCpS9KsK7uKEDB+AAGY96NHCW1sAEm1JdaHDDP4MsIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.js" integrity="sha512-x0GVeKL5uwqADbWOobFCUK4zTI+MAXX/b7dwpCVfi/RT6jSLkSEzzy/ist27Iz3/CWzSvvbK2GBIiT7D4ZxtPg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js" integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $("#notify-button").click(function () {
+            Push.create("Intellitest ", {
+                body: "This is example of intellitech push.js",
+                icon: '/Logo_small.png',
+                tag: 'foo',
+                onClick: function () {
+                    window.focus();
+                    this.close();
+                }
+            });
+        });
+
+        $("#clear-button").click(function () {
+            Push.clear();
+        });
+
+        $("#check-button").click(function () {
+            console.log(Push.Permission.has());
+        });
+
+    </script>
+
+{% endblock %}
+

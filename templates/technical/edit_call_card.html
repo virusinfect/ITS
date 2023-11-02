@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Edit Call Card{% endblock %}
+{% block header %}Edit Call Card{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'active_call_cards' %}">Call Cards</a></li>
+                    <li class="breadcrumb-item active">Edit Call Card</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Edit Call Card</h4>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="mb-3 col-lg-3">
+                            <label for="type" class="form-label">Call Type:</label>
+                            <select name="type" class="form-select">
+                                <option value="Remote" {% if call_card.type == "Remote" %}selected{% endif %}>Remote
+                                </option>
+                                <option value="On-site" {% if call_card.type == "On-site" %}selected{% endif %}>On
+                                    Site
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-5">
+                            <label for="company_id" class="form-label">Company:</label>
+                            <input class="form-control" disabled value="{{ call_card.company }}">
+                        </div>
+                        <div class="mb-3 col-lg-4">
+                            <label for="client" class="form-label">Client:</label>
+                            <input class="form-control" value="{{ call_card.client }}" disabled>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <label for="tech_id" class="form-label">Technician:</label>
+                            <select class="form-select" name="tech_id" id="tech_id">
+                                <option value="">{{ call_card.tech_id }}</option>
+                                {% for user in technicians %}
+                                    <option value="{{ user.id }}"
+                                            {% if user.id == call_card.tech_id.id %}selected{% endif %}>
+                                        {{ user.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+
+                        <div class="mb-3 col-lg-6">
+                            <label for="equipment" class="form-label">Equipment:</label>
+                            <input type="text" class="form-control" name="equipment" value="{{ call_card.equipment }}"
+                                   required>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <label for="time_in" class="form-label">Time In:</label>
+                            <input type="time" class="form-control" name="time_in"
+                                   value="{{ call_card.time_in|time:'H:i' }}" required>
+                        </div>
+
+
+                        <div class="mb-3 col-lg-6">
+                            <label for="time_out" class="form-label">Time Out:</label>
+                            <input type="time" class="form-control" name="time_out" required
+                                   value="{{ call_card.time_out|time:'H:i' }}">
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="fault" class="form-label">Fault:</label>
+                        <textarea class="form-control" name="fault" id="fault" rows="4"
+                                  required>{{ call_card.fault }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="remarks" class="form-label">Remarks:</label>
+                        <textarea class="form-control" name="remarks" required id="remarks"
+                                  rows="4">{{ call_card.remarks }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Call Card Status:</label>
+                        <select name="status" class="form-select">
+                            <option value="Pending" {% if call_card.status == "Pending" %}selected{% endif %}>Pending
+                            </option>
+                            <option value="Done" {% if call_card.status == "Done" %}selected{% endif %}>Done
+                            </option>
+                        </select>
+                    </div>
+                    <div class="card mt-3">
+                    <div class="card-title ">Signature:</div>
+                    <div class="col-lg-4 col-sm-6  card-body w-70 h-70  shadow p-3 mb-5 bg-body-tertiary rounded">
+                        {% if signature %}
+                            <img src="{{ signature.signature_image.url }}" class="card-img-top" alt="Signature">
+
+                        {% else %}
+                            <p class="card-text">No signature available for this call card.</p>
+
+                        {% endif %}
+                    </div></div>
+
+                    <a href="{% url 'sign_call' call_card.cc_id %}"
+                       class="btn btn-warning waves-effect waves-light me-1"><span class="btn-label"><i
+                            class="mdi mdi-signature-freehand"></i></span>Sign
+                        this
+                        Call Card</a>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Update Call Card</button>
+                </form>
+
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const companyDropdown = document.getElementById("company");
+        const clientDropdown = document.getElementById("client");
+
+        companyDropdown.addEventListener("change", () => {
+            // Fetch clients based on the selected company
+            const selectedCompanyId = companyDropdown.value;
+            if (selectedCompanyId) {
+                fetch(`/get-clients/${selectedCompanyId}/`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Network response was not ok: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        clientDropdown.innerHTML = '<option value="" selected disabled>Select a Client</option>';
+                        data.clients.forEach(client => {
+                            const option = document.createElement("option");
+                            option.value = client.id;
+                            option.textContent = client.f_name;
+                            clientDropdown.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                // Clear the client dropdown if no company is selected
+                clientDropdown.innerHTML = '<option value="" selected disabled>Select a Client</option>';
+            }
+        });
+    </script>
+{% endblock %}

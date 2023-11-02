@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Edit Equipment{% endblock %}
+{% block header %}Edit Equipment{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item active">Edit Equipment</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="card row col-lg-6 mx-auto">
+        <div class="card-body">
+            <h5>Add New Equipment For : {{ client.f_name }}</h5>
+            <div class="row ">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" name="name" class="form-control" value="{{ equipment.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="details" class="form-label">Details</label>
+                        <input type="text" name="details" required class="form-control" value="{{ equipment.details }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type</label>
+                        <select name="type" class="form-select" required>
+                            <option value="Laptop" {% if equipment.type == 'Laptop' %}selected{% endif %}>Laptop
+                            </option>
+                            <option value="Monitor" {% if equipment.type == 'Monitor' %}selected{% endif %}>Monitor
+                            </option>
+                            <option value="UPS" {% if equipment.type == 'UPS' %}selected{% endif %}>UPS</option>
+                            <option value="CPU" {% if equipment.type == 'CPU' %}selected{% endif %}>CPU</option>
+                            <option value="Server" {% if equipment.type == 'Server' %}selected{% endif %}>Server
+                            </option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="serial_no" class="form-label">Serial NO</label>
+                        <input type="text" name="serial_no" required class="form-control"
+                               value="{{ equipment.serial_no }}">
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Edit Equipment">
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
