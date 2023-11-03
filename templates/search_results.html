@@ -20,6 +20,20 @@
                             <h5>ASSET : {{ equipment.name }}</h5>
                             <h5>SERIAL NO : {{ equipment.serial_no }}</h5>
                             <h6>TYPE : {{ equipment.type }}</h6>
+                            <h5 class="mt-3 border-top pt-3">Specification</h5>
+                            {% if equipment.type == "CPU" %}
+                                {% with specs=equipment.equipmentspecs_set.first %}
+                                    {% if specs %}
+                                        <p><strong>Computer Name</strong> : {{ specs.comp_name }}</p>
+                                        <p><strong>Processor</strong>: {{ specs.processor }}</p>
+                                        <p><strong>RAM</strong>: {{ specs.ram }}</p>
+                                        <p><strong>HDD</strong>: {{ specs.hdd }}</p>
+                                        <p><strong>Antivirus</strong>: {{ specs.antivirus }}</p>
+                                        <p><strong>IP Address</strong>: {{ specs.ip_address }}</p>
+                                        <p><strong>PSU</strong>: {{ specs.psu }}</p>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
                             {% empty %}
                             <div class="text-center">
                                 <h2 class="mt-0">
@@ -44,6 +58,7 @@
                                 <th>Date Created</th>
                                 <th>Ticket ID</th>
                                 <th>Serial No</th>
+                                <th>Fault</th>
                             </tr>
                             </thead>
 
@@ -55,6 +70,7 @@
                                         <a href="{% url 'edit-ticket' ticket.ticket_id %}">ITL/TN/{{ ticket.ticket_id }}</a>
                                     </td>
                                     <td>{{ ticket.serial_no }}</td>
+                                    <td>{{ ticket.fault }}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -62,7 +78,7 @@
                                         <h2 class="mt-0">
                                             <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
                                         </h2>
-                                        <h5 class="mt-0 mb-3">No matching equipment found.</h5>
+                                        <h5 class="mt-0 mb-3">No tickets for the equipment found.</h5>
 
                                     </div>
                                 </tr>
