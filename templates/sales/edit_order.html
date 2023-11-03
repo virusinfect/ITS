@@ -30,7 +30,8 @@
                         <div class="col-lg-6">
                             <label for="ticket" class="form-label">Associated Ticket:</label>
                             {% if order.ticket %}
-                                <input class="form-control" value="{{ order.ticket.ticket_id }}" placeholder="ffff" disabled>
+                                <input class="form-control" value="{{ order.ticket.ticket_id }}" placeholder="ffff"
+                                       disabled>
                             {% else %}
                                 <input class="form-control" value="No ticket associated" disabled>
                             {% endif %}
@@ -105,6 +106,28 @@
                                     </tr>
                                 {% endif %}
                             {% endfor %}
+                            <tr>
+
+                                <td><input type="text" name="product[]"
+                                           class="form-control">
+                                </td>
+                                <td><input type="number" name="quantity[]"
+                                           class="form-control"></td>
+                                <td><input type="date" name="date_ordered[]"
+
+                                           class="form-control"></td>
+                                <td><input type="text" name="supplier[]"
+                                            class="form-control"></td>
+                                <td><input type="date" name="date_received[]"
+
+                                           class="form-control"></td>
+                                <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
+                                       tabindex="0"
+                                       data-plugin="tippy" data-tippy-interactive="true"><i
+                                        class="s mdi mdi-plus-circle mdi-18px"></i>
+                                </a>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
 

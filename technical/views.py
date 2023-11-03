@@ -1,6 +1,5 @@
 import datetime
 import uuid
-from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -480,9 +479,9 @@ def add_requisition(request):
         created_by = request.user
         notification = Notification.create_notification(
             users=users_in_helpdesk_group,  # Assign it to the user
-            message="You have a requisition to approve for "+part_id+".",
+            message="You have a requisition to approve for " + part_id + ".",
             icon="mdi-book-alert",
-            created_by=created_by,# Replace with your MDI icon name
+            created_by=created_by,  # Replace with your MDI icon name
         )
         messages.success(request, 'Requisition Created successfully')
         return redirect('list_requisitions')
@@ -647,7 +646,7 @@ def get_events(request):
         company = event.company.name
         event_to_date = event.to_date
         # Add one day to the date
-        new_date = event_to_date + timedelta(days=1)
+        new_date = event_to_date + datetime.timedelta(days=1)
         data.append({
             'title': company,
             'start': event.from_date.isoformat(),
@@ -913,6 +912,7 @@ def create_ticket(request):
         else:
             messages.success(request, 'Ticket Created successfully')
 
+
             # Assuming you are in a view function, you can access the current user through the request object
         user = request.user
         # Create a new Task instance without saving it
@@ -926,11 +926,20 @@ def create_ticket(request):
 
         )
 
+
         # Save the new_task instance
         new_task.save()
 
         ticket.task = new_task
         ticket.save()
+
+        created_by = request.user
+        notification = Notification.create_notification(
+            users=[tech_id],  # Assign it to the user
+            message="Assigned ITL/TN/" + str(ticket.ticket_id),
+            icon="mdi-book-alert",
+            created_by=created_by,  # Replace with your MDI icon name
+        )
 
         subject = "TICKET ITL/TN/" + str(ticket.ticket_id) + " OPENED - ITS"
         message = "Dear {0},\n\nA ticket ITL/TN/{1} has been raised for your work order, and our team is now reviewing the details to ensure a prompt and effective resolution.\n\nNote: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.\n\nThank you for your patience and understanding.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.".format(
@@ -945,7 +954,8 @@ def create_ticket(request):
         # Handle GET request, render the form
         companies = Company.objects.all().order_by('name')
         clients = Clients.objects.all()
-        users = User.objects.all()
+        technician_group = Group.objects.get(name='Technician')
+        users = technician_group.user_set.all()
 
         return render(request, 'technical/create_ticket.html',
                       {'companies': companies, 'clients': clients, 'users': users})
@@ -1039,7 +1049,13 @@ def sourcing_tickets(request, ticket_id):
         first_handler = ticket.sourcing_parts
         ticket.sourcing_parts = handler_id
         ticket.save()
-
+        created_by = request.user
+        notification = Notification.create_notification(
+            users=[handler_id],  # Assign it to the user
+            message="Sourcing ITL/TN/" + str(ticket.ticket_id),
+            icon="mdi-ticket-confirmation-outline",
+            created_by=created_by,  # Replace with your MDI icon name
+        )
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
 
@@ -1079,6 +1095,8 @@ def sourcing_tickets(request, ticket_id):
         elif ticket.task.user_id != handler_id:  # Check if the user_id is different
             ticket.task.user_id = handler_id  # Correctly set the user_id
             ticket.task.save()  # Save the task
+
+
 
         messages.success(request, 'Sourcing Products Updated.')
 
@@ -1310,6 +1328,7 @@ def remark_pie_chart(request):
 
 
 def bench_status_pie_chart(request):
+    from datetime import datetime
     current_month = datetime.now().month
     current_year = datetime.now().year
 
@@ -1327,6 +1346,7 @@ def bench_status_pie_chart(request):
 
 
 def status_pie_chart(request):
+    from datetime import datetime
     current_month = datetime.now().month
     current_year = datetime.now().year
 
@@ -1360,7 +1380,3 @@ def requisitions_created_monthly(request):
     data = list(monthly_requisition_counts)
 
     return JsonResponse(data, safe=False)
-
-
-
-

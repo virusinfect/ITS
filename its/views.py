@@ -18,6 +18,8 @@ from technical.models import Signature, Delivery, CallCards, CSignature, FSignat
 
 from .models import PartsCategory, Parts, Company, Clients, Task, Personal,Notification
 
+def server_error(request):
+    return render(request, '500.html', status=500)
 
 def get_clients(request):
     company_id = request.GET.get('company_id')

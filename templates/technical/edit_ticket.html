@@ -322,8 +322,8 @@
                                             {% endfor %}
                                             <tr>
 
-                                                <td><input type="text" name="desc[]" class="form-control" required></td>
-                                                <td><input name="part_no[]" type="text" class="form-control" required>
+                                                <td><input type="text" name="desc[]" class="form-control"></td>
+                                                <td><input name="part_no[]" type="text" class="form-control">
                                                 </td>
                                                 <td><input name="price[]" type="text" class="form-control" value="0.0">
                                                 </td>
@@ -711,6 +711,15 @@
                 input.type = 'text';
                 input.name = columns[i] + '[]'; // Ensure the name matches the POST data
                 input.className = 'form-control';
+
+                // Set a default value for the "price" input
+                if (columns[i] === 'price') {
+                    input.value = '0.00'; // You can set your desired default price here
+                }
+                if (columns[i] === 'qty') {
+                    input.value = '0'; // You can set your desired default price here
+                }
+
                 cell.appendChild(input);
                 newRow.appendChild(cell);
             }
@@ -719,6 +728,7 @@
             tableBody.appendChild(newRow);
         });
     </script>
+
     <script>
         document.querySelectorAll('.delete-entry').forEach(function (button) {
             button.addEventListener('click', function () {

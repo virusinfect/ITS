@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
 from django.http import JsonResponse
@@ -268,7 +268,8 @@ def active_invoice(request):
 @login_required
 def edit_quote(request, quote_id):
     quote = get_object_or_404(SalesQuotes, sq_id=quote_id)
-    users = User.objects.all()
+    sales_group = Group.objects.get(name='sales')
+    users = sales_group.user_set.all()
     products = SalesQuoteProducts.objects.filter(quote=quote)
 
     if request.method == 'POST':

@@ -25,7 +25,7 @@
 
                     <div class="mb-3">
                         <label for="ticket_id" class="form-label">Ticket ID:</label>
-                        <select name="ticket_id" class="form-select mb-3" >
+                        <select name="ticket_id" class="form-select mb-3">
                             <option value="" disabled selected>Select a Ticket</option>
                             {% for ticket in active_tickets %}
                                 <option value="{{ ticket.pk }}">ITL/TN/{{ ticket.ticket_id }}
@@ -39,7 +39,7 @@
                         <div class="mb-3 col-lg-6">
 
                             <label for="selected_category" class="form-label">Select a Category:</label>
-                            <select name="selected_category" id="selected_category" class="form-select mb-3">
+                            <select name="selected_category" id="selected_category" class="form-select mb-3" required>
                                 <option value="" disabled selected>Select a Category</option>
                                 {% for category in active_categories %}
                                     <option value="{{ category.id }}">{{ category.name }}</option>
@@ -48,7 +48,7 @@
                         </div>
                         <div class="mb-3 col-lg-6">
                             <label for="selected_product" class="form-label">Select a Product:</label>
-                            <select name="selected_product" id="selected_product" class="form-select mb-3">
+                            <select name="selected_product" id="selected_product" class="form-select mb-3" required>
                                 <option value="" disabled selected>Select a Product</option>
                             </select>
                         </div>
@@ -57,12 +57,12 @@
                     <div class="row">
                         <div class="col-lg-4">
                             <label for="collected_by" class="form-label">Quantity:</label>
-                            <input name="quantity" id="quantity" class="form-control">
+                            <input name="quantity" id="quantity" class="form-control" required>
 
                         </div>
                         <div class="col-lg-8">
                             <label for="collected_by" class="form-label">Collected By:</label>
-                            <select name="collected_by" id="collected_by" class="form-select mb-3">
+                            <select name="collected_by" id="collected_by" class="form-select mb-3" required>
                                 <option value="" disabled selected>Select a User</option>
                                 {% for user in collected_by_users %}
                                     <option value="{{ user.id }}">{{ user.username }}</option>
@@ -79,6 +79,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary waves-effect waves-light">Submit</button>
+                </div>
             </form>
 
         </div> <!-- end card-body-->

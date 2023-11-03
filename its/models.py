@@ -121,7 +121,7 @@ class Personal(models.Model):
     description = models.TextField(blank=True, null=True)
     due_date = models.DateField()
     from_date = models.DateField()
-    status = models.CharField(max_length=20)
+    status = models.CharField(max_length=20,null=True)
     created = models.DateTimeField(auto_now_add=True)  # Automatically set upon creation
     updated = models.DateTimeField(auto_now=True)  # Automatically updated on each save
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)

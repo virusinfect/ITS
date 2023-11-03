@@ -65,12 +65,12 @@
                                 {% for product in products %}
                                     <tr>
                                         <td><input type="text" name="part_no[]" value="{{ product.part_no }}"
-                                                   class="form-control"></td>
+                                                   class="form-control" required></td>
                                         <td><input type="text" name="description[]" value="{{ product.description }}"
-                                                   class="form-control">
+                                                   class="form-control" required>
                                         </td>
                                         <td><input type="text" name="price[]" value="{{ product.price }}"
-                                                   class="form-control"></td>
+                                                   class="form-control" required></td>
                                         <td><select name="availability[]" class="form-select">
                                             <option value="">Select availability</option>
                                             <option value="AVAILABLE"
@@ -91,7 +91,7 @@
                                             </option>
                                         </select></td>
                                         <td><input type="text" name="quantity[]" value="{{ product.quantity }}"
-                                                   class="form-control"></td>
+                                                   class="form-control" required></td>
                                         <td><input type="file" class="form-control"></td>
                                         <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
                                                tabindex="0"
@@ -99,14 +99,49 @@
                                                 class="s mdi mdi-plus-circle mdi-18px"></i>
                                         </a><a href="{% url 'delete_row_quote' product.product_id quote.sq_id %}"
                                                title="delete" tabindex="0"
-                                           data-plugin="tippy" data-tippy-interactive="true">
+                                               data-plugin="tippy" data-tippy-interactive="true">
                                             <i class="s mdi mdi-delete-outline mdi-18px"></i>
                                         </a></td>
                                         <!-- Add other table cells for additional fields -->
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                        <td colspan="4">No products associated with this quote.</td>
+                                    <tr>
+                                        <td><input type="text" name="part_no[]" value="{{ product.part_no }}"
+                                                   class="form-control" required></td>
+                                        <td><input type="text" name="description[]" value="{{ product.description }}"
+                                                   class="form-control" required>
+                                        </td>
+                                        <td><input type="text" name="price[]" value="{{ product.price }}"
+                                                   class="form-control" required></td>
+                                        <td><select name="availability[]" class="form-select">
+                                            <option value="">Select availability</option>
+                                            <option value="AVAILABLE"
+                                                    {% if product.availability|lower == "available" %}selected{% endif %}>
+                                                AVAILABLE
+                                            </option>
+                                            <option value="EXPECTED"
+                                                    {% if product.availability|lower == "expected" %}selected{% endif %}>
+                                                EXPECTED
+                                            </option>
+                                            <option value="BACK TO BACK ORDER"
+                                                    {% if product.availability|lower == "back to back order" %}selected{% endif %}>
+                                                BACK TO BACK ORDER
+                                            </option>
+                                            <option value="LIMITED"
+                                                    {% if product.availability|lower == "limited" %}selected{% endif %}>
+                                                LIMITED
+                                            </option>
+                                        </select></td>
+                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}"
+                                                  class="form-control" required></td>
+                                        <td><input type="file" class="form-control"></td>
+                                        <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
+                                               tabindex="0"
+                                               data-plugin="tippy" data-tippy-interactive="true"><i
+                                                class="s mdi mdi-plus-circle mdi-18px"></i>
+                                        </a></td>
+                                    </tr>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -193,7 +228,7 @@
                         </div>
                         <div class="col-lg-6 mb-3">
                             <label for="quote_handler" class="form-label">Quote Handler:</label>
-                            <select name="quote_handler" class="form-select">
+                            <select name="quote_handler" class="form-select" required>
                                 <option value="">Select a Quote Handler</option>
                                 {% for user in users %}
                                     <option value="{{ user.id }}"
@@ -223,7 +258,8 @@
             <a type="button" class="btn btn-primary waves-effect waves-light me-1">
                 <span class="btn-label"><i class="mdi mdi-email-send-outline"></i></span>Send Mail
             </a>
-            <a href="{% url 'quote' quote.sq_id %}" type="button" class="btn btn-primary waves-effect waves-light  me-1">
+            <a href="{% url 'quote' quote.sq_id %}" type="button"
+               class="btn btn-primary waves-effect waves-light  me-1">
                 <span class="btn-label"><i class="mdi mdi-file-pdf-outline"></i></span>Generate Quote
             </a>
 

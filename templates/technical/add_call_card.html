@@ -39,7 +39,7 @@
                         </div>
                         <div class="mb-3 col-lg-4">
                             <label for="client" class="form-label">Client :</label>
-                            <select name="client" class="form-control" id="client">
+                            <select name="client" class="form-control" id="client" required>
                                 <option value="" disabled selected>Select a client</option>
                             </select>
                         </div>
@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="mb-3 col-lg-6">
                             <label for="tech_id" class="form-label">Select a Technician:</label>
-                            <select name="tech_id" class="form-select">
+                            <select name="tech_id" class="form-select" required>
                                 <option value="">-- Select Technician --</option>
                                 {% for technician in technicians %}
                                     <option value="{{ technician.id }}">{{ technician.username }}</option>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="remarks" class="form-label">Remarks:</label>
-                        <textarea class="form-control" name="remarks" required id="remarks" rows="4"></textarea>
+                        <textarea class="form-control" name="remarks" id="remarks" rows="4"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">Create Call Card</button>
                 </form>

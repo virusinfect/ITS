@@ -56,7 +56,7 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <label for="tech" class="form-label"><strong>Technician:</strong></label>
-                                <select id="tech" name="tech" class="form-select">
+                                <select id="tech" name="tech" class="form-select" required>
                                     {% for tech_option in users %}
                                         <option value="{{ tech_option.id }}"
                                                 {% if tech_option.id == ticket.tech.id %}selected{% endif %}>
@@ -72,13 +72,13 @@
                                 <label for="equipment"
                                        class="form-label"><strong>Equipment:</strong></label>
                                 <input type="text" class="form-control" id="equipment"
-                                       name="equipment" placeholder="Equipment">
+                                       name="equipment" placeholder="Equipment" required>
                             </div>
                             <div class="col-lg-6 mb-3">
                                 <label for="serial_no" class="form-label"><strong>Serial
                                     No:</strong></label>
                                 <input type="text" class="form-control" id="serial_no"
-                                       name="serial_no" placeholder="Serial No">
+                                       name="serial_no" placeholder="Serial No" required>
                             </div>
                         </div>
 
@@ -86,7 +86,7 @@
                             <div class="mb-3 col-lg-6">
                                 <label for="fault" class="form-label"><strong>Fault:</strong></label>
                                 <textarea class="form-control" id="fault"
-                                          name="fault" rows="5" placeholder="Fault"></textarea>
+                                          name="fault" rows="5" placeholder="Fault" required></textarea>
                             </div>
                             <div class="mb-3 col-lg-6">
 
