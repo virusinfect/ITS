@@ -32,12 +32,13 @@ def ticket_view(request, schedule_id):
     service_count = Service.objects.filter(ticket=ticket).count()
     service = Service.objects.filter(ticket=ticket)
 
-
     context = {'service_schedule': service_schedule, 'ticket': ticket,
-               'clients': clients,'service_count':service_count,'service':service}  # Include 'ticket' in the context
+               'clients': clients, 'service_count': service_count,
+               'service': service}  # Include 'ticket' in the context
     return render(request, "service/ticket_view.html", context)
 
 
+@login_required
 def client_view(request, client_id):
     client = get_object_or_404(Clients, pk=client_id)
     equipments = Equipment.objects.filter(client=client_id)
@@ -46,6 +47,7 @@ def client_view(request, client_id):
     return render(request, "service/client_view.html", context)
 
 
+@login_required
 def add_equipment(request, client_id):
     client = get_object_or_404(Clients, pk=client_id)
 
@@ -59,7 +61,7 @@ def add_equipment(request, client_id):
         # Create a new equipment instance and associate it with the client
         equipment = Equipment(client=client, name=name, details=details, type=equipment_type, serial_no=serial_no)
         equipment.save()
-
+        messages.success(request, 'Equipment Created successfully.')
         # You can add a success message or redirect to another page
         return redirect('client_view', client_id=client_id)
 
@@ -67,6 +69,7 @@ def add_equipment(request, client_id):
     return render(request, 'service/add_equipment.html', {'client': client})
 
 
+@login_required
 def add_software(request, client_id):
     client = get_object_or_404(Clients, pk=client_id)
 
@@ -78,12 +81,13 @@ def add_software(request, client_id):
 
         software = Software(client=client, os=os, mo=mo, backup=backup, outlook=outlook)
         software.save()
-
+        messages.success(request, 'Software Added successfully.')
         return redirect('client_view', client_id=client_id)
 
     return render(request, 'service/add_software_info.html', {'client': client})
 
 
+@login_required
 def edit_software(request, client_id):
     client = get_object_or_404(Clients, pk=client_id)
     software = get_object_or_404(Software, client=client_id)
@@ -103,7 +107,7 @@ def edit_software(request, client_id):
 
         # Save the updated software instance
         software.save()
-
+        messages.success(request, 'Software Edited successfully.')
         # Redirect to a success page or client detail page
         return redirect('client_view', client_id=software.client.pk)
 
@@ -111,6 +115,7 @@ def edit_software(request, client_id):
     return render(request, 'service/edit_software.html', {'software': software})
 
 
+@login_required
 def create_or_edit_equipment_specs(request, equipment_id):
     equipment = get_object_or_404(Equipment, pk=equipment_id)
     equipment_specs, created = EquipmentSpecs.objects.get_or_create(equipment=equipment)
@@ -129,13 +134,14 @@ def create_or_edit_equipment_specs(request, equipment_id):
         equipment_specs.mainboard = request.POST['mainboard']
 
         equipment_specs.save()
-
+        messages.success(request, 'Specifications Edited successfully.')
         return redirect('client_view', client_id=equipment.client.pk)
 
     # Redirect to the equipment's detail page
     return render(request, 'service/equipment_specs.html', {'equipment': equipment, 'equipment_specs': equipment_specs})
 
 
+@login_required
 def edit_equipment(request, equipment_id):
     equipment = get_object_or_404(Equipment, pk=equipment_id)
 
@@ -146,24 +152,27 @@ def edit_equipment(request, equipment_id):
         equipment.details = request.POST.get('details')
         equipment.type = request.POST.get('type')
         equipment.save()
-
+        messages.success(request, 'Equipment Edited successfully.')
         # Redirect to the equipment detail page or any other appropriate page
         return redirect('client_view', client_id=equipment.client.pk)
 
     return render(request, 'service/edit_equipment.html', {'equipment': equipment})
 
 
+@login_required
 def delete_equipment(request, equipment_id):
     equipment = get_object_or_404(Equipment, pk=equipment_id)
 
     if request.method == 'POST':
         equipment.delete()
+        messages.warning(request, 'Equipment Deleted successfully.')
         # Redirect to a page after deleting the equipment (e.g., equipment list)
         return redirect('client_view', client_id=equipment.client.pk)
 
     return render(request, 'service/delete_equipment.html', {'equipment': equipment})
 
 
+@login_required
 def create_service_form(request, client_id, ticket_id):
     client = get_object_or_404(Clients, pk=client_id)
     ticket = get_object_or_404(ServiceTickets, pk=ticket_id)
@@ -183,7 +192,7 @@ def create_service_form(request, client_id, ticket_id):
             service.recommendation = recommendation
             service.status = status
             service.save()
-
+            messages.success(request, 'Service Form Edited successfully.')
             # Redirect to a success page or the ticket detail page
             return redirect('service_ticket_view', schedule_id=schedule)
     else:
@@ -194,6 +203,7 @@ def create_service_form(request, client_id, ticket_id):
     return render(request, 'service/service_form.html', {'client': client, 'ticket': ticket, 'service': service})
 
 
+@login_required
 def create_or_edit_monitor_checklist(request, equipment_id, service_id, client_id, ticket_id):
     equipment = get_object_or_404(Equipment, pk=equipment_id)
     service = get_object_or_404(Service, pk=service_id)
@@ -235,12 +245,14 @@ def create_or_edit_monitor_checklist(request, equipment_id, service_id, client_i
 
         # Redirect to a success page or the equipment or service detail page
         # Adjust this based on your project's requirements
+        messages.success(request, 'Monitor Checklist Edited successfully.')
         return redirect('create_service_form', client_id=client_id, ticket_id=ticket_id)
 
     return render(request, 'service/monitor_checklist_form.html',
                   {'equipment': equipment, 'service': service, 'monitor_checklist': monitor_checklist})
 
 
+@login_required
 def create_or_edit_printer_checklist(request, equipment_id, service_id, client_id, ticket_id):
     equipment = get_object_or_404(Equipment, pk=equipment_id)
     service = get_object_or_404(Service, pk=service_id)
@@ -275,12 +287,14 @@ def create_or_edit_printer_checklist(request, equipment_id, service_id, client_i
 
         # Redirect to a success page or the equipment or service detail page
         # Adjust this based on your project's requirements
+        messages.success(request, 'Printer Checklist Edited successfully.')
         return redirect('create_service_form', client_id=client_id, ticket_id=ticket_id)
 
     return render(request, 'service/printer_checklist_form.html',
                   {'equipment': equipment, 'service': service, 'printer_checklist': printer_checklist})
 
 
+@login_required
 def create_or_edit_ups_checklist(request, equipment_id, service_id, client_id, ticket_id):
     equipment = get_object_or_404(Equipment, pk=equipment_id)
     service = get_object_or_404(Service, pk=service_id)
@@ -309,12 +323,14 @@ def create_or_edit_ups_checklist(request, equipment_id, service_id, client_id, t
 
         # Redirect to a success page or the equipment or service detail page
         # Adjust this based on your project's requirements
+        messages.success(request, 'UPS Checklist Edited successfully.')
         return redirect('create_service_form', client_id=client_id, ticket_id=ticket_id)
 
     return render(request, 'service/ups_checklist_form.html',
                   {'equipment': equipment, 'service': service, 'ups_checklist': ups_checklist})
 
 
+@login_required
 def service_report(request, schedule_id):
     service_schedule = get_object_or_404(ServiceSchedules, pk=schedule_id)
     ticket = get_object_or_404(ServiceTickets, ticket_id=service_schedule)
@@ -339,4 +355,6 @@ def service_report(request, schedule_id):
             'ups_checklists': ups_checklists,
         })
 
-    return render(request, 'service/service_report.html', {'checklists': checklists,'ticket':ticket,'service_schedule':service_schedule,'service_tickets':service_tickets})
+    return render(request, 'service/service_report.html',
+                  {'checklists': checklists, 'ticket': ticket, 'service_schedule': service_schedule,
+                   'service_tickets': service_tickets})

@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-
 from . import views
 
 urlpatterns = [
@@ -41,10 +40,13 @@ urlpatterns = [
     path('delete-entry/<int:entry_id>/', views.delete_entry, name='delete-entry'),
     path('copy-to-quote/<int:entry_id>/', views.copy_to_quote, name='copy-to-quote'),
     path('report/<int:ticket_id>/', views.report, name='report'),
-    path('checklist/<int:client_id>/', views.fill_checklist, name='fill_checklist'),
     path('create_format_approval/<int:ticket_id>/', views.create_format_approval, name='create_format_approval'),
     path('format-approval/<int:format_approval_id>/', views.format_approval_detail, name='format_approval_detail'),
     path('send-format-email/<int:format_approval_id>/', views.send_format_email, name='send_format_email'),
+    path('tr_status/<str:tr_status>/', views.tr_status_tickets, name='tr_status_tickets'),
+    path('bench_status/<str:bench_status>/', views.bench_status_tickets, name='bench_status_tickets'),
+    path('status/<str:status>/', views.status_tickets, name='status_tickets'),
+    path('remark/<str:remark>/', views.remark_tickets, name='remark_tickets'),
 
 ]
 if settings.DEBUG:

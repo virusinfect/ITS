@@ -1,4 +1,5 @@
 from django.db import models
+from django.http import request
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -115,3 +116,53 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment on {self.task.title} by {self.user.username}'
+
+
+class Personal(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    due_date = models.DateField()
+    from_date = models.DateField()
+    status = models.CharField(max_length=20)
+    created = models.DateTimeField(auto_now_add=True)  # Automatically set upon creation
+    updated = models.DateTimeField(auto_now=True)  # Automatically updated on each save
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=1)
+    colour = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.title
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    icon = models.CharField(max_length=50)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.message
+
+    @classmethod
+    def create_notification(cls, user, message, icon, is_read=False,):
+        """
+        Create a notification for the specified user.
+
+        Args:
+            user (User): The user to whom the notification belongs.
+            message (str): The content of the notification.
+            icon (str): The MDI icon name.
+            is_read (bool): Whether the notification is marked as read (default is False).
+        """
+
+        notification = cls(
+            user=user,
+            message=message,
+            icon=icon,
+            is_read=is_read,
+            created_by=user,
+        )
+        notification.save()
+        return notification

@@ -1,26 +1,29 @@
 from datetime import datetime
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.db.models.functions import ExtractMonth
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from its.models import Company, Task
 
 from .models import SalesTickets, SalesQuotes, Orders, ProformaInvoice, OurBanks, SalesQuoteProducts, OrderProducts, \
     SalesTicketProducts, ProformaInvoiceProducts
 
-
+@login_required
 def sales_tickets_list(request):
     # Filter sales tickets that are active (assuming "is_active" is a boolean field)
     active_sales_tickets = SalesTickets.objects.filter(is_active=1).order_by("-ticket_id")
     return render(request, 'sales/sales_tickets.html', {'active_sales_tickets': active_sales_tickets})
 
-
+@login_required
 def tickets_in_status(request, status):
     tickets = SalesTickets.objects.filter(status=status, is_active=1)
     return render(request, 'sales/sales_tickets.html', {'tickets': tickets,'status': status,})
 
-
+@login_required
 def edit_sales_ticket(request, ticket_id):
     # Get the SalesTickets instance to edit
     ticket = get_object_or_404(SalesTickets, ticket_id=ticket_id)
@@ -92,6 +95,7 @@ def edit_sales_ticket(request, ticket_id):
                   {'ticket': ticket, 'companies': companies, 'users': users, 'sales_quote': sales_quote,
                    'sales_order': sales_order, 'sales_invoice': sales_invoice})
 
+@login_required
 def duplicate_sales_ticket(request, ticket_id):
     # Get the SalesTicket to duplicate
     original_ticket = get_object_or_404(SalesTickets, ticket_id=ticket_id)
@@ -133,11 +137,12 @@ def duplicate_sales_ticket(request, ticket_id):
 
     return redirect('edit_sales_ticket', ticket_id=new_ticket.ticket_id)
 
+@login_required
 def bank_list(request):
     banks = OurBanks.objects.all()
     return render(request, 'sales/bank_list.html', {'banks': banks})
 
-
+@login_required
 def edit_order(request, order_id):
     order = get_object_or_404(Orders, o_id=order_id)
     users = User.objects.all()
@@ -186,6 +191,7 @@ def edit_order(request, order_id):
     # Render the edit form with the existing order details
     return render(request, 'sales/edit_order.html', {'order': order, 'users': users, 'companies': companies})
 
+@login_required
 def duplicate_order(request, order_id):
     # Get the Order to duplicate
     original_order = get_object_or_404(Orders, o_id=order_id)
@@ -221,6 +227,7 @@ def duplicate_order(request, order_id):
 
     return redirect('edit-order', new_order.o_id)  # Redirect to the order list page or a success page
 
+@login_required
 def deactivate_order_product(request, op_id, order_id):
     order_product = get_object_or_404(OrderProducts, op_id=op_id)
     order_product.is_active = False
@@ -228,12 +235,12 @@ def deactivate_order_product(request, op_id, order_id):
     messages.success(request, 'Product Received successfully')
     return redirect('edit-order', order_id)
 
-
+@login_required
 def active_orders(request):
     orders = Orders.objects.filter(is_active=True).prefetch_related('orderproducts_set').order_by('-o_id')
     return render(request, 'sales/orders.html', {'orders': orders})
 
-
+@login_required
 def delete_order(request, order_id):
     order = get_object_or_404(Orders, o_id=order_id)
     order.is_active = False
@@ -241,24 +248,24 @@ def delete_order(request, order_id):
     messages.warning(request, 'Order Succefully Deleted.')
     return redirect('active-orders')
 
-
+@login_required
 def active_quotes(request):
     quotes = SalesQuotes.objects.filter(is_active=True).prefetch_related('salesquoteproducts_set').order_by('-sq_id')
     return render(request, 'sales/active_quotes.html', {'quotes': quotes})
 
-
+@login_required
 def quotes_in_status(request, status):
     quotes = SalesQuotes.objects.filter(status=status, is_active=True)
 
     return render(request, 'sales/active_quotes.html', {'quotes': quotes,'status': status,})
 
-
+@login_required
 def active_invoice(request):
     invoices = ProformaInvoice.objects.filter(is_active=True).prefetch_related('proformainvoiceproducts_set').order_by(
         '-pfq_id')
     return render(request, 'sales/active_invoices.html', {'invoices': invoices})
 
-
+@login_required
 def edit_quote(request, quote_id):
     quote = get_object_or_404(SalesQuotes, sq_id=quote_id)
     users = User.objects.all()
@@ -312,7 +319,7 @@ def edit_quote(request, quote_id):
 
     return render(request, 'sales/edit_quote.html', {'quote': quote, 'users': users, 'products': products})
 
-
+@login_required
 def delete_quote(request, quote_id):
     quote = get_object_or_404(SalesQuotes, pk=quote_id)
 
@@ -324,7 +331,7 @@ def delete_quote(request, quote_id):
     # You may need to dynamically determine the URL based on your app's structure
     return redirect('active-quotes')
 
-
+@login_required
 def delete_quote_ticket(request, quote_id, ticket_id):
     quote = get_object_or_404(SalesQuotes, pk=quote_id)
 
@@ -336,7 +343,7 @@ def delete_quote_ticket(request, quote_id, ticket_id):
     # You may need to dynamically determine the URL based on your app's structure
     return redirect('edit_sales_ticket', ticket_id)
 
-
+@login_required
 def convert_to_quote(request, ticket_id):
     ticket = get_object_or_404(SalesTickets, ticket_id=ticket_id)
     users = User.objects.all()
@@ -386,7 +393,7 @@ def convert_to_quote(request, ticket_id):
 
     return render(request, 'sales/convert_to_quote.html', {'ticket': ticket, 'users': users})
 
-
+@login_required
 def convert_to_order(request, ticket_id):
     ticket = get_object_or_404(SalesTickets, pk=ticket_id)
     users = User.objects.all()
@@ -429,7 +436,7 @@ def convert_to_order(request, ticket_id):
 
     return render(request, 'sales/convert_to_order.html', {'ticket': ticket, 'users': users})
 
-
+@login_required
 def create_order(request):
     users = User.objects.all()
     if request.method == 'POST':
@@ -472,7 +479,7 @@ def create_order(request):
 
     return render(request, 'sales/convert_to_order.html', {'users': users})
 
-
+@login_required
 def create_ticket(request):
     companies = Company.objects.all().order_by('name')
     users = User.objects.all()
@@ -553,7 +560,7 @@ def create_ticket(request):
     # If the request method is not POST, render the form for creating a ticket
     return render(request, 'sales/create_ticket.html', {'companies': companies, 'users': users})
 
-
+@login_required
 def view_invoice(request, invoice_id):
     users = User.objects.all()
     banks = OurBanks.objects.all()
@@ -617,7 +624,7 @@ def view_invoice(request, invoice_id):
     return render(request, 'sales/invoice_detail.html',
                   {'invoice': invoice, 'products': products, 'users': users, 'banks': banks})
 
-
+@login_required
 def delete_sales_ticket(request, ticket_id):
     try:
         ticket = SalesTickets.objects.get(ticket_id=ticket_id)
@@ -629,7 +636,7 @@ def delete_sales_ticket(request, ticket_id):
     messages.warning(request, 'Ticket Succefully Deleted.')
     return redirect('sales_tickets')
 
-
+@login_required
 def delete_sales_invoice(request, invoice_id):
     try:
         invoice = ProformaInvoice.objects.get(pfq_id=invoice_id)
@@ -641,7 +648,7 @@ def delete_sales_invoice(request, invoice_id):
     messages.warning(request, 'Invoice Succefully Deleted.')
     return redirect('active-invoice')
 
-
+@login_required
 def delete_sales_invoice_ticket(request, invoice_id, ticket_id):
     try:
         invoice = ProformaInvoice.objects.get(pfq_id=invoice_id)
@@ -653,7 +660,7 @@ def delete_sales_invoice_ticket(request, invoice_id, ticket_id):
     messages.warning(request, 'Invoice Succefully Deleted.')
     return redirect('edit_sales_ticket', ticket_id)
 
-
+@login_required
 def delete_order_ticket(request, order_id, ticket_id):
     order = get_object_or_404(Orders, o_id=order_id)
     order.is_active = False
@@ -661,7 +668,7 @@ def delete_order_ticket(request, order_id, ticket_id):
     messages.warning(request, 'Order Succefully Deleted.')
     return redirect('edit_sales_ticket', ticket_id)
 
-
+@login_required
 def convert_to_invoice(request, ticket_id):
     ticket = get_object_or_404(SalesTickets, pk=ticket_id)
     users = User.objects.all()
@@ -707,7 +714,7 @@ def convert_to_invoice(request, ticket_id):
 
     return render(request, 'sales/convert_to_invoice.html', {'ticket': ticket, 'users': users})
 
-
+@login_required
 def delete_row(request, product_id, ticket_id):
     # Fetch the product from the database using the product_id
 
@@ -718,7 +725,7 @@ def delete_row(request, product_id, ticket_id):
     # Redirect back to the original page
     return redirect('edit_sales_ticket', ticket_id)
 
-
+@login_required
 def delete_row_quote(request, product_id, quote_id):
     # Fetch the product from the database using the product_id
 
@@ -729,7 +736,7 @@ def delete_row_quote(request, product_id, quote_id):
     # Redirect back to the original page
     return redirect('edit-quote', quote_id)
 
-
+@login_required
 def delete_row_order(request, product_id, order_id):
     # Fetch the product from the database using the product_id
 
@@ -740,7 +747,7 @@ def delete_row_order(request, product_id, order_id):
     # Redirect back to the original page
     return redirect('edit-order', order_id)
 
-
+@login_required
 def delete_row_invoice(request, product_id, invoice_id):
     # Fetch the product from the database using the product_id
 
@@ -751,7 +758,7 @@ def delete_row_invoice(request, product_id, invoice_id):
     # Redirect back to the original page
     return redirect('view_invoice', invoice_id)
 
-
+@login_required
 def quote(request, quote_id):
     quote = get_object_or_404(SalesQuotes, sq_id=quote_id)
 
@@ -779,7 +786,7 @@ def quote(request, quote_id):
     return render(request, 'sales/quote.html', {'quote': quote, 'items': items, 'subtotals': subtotals, 'vat': vat,
                                                 'total_amount': total_amount})
 
-
+@login_required
 def invoice(request, invoice_id):
     invoice = get_object_or_404(ProformaInvoice, pfq_id=invoice_id)
 
@@ -813,11 +820,7 @@ def invoice(request, invoice_id):
                   {'invoice': invoice, 'items': items, 'subtotals': subtotals, 'vat': vat,
                    'total_amount': total_amount})
 
-
-from django.db.models import Count
-from django.utils import timezone
-
-
+@login_required
 def sales_dashboard(request):
     # Count tickets in 'Sourcing' status that are also 'is_active'
     sourcing_count = SalesTickets.objects.filter(status='Sourcing', is_active=1).count()
@@ -894,7 +897,7 @@ def sales_dashboard(request):
 
     })
 
-
+@login_required
 def tickets_created_this_year(request):
     # Get the current year
     current_year = timezone.now().year
@@ -915,7 +918,7 @@ def tickets_created_this_year(request):
 
     return JsonResponse(data, safe=False)
 
-
+@login_required
 def quotes_created_this_year(request):
     # Get the current year
     current_year = timezone.now().year
@@ -936,7 +939,7 @@ def quotes_created_this_year(request):
 
     return JsonResponse(data, safe=False)
 
-
+@login_required
 def orders_created_this_year(request):
     # Get the current year
     current_year = timezone.now().year
@@ -957,7 +960,7 @@ def orders_created_this_year(request):
 
     return JsonResponse(data, safe=False)
 
-
+@login_required
 def donut_chart_data(request):
     # Get the current month and year
     current_month = datetime.now().month
@@ -986,7 +989,7 @@ def donut_chart_data(request):
 
     return JsonResponse(data, safe=False)
 
-
+@login_required
 def donut_chart_quotes_data(request):
     # Get the current month and year
     current_month = datetime.now().month
@@ -1027,7 +1030,7 @@ def donut_chart_quotes_data(request):
 
     return JsonResponse(data, safe=False)
 
-
+@login_required
 def donut_chart_orders_data(request):
     # Get the current month and year
     current_month = datetime.now().month
@@ -1074,7 +1077,7 @@ def donut_chart_orders_data(request):
 
     return JsonResponse(data, safe=False)
 
-
+@login_required
 def orders_in_status(request, status):
     # Retrieve orders for the specified status and filter for active orders
     orders = Orders.objects.filter(status=status, is_active=True)

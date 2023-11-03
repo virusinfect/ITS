@@ -9,19 +9,118 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
-from its.models import Company, Clients, Parts, PartsCategory, Task
+from its.models import Company, Clients, Parts, PartsCategory, Task, Notification
 from django.db import transaction
 from django.http import HttpResponse
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
-    Deliverys, Tsourcing, tQuote,FormatApproval, UniqueToken, FSignature
+    Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature
 from django.core.mail import send_mail
 from django.conf import settings
 
 
 @login_required
 def helpdesk_dash(request):
-    return render(request, "technical/helpdesk_dashboard.html")
+    # Define the list of statuses you want to count
+    statuses_to_count = [
+        "Open",
+        "Closed",
+    ]
+
+    # Initialize a dictionary to store the counts for each status
+    status_counts = {}
+
+    # Loop through each status and count the tickets with that status
+    for status in statuses_to_count:
+        count = Tickets.objects.filter(status=status, is_active=1).count()
+        status_counts[status] = count
+    # Define the list of remarks you want to count
+    remarks_to_count = [
+        "Awaiting feedback",
+        "Awaiting parts",
+        "Repairs",
+        "LPO follow up",
+        "MD LPO follow up",
+        "To be collected",
+        "To be delivered",
+        "Warranty",
+        "Collected",
+        "Delivered",
+    ]
+
+    # Initialize a dictionary to store the counts for each remark
+    remark_counts = {}
+
+    # Loop through each remark and count the tickets with that remark
+    for remark in remarks_to_count:
+        count = Tickets.objects.filter(remark=remark, is_active=1).count()
+        remark_counts[remark] = count
+
+    bench_statuses_to_count = [
+        "Pending",
+        "Done",
+    ]
+
+    # Initialize a dictionary to store the counts for each bench status
+    bench_status_counts = {}
+
+    # Loop through each bench status and count the tickets with that status
+    for bench_status in bench_statuses_to_count:
+        count = Tickets.objects.filter(bench_status=bench_status, is_active=1).count()
+        bench_status_counts[bench_status] = count
+
+        # Define the list of tr_statuses you want to count
+        tr_statuses_to_count = [
+            "Follow up",
+            "Awaiting LPO",
+            "On hold",
+            "Not interested",
+            "Done",
+        ]
+
+        # Initialize a dictionary to store the counts for each tr_status
+        tr_status_counts = {}
+
+        # Loop through each tr_status and count the tickets with that tr_status
+        for tr_status in tr_statuses_to_count:
+            count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
+            tr_status_counts[tr_status] = count
+
+    return render(request, "technical/helpdesk_dashboard.html",
+                  {'remark_counts': remark_counts, 'bench_status_counts': bench_status_counts,
+                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts})
+
+
+@login_required
+def remark_tickets(request, remark):
+    # Filter tickets with the specified remark and that are active
+    tickets = Tickets.objects.filter(remark=remark, is_active=1)
+
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets})
+
+
+@login_required
+def status_tickets(request, status):
+    # Filter tickets with the specified status and that are active
+    tickets = Tickets.objects.filter(status=status, is_active=1)
+
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets})
+
+
+@login_required
+def bench_status_tickets(request, bench_status):
+    # Filter tickets with the specified bench_status and that are active
+    tickets = Tickets.objects.filter(bench_status=bench_status, is_active=1)
+
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets})
+
+
+@login_required
+def tr_status_tickets(request, tr_status):
+    # Filter tickets with the specified tr_status and that are active
+    tickets = Tickets.objects.filter(tr_status=tr_status, is_active=1)
+
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets})
 
 
 @login_required
@@ -373,6 +472,13 @@ def add_requisition(request):
         )
 
         requisition.save()
+        user = request.user
+        created_by = request.user
+        notification = Notification.create_notification(
+            user=user,  # Assign it to the user
+            message="You have a requisition to approve.",
+            icon="mdi-book-alert",  # Replace with your MDI icon name
+        )
         messages.success(request, 'Requisition Created successfully')
         return redirect('list_requisitions')
 
@@ -852,6 +958,7 @@ def delete_ticket(request, ticket_id):
     return redirect('ticket-list')  # Redirect to the list of tickets after deletion
 
 
+@login_required
 def delete_delivery(request, delivery_id):
     try:
         delivery = Delivery.objects.get(id=delivery_id)
@@ -864,6 +971,7 @@ def delete_delivery(request, delivery_id):
     return redirect('list_deliveries')
 
 
+@login_required
 def quote_tickets(request, ticket_id):
     if request.method == 'POST':
         ticket = Tickets.objects.get(ticket_id=ticket_id)
@@ -909,6 +1017,7 @@ def quote_tickets(request, ticket_id):
     return redirect('edit-ticket', ticket_id=ticket_id)
 
 
+@login_required
 def sourcing_tickets(request, ticket_id):
     if request.method == 'POST':
         ticket = Tickets.objects.get(ticket_id=ticket_id)
@@ -971,6 +1080,7 @@ def sourcing_tickets(request, ticket_id):
     return redirect('edit-ticket', ticket_id=ticket_id)
 
 
+@login_required
 def delete_entry(request, entry_id):
     try:
         entry = Tsourcing.objects.get(id=entry_id)  # Replace YourModel with the appropriate model name
@@ -980,6 +1090,7 @@ def delete_entry(request, entry_id):
         return JsonResponse({'error': 'Entry not found'}, status=404)
 
 
+@login_required
 def copy_to_quote(request, entry_id):
     try:
         tsourcing_entry = Tsourcing.objects.get(id=entry_id)
@@ -998,6 +1109,7 @@ def copy_to_quote(request, entry_id):
         return JsonResponse({'error': 'Product not found in Tsourcing'}, status=404)
 
 
+@login_required
 def report(request, ticket_id):
     ticket = get_object_or_404(Tickets, ticket_id=ticket_id)
     quote_subtotals = 0
@@ -1032,44 +1144,6 @@ def report(request, ticket_id):
                   {'ticket': ticket, 'tquote_data': tquote_data, 'parts': parts, 'vat': vat,
                    'total_amount': total_amount, 'subtotals': subtotals, 'quote_subtotals': quote_subtotals,
                    'quote_total_amount': quote_total_amount, 'quote_vat': quote_vat})
-
-
-def fill_checklist(request, client_id):
-    if request.method == 'POST':
-        client = Clients.objects.get(pk=client_id)
-        service = ServiceDetails.objects.filter(client=client).first()  # You need to specify the correct service here.
-        if service:
-            checklist_items = ChecklistItem.objects.filter(checklist=service.equipment.checklist)
-            with transaction.atomic():
-                for item in checklist_items:
-                    item_id = str(item.id)
-                    checked = item_id in request.POST  # Check if the item is checked in the POST data.
-                    comments = request.POST.get(f'comments_{item_id}')
-                    # Update the ServiceDetails instance with the checked status and comments.
-                    service_detail, created = ServiceDetails.objects.get_or_create(service=service, checklist_item=item)
-                    service_detail.checked = checked
-                    service_detail.comments = comments
-                    service_detail.save()
-            return redirect('client_page')  # Replace 'client_page' with the actual URL you want to redirect to.
-        else:
-            return HttpResponse('Service not found')  # Handle the case where the service is not found.
-    else:
-        # Retrieve the client and the associated checklist for the view.
-        client = Clients.objects.get(pk=client_id)
-        service = ServiceDetails.objects.filter(client=client).first()  # You need to specify the correct service here.
-        if service:
-            checklist_items = ChecklistItem.objects.filter(checklist=service.equipment.checklist)
-            checklist_data = {}
-            for item in checklist_items:
-                service_detail = service.servicedetails_set.filter(checklist_item=item).first()
-                checklist_data[item.id] = {
-                    'checked': service_detail.checked if service_detail else False,
-                    'comments': service_detail.comments if service_detail else ""
-                }
-            return render(request, 'technical/fill_checklist.html',
-                          {'checklist_items': checklist_items, 'service': service})
-        else:
-            return HttpResponse('Service not found')  # Handle the case where the service is not found.
 
 
 @login_required
@@ -1114,6 +1188,7 @@ def create_format_approval(request, ticket_id):
         raise Http404("Ticket does not exist")
 
 
+@login_required
 def format_approval_detail(request, format_approval_id):
     try:
         format_approval = FormatApproval.objects.get(pk=format_approval_id)
@@ -1126,6 +1201,7 @@ def format_approval_detail(request, format_approval_id):
         pass
 
 
+@login_required
 def send_format_email(request, format_approval_id):
     # Retrieve the FormatApproval object
     format_approval = get_object_or_404(FormatApproval, pk=format_approval_id)
@@ -1147,7 +1223,8 @@ def send_format_email(request, format_approval_id):
         message = 'Dear ' + str(
             format_approval.ticket.company) + '\n\nPlease click the following link to approve the request for :' + str(
             format_approval.ticket.equipment) + ', Serial Number : ' + str(
-            format_approval.ticket.serial_no) + ' \n\n'+str(url)+'\n\nNote: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.\n\nThank you for your patience and understanding.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.'
+            format_approval.ticket.serial_no) + ' \n\n' + str(
+            url) + '\n\nNote: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.\n\nThank you for your patience and understanding.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.'
         recipient_list = [recipient_email]  # Use the recipient's email from the form input
         from_email = 'its-noreply@intellitech.co.ke'
 

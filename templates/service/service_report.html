@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
     <script type="text/javascript" charset="utf8"
             src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 
@@ -16,7 +18,7 @@
     <link href="{% static 'css/icons.min.css' %}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<div class="row">
+<div class="row container-fluid" id="content">
     <div class="card">
         <div class="card-body mx-auto">
             <div class="row">
@@ -38,7 +40,7 @@
             <div class="row">
                 <p>
                     The service was carried out from {{ service_schedule.from_date }} to {{ service_schedule.to_date }}
-                    which included cleaning of  the following.
+                    which included cleaning of the following.
                 </p>
 
             </div>
@@ -170,7 +172,7 @@
                 {% for checklist_data in checklists %}
                     {% for equip in checklist_data.equipment %}
                         <tr>
-                            <td rowspan="{{ forloop.parentloop.counter }}">{{ checklist_data.client }}</td>
+                            <td>{{ checklist_data.client }}</td>
 
 
                             <td>{{ equip.name }} - {{ equip.serial_no }}</td>
@@ -188,7 +190,7 @@
                                         {{ ups_checklist.observations }}
                                     {% endfor %}
                                 {% else %}
-
+                                    aaa
                                 {% endif %}
                             </td>
                             <td>
@@ -197,18 +199,36 @@
                                         {{ monitor_checklist.recommendation }}
                                     {% endfor %}
                                 {% elif equip.type == "Printer" %}
-                                    <ul>
-                                        {% for printer_checklist in checklist_data.printer_checklists %}
-                                            {{ printer_checklist.recommendation }}
-                                        {% endfor %}
-                                    </ul>
+
+                                    {% for printer_checklist in checklist_data.printer_checklists %}
+                                        {{ printer_checklist.recommendation }}
+                                    {% endfor %}
+
                                 {% elif equip.type == "UPS" %}
-                                    <ul>
-                                        {% for ups_checklist in checklist_data.ups_checklists %}
-                                            {{ ups_checklist.recommendation }}
-                                        {% endfor %}
-                                    </ul>
+
+                                    {% for ups_checklist in checklist_data.ups_checklists %}
+                                        {{ ups_checklist.recommendation }}
+                                    {% endfor %}
+
                                 {% else %}
+                                    aa
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if equip.type == "Monitor" %}
+                                    {% for monitor_checklist in checklist_data.monitor_checklists %}
+                                        {{ monitor_checklist.status }}
+                                    {% endfor %}
+                                {% elif equip.type == "Printer" %}
+                                    {% for printer_checklist in checklist_data.printer_checklists %}
+                                        {{ printer_checklist.status }}
+                                    {% endfor %}
+                                {% elif equip.type == "UPS" %}
+                                    {% for ups_checklist in checklist_data.ups_checklists %}
+                                        {{ ups_checklist.status }}
+                                    {% endfor %}
+                                {% else %}
+
                                 {% endif %}
                             </td>
                         </tr>
@@ -219,6 +239,43 @@
         </div>
     </div>
 </div>
+<button id="printButton" class="btn btn-primary">Print</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+<script>
+    document.getElementById('printButton').addEventListener('click', function () {
+        // Create a new window or popup for printing
+        const printWindow = window.open('', '', 'width=600,height=600');
+
+        // Copy the content and styles to the new window
+        printWindow.document.open();
+        printWindow.document.write('<html><head>' +
+            '<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">' +
+            '</head><body>');
+        printWindow.document.write(document.getElementById('content').innerHTML);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+
+        // Wait for the styles to load and print the content
+        printWindow.addEventListener('load', function () {
+            printWindow.print();
+            printWindow.close();
+        });
+    });
+</script>
+<button onclick="downloadAsPDF()">Download as PDF</button>
+
+    <script>
+        function downloadAsPDF() {
+            const content = document.getElementById("content");
+
+            html2pdf()
+                .from(content)
+                .save();
+        }
+    </script>
+
+
 
 </body>
 </html>

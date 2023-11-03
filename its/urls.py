@@ -31,6 +31,10 @@ urlpatterns = [
     path('save-signature-view-call/', views.save_signature_view_call, name='save_signature_call'),
     path('save-signature-view-format/', views.save_signature_view_format, name='save_signature_format'),
     path('form/<uuid:token>/', views.form_with_uuid, name='form_with_uuid'),
-    path('form_not_found/',views.form_not_found,name='form_not_found')
+    path('form_not_found/', views.form_not_found, name='form_not_found'),
+    path('get_personal/', views.get_personal, name='get_personal'),
+    path('personal_task/', views.personal_task, name='personal_task'),
+    path('create_personal_task/', views.create_personal_task, name='create_personal_task'),
+    path('personal/delete/<int:task_id>/', views.delete_personal_task, name='delete_personal_task'),
 
 ]

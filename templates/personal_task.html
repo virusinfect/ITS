@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Personal Schedule{% endblock %}
+{% block header %}Personal Schedule{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'service' %}">Personal Schedule</a></li>
+
+
+                </ol>
+            </div>
+
+        </div> <!-- end col -->
+
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <h4 class="border-bottom-1  col-9">Personal Schedule</h4>
+                        <a class="btn btn-primary waves-effect waves-light col-3"
+                           href="{% url 'create_personal_task' %}">
+                            Create New</a>
+                    </div>
+                    {% for event in events %}
+                        <div class="card shadow-lg mb-3 bg-body-tertiary rounde">
+                            <div class="card-body">
+                                <div class="row">
+                                    <h4 class="card-title col-10">{{ event.title }}</h4>
+                                    <div class="col-2">
+                                        <a href="{% url 'delete_personal_task' event.id %}" title="delete"
+                                           tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                                            <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+
+                                <p class="card-text">Due:
+                                    {{ event.due_date }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row bg-body bg-black col-lg-8 mx-auto mb-5">
+            <div>
+                <div class="card">
+
+
+                    <div id="calendar" class="card-body p-2">
+                    </div><!-- end col -->
+                </div>
+            </div>
+
+        </div>
+        <!-- end row -->
+
+
+        <!-- end modal-->
+
+        <!-- end col-12 -->
+    </div> <!-- end row -->
+
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.9/index.global.min.js'></script>
+
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.9/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', // Set the initial view to 'dayGridMonth'
+                events: '{% url 'get_personal' %}', // Use the URL of the view
+                themeSystem: 'bootstrap5',
+                headerToolbar: {
+                    // Define the buttons for changing views
+                    start: 'prevYear,prev,today,next,nextYear', // Year navigation
+                    center: 'title', // Display the calendar title in the center
+                    end: 'dayGridMonth,timeGridWeek,timeGridDay', // Month, Week, and Day views
+                },
+            });
+            calendar.render();
+        });
+    </script>
+
+
+{% endblock %}

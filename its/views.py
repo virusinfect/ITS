@@ -1,13 +1,12 @@
 import base64
+from datetime import timedelta
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import update_session_auth_hash
 from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-
-from . import models
-from .models import PartsCategory, Parts, Company, Clients, Task
+from .models import PartsCategory, Parts, Company, Clients, Task, Personal
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -470,7 +469,7 @@ def view_task_details(request, task_id):
     task = get_object_or_404(Task, pk=task_id)  # Retrieve the task or show a 404 page if it doesn't exist
     return render(request, 'task_details.html', {'task': task})
 
-
+@login_required
 def form_with_uuid(request, token):
     try:
         # Retrieve the UniqueToken associated with the UUID
@@ -486,5 +485,73 @@ def form_with_uuid(request, token):
         # Handle the case where the UniqueToken is not found
         return redirect('form_not_found')  # Replace with the name of your "not found" view
 
+@login_required
 def form_not_found(request):
     return render(request, 'form_not_found.html')
+
+@login_required
+def create_personal_task(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+        from_date = request.POST.get("from_date")
+        due_date = request.POST.get("due_date")
+        status = request.POST.get("status")
+        colour = request.POST.get("colour")
+
+        # Get the current logged-in user
+        user = request.user
+
+        # Create a new Personal object
+        add_personal_task = Personal(
+            title=title,
+            description=description,
+            due_date=due_date,
+            status=status,
+            colour=colour,
+            from_date=from_date,
+            created_by=user
+        )
+        add_personal_task.save()
+
+        return redirect('personal_task')  # Redirect to a view that lists personal tasks
+
+    return render(request, 'create_personal_task.html')
+
+@login_required
+def get_personal(request):
+    events = Personal.objects.filter(created_by=request.user, is_active=True)
+
+    data = []
+    for event in events:
+        event_to_date = event.due_date
+        new_date = event_to_date + timedelta(days=1)
+        data.append({
+
+            'title': event.title,
+            'start': event.from_date.isoformat(),
+            'end': new_date.isoformat(),
+            'color': event.colour,
+        })
+
+    return JsonResponse(data, safe=False)
+
+@login_required
+def personal_task(request):
+    events = Personal.objects.filter(created_by=request.user, is_active=True).order_by('due_date')
+    return render(request, 'personal_task.html', {'events': events})
+
+
+@login_required
+def delete_personal_task(request, task_id):
+    # Get the task to be deleted, ensuring it exists and is associated with the current user
+    task = get_object_or_404(Personal, pk=task_id, created_by=request.user)
+
+    if request.method == "POST":
+        # Delete the task
+        task.delete()
+
+        # Redirect to a view that lists personal tasks (replace with your task list view URL)
+        return redirect('personal_task')
+
+    return render(request, 'delete_personal_task.html', {'task': task})
