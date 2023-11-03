@@ -44,19 +44,28 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ user.username }}</td>
-                        <td>{% for group in user.groups.all %}
-                            <span class="badge badge-outline-success">{{ group.name }}</span>
-                        {% endfor %}</td>
+                        <td>
+                            <div class="product-list" data-order-id="{{ user.id }}" style="display: none;">
+                                {% for group in user.groups.all %}
+                                    <li>{{ group.name }}</li>
+                                    {% empty %}
+                                    No Roles associated
+                                {% endfor %}
+                            </div>
+                            <a class="show-more-btn btn btn-outline-primary py-0 px-3" data-order-id="{{ user.id }}">More</a>
+                        </td>
                         <td>{{ user.first_name }}</td>
                         <td>{{ user.last_name }}</td>
                         <td>{{ user.email }}</td>
 
                         <td>
-                            <a href="{% url 'edit_user' user.id %}" title="edit" tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                            <a href="{% url 'edit_user' user.id %}" title="edit" tabindex="0" data-plugin="tippy"
+                               data-tippy-interactive="true">
                                 <i class="mdi mdi-square-edit-outline mdi-18px"></i>
                             </a>
 
-                            <a href="{% url 'delete_user' user.id %}" title="delete" tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                            <a href="{% url 'delete_user' user.id %}" title="delete" tabindex="0" data-plugin="tippy"
+                               data-tippy-interactive="true">
                                 <i class="s mdi mdi-delete-outline mdi-18px"></i>
                             </a>
                         </td>
@@ -100,5 +109,23 @@
             $('#responsive-datatable').DataTable();
         });
     </script>
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('show-more-btn')) {
+                const orderId = e.target.getAttribute('data-order-id');
+                const productList = document.querySelector(`.product-list[data-order-id="${orderId}"]`);
+
+                if (productList.style.display === "none" || productList.style.display === "") {
+                    productList.style.display = "block";
+                    e.target.textContent = "Less";
+                } else {
+                    productList.style.display = "none";
+                    e.target.textContent = "More";
+                }
+            }
+        });
+
+    </script>
+
 
 {% endblock %}

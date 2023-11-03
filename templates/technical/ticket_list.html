@@ -39,6 +39,9 @@
                     <th>Status</th>
                     <th>Company</th>
                     <th>Client</th>
+                    <th>Equipment</th>
+                    <th>Fault</th>
+                    <th>Remark</th>
                     <th class="d-show d-md-table-cell">Action</th>
                 </tr>
                 </thead>
@@ -60,18 +63,24 @@
 
                         <td>{{ ticket.company.name }}</td>
                         <td>{{ ticket.client.f_name }}</td>
+                        <td>{{ ticket.equipment }}</td>
+                        <td>{{ ticket.fault }}</td>
+                    <td>{{ ticket.remark }}</td>
                         <td class="d-show d-md-table-cell">
                             <a href="{% url 'edit-ticket' ticket.ticket_id %}" title="edit" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="mdi mdi-square-edit-outline mdi-18px"></i>
                             </a>
-                            <a href="{% url 'create_delivery' ticket.ticket_id %}" title="delivery" tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                            <a href="{% url 'create_delivery' ticket.ticket_id %}" title="delivery" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="mdi mdi-truck-delivery-outline mdi-18px"></i>
                             </a>
-                            <a href="{% url 'report' ticket.ticket_id %}" title="report" tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                            <a href="{% url 'report' ticket.ticket_id %}" title="report" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="mdi mdi-file-document mdi-18px"></i>
                             </a>
-                            <a href="{% url 'delete_ticket' ticket.ticket_id %}" title="delete" tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                            <a href="{% url 'delete_ticket' ticket.ticket_id %}" title="delete" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="s mdi mdi-delete-outline mdi-18px"></i>
                             </a>
                         </td>

@@ -1,20 +1,22 @@
 import base64
 from datetime import timedelta
-from django.http import JsonResponse, HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth import update_session_auth_hash
-from django.core.files.base import ContentFile
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
-from .models import PartsCategory, Parts, Company, Clients, Task, Personal
+
 from django.contrib import messages
-from django.utils import timezone
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import User, Group
+from django.core.files.base import ContentFile
 from django.db.models import Count, Q
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponseRedirect
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 from technical.models import Signature, Delivery, CallCards, CSignature, FSignature, FormatApproval, UniqueToken
+
+from .models import PartsCategory, Parts, Company, Clients, Task, Personal,Notification
 
 
 def get_clients(request):
@@ -469,6 +471,7 @@ def view_task_details(request, task_id):
     task = get_object_or_404(Task, pk=task_id)  # Retrieve the task or show a 404 page if it doesn't exist
     return render(request, 'task_details.html', {'task': task})
 
+
 @login_required
 def form_with_uuid(request, token):
     try:
@@ -485,9 +488,11 @@ def form_with_uuid(request, token):
         # Handle the case where the UniqueToken is not found
         return redirect('form_not_found')  # Replace with the name of your "not found" view
 
+
 @login_required
 def form_not_found(request):
     return render(request, 'form_not_found.html')
+
 
 @login_required
 def create_personal_task(request):
@@ -518,6 +523,7 @@ def create_personal_task(request):
 
     return render(request, 'create_personal_task.html')
 
+
 @login_required
 def get_personal(request):
     events = Personal.objects.filter(created_by=request.user, is_active=True)
@@ -535,6 +541,7 @@ def get_personal(request):
         })
 
     return JsonResponse(data, safe=False)
+
 
 @login_required
 def personal_task(request):
@@ -555,3 +562,37 @@ def delete_personal_task(request, task_id):
         return redirect('personal_task')
 
     return render(request, 'delete_personal_task.html', {'task': task})
+
+
+def get_unread_notifications(request):
+    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        user = request.user
+        unread_notifications = user.notifications.filter(is_read=False)
+        unread_count = unread_notifications.count()
+        notifications_data = [{'message': notification.message, 'icon': notification.icon} for notification in
+                              unread_notifications]
+        return JsonResponse({'notifications': notifications_data, 'unread_count': unread_count})
+    else:
+        return JsonResponse({'error': 'Invalid request'})
+
+
+def clear_all_notifications(request):
+    if request.method == 'POST':
+        user = request.user
+        user.notifications.filter(is_read=False).update(is_read=True)
+
+    return JsonResponse({'message': 'Notifications cleared successfully'})
+
+
+def mark_notification_as_read(request):
+    if request.method == 'POST':
+        notification_id = request.POST.get('notification_id')
+        try:
+            notification = Notification.objects.get(id=notification_id)
+            notification.is_read = True
+            notification.save()
+            return JsonResponse({'message': 'Notification marked as read'})
+        except Notification.DoesNotExist:
+            return JsonResponse({'error': 'Notification not found'}, status=404)
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)

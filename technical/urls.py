@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
+
 from . import views
 
 urlpatterns = [
@@ -47,6 +48,13 @@ urlpatterns = [
     path('bench_status/<str:bench_status>/', views.bench_status_tickets, name='bench_status_tickets'),
     path('status/<str:status>/', views.status_tickets, name='status_tickets'),
     path('remark/<str:remark>/', views.remark_tickets, name='remark_tickets'),
+    path('tickets-created-monthly/', views.tickets_created_monthly_this_year, name='tickets_created_monthly_this_year'),
+    path('tr-status-pie-chart/', views.tr_status_pie_chart, name='tr_status_pie_chart'),
+    path('service-schedules-yearly/', views.service_schedules_yearly, name='service_schedules_yearly'),
+    path('remark-pie-chart/', views.remark_pie_chart, name='remark_pie_chart'),
+    path('bench-status-pie-chart/', views.bench_status_pie_chart, name='bench_status_pie_chart'),
+    path('status-pie-chart/', views.status_pie_chart, name='status_pie_chart'),
+    path('requisitions-created-monthly/', views.requisitions_created_monthly, name='requisitions_created_monthly'),
 
 ]
 if settings.DEBUG:

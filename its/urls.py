@@ -36,5 +36,8 @@ urlpatterns = [
     path('personal_task/', views.personal_task, name='personal_task'),
     path('create_personal_task/', views.create_personal_task, name='create_personal_task'),
     path('personal/delete/<int:task_id>/', views.delete_personal_task, name='delete_personal_task'),
+    path('clear-all-notifications/', views.clear_all_notifications, name='clear_all_notifications'),
+    path('get-unread-notifications/', views.get_unread_notifications, name='get_unread_notifications'),
+    path('mark-notification-read/', views.mark_notification_as_read, name='mark_notification_as_read'),
 
 ]

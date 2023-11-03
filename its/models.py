@@ -1,7 +1,5 @@
-from django.db import models
-from django.http import request
-from django.utils import timezone
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class PartsCategory(models.Model):
@@ -135,7 +133,7 @@ class Personal(models.Model):
 
 
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    users = models.ManyToManyField(User, related_name='notifications')
     message = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
     icon = models.CharField(max_length=50)
@@ -146,23 +144,23 @@ class Notification(models.Model):
         return self.message
 
     @classmethod
-    def create_notification(cls, user, message, icon, is_read=False,):
+    def create_notification(cls, users, message, created_by, icon, is_read=False):
         """
-        Create a notification for the specified user.
+        Create a notification for the specified users.
 
         Args:
-            user (User): The user to whom the notification belongs.
+            users (QuerySet of User): The users to whom the notification belongs.
             message (str): The content of the notification.
             icon (str): The MDI icon name.
             is_read (bool): Whether the notification is marked as read (default is False).
         """
 
         notification = cls(
-            user=user,
             message=message,
             icon=icon,
             is_read=is_read,
-            created_by=user,
+            created_by=created_by,
         )
         notification.save()
+        notification.users.add(*users)  # Add the users to the notification
         return notification

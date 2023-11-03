@@ -1,22 +1,25 @@
+import datetime
 import uuid
-from datetime import timedelta
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
-from django.http import HttpResponseNotFound, HttpRequest, Http404
+from django.core.mail import send_mail
+from django.db import transaction
+from django.db.models import Count
+from django.db.models.functions import ExtractMonth
+from django.http import HttpResponseNotFound, Http404
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 from its.models import Company, Clients, Parts, PartsCategory, Task, Notification
-from django.db import transaction
-from django.http import HttpResponse
+
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
     Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature
-from django.core.mail import send_mail
-from django.conf import settings
 
 
 @login_required
@@ -472,12 +475,14 @@ def add_requisition(request):
         )
 
         requisition.save()
-        user = request.user
+        helpdesk_group = Group.objects.get(name='helpdesk')
+        users_in_helpdesk_group = User.objects.filter(groups=helpdesk_group)
         created_by = request.user
         notification = Notification.create_notification(
-            user=user,  # Assign it to the user
-            message="You have a requisition to approve.",
-            icon="mdi-book-alert",  # Replace with your MDI icon name
+            users=users_in_helpdesk_group,  # Assign it to the user
+            message="You have a requisition to approve for "+part_id+".",
+            icon="mdi-book-alert",
+            created_by=created_by,# Replace with your MDI icon name
         )
         messages.success(request, 'Requisition Created successfully')
         return redirect('list_requisitions')
@@ -1248,3 +1253,114 @@ def send_format_email(request, format_approval_id):
     signature = FSignature.objects.filter(format=format_approval).last()
     return render(request, 'technical/format_approval.html',
                   {'format_approval': format_approval, 'signature': signature})
+
+
+def tickets_created_monthly_this_year(request):
+    current_year = timezone.now().year
+
+    monthly_ticket_counts = Tickets.objects.filter(
+        created__year=current_year,
+        is_active=1  # Filter by active tickets if needed
+    ).annotate(
+        month=ExtractMonth('created')
+    ).values(
+        'month'
+    ).annotate(
+        count=Count('ticket_id')
+    ).order_by('month')
+
+    data = list(monthly_ticket_counts)
+
+    return JsonResponse(data, safe=False)
+
+
+def tr_status_pie_chart(request):
+    tr_status_counts = Tickets.objects.values('tr_status').annotate(count=Count('ticket_id'))
+    data = [{'label': item['tr_status'], 'count': item['count']} for item in tr_status_counts]
+
+    return JsonResponse(data, safe=False)
+
+
+def service_schedules_yearly(request):
+    # Get the current year
+    current_year = timezone.now().year
+
+    # Query the database to get the count of service schedules created each month this year
+    monthly_schedule_counts = ServiceSchedules.objects.filter(
+        from_date__year=current_year,
+        is_active=1  # Filter by active schedules if needed
+    ).annotate(
+        month=ExtractMonth('from_date')
+    ).values(
+        'month'
+    ).annotate(
+        count=Count('ss_id')
+    ).order_by('month')
+
+    data = list(monthly_schedule_counts)
+
+    return JsonResponse(data, safe=False)
+
+
+def remark_pie_chart(request):
+    remark_counts = Tickets.objects.values('remark').annotate(count=Count('ticket_id'))
+    data = [{'label': item['remark'], 'count': item['count']} for item in remark_counts]
+
+    return JsonResponse(data, safe=False)
+
+
+def bench_status_pie_chart(request):
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    ticket_counts = Tickets.objects.filter(
+        created__month=current_month,
+        created__year=current_year
+    ).values('bench_status').annotate(count=Count('ticket_id'))
+
+    total_tickets = sum(item['count'] for item in ticket_counts)
+
+    data = [{'label': item['bench_status'], 'count': item['count'], 'percentage': (item['count'] / total_tickets) * 100}
+            for item in ticket_counts]
+
+    return JsonResponse(data, safe=False)
+
+
+def status_pie_chart(request):
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    ticket_counts = Tickets.objects.filter(
+        created__month=current_month,
+        created__year=current_year
+    ).values('status').annotate(count=Count('ticket_id'))
+
+    total_tickets = sum(item['count'] for item in ticket_counts)
+
+    data = [{'label': item['status'], 'count': item['count'], 'percentage': (item['count'] / total_tickets) * 100} for
+            item in ticket_counts]
+
+    return JsonResponse(data, safe=False)
+
+
+def requisitions_created_monthly(request):
+    current_year = timezone.now().year
+
+    monthly_requisition_counts = Requisition.objects.filter(
+        created__year=current_year,
+        is_active=True  # Filter by active requisitions if needed
+    ).annotate(
+        month=ExtractMonth('created')
+    ).values(
+        'month'
+    ).annotate(
+        count=Count('req_id')
+    ).order_by('month')
+
+    data = list(monthly_requisition_counts)
+
+    return JsonResponse(data, safe=False)
+
+
+
+

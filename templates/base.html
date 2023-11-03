@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load helpdesk_tags %}
 <html lang="en">
 
 <head>
@@ -152,7 +153,7 @@
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#"
                    role="button" aria-haspopup="false" aria-expanded="false">
                     <i class="fe-bell noti-icon"></i>
-                    <span class="badge bg-danger rounded-circle noti-icon-badge">{{ user.notifications.all|length }}</span>
+                    <span class="badge bg-danger rounded-circle noti-icon-badge"><div id="unread-count-container"></div></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-lg">
 
@@ -160,7 +161,7 @@
                     <div class="dropdown-item noti-title">
                         <h5 class="m-0">
                                         <span class="float-end">
-                                            <a href="#" class="text-dark">
+                                            <a href="#" id="clear-all-button" class="text-dark">
                                                 <small>Clear All</small>
                                             </a>
                                         </span>Notification
@@ -168,14 +169,9 @@
                     </div>
 
                     <div class="noti-scroll" data-simplebar>
-                        {% for notification in user.notifications.all %}
-                            <a href="javascript:void(0);" class="dropdown-item notify-item active">
-                                <div class="notify-icon bg-danger">
-                                    <i class="mdi {{ notification.icon }} "></i> <!-- Render the MDI icon here -->
-                                </div>
-                                <p class="notify-details">{{ notification.message }}</p>
-                            </a>
-                        {% endfor %}
+                        <div id="unread-notifications-container">
+                            <!-- Unread notifications will be displayed here -->
+                        </div>
                     </div>
 
                 </div>
@@ -334,91 +330,105 @@
                 <ul id="side-menu">
 
                     <li class="menu-title">Navigation</li>
-
-                    <li>
-                        <a href="{% url 'helpdesk_dashboard' %}">
-                            <i class="mdi mdi-view-dashboard"></i>
-                            <span> Dashboard1 </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'sales_dashboard' %}">
-                            <i class="mdi mdi-view-dashboard"></i>
-                            <span> Dashboard </span>
-                        </a>
-                    </li>
+                    {% if user|can_access_helpdesk_dashboard %}
+                        <li>
+                            <a href="{% url 'helpdesk_dashboard' %}">
+                                <i class="mdi mdi-view-dashboard"></i>
+                                <span> Dashboard1 </span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if user|can_access_sales_dashboard %}
+                        <li>
+                            <a href="{% url 'sales_dashboard' %}">
+                                <i class="mdi mdi-view-dashboard"></i>
+                                <span> Dashboard </span>
+                            </a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="{% url 'personal_task' %}">
                             <i class="mdi mdi-calendar-account-outline"></i>
                             <span> Pesonal Schedule </span>
                         </a>
                     </li>
-
-                    <li>
-                        <a href="#Tickets" data-bs-toggle="collapse">
-                            <i class="mdi mdi-ticket-confirmation-outline"></i>
-                            <span>Tickets </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="Tickets">
-                            <ul class="nav-second-level">
-                                <li>
-                                    <a href="{% url 'ticket-list' %}">Tickets</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'active_call_cards' %}">Call Cards</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li>
-                        <a href="{% url 'sales_tickets' %}">
-                            <i class="mdi mdi-ticket"></i>
-                            <span> Sales Tickets </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#service" data-bs-toggle="collapse">
-                            <i class="mdi mdi-screwdriver"></i>
-                            <span>Services </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="service">
-                            <ul class="nav-second-level">
-                                <li>
-                                    <a href="{% url 'service' %}">Service schedules</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'service-tickets' %}">Service Tickets</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="{% url 'active-quotes' %}">
-                            <i class="mdi mdi-format-quote-close"></i>
-                            <span> Quotations </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'active-orders' %}">
-                            <i class="mdi mdi-clipboard-list"></i>
-                            <span> Orders </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'active-invoice' %}">
-                            <i class="mdi mdi-file-document"></i>
-                            <span> Proforma Invoice </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'bank-list' %}">
-                            <i class="mdi mdi-bank"></i>
-                            <span> Banks </span>
-                        </a>
-                    </li>
+                    {% if user|can_access_view_tech_tickets %}
+                        <li>
+                            <a href="#Tickets" data-bs-toggle="collapse">
+                                <i class="mdi mdi-ticket-confirmation-outline"></i>
+                                <span>Tickets </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="Tickets">
+                                <ul class="nav-second-level">
+                                    <li>
+                                        <a href="{% url 'ticket-list' %}">Tickets</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'active_call_cards' %}">Call Cards</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    {% endif %}
+                    {% if user|can_access_view_sales_tickets %}
+                        <li>
+                            <a href="{% url 'sales_tickets' %}">
+                                <i class="mdi mdi-ticket"></i>
+                                <span> Sales Tickets </span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if user|can_access_view_service %}
+                        <li>
+                            <a href="#service" data-bs-toggle="collapse">
+                                <i class="mdi mdi-screwdriver"></i>
+                                <span>Services </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="service">
+                                <ul class="nav-second-level">
+                                    <li>
+                                        <a href="{% url 'service' %}">Service schedules</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'service-tickets' %}">Service Tickets</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    {% endif %}
+                    {% if user|can_access_view_quotes %}
+                        <li>
+                            <a href="{% url 'active-quotes' %}">
+                                <i class="mdi mdi-format-quote-close"></i>
+                                <span> Quotations </span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if user|can_access_view_orders %}
+                        <li>
+                            <a href="{% url 'active-orders' %}">
+                                <i class="mdi mdi-clipboard-list"></i>
+                                <span> Orders </span>
+                            </a>
+                        </li>
+                    {% elif user|can_access_view_invoice %}
+                        <li>
+                            <a href="{% url 'active-invoice' %}">
+                                <i class="mdi mdi-file-document"></i>
+                                <span> Proforma Invoice </span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if user|can_access_view_bank %}
+                        <li>
+                            <a href="{% url 'bank-list' %}">
+                                <i class="mdi mdi-bank"></i>
+                                <span> Banks </span>
+                            </a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="{% url 'list_requisitions' %}">
                             <i class="mdi mdi-receipt"></i>
@@ -437,36 +447,41 @@
                             <span> Tasks </span>
                         </a>
                     </li>
-                    <li>
-                        <a href="#email" data-bs-toggle="collapse">
-                            <i class="mdi mdi-wrench"></i>
-                            <span> Parts </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="email">
-                            <ul class="nav-second-level">
-                                <li>
-                                    <a href="{% url 'parts-list' %}">Parts</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'parts-categories-list' %}">Parts Categories</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li>
-                        <a href="{% url 'company-list' %}">
-                            <i class="mdi mdi-domain"></i>
-                            <span> Companies </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'user_list' %}">
-                            <i class="mdi mdi-account-multiple"></i>
-                            <span> Users </span>
-                        </a>
-                    </li>
+                    {% if user|can_access_view_parts %}
+                        <li>
+                            <a href="#email" data-bs-toggle="collapse">
+                                <i class="mdi mdi-wrench"></i>
+                                <span> Parts </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="email">
+                                <ul class="nav-second-level">
+                                    <li>
+                                        <a href="{% url 'parts-list' %}">Parts</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'parts-categories-list' %}">Parts Categories</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    {% endif %}
+                    {% if user|can_access_view_companies %}
+                        <li>
+                            <a href="{% url 'company-list' %}">
+                                <i class="mdi mdi-domain"></i>
+                                <span> Companies </span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if user|can_access_view_users %}
+                        <li>
+                            <a href="{% url 'user_list' %}">
+                                <i class="mdi mdi-account-multiple"></i>
+                                <span> Users </span>
+                            </a>
+                        </li>
+                    {% endif %}
                     {% comment %}
                         <li>
                             <a href="apps-chat.html">
@@ -1158,6 +1173,8 @@
 <script src="{% static 'libs/tippy.js/tippy.all.min.js' %}"></script>
 
 <script src="{% static 'js/pages/toastr.init.js' %}"></script>
+pp js -->
+<script src={% static 'js/app.min.js' %}></script>
 <script>
     toastr.options = {
         "closeButton": false,
@@ -1175,8 +1192,78 @@
         {% endfor %}
     {% endif %}
 </script>
-<!-- App js -->
-<script src={% static 'js/app.min.js' %}></script>
+<script>
+    $(document).ready(function () {
+        $('#clear-all-button').click(function () {
+            var csrf_token = "{{ csrf_token|escapejs }}";
+
+            $.ajax({
+                type: 'POST',
+                url: '/clear-all-notifications/',
+                data: {
+                    csrfmiddlewaretoken: csrf_token
+                },
+                success: function (data) {
+                    // Handle the success response
+                    location.reload(); // Reload the page as an example
+                },
+                error: function (data) {
+                    // Handle any errors
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Function to fetch and display unread notifications
+        function fetchUnreadNotifications() {
+            $.get('/get-unread-notifications/', function (data) {
+                if (data.notifications) {
+                    var container = $('#unread-notifications-container');
+                    container.empty();  // Clear any previous notifications
+
+                    $.each(data.notifications, function (index, notification) {
+                        var notificationHtml = '<a href="javascript:void(0);" class="dropdown-item notify-item active">' +
+                            '<div class="notify-icon bg-danger">' +
+                            '<i class="mdi ' + notification.icon + '"></i>' +
+                            '</div>' +
+                            '<p class="notify-details">' + notification.message + '</p>' +
+                            '</a>';
+
+                        // Append the notification item to the container
+                        container.append(notificationHtml);
+
+                        // Add a click event handler to mark notification as read
+                        var notifyItem = container.find('.notify-item').last();
+                        notifyItem.click(function () {
+                            // Mark the notification as read
+                            notifyItem.removeClass('active');
+                            // Make an AJAX request to mark the notification as read in the backend
+                            var csrf_token = "{{ csrf_token|escapejs }}";  // Get the CSRF token from the template
+                            $.post('/mark-notification-read/', {
+                                notification_id: index,
+                                csrfmiddlewaretoken: csrf_token
+                            }, function (data) {
+                                // Handle the response
+                            });
+                        });
+                    });
+
+                    // Display the unread count
+                    var unreadCountContainer = $('#unread-count-container');
+                    unreadCountContainer.text(data.unread_count);
+                }
+            });
+        }
+
+        // Initial fetch and display of unread notifications
+        fetchUnreadNotifications();
+    });
+</script>
+
+
+<!-- A
 
 </body>
 

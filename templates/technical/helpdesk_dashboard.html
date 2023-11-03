@@ -3,48 +3,158 @@
 {% block title %}Dashboard{% endblock %}
 {% block header %}Dashboard{% endblock %}
 {% block content %}
-    <di class="row">
-        <h1>Counts for Each Remark</h1>
-        <di class="card">
-            {% for remark, count in remark_counts.items %}
-                <li>
-                    <a href="{% url 'remark_tickets' remark %}">{{ remark }}: {{ count }}</a>
-                </li>
-            {% endfor %}
-        </di>
-    </di>
-    <div class="row card">
-        <h1>Counts for Each Bench Status</h1>
-        <ul>
-            {% for bench_status, count in bench_status_counts.items %}
-                <li>
-                    <a href="{% url 'bench_status_tickets' bench_status %}">{{ bench_status }}: {{ count }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="row card">
-        <h1>Counts for Each Status</h1>
-        <ul>
-            {% for status, count in status_counts.items %}
-                <li>
-                    <a href="{% url 'status_tickets' status %}">{{ status }}: {{ count }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="card row">
-        <h1>Counts for Each TR Status</h1>
-        <ul>
-            {% for tr_status, count in tr_status_counts.items %}
-                <li>
-                    <a href="{% url 'tr_status_tickets' tr_status %}">{{ tr_status }}: {{ count }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+    <div class="row">
+        <h6>Remarks</h6>
+        {% for remark, count in remark_counts.items %}
+            <div class="col-lg-2">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'remark_tickets' remark %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>Remark : {{ remark }}</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
     <div class="row">
-        <div class="col-xl-3 col-md-6">
+        {% for bench_status, count in bench_status_counts.items %}
+            <div class="col-lg-2">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'bench_status_tickets' bench_status %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>Bench Status : {{ bench_status }}</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% for status, count in status_counts.items %}
+            <div class="col-lg-2">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'status_tickets' status %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>Status : {{ status }}</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        {% for tr_status, count in tr_status_counts.items %}
+            <div class="col-lg-2">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'tr_status_tickets' tr_status %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>Report : {{ tr_status }}</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Tickets Overview</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="ticket-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-xl-4 h-50">
+            <div class="card h-50">
+                <div class="card-body h-50">
+                    <h4 class="header-title mt-0 mb-3">Service Overview</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="service-schedules-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-xl-4 h-50">
+            <div class="card h-50">
+                <div class="card-body h-50">
+                    <h4 class="header-title mt-0 mb-3">Requisition Overview</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="requisition-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div><!-- end col-->
+
+    <div class="row">
+        <div class="col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Technical Reports</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="tr-status-pie-chart" height="200"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Ticket Remarks</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="remark-pie-chart" height="200"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Bench Status This Month(%)</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="bench-status-pie-chart" height="200"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Ticket Status This Month(%)</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="status-pie-chart" height="200"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-xl-2 col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title mt-0 mb-4">Remarks</h4>
@@ -159,7 +269,216 @@
         </div><!-- end col -->
 
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script>
+        var monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
 
+        fetch('{% url 'tickets_created_monthly_this_year' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => monthNames[item.month - 1]);
+                var ticketCounts = data.map(item => item.count);
 
+                var ctx = document.getElementById('ticket-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Tickets Created',
+                            data: ticketCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+    <script>
+        fetch('{% url 'tr_status_pie_chart' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => item.label);
+                var counts = data.map(item => item.count);
+                var backgroundColors = [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(255, 205, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(54, 162, 235, 0.7)'
+                ];  // Adjust these colors as needed
+
+                var ctx = document.getElementById('tr-status-pie-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: counts,
+                            backgroundColor: backgroundColors
+                        }]
+                    }
+                });
+            });
+    </script>
+    <script>
+        fetch('{% url 'service_schedules_yearly' %}')
+            .then(response => response.json())
+            .then(data => {
+                var months = [...Array(12).keys()].map(i => i + 1);  // 1 to 12 representing months
+                var scheduleCounts = months.map(month => {
+                    var schedule = data.find(item => item.month === month);
+                    return schedule ? schedule.count : 0;
+                });
+
+                var ctx = document.getElementById('service-schedules-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: months.map(month => monthNames[month - 1]),
+                        datasets: [{
+                            label: 'Monthly Schedule Counts',
+                            data: scheduleCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+    <script>
+        fetch('{% url 'remark_pie_chart' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => item.label);
+                var counts = data.map(item => item.count);
+                var backgroundColors = [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(255, 205, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(54, 162, 235, 0.7)'
+                ];  // Adjust these colors as needed
+
+                var ctx = document.getElementById('remark-pie-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: counts,
+                            backgroundColor: backgroundColors
+                        }]
+                    }
+                });
+            });
+    </script>
+    <script>
+        fetch('{% url 'bench_status_pie_chart' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => item.label);
+                var percentages = data.map(item => item.percentage);
+                var backgroundColors = [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(255, 205, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(54, 162, 235, 0.7)'
+                ];  // Adjust these colors as needed
+
+                var ctx = document.getElementById('bench-status-pie-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: percentages,
+                            backgroundColor: backgroundColors
+                        }]
+                    }
+                });
+            });
+    </script>
+    <script>
+        fetch('{% url 'status_pie_chart' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => item.label);
+                var percentages = data.map(item => item.percentage);
+                var backgroundColors = [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(255, 205, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(54, 162, 235, 0.7)'
+                ];  // Adjust these colors as needed
+
+                var ctx = document.getElementById('status-pie-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: percentages,
+                            backgroundColor: backgroundColors
+                        }]
+                    }
+                });
+            });
+    </script>
+    <script>
+        // Array to map month numbers to month names
+        var monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        fetch('{% url 'requisitions_created_monthly' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => monthNames[item.month - 1]); // Map to month names
+                var requisitionCounts = data.map(item => item.count);
+
+                var ctx = document.getElementById('requisition-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Requisitions Created',
+                            data: requisitionCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
 {% endblock %}
