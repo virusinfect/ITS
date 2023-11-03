@@ -22,12 +22,34 @@
     <link href="{% static 'libs/mohithg-switchery/switchery.min.css' %}" rel="stylesheet" type="text/css"/>
     <!-- icons -->
     <link href="{% static 'css/icons.min.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        /* Override the primary button color to red */
+        .btn-primary {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
 
+        /* Override primary background color to red */
+        .bg-primary {
+            background-color: #dc3545 !important;
+        }
+
+        /* Override primary text color to red */
+        .text-primary {
+            color: #dc3545 !important;
+        }
+
+        .navbar-primary {
+            background-color: #dc3545 !important;
+        }
+
+
+    </style>
 </head>
 
 <!-- body start -->
 <body class="loading" data-layout-color="light" data-layout-mode="default" data-layout-size="fluid"
-      data-topbar-color="light" data-leftbar-position="fixed" data-leftbar-color="gradient" data-leftbar-size='default'
+      data-topbar-color="light" data-leftbar-position="fixed" data-leftbar-color="brand" data-leftbar-size='default'
       data-sidebar-user='false'>
 
 <!-- Begin page -->
@@ -109,8 +131,7 @@
                                 <!-- item-->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
                                     <div class="d-flex align-items-start">
-                                        <img class="d-flex me-2 rounded-circle" src="assets/images/users/user-2.jpg"
-                                             alt="Generic placeholder image" height="32">
+
                                         <div class="w-100">
                                             <h5 class="m-0 font-14">Erwin E. Brown</h5>
                                             <span class="font-12 mb-0">UI Designer</span>
@@ -121,8 +142,7 @@
                                 <!-- item-->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
                                     <div class="d-flex align-items-start">
-                                        <img class="d-flex me-2 rounded-circle" src="assets/images/users/user-5.jpg"
-                                             alt="Generic placeholder image" height="32">
+
                                         <div class="w-100">
                                             <h5 class="m-0 font-14">Jacob Deo</h5>
                                             <span class="font-12 mb-0">Developer</span>
@@ -1080,11 +1100,7 @@
                             <label class="form-check-label" for="brand-check">Brand</label>
                         </div>
 
-                        <div class="form-check form-switch mb-3">
-                            <input type="checkbox" class="form-check-input" name="leftbar-color" value="gradient"
-                                   id="gradient"/>
-                            <label class="form-check-label" for="gradient-check">Gradient</label>
-                        </div>
+                        
 
                         <!-- size -->
                         <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">Left Sidebar Size</h6>
