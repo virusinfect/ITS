@@ -90,71 +90,20 @@
                 </div>
             </li>
             <li class="d-none d-lg-block">
-                <form class="app-search">
+                <form class="app-search" method="get" action="{% url 'search' %}">
                     <div class="app-search-box">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search..." id="top-search">
+                            <input type="text" class="form-control" name="query" placeholder="Serial Number..."
+                                   id="top-search" required autocomplete="off">
+                            <p id="search-results" class="form-control" style="display: none"></p>
                             <button class="btn input-group-text" type="submit">
                                 <i class="fe-search"></i>
                             </button>
                         </div>
-                        <div class="dropdown-menu dropdown-lg" id="search-dropdown">
-                            <!-- item-->
-                            <div class="dropdown-header noti-title">
-                                <h5 class="text-overflow mb-2">Found 22 results</h5>
-                            </div>
-
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <i class="fe-home me-1"></i>
-                                <span>Analytics Report</span>
-                            </a>
-
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <i class="fe-aperture me-1"></i>
-                                <span>How can I help you?</span>
-                            </a>
-
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <i class="fe-settings me-1"></i>
-                                <span>User profile settings</span>
-                            </a>
-
-                            <!-- item-->
-                            <div class="dropdown-header noti-title">
-                                <h6 class="text-overflow mb-2 text-uppercase">Users</h6>
-                            </div>
-
-                            <div class="notification-list">
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <div class="d-flex align-items-start">
-
-                                        <div class="w-100">
-                                            <h5 class="m-0 font-14">Erwin E. Brown</h5>
-                                            <span class="font-12 mb-0">UI Designer</span>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <div class="d-flex align-items-start">
-
-                                        <div class="w-100">
-                                            <h5 class="m-0 font-14">Jacob Deo</h5>
-                                            <span class="font-12 mb-0">Developer</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-
-                        </div>
                     </div>
                 </form>
             </li>
+
 
             <li class="dropdown d-inline-block d-lg-none">
                 <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown"
@@ -163,7 +112,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-lg dropdown-menu-end p-0">
                     <form class="p-3">
-                        <input type="text" class="form-control" placeholder="Search ..."
+                        <input type="text" class="form-control" placeholder="Seaffrch ..."
                                aria-label="Recipient's username">
                     </form>
                 </div>
@@ -1101,7 +1050,6 @@
                         </div>
 
 
-
                         <!-- size -->
                         <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">Left Sidebar Size</h6>
 
@@ -1275,6 +1223,33 @@ pp js -->
 
         // Initial fetch and display of unread notifications
         fetchUnreadNotifications();
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#top-search').on('input', function() {
+            var query = $(this).val();
+
+            if (query.length >= 3) { // Adjust this threshold as needed
+                $.ajax({
+                    url: '/equipment-lookup/', // URL to your Ajax view
+                    data: { query: query },
+                    success: function(data) {
+                        $('#search-results').empty();
+                        if (data.results.length > 0) {
+                            data.results.forEach(function(result) {
+                                $('#search-results').append('<li>' + result.name + ' - ' + result.serial_no + '</li>');
+                            });
+                        } else {
+                            $('#search-results').append('<li>No matching equipment found.</li>');
+                        }
+                    }
+                });
+            } else {
+                $('#search-results').empty();
+            }
+        });
     });
 </script>
 

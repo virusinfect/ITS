@@ -41,6 +41,8 @@ urlpatterns = [
     path('get-unread-notifications/', views.get_unread_notifications, name='get_unread_notifications'),
     path('mark-notification-read/', views.mark_notification_as_read, name='mark_notification_as_read'),
     path('404/', TemplateView.as_view(template_name='404.html'), name='custom_404'),
+    path('search/', views.search, name='search'),
+    path('equipment-lookup/', views.equipment_lookup, name='equipment_lookup'),
 
 ]
 handler500 = 'its.views.server_error'

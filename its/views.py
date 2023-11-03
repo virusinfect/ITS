@@ -14,12 +14,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from technical.models import Signature, Delivery, CallCards, CSignature, FSignature, FormatApproval, UniqueToken
+from service.models import Equipment
+from technical.models import Signature, Delivery, CallCards, CSignature, FSignature, FormatApproval, UniqueToken, \
+    Tickets
 
-from .models import PartsCategory, Parts, Company, Clients, Task, Personal,Notification
+from .models import PartsCategory, Parts, Company, Clients, Task, Personal, Notification
+
 
 def server_error(request):
     return render(request, '500.html', status=500)
+
 
 def get_clients(request):
     company_id = request.GET.get('company_id')
@@ -598,3 +602,32 @@ def mark_notification_as_read(request):
             return JsonResponse({'error': 'Notification not found'}, status=404)
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def search(request):
+    query = request.GET.get('query', '')
+
+    # Search Tickets model
+    ticket_results = Tickets.objects.filter(serial_no__icontains=query)
+
+    # Search Equipment model
+    equipment_results = Equipment.objects.filter(serial_no__icontains=query)
+
+    return render(request, 'search_results.html', {
+        'query': query,
+        'ticket_results': ticket_results,
+        'equipment_results': equipment_results,
+    })
+
+
+def equipment_lookup(request):
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        query = request.GET.get('query', '')
+
+        equipment_results = Equipment.objects.filter(serial_no__icontains=query)
+
+        results = [{'name': equipment.name, 'serial_no': equipment.serial_no} for equipment in equipment_results]
+
+        return JsonResponse({'results': results})
+
+    return JsonResponse({})

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+{% block header %}Search Results{% endblock %}
+{% block content %}
+    <h2>Search Results for "{{ query }}":</h2>
+    <div>
+        <div class="row">
+            <div class="col-lg-3 col-xl-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h3>Equipment:</h3>
+                        {% for equipment in equipment_results %}
+                            <div>
+                                <i class="mdi mdi-book-edit-outline mdi-48px"></i>
+                            </div>
+
+
+                            <h4>ORGANISATION : </h4><h4>{{ equipment.client.company.name }}</h4>
+                            <h5>USER : {{ equipment.client.f_name }}</h5>
+                            <h5>ASSET : {{ equipment.name }}</h5>
+                            <h5>SERIAL NO : {{ equipment.serial_no }}</h5>
+                            <h6>TYPE : {{ equipment.type }}</h6>
+                            {% empty %}
+                            <div class="text-center">
+                                <h2 class="mt-0">
+                                    <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                                </h2>
+                                <h5 class="mt-0 mb-3">No tickets found for that Serial Number.</h5>
+
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 col-xl-9">
+                <div class="card">
+                    <div class="table card-body">
+                        <h3>Tickets:</h3>
+
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Date Created</th>
+                                <th>Ticket ID</th>
+                                <th>Serial No</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for ticket in ticket_results %}
+                                <tr>
+                                    <td>{{ ticket.created }}</td>
+                                    <td>
+                                        <a href="{% url 'edit-ticket' ticket.ticket_id %}">ITL/TN/{{ ticket.ticket_id }}</a>
+                                    </td>
+                                    <td>{{ ticket.serial_no }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <div class="text-center">
+                                        <h2 class="mt-0">
+                                            <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                                        </h2>
+                                        <h5 class="mt-0 mb-3">No matching equipment found.</h5>
+
+                                    </div>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
