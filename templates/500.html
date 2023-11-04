@@ -1,10 +1,146 @@
 <!DOCTYPE html>
-<html>
+{% load static %}
+<html lang="en">
 <head>
-    <title>Server Error (500)</title>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Internal Server Error - ITS</title>
+    <link rel="icon" type="image/x-icon" href="../../assets/fav.ico"/>
+    <style>
+        * {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding: 10px;
+            margin: 0;
+        }
+
+        #error {
+            position: relative;
+            height: 90vh;
+        }
+
+        #error .error {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        .error {
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+
+        .error p {
+            font-family: 'Montserrat', sans-serif;
+            color: #787878;
+            font-weight: 300;
+            font-size: 18px;
+            padding: 20px;
+        }
+
+        .error a {
+            font-family: 'Montserrat', sans-serif;
+            display: inline-block;
+            padding: 12px 30px;
+            font-weight: 600;
+            background-color: #BA68C8;
+            color: #fff;
+            border-radius: 10px;
+            text-decoration: none;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .error a:hover {
+            opacity: 0.8;
+        }
+
+        .footer p {
+            text-align: center;
+            padding: 0px 20px;
+            text-decoration: none;
+        }
+
+        .footer a {
+            font-weight: 700;
+            color: #BA68C8;
+            text-decoration: none;
+
+        }
+
+        #typing-effect {
+            display: inline-block;
+            font-size: 30px;
+            color: #333;
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0
+            }
+            to {
+                width: 100%
+            }
+        }
+
+        @keyframes blink-caret {
+            from, to {
+                border-color: transparent
+            }
+            50% {
+                border-color: #333
+            }
+        }
+
+        @media only screen and (max-width: 768px) {
+            /* Your responsive styles here */
+            #typing-effect {
+                display: inline-block;
+                font-size: 30px;
+                color: #333;
+                overflow: hidden;
+                white-space: nowrap;
+                animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+                margin: -120px 0px 0px 0px;
+            }
+
+            #error {
+                position: relative;
+                height: 90vh;
+            }
+
+            .footer p {
+                text-align: center;
+                padding: 0px 20px;
+            }
+
+
+        }
+    </style>
 </head>
 <body>
-    <h1>Server Error (500)</h1>
-    <p>Sorry, there was a server error. Please try again later.</p>
+<div id="error">
+    <div class="error">
+        <img src="{% static '500.svg' %}" alt="500"/>
+        <h1 id="typing-effect">Internal Server Error</h1>
+        <p>
+            Sorry, we encountered an internal server error. Please try again later
+            or contact admin for support.
+        </p>
+    </div>
+</div>
 </body>
 </html>
