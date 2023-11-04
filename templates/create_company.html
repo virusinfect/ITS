@@ -1,7 +1,5 @@
 <!-- templates/create_company.html -->
-
 {% extends "base.html" %}
-
 {% block title %}Create Company{% endblock %}
 {% block header %}Create Company{% endblock %}
 {% block content %}
@@ -21,7 +19,6 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="mb-3 header-title text-center">Add Company</h4>
-
                 <form method="post">
                     {% csrf_token %}
                     <div class="mb-3">
@@ -74,10 +71,4 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-
 {% endblock %}
