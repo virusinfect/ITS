@@ -13,7 +13,10 @@ SECRET_KEY = 'django-insecure-t%=hf2%c4*^38&u6_etw#-e0**&73uwy9#0_dz%juwlsp#e*@f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', '146.190.61.23:8600', '146.190.61.23', '146.190.61.23:8500', '*',
+                 'http://146.190.61.23:8500']
+CSRF_TRUSTED_ORIGINS = ['127.0.0.1', '146.190.61.23:8600', '146.190.61.23', '146.190.61.23:8500', '*',
+                        'http://146.190.61.23:8500']
 
 # Application definition
 
@@ -65,19 +68,27 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
 WSGI_APPLICATION = 'core.wsgi.application'
 
+CORS_ALLOWED_ORIGINS = [
+    "http://146.190.61.23",
+    "http://146.190.61.23:8500",
+    "146.190.61.23",
+    "146.190.61.23:8500",
+]
+CORS_ALLOW_CREDENTIALS = True
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'bb',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': 'localhost',  # If MySQL is running on the same server, use 'localhost'
-            'PORT': '3306',  # Leave empty to use the default MySQL port (usually 3306)
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bb',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',  # If MySQL is running on the same server, use 'localhost'
+        'PORT': '3306',  # Leave empty to use the default MySQL port (usually 3306)
     }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -96,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.intellitech.co.ke'
@@ -124,6 +134,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
