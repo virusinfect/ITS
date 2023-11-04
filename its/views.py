@@ -141,10 +141,18 @@ def delivery_detail(request, delivery_id):
     delivery = get_object_or_404(Deliverys, delivery_id=delivery_id)
     return render(request, 'sign2.html', {'delivery': delivery})
 
+def is_member_of_group(user, group_name):
+    return user.groups.filter(name=group_name).exists()
 
 @login_required
 def test_view(request):
-    return render(request, 'base.html')
+    if is_member_of_group(request.user, 'Admin'):
+        return redirect('sales_dashboard')
+    elif is_member_of_group(request.user, 'Helpdesk'):
+        return redirect('helpdesk_dashboard')
+    else:
+        return render(request, 'base.html')
+
 
 
 @login_required
