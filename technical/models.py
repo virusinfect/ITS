@@ -44,8 +44,8 @@ class Tickets(models.Model):
     dlvr_sign = models.CharField(max_length=255, blank=True)
     tr_approval = models.CharField(max_length=255, blank=True)
     is_active = models.IntegerField(default=1)
-    created = models.DateTimeField(auto_now_add=True)  # Automatically set upon creation
-    updated = models.DateTimeField(auto_now=True)  # Automatically updated on each save
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     agtsc = models.CharField(max_length=255, blank=True)
     timeline = models.CharField(max_length=255, blank=True)
     device_diagnosis = models.CharField(max_length=255, blank=True)
