@@ -43,6 +43,11 @@
             background-color: #dc3545 !important;
         }
 
+        /* You can adjust the font size as needed */
+        body {
+            font-size: 11px;
+        }
+
 
     </style>
 </head>
@@ -1227,18 +1232,18 @@ pp js -->
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#top-search').on('input', function() {
+    $(document).ready(function () {
+        $('#top-search').on('input', function () {
             var query = $(this).val();
 
             if (query.length >= 3) { // Adjust this threshold as needed
                 $.ajax({
                     url: '/equipment-lookup/', // URL to your Ajax view
-                    data: { query: query },
-                    success: function(data) {
+                    data: {query: query},
+                    success: function (data) {
                         $('#search-results').empty();
                         if (data.results.length > 0) {
-                            data.results.forEach(function(result) {
+                            data.results.forEach(function (result) {
                                 $('#search-results').append('<li>' + result.name + ' - ' + result.serial_no + '</li>');
                             });
                         } else {
