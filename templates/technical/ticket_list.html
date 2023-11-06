@@ -34,14 +34,17 @@
                 <thead class="table-dark text-sm">
                 <tr>
                     <th width="2%">No.</th>
-                    <th>Ticket ID</th>
-                    <th width="15%">Date</th>
-                    <th>Status</th>
+                    <th>Date</th>
                     <th>Company</th>
                     <th>Client</th>
                     <th>Equipment</th>
                     <th>Fault</th>
-                    <th>Remark</th>
+                    <th>Ticket ID</th>
+                    <th>Status</th>
+                    <th>Technician</th>
+                    <th>Type</th>
+                    <th>Bench Status</th>
+                    <th>More</th>
                     <th class="d-show d-md-table-cell">Action</th>
                 </tr>
                 </thead>
@@ -49,8 +52,12 @@
                 {% for ticket in tickets %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
+                        <td>{{ ticket.created|date:'d/m/Y' }}</td>
+                        <td>{{ ticket.company.name }}</td>
+                        <td>{{ ticket.client.f_name }}</td>
+                        <td>{{ ticket.equipment }}</td>
+                        <td>{{ ticket.fault }}</td>
                         <td>ITL/TN/{{ ticket.ticket_id }}</td>
-                        <td>{{ ticket.created }}</td>
                         <td>
                             {% if ticket.status == "Open" %}
                                 <span class="badge badge-outline-success">{{ ticket.status }}</span>
@@ -61,27 +68,27 @@
                             {% endif %}
                         </td>
 
-                        <td>{{ ticket.company.name }}</td>
-                        <td>{{ ticket.client.f_name }}</td>
-                        <td>{{ ticket.equipment }}</td>
-                        <td>{{ ticket.fault }}</td>
-                    <td>{{ ticket.remark }}</td>
+
+                        <td>{{ ticket.tech }}</td>
+                        <td>{{ ticket.type }}</td>
+                        <td>{{ ticket.bench_status }}</td>
+                        <td>{{ ticket.more }}</td>
                         <td class="d-show d-md-table-cell">
                             <a href="{% url 'edit-ticket' ticket.ticket_id %}" title="edit" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="mdi mdi-square-edit-outline mdi-18px"></i>
+                                <i class="mdi mdi-square-edit-outline"></i>
                             </a>
                             <a href="{% url 'create_delivery' ticket.ticket_id %}" title="delivery" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="mdi mdi-truck-delivery-outline mdi-18px"></i>
+                                <i class="mdi mdi-truck-delivery-outline"></i>
                             </a>
                             <a href="{% url 'report' ticket.ticket_id %}" title="report" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="mdi mdi-file-document mdi-18px"></i>
+                                <i class="mdi mdi-file-document"></i>
                             </a>
                             <a href="{% url 'delete_ticket' ticket.ticket_id %}" title="delete" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                <i class="s mdi mdi-delete-outline"></i>
                             </a>
                         </td>
                     </tr>
