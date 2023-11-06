@@ -35,14 +35,14 @@
                     <div class="row">
                         <div class="mb-3 col-6">
                             <label for="from_date" class="form-label">From Date:</label>
-                            <input type="date" class="form-control" name="from_date" id="from_date"
-                                   value="{{ service_schedule.from_date|date:'Y-m-d' }}">
+                            <input type="datetime-local" class="form-control" name="from_date" id="from_date"
+                                   value="{{ service_schedule.from_date|date:'Y-m-d H:i:s' }}">
                         </div>
 
                         <div class="mb-3 col-6">
                             <label for="to_date" class="form-label">To Date:</label>
-                            <input type="date" class="form-control" name="to_date" id="to_date"
-                                   value="{{ service_schedule.to_date|date:'Y-m-d' }}">
+                            <input type="datetime-local" class="form-control" name="to_date" id="to_date"
+                                   value="{{ service_schedule.to_date|date:'Y-m-d H:i:s' }}">
                         </div>
 
 

@@ -129,11 +129,10 @@ def save_signature_view_call(request):
             callcard = CallCards.objects.get(pk=cc_id)
             signature.callcard = callcard  # Associate the delivery with the signature
             signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
-        except Delivery.DoesNotExist:
-            return JsonResponse({'message': 'Delivery not found'}, status=400)
+            return JsonResponse({'success': True})
+        except CallCards.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Format Approval not found'}, status=400)
 
-        redirect_url = reverse('edit_call_card', args=[cc_id])
-        return HttpResponseRedirect(redirect_url)
     return JsonResponse({'message': 'Invalid request method'}, status=400)
 
 

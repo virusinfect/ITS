@@ -4,7 +4,7 @@
 {% block header %}Dashboard{% endblock %}
 {% block content %}
     <div class="row">
-        <h6>Remarks</h6>
+        <h5>Remarks</h5>
         {% for remark, count in remark_counts.items %}
             <div class="col-lg-2">
                 <div class="card">
@@ -12,7 +12,7 @@
                         <div class="text-center">
                             <a href="{% url 'remark_tickets' remark %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>Remark : {{ remark }}</h5></a>
+                                <h5>{{ remark }}</h5></a>
                         </div>
                     </div>
                 </div>
@@ -20,6 +20,7 @@
         {% endfor %}
     </div>
     <div class="row">
+        <h5>Status</h5>
         {% for bench_status, count in bench_status_counts.items %}
             <div class="col-lg-2">
                 <div class="card">
@@ -27,7 +28,7 @@
                         <div class="text-center">
                             <a href="{% url 'bench_status_tickets' bench_status %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>Bench Status : {{ bench_status }}</h5></a>
+                                <h5>{{ bench_status }}</h5></a>
                         </div>
                     </div>
                 </div>
@@ -40,7 +41,7 @@
                         <div class="text-center">
                             <a href="{% url 'status_tickets' status %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>Status : {{ status }}</h5></a>
+                                <h5>{{ status }}</h5></a>
                         </div>
                     </div>
                 </div>
@@ -48,6 +49,7 @@
         {% endfor %}
     </div>
     <div class="row">
+    <h5>Technical Report Status</h5>
         {% for tr_status, count in tr_status_counts.items %}
             <div class="col-lg-2">
                 <div class="card">
@@ -55,7 +57,7 @@
                         <div class="text-center">
                             <a href="{% url 'tr_status_tickets' tr_status %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>Report : {{ tr_status }}</h5></a>
+                                <h5>{{ tr_status }}</h5></a>
                         </div>
                     </div>
                 </div>

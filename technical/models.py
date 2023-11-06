@@ -1,9 +1,9 @@
+import uuid
+from datetime import time
+
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils import timezone
 from its.models import Company, Clients, Parts, Task
-from datetime import time
-import uuid
 
 
 class Tickets(models.Model):
@@ -153,8 +153,8 @@ class CallCards(models.Model):
 class ServiceSchedules(models.Model):
     ss_id = models.AutoField(primary_key=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, db_column='company_id')
-    from_date = models.DateField()
-    to_date = models.DateField()
+    from_date = models.DateTimeField()
+    to_date = models.DateTimeField()
     notes = models.CharField(max_length=500)
     status = models.CharField(max_length=255, default="Awaiting confirmation")
     is_active = models.IntegerField()
@@ -202,7 +202,7 @@ class Tsourcing(models.Model):
     desc = models.CharField(max_length=255)
     part_no = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    qty = models.PositiveIntegerField(default=0.0,null=True)
+    qty = models.PositiveIntegerField(default=0.0, null=True)
     currency = models.CharField(max_length=50)
     availability = models.CharField(max_length=255)
     supplier = models.CharField(max_length=255)
@@ -227,8 +227,6 @@ class tQuote(models.Model):
     updated = models.DateTimeField(auto_now=True)
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
     availability = models.CharField(max_length=255, null=True)
-
-
 
 
 class FormatApproval(models.Model):
