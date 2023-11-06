@@ -27,7 +27,7 @@
                         <h4 class="border-bottom-1  col-9">Personal Schedule</h4>
                         <a class="btn btn-primary waves-effect waves-light col-3"
                            href="{% url 'create_personal_task' %}">
-                            Create New</a>
+                            New</a>
                     </div>
                     {% for event in events %}
                         <div class="card shadow-lg mb-3 bg-body-tertiary rounde">
@@ -35,6 +35,10 @@
                                 <div class="row">
                                     <h4 class="card-title col-10">{{ event.title }}</h4>
                                     <div class="col-2">
+                                        <a href="{% url 'edit_personal_task' event.id %}" title="edit"
+                                           tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                                            <i class="s mdi mdi-square-edit-outline mdi-18px"></i>
+                                        </a>
                                         <a href="{% url 'delete_personal_task' event.id %}" title="delete"
                                            tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
                                             <i class="s mdi mdi-delete-outline mdi-18px"></i>
@@ -59,10 +63,7 @@
     </div> <!-- end row -->
 
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.9/index.global.min.js'></script>
-    <script src="{% static 'libs/moment/min/moment.min.js' %}"></script>
-    <script src="{% static 'libs/fullcalendar/main.min.js' %}"></script>
-    <!-- Calendar init -->
-    <script src="{% static 'js/pages/calendar.init.js' %}"></script>
+
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.9/index.global.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -71,12 +72,7 @@
                 initialView: 'dayGridMonth', // Set the initial view to 'dayGridMonth'
                 events: '{% url 'get_personal' %}', // Use the URL of the view
                 themeSystem: 'bootstrap5',
-                headerToolbar: {
-                    // Define the buttons for changing views
-                    start: 'prevYear,prev,today,next,nextYear', // Year navigation
-                    center: 'title', // Display the calendar title in the center
-                    end: 'dayGridMonth,timeGridWeek,timeGridDay', // Month, Week, and Day views
-                },
+
             });
             calendar.render();
         });

@@ -532,11 +532,39 @@ def create_personal_task(request):
             created_by=user
         )
         add_personal_task.save()
-
+        messages.success(request, 'Personal Schedule Created successfully')
         return redirect('personal_task')  # Redirect to a view that lists personal tasks
 
     return render(request, 'create_personal_task.html')
 
+@login_required
+def edit_personal(request, personal_id):
+    # Get the Personal object by its ID or return a 404 if not found
+    personal = get_object_or_404(Personal, pk=personal_id)
+
+    if request.method == 'POST':
+        # Handle the form submission when the user submits the edited data
+        title = request.POST['title']
+        description = request.POST['description']
+        due_date = request.POST['due_date']
+        from_date = request.POST['from_date']
+        colour = request.POST['colour']
+
+        # Update the Personal object with the new data
+        personal.title = title
+        personal.description = description
+        personal.due_date = due_date
+        personal.from_date = from_date
+        personal.colour = colour
+
+        # Save the updated object
+        personal.save()
+        messages.success(request, 'Personal Schedule Edited successfully')
+        # Redirect to a success page or the detail page of the edited object
+        return redirect('personal_task')
+
+    # Render the edit form if it's a GET request
+    return render(request, 'edit_personal.html', {'personal': personal})
 
 @login_required
 def get_personal(request):

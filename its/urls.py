@@ -35,6 +35,7 @@ urlpatterns = [
     path('form_not_found/', views.form_not_found, name='form_not_found'),
     path('get_personal/', views.get_personal, name='get_personal'),
     path('personal_task/', views.personal_task, name='personal_task'),
+    path('edit_personal_task/<int:personal_id>/', views.edit_personal, name='edit_personal_task'),
     path('create_personal_task/', views.create_personal_task, name='create_personal_task'),
     path('personal/delete/<int:task_id>/', views.delete_personal_task, name='delete_personal_task'),
     path('clear-all-notifications/', views.clear_all_notifications, name='clear_all_notifications'),

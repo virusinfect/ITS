@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Personal Schedule{% endblock %}
+{% block header %}Edit Personal Schedule{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'personal_task' %}">Personal Schedule</a></li>
+                    <li class="breadcrumb-item active">Edit Personal Schedule</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class=" card container mt-4">
+        <div class="card-body">
+            <h2>Create Personal Schedule</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{ personal.title }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ personal.description }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="from_date" class="form-label">From Date</label>
+                    <input type="date" class="form-control" id="from_date" name="from_date" value="{{ personal.from_date|date:'Y-m-d'  }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="due_date" class="form-label">Due Date</label>
+                    <input type="date" class="form-control" id="due_date" name="due_date" value="{{ personal.due_date|date:'Y-m-d'  }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="colour">Colour</label>
+                    <select class="form-select" name="colour" required>
+                        <option value="red">Red</option>
+                        <option value="blue" >Blue</option>
+                        <option value="green" >Green</option>
+                        <option value="yellow" >Yellow</option>
+                        <!-- Add more color options as needed -->
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Edit Task</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
