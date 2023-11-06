@@ -38,10 +38,11 @@
                     <th>Company</th>
                     <th>Client</th>
                     <th>Equipment</th>
+                    <th>Serial No</th>
                     <th>Fault</th>
-                    <th>Ticket ID</th>
+                    <th>Ticket NO</th>
                     <th>Status</th>
-                    <th>Technician</th>
+                    <th>Tech</th>
                     <th>Type</th>
                     <th>Bench Status</th>
                     <th>More</th>
@@ -56,6 +57,7 @@
                         <td>{{ ticket.company.name }}</td>
                         <td>{{ ticket.client.f_name }}</td>
                         <td>{{ ticket.equipment }}</td>
+                        <td>{{ ticket.serial_no }}</td>
                         <td>{{ ticket.fault }}</td>
                         <td>ITL/TN/{{ ticket.ticket_id }}</td>
                         <td>
