@@ -1,26 +1,30 @@
+import base64
 import datetime
 import uuid
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
+from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
-from django.http import HttpResponseNotFound, Http404
+from django.http import HttpResponseNotFound, Http404, HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from datetime import time,datetime
+
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 from django.views.generic import ListView
 from its.models import Company, Clients, Parts, PartsCategory, Task, Notification
 
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
-    Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport
+    Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport, TSignature
 
 
 @login_required
@@ -1452,3 +1456,103 @@ def requisitions_created_monthly(request):
     data = list(monthly_requisition_counts)
 
     return JsonResponse(data, safe=False)
+
+@csrf_exempt
+def save_signature_view_ticket(request):
+    if request.method == 'POST':
+        signature_data = request.POST.get('signature_data')
+        type = request.POST.get('type')
+        client = request.POST.get('client')
+        equipment = request.POST.get('equipment')
+        serial_no = request.POST.get('serial_no')
+        fault = request.POST.get('fault')
+        accessories = request.POST.get('accessories')
+        notes = request.POST.get('notes')
+        tech_id = request.POST.get('tech')
+        client_id = Clients.objects.get(id=client)
+
+        # Create the ticket
+        ticket = Tickets.objects.create(
+            company=client_id.company,
+            client=client_id,
+            equipment=equipment,
+            serial_no=serial_no,
+            fault=fault,
+            accessories=accessories,
+            notes=notes,
+            tech_id=tech_id,
+            type=type,
+        )
+
+        if type == "On-site":
+
+            tech_user = get_object_or_404(User, id=tech_id)
+            # Create a CallCards instance for on-site tickets
+            call_card = CallCards.objects.create(
+                company=client_id.company,
+                client=client_id,
+                tech_id=tech_user,
+                equipment=equipment,
+                fault=fault,
+                type=type,
+                # Add any other fields as needed
+            )
+            messages.success(request, 'Ticket and Call Card Created successfully')
+        else:
+            messages.success(request, 'Ticket Created successfully')
+
+            # Assuming you are in a view function, you can access the current user through the request object
+        user = request.user
+        # Create a new Task instance without saving it
+        new_task = Task(
+            title="Ticket for " + str(client_id.company) + ", Ticket NO : ITL/TN/" + str(ticket.ticket_id),
+            description="You have been allocated Ticket for " + str(client_id.company) + " with fault " + str(fault),
+            is_active=True,
+            status="In Progress",
+            user=get_object_or_404(User, id=tech_id),
+            creator=user,
+
+        )
+
+        # Save the new_task instance
+        new_task.save()
+
+        ticket.task = new_task
+        ticket.save()
+
+        created_by = request.user
+        notification = Notification.create_notification(
+            users=[tech_id],  # Assign it to the user
+            message="Assigned ITL/TN/" + str(ticket.ticket_id),
+            icon="mdi-book-alert",
+            created_by=created_by,  # Replace with your MDI icon name
+        )
+
+        subject = "TICKET ITL/TN/" + str(ticket.ticket_id) + " OPENED - ITS"
+        message = "Dear {0},\n\nA ticket ITL/TN/{1} has been raised for your work order, and our team is now reviewing the details to ensure a prompt and effective resolution.\n\nNote: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.\n\nThank you for your patience and understanding.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.".format(
+            client_id.company, ticket.ticket_id)
+        recipient_list = [client_id.company.email]
+        from_email = 'its-noreply@intellitech.co.ke'
+        send_mail(subject, message, from_email, recipient_list)
+        # Redirect to a success page or any other desired action
+
+
+
+        # Extract the Base64 data after the comma
+        base64_data = signature_data.split(',')[1]
+
+        # Decode the Base64 data
+        signature_binary = base64.b64decode(base64_data)
+
+        # Create a Signature object and save it to the database
+        signature = TSignature()
+
+        # Update the corresponding Delivery object with the signature
+        try:
+            signature.ticket = ticket  # Associate the delivery with the signature
+            signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
+            return HttpResponseRedirect(reverse('edit-ticket', args=[ticket.ticket_id]))  # Replace 'edit-ticket' with the name of your URL pattern
+        except Tickets.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Format Approval not found'}, status=400)
+
+    return JsonResponse({'message': 'Invalid request method'}, status=400)

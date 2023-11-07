@@ -136,6 +136,7 @@ def save_signature_view_call(request):
     return JsonResponse({'message': 'Invalid request method'}, status=400)
 
 
+
 def delivery_detail(request, delivery_id):
     delivery = get_object_or_404(Deliverys, delivery_id=delivery_id)
     return render(request, 'sign2.html', {'delivery': delivery})

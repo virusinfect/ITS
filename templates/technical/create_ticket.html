@@ -52,6 +52,7 @@
                                 <label for="client" class="form-label">Client :</label>
                                 <select name="client" class="form-control" id="client" required>
                                     <option value="" disabled selected>Select a client</option>
+                                    <option value="" disabled selected>Select a client name</option>
                                 </select>
                             </div>
                             <div class="mb-3 col-lg-6">
@@ -105,17 +106,37 @@
                                       name="notes" rows="5" placeholder="Other Details"></textarea></div>
 
                     </div>
-                    <button class="btn btn-primary" type="submit" name="form_type" value="form1">Create
-                        Ticket
-                    </button>
+                    <canvas id="signature-pad"
+                            class="card border shadow-lg bg-body-tertiary rounded mt-2 mx-auto" width="400"
+                            height="250"></canvas>
+                    <input type="hidden" id="cc_id" value="{{ call_card.cc_id }}">
                 </form>
+
+                <button id="save-signature"
+                        class="btn btn-primary waves-effect waves-light me-1 mt-2">Create Ticket
+                </button>
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
     <script>
+        var clientNo;
+        var clientSelect = document.getElementById('client');
+
+        function attachChangeEventListener() {
+            clientSelect.addEventListener('change', function () {
+                clientNo = clientSelect.value;
+                console.log("Client ID after populating: " + clientNo);
+            });
+        }
+
         document.getElementById('company').addEventListener('change', function () {
             var companyId = this.value;
             var clientSelect = document.getElementById('client');
+            var clientNo = clientSelect.value;
+
+            // Clear existing options and add the "Select a client" option
             clientSelect.innerHTML = '<option value="" disabled selected>Select a client</option>';
 
             if (companyId) {
@@ -130,8 +151,64 @@
                             option.textContent = client.f_name;
                             clientSelect.appendChild(option);
                         });
+
+                        // Now that options are populated, attach the event listener
+                        attachChangeEventListener();
                     });
             }
+        });
+
+
+        $(document).ready(function () {
+            // Function to clear the signature
+            function clearSignature() {
+                signaturePad.clear();
+            }
+
+            $('#save-signature').click(function () {
+                var canvas = document.getElementById('signature-pad');
+                var signaturePad = new SignaturePad(canvas);
+                var serialNo = $('#serial_no').val();
+                var typeNo = $('#type').val();
+                var companyNo = $('#company').val();
+                var techNo = $('#tech').val();
+                var faultNo = $('#fault').val();
+                var equipmentNo = $('#equipment').val();
+                var accessoriesNo = $('#accessories').val();
+                attachChangeEventListener();
+                if (equipmentNo && clientNo && serialNo) {
+                    var signatureData = signaturePad.toDataURL();
+                    $.ajax({
+                        url: '/technical/save-signature-view-ticket/',  // Replace with the actual URL
+                        method: 'POST',
+                        data: {
+                            signature_data: signatureData,
+                            serial_no: serialNo,
+                            accessories: accessoriesNo,
+                            equipment: equipmentNo,
+                            fault: faultNo,
+                            tech: techNo,
+                            client: clientNo,
+                            company: companyNo,
+                            type: typeNo,
+                        },
+                        success: function (response) {
+                            // Check if the response indicates success (you can define this)
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                // Handle failure if needed
+                            }
+                        }
+                    });
+                } else {
+                    // Handle the case where one or more variables are empty
+                    toastr.error("One or more variables are empty", "Validation Error");
+                }
+            });
+
+            // Attach the clearSignature function to the "Clear Signature" button
+            $('#clear-signature').click(clearSignature);
         });
     </script>
 {% endblock %}

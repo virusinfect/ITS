@@ -60,6 +60,7 @@ urlpatterns = [
     path('mark_sent_for_approval/<int:report_id>/', views.mark_sent_for_approval, name='mark_sent_for_approval'),
     path('technical_reports/', views.TechnicalReportListView.as_view(), name='technical_report_list'),
     path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
+    path('save-signature-view-ticket/', views.save_signature_view_ticket, name='save-signature-view-ticket'),
 
 ]
 if settings.DEBUG:
