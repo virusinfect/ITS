@@ -1,5 +1,5 @@
 import uuid
-from datetime import time
+from datetime import time, timezone,datetime
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -247,3 +247,17 @@ class FSignature(models.Model):
     signature_image = models.ImageField(upload_to='signatures/')
     approved = models.CharField(max_length=255)
     format = models.ForeignKey(FormatApproval, on_delete=models.CASCADE)
+
+# Technical Report Model
+class TechnicalReport(models.Model):
+    ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
+    report_text = models.TextField(blank=True)
+    is_approved = models.TextField(blank=True)
+    sent_approval = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    approval_date = models.DateTimeField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Technical Report for Ticket: {self.ticket.company}"

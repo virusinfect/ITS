@@ -13,12 +13,14 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
+from datetime import time,datetime
 from django.views.decorators.http import require_GET
+from django.views.generic import ListView
 from its.models import Company, Clients, Parts, PartsCategory, Task, Notification
 
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
-    Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature
+    Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport
 
 
 @login_required
@@ -1131,10 +1133,55 @@ def copy_to_quote(request, entry_id):
     except Tsourcing.DoesNotExist:
         return JsonResponse({'error': 'Product not found in Tsourcing'}, status=404)
 
+def approve_report(request, report_id):
+    # Retrieve the technical report associated with the given report_id
+    report = get_object_or_404(TechnicalReport, pk=report_id)
+    user = request.user
+    if request.method == 'POST':
+        # Check if the request is a POST request (e.g., a form submission)
+        status = request.POST.get('approval_status')
+            # If the report is not already approved, mark it as approved
+        report.is_approved = status
+        report.approved_by = user
+        report.approval_date = datetime.now()
+        report.save() # You can pass the currently logged-in user
+        messages.success(request, 'Report Approved successfully')
+    # Redirect back to the report's detail page (or wherever you prefer)
+    return redirect('report', report_id=report_id)
+
+def mark_sent_for_approval(request, report_id):
+    # Retrieve the technical report associated with the given report_id
+    report = get_object_or_404(TechnicalReport, pk=report_id)
+
+    if not report.sent_approval:
+        # If the report is not marked as sent for approval, set it to True
+        report.sent_approval = True
+        report.save()
+
+    # Redirect back to the report's detail page (or wherever you prefer)
+    return redirect('report', report_id=report_id)
+
+def generate_report(request, ticket_id):
+    # Retrieve the ticket associated with the given ticket_id
+    ticket = get_object_or_404(Tickets, pk=ticket_id)
+
+    try:
+        report = TechnicalReport.objects.get(ticket=ticket)
+    except TechnicalReport.DoesNotExist:
+        # If no report exists, generate one (you can customize this logic)
+        report = TechnicalReport.objects.create(ticket=ticket, report_text="Generated report text")
+        messages.success(request, 'Report Generated successfully')
+
+    # Redirect to the ticket's URL
+    return redirect('report', report_id=report.id)
 
 @login_required
-def report(request, ticket_id):
-    ticket = get_object_or_404(Tickets, ticket_id=ticket_id)
+def report(request, report_id):
+    # Retrieve the technical report associated with the given report_id
+    report = get_object_or_404(TechnicalReport, pk=report_id)
+
+    # Retrieve the associated ticket
+    ticket = report.ticket
     quote_subtotals = 0
     quote_vat = 0
     quote_total_amount = 0
@@ -1166,8 +1213,24 @@ def report(request, ticket_id):
     return render(request, 'technical/report.html',
                   {'ticket': ticket, 'tquote_data': tquote_data, 'parts': parts, 'vat': vat,
                    'total_amount': total_amount, 'subtotals': subtotals, 'quote_subtotals': quote_subtotals,
-                   'quote_total_amount': quote_total_amount, 'quote_vat': quote_vat})
+                   'quote_total_amount': quote_total_amount, 'quote_vat': quote_vat,'report':report})
 
+
+
+class TechnicalReportListView(ListView):
+    model = TechnicalReport
+    template_name = 'technical/technical_report_list.html'
+    context_object_name = 'reports'
+
+def delete_report(request, report_id):
+    report = get_object_or_404(TechnicalReport, pk=report_id)
+
+    if request.method == 'POST':
+        report.delete()
+        messages.warning(request, 'Report Deleted    successfully')
+        return redirect('technical_report_list')  # Redirect to the report list after deletion
+
+    return render(request, 'technical/report_confirm_delete.html', {'report': report})
 
 @login_required
 def create_format_approval(request, ticket_id):

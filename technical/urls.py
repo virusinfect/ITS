@@ -40,7 +40,7 @@ urlpatterns = [
     path('quote_ticket/<int:ticket_id>/delete/', views.quote_tickets, name='quote_ticket'),
     path('delete-entry/<int:entry_id>/', views.delete_entry, name='delete-entry'),
     path('copy-to-quote/<int:entry_id>/', views.copy_to_quote, name='copy-to-quote'),
-    path('report/<int:ticket_id>/', views.report, name='report'),
+    path('report/<int:report_id>/', views.report, name='report'),
     path('create_format_approval/<int:ticket_id>/', views.create_format_approval, name='create_format_approval'),
     path('format-approval/<int:format_approval_id>/', views.format_approval_detail, name='format_approval_detail'),
     path('send-format-email/<int:format_approval_id>/', views.send_format_email, name='send_format_email'),
@@ -55,6 +55,11 @@ urlpatterns = [
     path('bench-status-pie-chart/', views.bench_status_pie_chart, name='bench_status_pie_chart'),
     path('status-pie-chart/', views.status_pie_chart, name='status_pie_chart'),
     path('requisitions-created-monthly/', views.requisitions_created_monthly, name='requisitions_created_monthly'),
+    path('generate_report/<int:ticket_id>/', views.generate_report, name='generate_report'),
+    path('approve_report/<int:report_id>/', views.approve_report, name='approve_report'),
+    path('mark_sent_for_approval/<int:report_id>/', views.mark_sent_for_approval, name='mark_sent_for_approval'),
+    path('technical_reports/', views.TechnicalReportListView.as_view(), name='technical_report_list'),
+    path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
 
 ]
 if settings.DEBUG:

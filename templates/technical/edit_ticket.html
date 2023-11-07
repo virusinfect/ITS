@@ -69,7 +69,7 @@
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label for="company" class="form-label"><strong>Company:</strong></label>
-                                            <select id="company" name="company" class="form-select">
+                                            <select id="company" name="company" class="form-select" disabled>
                                                 <option value="">Select a company</option>
                                                 {% for company in companies %}
                                                     <option value="{{ company.id }}"
@@ -85,9 +85,8 @@
                                     <div class="row mb-3">
                                         <div class="col-lg-6 mb-3">
                                             <label for="client" class="form-label"><strong>Client:</strong></label>
-                                            <select id="client" name="client" class="form-select">
-                                                <option value="">Select a client</option>
-                                            </select>
+                                            <input id="client" name="client" value="{{ ticket.client }}" class="form-control" disabled/>
+
                                         </div>
                                         <div class="mb-3 col-lg-6">
                                             <label for="tech" class="form-label"><strong>Technician:</strong></label>
@@ -665,29 +664,15 @@
                                                value="{{ ticket.lpo_no }}">
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-lg-6 mb-3">
-                                        <label class="form-label">Approval Status:</label>
-                                        <select class="form-control" name="tr_approval" id="tr_approval">
-                                            <option value="approved"
-                                                    {% if ticket.tr_approval == "approve" %}selected{% endif %}>Approve
-                                            </option>
-                                            <option value="pending"
-                                                    {% if ticket.tr_approval == "pending" %}selected{% endif %}>Pending
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
+
                                 <button class="btn btn-primary" type="submit" name="form_type" value="form2">Update
                                     Ticket
                                 </button>
                                 <a href="{% url 'create_format_approval' ticket.ticket_id %}" class="btn btn-secondary"><span
                                         class="btn-label"><i class="mdi mdi-file-document"></i></span> Format Approval
                                 </a>
-                                <a class="btn btn-primary" type="btn">Requst Approval
-                                </a>
-                                <a href="{% url 'report' ticket.ticket_id %}" class="btn btn-primary"><span
-                                        class="btn-label"><i class="mdi mdi-file-document"></i></span> Technical Report
+                                <a href="{% url 'generate_report' ticket.ticket_id %}" class="btn btn-primary"><span
+                                        class="btn-label"><i class="mdi mdi-file-document"></i></span>Technical Report
                                 </a>
                             </form>
                         </div>

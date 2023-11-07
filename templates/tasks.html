@@ -46,16 +46,19 @@
 
                                                 <div class="kanban-detail">
                                                     <span class="badge bg-primary float-end">{{ task.user.username }}</span>
-                                                    <h5 class="mt-0"><a href="{% url 'view_task_details' task.id %}" class="text-dark">{{ task.title }}</a></h5>
+                                                    <h5 class="mt-0"><a href="{% url 'view_task_details' task.id %}"
+                                                                        class="text-dark">{{ task.title }}</a></h5>
                                                     <ul class="list-inline">
                                                         <li class="list-inline-item">
-                                                            <a href="{% url 'view_task_details' task.id %}" >
-                                                                <i class="mdi mdi-format-align-left"></i> {{task.cc_users_count}} Users
+                                                            <a href="{% url 'view_task_details' task.id %}">
+                                                                <i class="mdi mdi-format-align-left"></i> {{ task.cc_users_count }}
+                                                                Users
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item">
-                                                            <a href="{% url 'view_task_details' task.id %}" >
-                                                                <i class="mdi mdi-comment-outline"></i> {{ task.comment_count }} Comments
+                                                            <a href="{% url 'view_task_details' task.id %}">
+                                                                <i class="mdi mdi-comment-outline"></i> {{ task.comment_count }}
+                                                                Comments
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -94,18 +97,19 @@
 
                                                 <div class="kanban-detail">
                                                     <span class="badge bg-primary float-end">{{ task.creator.username }}</span>
-                                                    <h5 class="mt-0"><a href="{% url 'view_task_details' task.id %}" class="text-dark">{{ task.title }}</a></h5>
+                                                    <h5 class="mt-0"><a href="{% url 'view_task_details' task.id %}"
+                                                                        class="text-dark">{{ task.title }}</a></h5>
                                                     <ul class="list-inline">
                                                         <li class="list-inline-item">
-                                                            <a href="{% url 'view_task_details' task.id %}" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                               title="5 Tasks">
-                                                                <i class="mdi mdi-format-align-left"></i>
+                                                            <a href="{% url 'view_task_details' task.id %}">
+                                                                <i class="mdi mdi-format-align-left"></i> {{ task.cc_users_count }}
+                                                                Users
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item">
-                                                            <a href="{% url 'view_task_details' task.id %}" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                               title="3 Comments">
-                                                                <i class="mdi mdi-comment-outline"></i>
+                                                            <a href="{% url 'view_task_details' task.id %}">
+                                                                <i class="mdi mdi-comment-outline"></i> {{ task.comment_count }}
+                                                                Comments
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -146,18 +150,19 @@
 
                                                 <div class="kanban-detail">
                                                     <span class="badge bg-primary float-end">{{ task.creator.username }}</span>
-                                                    <h5 class="mt-0"><a href="{% url 'view_task_details' task.id %}" class="text-dark">{{ task.title }}</a></h5>
+                                                    <h5 class="mt-0"><a href="{% url 'view_task_details' task.id %}"
+                                                                        class="text-dark">{{ task.title }}</a></h5>
                                                     <ul class="list-inline">
                                                         <li class="list-inline-item">
-                                                            <a href="{% url 'view_task_details' task.id %}" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                               title="5 Tasks">
-                                                                <i class="mdi mdi-format-align-left"></i>
+                                                            <a href="{% url 'view_task_details' task.id %}">
+                                                                <i class="mdi mdi-format-align-left"></i> {{ task.cc_users_count }}
+                                                                Users
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item">
-                                                            <a href="{% url 'view_task_details' task.id %}" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                               title="3 Comments">
-                                                                <i class="mdi mdi-comment-outline"></i>
+                                                            <a href="{% url 'view_task_details' task.id %}">
+                                                                <i class="mdi mdi-comment-outline"></i> {{ task.comment_count }}
+                                                                Comments
                                                             </a>
                                                         </li>
                                                     </ul>

@@ -231,10 +231,30 @@
                 <input class="form-control" value="{{ ticket.tr_status }}" disabled>
             </div>
             <div class="col-lg-6 mb3">
-                <label class="form-label">
-                    Approval Status:
-                </label>
-                <input class="form-control" value="{{ ticket.tr_approval }}" disabled>
+                <form method="post" action="{% url 'approve_report' report.id %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <label for="approval_status" class="form-label">Approval Status:</label>
+                        <div class="col-9">
+                            <select id="approval_status" name="approval_status" class="form-select">
+                                <option value=""
+                                        {% if report.is_approved == '' %}selected{% endif %}>
+                                </option>
+                                <option value = "approved"
+                                        {% if report.is_approved == "approved" %}selected{% endif %}>Approved
+                                </option>
+                                <option value = "rejected"
+                                        {% if report.is_approved == "rejected" %}selected{% endif %}>Rejected
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <button type="submit" class="btn btn-primary waves-effect waves-light me-1">Submit</button>
+                        </div>
+                    </div>
+
+                </form>
+
             </div>
         </div>
     </div>
