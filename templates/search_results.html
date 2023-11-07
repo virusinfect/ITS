@@ -21,7 +21,7 @@
                             <h5>SERIAL NO : {{ equipment.serial_no }}</h5>
                             <h6>TYPE : {{ equipment.type }}</h6>
                             <h5 class="mt-3 border-top pt-3">Specification</h5>
-                            {% if equipment.type == "CPU" %}
+                            {% if equipment.type == "CPU" or equipment.type == "Laptop" or equipment.type == "Server"%}
                                 {% with specs=equipment.equipmentspecs_set.first %}
                                     {% if specs %}
                                         <p><strong>Computer Name</strong> : {{ specs.comp_name }}</p>
