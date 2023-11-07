@@ -240,10 +240,10 @@
                                 <option value=""
                                         {% if report.is_approved == '' %}selected{% endif %}>
                                 </option>
-                                <option value = "approved"
+                                <option value="approved"
                                         {% if report.is_approved == "approved" %}selected{% endif %}>Approved
                                 </option>
-                                <option value = "rejected"
+                                <option value="rejected"
                                         {% if report.is_approved == "rejected" %}selected{% endif %}>Rejected
                                 </option>
                             </select>
@@ -263,6 +263,12 @@
         <a href="{% url 'edit-ticket' ticket.ticket_id %}" class="btn btn-primary"><span class="btn-label"><i
                 class="mdi mdi-square-edit-outline"></i></span> Edit Ticket
         </a>
+        {% if not report.sent_approval %}
+            <a href="{% url 'mark_sent_for_approval' report.id %}" class="btn btn-primary">
+                <span class="btn-label"><i class="mdi mdi-sticker-check-outline"></i></span> Request Approval
+            </a>
+        {% endif %}
+
         <a id="print-button" class="btn btn-primary waves-effect waves-light me-1"><span class="btn-label"><i
                 class="mdi mdi-printer"></i></span>Print</a>
     </div>

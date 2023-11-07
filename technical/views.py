@@ -1157,9 +1157,18 @@ def mark_sent_for_approval(request, report_id):
         # If the report is not marked as sent for approval, set it to True
         report.sent_approval = True
         report.save()
+        management_group = Group.objects.get(name='admin')
+        users_in_helpdesk_group = User.objects.filter(groups=management_group)
+        created_by = request.user
+        notification = Notification.create_notification(
+            users=users_in_helpdesk_group,  # Assign it to the user
+            message="Approve Technical Report for " + report.ticket.company.name + ".",
+            icon="mdi-book-alert",
+            created_by=created_by,  # Replace with your MDI icon name
+        )
 
     # Redirect back to the report's detail page (or wherever you prefer)
-    return redirect('report', report_id=report_id)
+    return redirect('report', report_id=report.id)
 
 def generate_report(request, ticket_id):
     # Retrieve the ticket associated with the given ticket_id
