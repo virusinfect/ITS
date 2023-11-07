@@ -62,7 +62,7 @@
                                         <td><input type="text" name="description[]" value="{{ product.description }}"
                                                    class="form-control">
                                         </td>
-                                        <td><input type="text" name="price[]" value="{{ product.price }}"
+                                        <td><input type="text" name="price[]" value="{{ product.price }}" id="price"
                                                    class="form-control"></td>
                                         <td><select name="availability[]" class="form-select">
                                             <option value="">Select availability</option>
@@ -83,7 +83,7 @@
                                                 LIMITED
                                             </option>
                                         </select></td>
-                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}"
+                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}" id="qty"
                                                    class="form-control"></td>
                                         <td><select name="currency[]" class="form-select">
                                             <option value="">Select currency</option>
@@ -233,9 +233,21 @@
                 select.selectedIndex = 0;
             }
 
+            // Set the default values for fields with id "price" and "qty" to 0
+            const priceField = newRow.querySelector('#price');
+            if (priceField) {
+                priceField.value = '0';
+            }
+
+            const qtyField = newRow.querySelector('#qty');
+            if (qtyField) {
+                qtyField.value = '0';
+            }
+
             // Insert the new row below the current row
             currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
         }
+
 
         function addBlankRowAtEnd() {
             // Create a new row to add at the end

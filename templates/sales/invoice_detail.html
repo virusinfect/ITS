@@ -70,7 +70,7 @@
                                         <td><input type="text" name="description[]" value="{{ product.description }}"
                                                    class="form-control">
                                         </td>
-                                        <td><input type="text" name="price[]" value="{{ product.price }}"
+                                        <td><input type="text" name="price[]" value="{{ product.price }}" id="price"
                                                    class="form-control"></td>
                                         <td><select name="availability[]" class="form-select">
                                             <option value="">Select availability</option>
@@ -91,7 +91,7 @@
                                                 LIMITED
                                             </option>
                                         </select></td>
-                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}"
+                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}" id="qty"
                                                    class="form-control"></td>
                                         <td>
                                             <select name="currency[]" class="form-select">
@@ -113,11 +113,11 @@
                                                data-plugin="tippy" data-tippy-interactive="true"><i
                                                 class="s mdi mdi-plus-circle mdi-18px"></i>
                                         </a>
-                                        <a href="{% url 'delete_row_invoice' product.product_id invoice.pfq_id %}"
-                                           title="delete" tabindex="0"
-                                           data-plugin="tippy" data-tippy-interactive="true">
-                                            <i class="s mdi mdi-delete-outline mdi-18px"></i>
-                                        </a>
+                                            <a href="{% url 'delete_row_invoice' product.product_id invoice.pfq_id %}"
+                                               title="delete" tabindex="0"
+                                               data-plugin="tippy" data-tippy-interactive="true">
+                                                <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                            </a>
                                         </td>
                                         <!-- Add other table cells for additional fields -->
                                     </tr>
@@ -243,7 +243,8 @@
             <a type="button" class="btn btn-primary waves-effect waves-light me-1">
                 <span class="btn-label"><i class="mdi mdi-email-send-outline"></i></span>Send Mail
             </a>
-            <a href="{% url 'invoice' invoice.pfq_id %}" type="button" class="btn btn-primary waves-effect waves-light  me-1">
+            <a href="{% url 'invoice' invoice.pfq_id %}" type="button"
+               class="btn btn-primary waves-effect waves-light  me-1">
                 <span class="btn-label"><i class="mdi mdi-file-pdf-outline"></i></span>Generate Proforma
             </a>
 
@@ -295,9 +296,21 @@
                 select.selectedIndex = 0;
             }
 
+            // Set the default values for fields with id "price" and "qty" to 0
+            const priceField = newRow.querySelector('#price');
+            if (priceField) {
+                priceField.value = '0';
+            }
+
+            const qtyField = newRow.querySelector('#qty');
+            if (qtyField) {
+                qtyField.value = '0';
+            }
+
             // Insert the new row below the current row
             currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
         }
+
 
         function addBlankRowAtEnd() {
             // Create a new row to add at the end

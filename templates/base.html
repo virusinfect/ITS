@@ -390,7 +390,8 @@
                                 <span> Orders </span>
                             </a>
                         </li>
-                    {% elif user|can_access_view_invoice %}
+                    {% endif %}
+                    {% if user|can_access_view_invoice %}
                         <li>
                             <a href="{% url 'active-invoice' %}">
                                 <i class="mdi mdi-file-document"></i>

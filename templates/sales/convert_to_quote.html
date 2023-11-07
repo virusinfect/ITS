@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}Edit Quote{% endblock %}
-{% block header %}Edit Quote{% endblock %}
+{% block title %}Convert to Quote{% endblock %}
+{% block header %}Convert to Quote{% endblock %}
 
 {% block content %}
     <div class="row">
@@ -65,7 +65,7 @@
                                                    name="description[]">
                                         </td>
                                         <td><input type="text" value="{{ product.price }}" class="form-control"
-                                                   name="price[]"></td>
+                                                   name="price[]" id="price"></td>
                                         <td><select name="availability[]" class="form-select">
                                             <option value="">Select availability</option>
                                             <option value="AVAILABLE"
@@ -86,7 +86,7 @@
                                             </option>
                                         </select></td>
                                         <td><input type="text" value="{{ product.quantity }}" class="form-control"
-                                                   name="quantity[]"></td>
+                                                   name="quantity[]" id="qty"></td>
                                         <td><input type="file" class="form-control"></td>
                                         <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
                                                tabindex="0"
@@ -267,7 +267,11 @@
             // Clear input values in the new row
             const inputs = newRow.getElementsByTagName('input');
             for (let input of inputs) {
-                input.value = '';
+                if (input.id === 'price' || input.id === 'qty') {
+                    input.value = '0';
+                } else {
+                    input.value = '';
+                }
             }
 
             // Clear select options in the new row (optional)
@@ -288,7 +292,11 @@
             // Clear input values in the new row
             const inputs = newRow.getElementsByTagName('input');
             for (let input of inputs) {
-                input.value = '';
+                if (input.id === 'price' || input.id === 'qty') {
+                    input.value = '0';
+                } else {
+                    input.value = '';
+                }
             }
 
             // Clear select options in the new row (optional)
@@ -301,6 +309,7 @@
             tableBody.appendChild(newRow);
         }
     </script>
+
 
 
 {% endblock %}

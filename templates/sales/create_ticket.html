@@ -70,11 +70,11 @@
                                        class="form-control">
                             </td>
                             <td><input type="text" name="price[]"
-                                       value="0"
+                                       value="0" placeholder="0" id="price"
                                        class="form-control">
                             </td>
                             <td><input type="text" name="quantity[]"
-                                       value="0"
+                                       value="0" id="qty"
                                        class="form-control">
                             </td>
                             <td><select name="currency[]" class="form-select">
@@ -195,47 +195,70 @@
             </form>
         </div>
     </div> <!-- end col -->
-    <script>
-        function addBlankRow(button) {
-            // Create a new row by cloning the current row
-            const currentRow = button.parentNode.parentNode;
-            const newRow = currentRow.cloneNode(true);
+   <script>
+    function addBlankRow(button) {
+        // Create a new row by cloning the current row
+        const currentRow = button.parentNode.parentNode;
+        const newRow = currentRow.cloneNode(true);
 
-            // Clear input values in the new row
-            const inputs = newRow.getElementsByTagName('input');
-            for (let input of inputs) {
-                input.value = '';
-            }
-
-            // Clear select options in the new row (optional)
-            const selects = newRow.getElementsByTagName('select');
-            for (let select of selects) {
-                select.selectedIndex = 0;
-            }
-
-            // Insert the new row below the current row
-            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+        // Clear input values in the new row
+        const inputs = newRow.getElementsByTagName('input');
+        for (let input of inputs) {
+            input.value = '';
         }
 
-        function addBlankRowAtEnd() {
-            // Create a new row to add at the end
-            const tableBody = document.querySelector('table tbody');
-            const newRow = tableBody.children[0].cloneNode(true);
-
-            // Clear input values in the new row
-            const inputs = newRow.getElementsByTagName('input');
-            for (let input of inputs) {
-                input.value = '';
-            }
-
-            // Clear select options in the new row (optional)
-            const selects = newRow.getElementsByTagName('select');
-            for (let select of selects) {
-                select.selectedIndex = 0;
-            }
-
-            // Append the new row to the end of the table
-            tableBody.appendChild(newRow);
+        // Clear select options in the new row (optional)
+        const selects = newRow.getElementsByTagName('select');
+        for (let select of selects) {
+            select.selectedIndex = 0;
         }
-    </script>
+
+        // Find input elements with id "price" and "qty" and set their values to 0
+        const priceInput = newRow.querySelector('input#price');
+        if (priceInput) {
+            priceInput.value = '0';
+        }
+        const qtyInput = newRow.querySelector('input#qty');
+        if (qtyInput) {
+            qtyInput.value = '0';
+        }
+
+        // Insert the new row below the current row
+        currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+    }
+
+    function addBlankRowAtEnd() {
+        // Create a new row to add at the end
+        const tableBody = document.querySelector('table tbody');
+        const newRow = tableBody.children[0].cloneNode(true);
+
+        // Clear input values in the new row
+        const inputs = newRow.getElementsByTagName('input');
+        for (let input of inputs) {
+            input.value = '';
+        }
+
+        // Clear select options in the new row (optional)
+        const selects = newRow.getElementsByTagName('select');
+        for (let select of selects) {
+            select.selectedIndex = 0;
+        }
+
+        // Find input elements with id "price" and "qty" and set their values to 0
+        const priceInput = newRow.querySelector('input#price');
+        if (priceInput) {
+            priceInput.value = '0';
+        }
+        const qtyInput = newRow.querySelector('input#qty');
+        if (qtyInput) {
+            qtyInput.value = '0';
+        }
+
+        // Append the new row to the end of the table
+        tableBody.appendChild(newRow);
+    }
+</script>
+
+
+
 {% endblock %}

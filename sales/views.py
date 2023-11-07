@@ -510,7 +510,8 @@ def create_ticket(request):
         availability_list = request.POST.getlist('availability[]')
         supplier_list = request.POST.getlist('supplier[]')
         currency_list = request.POST.getlist('currency[]')
-        price_list = request.POST.getlist('price[]')
+        price_list_strings = request.POST.getlist('price[]')
+        price_list_integers = [int(price) for price in price_list_strings]
 
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
@@ -521,7 +522,7 @@ def create_ticket(request):
                     part_no=part_no_list[i],
                     description=desc_list[i],
                     quantity=qty_list[i],
-                    price=price_list[i],
+                    price=price_list_integers[i],
                     availability=availability_list[i],
                     supplier=supplier_list[i],
                     currency=currency_list[i],

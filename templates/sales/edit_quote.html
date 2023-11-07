@@ -69,7 +69,7 @@
                                         <td><input type="text" name="description[]" value="{{ product.description }}"
                                                    class="form-control" required>
                                         </td>
-                                        <td><input type="text" name="price[]" value="{{ product.price }}"
+                                        <td><input type="text" name="price[]" value="{{ product.price }}" id="price"
                                                    class="form-control" required></td>
                                         <td><select name="availability[]" class="form-select">
                                             <option value="">Select availability</option>
@@ -90,7 +90,7 @@
                                                 LIMITED
                                             </option>
                                         </select></td>
-                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}"
+                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}" id="qty"
                                                    class="form-control" required></td>
                                         <td><input type="file" class="form-control"></td>
                                         <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
@@ -134,7 +134,7 @@
                                             </option>
                                         </select></td>
                                         <td><input type="text" name="quantity[]" value="{{ product.quantity }}"
-                                                  class="form-control" required></td>
+                                                   class="form-control" required></td>
                                         <td><input type="file" class="form-control"></td>
                                         <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
                                                tabindex="0"
@@ -299,10 +299,23 @@
             const currentRow = button.parentNode.parentNode;
             const newRow = currentRow.cloneNode(true);
 
-            // Clear input values in the new row
+            // Set the default values for fields with id "price" and "qty" to 0
+            const priceField = newRow.querySelector('#price');
+            if (priceField) {
+                priceField.value = '0';
+            }
+
+            const qtyField = newRow.querySelector('#qty');
+            if (qtyField) {
+                qtyField.value = '0';
+            }
+
+            // Clear input values in the new row except for "price" and "qty"
             const inputs = newRow.getElementsByTagName('input');
             for (let input of inputs) {
-                input.value = '';
+                if (input.id !== 'price' && input.id !== 'qty') {
+                    input.value = '';
+                }
             }
 
             // Clear select options in the new row (optional)
@@ -314,6 +327,7 @@
             // Insert the new row below the current row
             currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
         }
+
 
         function addBlankRowAtEnd() {
             // Create a new row to add at the end
@@ -336,7 +350,4 @@
             tableBody.appendChild(newRow);
         }
     </script>
-
-
-
 {% endblock %}

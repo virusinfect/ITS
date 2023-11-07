@@ -254,7 +254,7 @@ def delete_part(request, part_id):
 
 @login_required
 def company_list(request):
-    companies = Company.objects.all()
+    companies = Company.objects.all().order_by('name')
     return render(request, 'company_list.html', {'companies': companies})
 
 

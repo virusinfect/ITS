@@ -93,12 +93,12 @@
                                                 class="s mdi mdi-plus-circle mdi-18px"></i>
                                         </a>
                                             <a href="{% url 'deactivate_order_product' product.op_id order.o_id %}"
-                                               title="receive" tabindex="0"
+                                               title="receive" tabindex="0" id="recive"
                                                data-plugin="tippy" data-tippy-interactive="true">
                                                 <i class="s mdi mdi-call-received mdi-18px"></i>
                                             </a>
                                             <a href="{% url 'delete_row_order' product.op_id order.o_id %}"
-                                               title="delete" tabindex="0"
+                                               title="delete" tabindex="0" id="delete"
                                                data-plugin="tippy" data-tippy-interactive="true">
                                                 <i class="s mdi mdi-delete-outline mdi-18px"></i>
                                             </a>
@@ -117,7 +117,7 @@
 
                                            class="form-control"></td>
                                 <td><input type="text" name="supplier[]"
-                                            class="form-control"></td>
+                                           class="form-control"></td>
                                 <td><input type="date" name="date_received[]"
 
                                            class="form-control"></td>
@@ -175,9 +175,16 @@
                 select.selectedIndex = 0;
             }
 
+            // Hide icons with id "recive" and "delete" in the new row
+            const iconsToHide = newRow.querySelectorAll('#recive, #delete');
+            for (let icon of iconsToHide) {
+                icon.style.display = 'none';
+            }
+
             // Insert the new row below the current row
             currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
         }
+
 
         function addBlankRowAtEnd() {
             // Create a new row to add at the end
