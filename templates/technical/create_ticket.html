@@ -195,7 +195,7 @@
                         success: function (response) {
                             // Check if the response indicates success (you can define this)
                             if (response.success) {
-                                location.reload();
+                                window.location.href = '{% url "ticket-list" %}';
                             } else {
                                 // Handle failure if needed
                             }

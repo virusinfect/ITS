@@ -1551,7 +1551,7 @@ def save_signature_view_ticket(request):
         try:
             signature.ticket = ticket  # Associate the delivery with the signature
             signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
-            return HttpResponseRedirect(reverse('edit-ticket', args=[ticket.ticket_id]))  # Replace 'edit-ticket' with the name of your URL pattern
+            return JsonResponse({'success': True})
         except Tickets.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Format Approval not found'}, status=400)
 
