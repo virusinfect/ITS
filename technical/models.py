@@ -254,7 +254,7 @@ class TechnicalReport(models.Model):
     report_text = models.TextField(blank=True)
     is_approved = models.TextField(blank=True)
     sent_approval = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     approval_date = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
