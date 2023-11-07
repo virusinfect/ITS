@@ -1479,7 +1479,7 @@ def save_signature_view_ticket(request):
             serial_no=serial_no,
             fault=fault,
             accessories=accessories,
-            notes=notes,
+            notes="notes",
             tech_id=tech_id,
             type=type,
         )
