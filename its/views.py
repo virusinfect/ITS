@@ -136,13 +136,14 @@ def save_signature_view_call(request):
     return JsonResponse({'message': 'Invalid request method'}, status=400)
 
 
-
 def delivery_detail(request, delivery_id):
     delivery = get_object_or_404(Deliverys, delivery_id=delivery_id)
     return render(request, 'sign2.html', {'delivery': delivery})
 
+
 def is_member_of_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
+
 
 @login_required
 def test_view(request):
@@ -152,7 +153,6 @@ def test_view(request):
         return redirect('helpdesk_dashboard')
     else:
         return render(request, 'base.html')
-
 
 
 @login_required
@@ -325,6 +325,16 @@ def delete_company(request, company_id):
 def client_list(request, company_id):
     clients = Clients.objects.filter(company_id=company_id)
     return render(request, 'client_list.html', {'clients': clients})
+
+@login_required
+def delete_client(request, client_id):
+    client = Clients.objects.get(pk=client_id)
+    company = client.company
+    client.delete()
+
+    messages.warning(request, 'Client deleted successfully')
+    return redirect('client-list',
+                    company_id=company.id)  # Redirect to a client list view or another appropriate URL
 
 
 @login_required
@@ -537,6 +547,7 @@ def create_personal_task(request):
 
     return render(request, 'create_personal_task.html')
 
+
 @login_required
 def edit_personal(request, personal_id):
     # Get the Personal object by its ID or return a 404 if not found
@@ -565,6 +576,7 @@ def edit_personal(request, personal_id):
 
     # Render the edit form if it's a GET request
     return render(request, 'edit_personal.html', {'personal': personal})
+
 
 @login_required
 def get_personal(request):

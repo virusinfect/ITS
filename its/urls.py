@@ -44,6 +44,7 @@ urlpatterns = [
     path('404/', TemplateView.as_view(template_name='404.html'), name='custom_404'),
     path('search/', views.search, name='search'),
     path('equipment-lookup/', views.equipment_lookup, name='equipment_lookup'),
+    path('clients/delete/<int:client_id>/', views.delete_client, name='delete_client'),
 
 ]
 handler500 = 'its.views.server_error'
