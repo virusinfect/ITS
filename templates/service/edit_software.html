@@ -67,6 +67,7 @@
                                 </option>
                                 <!-- Add more editions for Windows 7 as needed -->
                             </optgroup>
+
                             <!-- Add more Windows versions and editions as needed -->
                         </select>
                     </div>
@@ -75,6 +76,9 @@
                         <label for="mo" class="form-label">Microsoft Office</label>
                         <select name="mo" required class="form-select">
                             <option value="">Select a Microsoft Office version</option>
+                            <optgroup label="Microsoft Office 365">
+                                <option value="Microsoft Office 365" {% if software.mo == 'Microsoft Office 365' %}selected{% endif %}>Microsoft Office 365</option>
+                            </optgroup>
                             <optgroup label="Microsoft Office 2021">
                                 <option value="Microsoft Office 2021 Home and Student"
                                         {% if software.mo == 'Microsoft Office 2021 Home and Student' %}selected{% endif %}>

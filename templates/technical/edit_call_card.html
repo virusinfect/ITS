@@ -165,6 +165,7 @@
                 success: function (response) {
                     // Check if the response indicates success (you can define this)
                     if (response.success) {
+                        toastr.success("Signature submitted successfully ", "Signature ");
                         location.reload();
                     } else {
                         // Handle failure if needed
