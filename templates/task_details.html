@@ -59,9 +59,27 @@
                                     </ul>
                                 </div>
                             </div>
-                            <a href="{% url 'tasks' %}" class="btn btn-primary ">Back to Task List</a>
-
-
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="">
+                                        <select name="status" class="form-select mb-2">
+                                            <option value="Pending"
+                                                    {% if task.status == 'Pending' %}selected{% endif %}>Pending
+                                            </option>
+                                            <option value="In Progress"
+                                                    {% if task.status == 'In Progress' %}selected{% endif %}>In Progress
+                                            </option>
+                                            <option value="Completed"
+                                                    {% if task.status == 'Completed' %}selected{% endif %}>Completed
+                                            </option>
+                                            <!-- Add other status options as needed -->
+                                        </select>
+                                        <input type="submit" class="btn btn-primary" value="Update Status">
+                                        <a href="{% url 'tasks' %}" class="btn btn-primary ">Back to Task List</a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
 

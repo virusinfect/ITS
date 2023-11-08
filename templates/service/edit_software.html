@@ -45,27 +45,54 @@
                                         {% if software.os == 'Windows 10 Pro' %}selected{% endif %}>Windows 10 Pro
                                 </option>
                                 <option value="Windows 10 Enterprise"
-                                        {% if software.os == 'Windows 10 Enterprise' %}selected{% endif %}>Windows 10 Enterprise
+                                        {% if software.os == 'Windows 10 Enterprise' %}selected{% endif %}>Windows 10
+                                    Enterprise
                                 </option>
-                                <!-- Add more editions for Windows 10 as needed -->
                             </optgroup>
                             <optgroup label="Windows 8.1">
                                 <option value="Windows 8.1" {% if software.os == 'Windows 8.1' %}selected{% endif %}>
                                     Windows 8.1
                                 </option>
-                                <!-- Add more editions for Windows 8.1 as needed -->
                             </optgroup>
                             <optgroup label="Windows 8">
                                 <option value="Windows 8" {% if software.os == 'Windows 8' %}selected{% endif %}>Windows
                                     8
                                 </option>
-                                <!-- Add more editions for Windows 8 as needed -->
                             </optgroup>
                             <optgroup label="Windows 7">
                                 <option value="Windows 7" {% if software.os == 'Windows 7' %}selected{% endif %}>Windows
                                     7
                                 </option>
-                                <!-- Add more editions for Windows 7 as needed -->
+                            </optgroup>
+                            <optgroup label="Windows Server 2022">
+                                <option value="Windows Server 2022"
+                                        {% if software.os == 'Windows Server 2022' %}selected{% endif %}>Windows Server
+                                    2022
+                                </option>
+                            </optgroup>
+                            <optgroup label="Windows Server 2019">
+                                <option value="Windows Server 2019"
+                                        {% if software.os == 'Windows Server 2019' %}selected{% endif %}>Windows Server
+                                    2019
+                                </option>
+                            </optgroup>
+                            <optgroup label="Windows Server 2016">
+                                <option value="Windows Server 2016"
+                                        {% if software.os == 'Windows Server 2016' %}selected{% endif %}>Windows Server
+                                    2016
+                                </option>
+                            </optgroup>
+                            <optgroup label="Windows Server 2012 R2">
+                                <option value="Windows Server 2012 R2"
+                                        {% if software.os == 'Windows Server 2012 R2' %}selected{% endif %}>Windows
+                                    Server 2012 R2
+                                </option>
+                            </optgroup>
+                            <optgroup label="Windows Server 2012">
+                                <option value="Windows Server 2012"
+                                        {% if software.os == 'Windows Server 2012' %}selected{% endif %}>Windows Server
+                                    2012
+                                </option>
                             </optgroup>
 
                             <!-- Add more Windows versions and editions as needed -->
@@ -77,7 +104,10 @@
                         <select name="mo" required class="form-select">
                             <option value="">Select a Microsoft Office version</option>
                             <optgroup label="Microsoft Office 365">
-                                <option value="Microsoft Office 365" {% if software.mo == 'Microsoft Office 365' %}selected{% endif %}>Microsoft Office 365</option>
+                                <option value="Microsoft Office 365"
+                                        {% if software.mo == 'Microsoft Office 365' %}selected{% endif %}>Microsoft
+                                    Office 365
+                                </option>
                             </optgroup>
                             <optgroup label="Microsoft Office 2021">
                                 <option value="Microsoft Office 2021 Home and Student"

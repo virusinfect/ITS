@@ -452,7 +452,17 @@ def delete_user(request, user_id):
 
     return render(request, 'delete_user.html', {'user': user})
 
+def create_task(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        status = request.POST.get('status')
 
+        task = Task(title=title, description=description, status=status)
+        task.save()
+        return redirect('task_list')  # Redirect to a task list view or another appropriate URL
+
+    return render(request, 'task_create.html')
 @login_required
 def Tasks(request):
     current_user = request.user  # Replace 'your_username' with the actual username
@@ -495,7 +505,14 @@ def Tasks(request):
 
 @login_required
 def view_task_details(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)  # Retrieve the task or show a 404 page if it doesn't exist
+    task = get_object_or_404(Task, pk=task_id)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        task.status = new_status
+        task.save()
+        messages.success(request, 'Task Updated successfully')
+        return redirect('tasks')
+
     return render(request, 'task_details.html', {'task': task})
 
 
