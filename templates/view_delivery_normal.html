@@ -12,26 +12,26 @@
                 <h3>Delivery Note</h3>
             </div>
             <div class="row mb-3">
-                <div class="col-6">
-                    <img src="{% static 'logo black.png' %}" alt="Company Logo" width="150">
+                <div class="col-6 mt-4">
+                    <img src="{% static 'logo black.png' %}" alt="Company Logo" height="110px" width="110px">
 
                 </div>
-                <div class="col-6 text-end mt-4">
+                <div class="col-6 text-end mt-4" >
 
-                    <small>Ground Floor, Corporate Insurance Building </small><br>
-                    <small>Yusuf A. Karim Rd, East End, Treasury Square </small><br>
-                    <small> P.O. Box 42716 - 80100,</small><br>
-                    <small>Cell: 0728 786014 | 0732 786012 | 0773 963114</small><br>
-                    <small>Tel: +254 41 2221792 | 696/932/231500 | 2311364</small><br>
-                    <small><i class="mdi mdi-email-outline"></i> sales: sales@intellitech.co.ke | For support:
+                    <small style="font-size:10px">Ground Floor, Corporate Insurance Building </small><br>
+                    <small style="font-size:10px">Yusuf A. Karim Rd, East End, Treasury Square </small><br>
+                    <small style="font-size:10px"> P.O. Box 42716 - 80100,</small><br>
+                    <small style="font-size:10px">Cell: 0728 786014 | 0732 786012 | 0773 963114</small><br>
+                    <small style="font-size:10px">Tel: +254 41 2221792 | 696/932/231500 | 2311364</small><br>
+                    <small style="font-size:10px"><i class="mdi mdi-email-outline"></i> sales: sales@intellitech.co.ke | For support:
                         support@intellitech.co.ke</small><br>
-                    <small>Website: www.intellitech.co.ke</small>
+                    <small style="font-size:10px">Website: www.intellitech.co.ke</small>
                 </div>
             </div>
             <div class="text-end">
                 <p>Date: {{ delivery.created }}</p>
             </div>
-            <div class="row mt-4">
+            <div class="row mt-2">
                 <div class="col-6 ">
 
                     <h4>Client Information</h4>
@@ -50,15 +50,15 @@
                 </div>
             </div>
 
-            <div class="row mt-4 ">
+            <div class="row mt-2 ">
                 <h4>Items</h4>
                 <div class="col-12 table-responsive">
 
                     {% if items %}
                         <table class="table table-bordered ">
-                            <thead class="table-dark">
+                            <thead>
                             <tr>
-                                <th>Serial No</th>
+                                <th><strong>Serial No</strong> </th>
                                 <th>Quantity</th>
                                 <th>Particulars</th>
                                 <th>Rate</th>
@@ -145,10 +145,10 @@
             @media print {
                 #footer-image {
                     position: fixed;
-                    bottom: 0;
+                    bottom: 0.1;
                     left: 0;
                     right: 0;
-                    max-width: 100%;
+                    max-width: 95%;
                 }
                 body {
                     margin: 0 !important; /* Force margin removal */
