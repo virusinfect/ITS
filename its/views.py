@@ -330,11 +330,15 @@ def client_list(request, company_id):
 def delete_client(request, client_id):
     client = Clients.objects.get(pk=client_id)
     company = client.company
-    client.delete()
 
-    messages.warning(request, 'Client deleted successfully')
-    return redirect('client-list',
-                    company_id=company.id)  # Redirect to a client list view or another appropriate URL
+    if request.method == 'POST':
+        # If the form is submitted, delete the client
+        client.delete()
+        messages.warning(request, 'Client deleted successfully')
+        return redirect('client-list',
+                        company_id=company.id)
+
+    return render(request, 'client_confirm_delete.html', {'client': client,'company':company})    # Redirect to a client list view or another appropriate URL
 
 
 @login_required
