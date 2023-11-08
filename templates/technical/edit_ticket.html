@@ -50,7 +50,7 @@
                 <div class="tab-content">
                     <div class="tab-pane show active" id="ticket">
                         <div class="row">
-                            <form method="post">
+                            <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="col-11 mx-auto mt-3">
                                     <div class="row">
@@ -85,7 +85,8 @@
                                     <div class="row mb-3">
                                         <div class="col-lg-6 mb-3">
                                             <label for="client" class="form-label"><strong>Client:</strong></label>
-                                            <input id="client" name="client" value="{{ ticket.client }}" class="form-control" disabled/>
+                                            <input id="client" name="client" value="{{ ticket.client }}"
+                                                   class="form-control" disabled/>
 
                                         </div>
                                         <div class="mb-3 col-lg-6">
@@ -128,8 +129,17 @@
                                                    class="form-label"><strong>Diagnosis:</strong></label>
                                             <textarea class="form-control" id="diagnosis"
                                                       name="diagnosis" rows="5">{{ ticket.diagnosis }}</textarea>
-                                            <input id="file-upload" type="file" name="file"
-                                                   class="form-control form-control-sm mt-1">
+                                            {% for image in diagnosis_images %}
+                                                <div class="card w-25 h-25">
+                                                    <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+                                                    <a href="#" onclick="deleteImage({{ image.id }})"
+                                                       class="btn btn-primary">Delete</a>
+                                                </div>
+                                                {% empty %}
+                                                <input id="file-upload" type="file" name="diagnosis_image"
+                                                       class="form-control form-control-sm mt-1">
+                                            {% endfor %}
+
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -137,8 +147,15 @@
                                             <label for="action" class="form-label"><strong>Action:</strong></label>
                                             <textarea class="form-control" id="action"
                                                       name="action" rows="5">{{ ticket.action }}</textarea>
-                                            <input id="file-upload" type="file" name="file"
-                                                   class="form-control form-control-sm mt-1">
+                                            {% for image in action_images %}
+                                                <div class="card w-25 h-25">
+                                                    <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+                                                    <a href="#" onclick="deleteImage({{ image.id }})"
+                                                       class="btn btn-primary">Delete</a>
+                                                </div>
+                                                {% empty %}
+                                                <input id="file-upload" type="file" name="action_image"
+                                                       class="form-control form-control-sm mt-1">{% endfor %}
                                         </div>
                                         <div class="mb-3 col-lg-6">
                                             <label for="recommendation"
@@ -146,7 +163,15 @@
                                             <textarea class="form-control" id="recommendation"
                                                       name="recommendation"
                                                       rows="5">{{ ticket.recommendation }}</textarea>
-                                            <input type="file" name="file" class="form-control form-control-sm mt-1">
+                                            {% for image in recommendation_images %}
+                                                <div class="card w-25 h-25">
+                                                    <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+                                                    <a href="#" onclick="deleteImage({{ image.id }})"
+                                                       class="btn btn-primary">Delete</a>
+                                                </div>
+                                                {% empty %}
+                                                <input type="file" name="recommendation_image"
+                                                       class="form-control form-control-sm mt-1">{% endfor %}
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -776,6 +801,30 @@
             });
         });
 
+    </script>
+    <script>
+        function deleteImage(imageId) {
+            if (confirm('Are you sure you want to delete this image?')) {
+                fetch(`/technical/delete_image/${imageId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),  // Ensure you include the CSRF token
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message === 'Image deleted successfully.') {
+                            // Optionally, remove the deleted image element from the page
+                            document.getElementById(`image-${imageId}`).remove();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        location.reload();
+                    });
+            }
+        }
     </script>
 
 

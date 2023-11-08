@@ -73,6 +73,13 @@ class ProductDetail(models.Model):
     supplier = models.CharField(max_length=100, null=True)
     attachment = models.FileField(upload_to='attachments/', null=True)
 
+class TicketImage(models.Model):
+    ticket = models.ForeignKey('Tickets', on_delete=models.CASCADE)  # Replace 'YourTicketModel' with your actual ticket model
+    tag = models.CharField(max_length=255)  # A varchar field for tagging the image
+    image = models.ImageField(upload_to='ticket_images/')  # A field for uploading the image
+
+    def __str__(self):
+        return self.tag
 
 class Delivery(models.Model):
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE, null=True)

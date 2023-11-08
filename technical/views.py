@@ -24,7 +24,7 @@ from its.models import Company, Clients, Parts, PartsCategory, Task, Notificatio
 
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
-    Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport, TSignature
+    Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport, TSignature, TicketImage
 
 
 @login_required
@@ -160,6 +160,9 @@ def edit_ticket(request, ticket_id):
     product_details = ProductDetail.objects.filter(ticket=ticket.ticket_id)
     tsourcing_data = Tsourcing.objects.filter(ticket=ticket)
     tquote_data = tQuote.objects.filter(ticket=ticket)
+    action_images = TicketImage.objects.filter(ticket=ticket, tag="action")
+    diagnosis_images = TicketImage.objects.filter(ticket=ticket, tag="diagnosis")
+    recommendation_images = TicketImage.objects.filter(ticket=ticket, tag="recommendation")
 
     try:
         requisitions = Requisition.objects.filter(ticket=ticket, is_active=True)
@@ -196,6 +199,18 @@ def edit_ticket(request, ticket_id):
 
             # Save the changes
             ticket.save()
+            image1 = request.FILES.get('action_image')
+            image2 = request.FILES.get('diagnosis_image')
+            image3 = request.FILES.get('recommendation_image')
+
+            if image1:  # Check if image1 is not empty
+                TicketImage.objects.create(ticket=ticket, tag="action", image=image1)
+
+            if image2:  # Check if image2 is not empty
+                TicketImage.objects.create(ticket=ticket, tag="diagnosis", image=image2)
+
+            if image3:  # Check if image3 is not empty
+                TicketImage.objects.create(ticket=ticket, tag="recommendation", image=image3)
 
             if selected_technician != saved_technician:
                 if ticket.task:  # Check if a task exists for the ticket
@@ -244,8 +259,18 @@ def edit_ticket(request, ticket_id):
     return render(request, 'technical/edit_ticket.html',
                   {'ticket': ticket, 'users': users, 'product_details': product_details, 'companies': companies,
                    'requisitions': requisitions, 'tsourcing_data': tsourcing_data, 'tquote_data': tquote_data,
-                   'parts': parts})
+                   'parts': parts,'action_images':action_images,'diagnosis_images':diagnosis_images,'recommendation_images':recommendation_images})
 
+def delete_image(request, image_id):
+    if request.method == 'POST':
+        try:
+            image = TicketImage.objects.get(pk=image_id)
+            image.delete()
+            return JsonResponse({'message': 'Image deleted successfully.'})
+        except TicketImage.DoesNotExist:
+            return JsonResponse({'message': 'Image not found.'})
+    else:
+        return JsonResponse({'message': 'Invalid request method.'}, status=400)
 
 @require_GET
 def get_clients(request):

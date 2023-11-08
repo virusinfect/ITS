@@ -61,6 +61,7 @@ urlpatterns = [
     path('technical_reports/', views.TechnicalReportListView.as_view(), name='technical_report_list'),
     path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
     path('save-signature-view-ticket/', views.save_signature_view_ticket, name='save-signature-view-ticket'),
+    path('delete_image/<int:image_id>/', views.delete_image, name='delete_image'),
 
 ]
 if settings.DEBUG:
