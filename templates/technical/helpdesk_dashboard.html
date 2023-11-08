@@ -6,7 +6,7 @@
     <div class="row">
         <h5>Remarks</h5>
         {% for remark, count in remark_counts.items %}
-            <div class="col-lg-2">
+            <div class="col">
                 <div class="card">
                     <div class="card-body widget-user">
                         <div class="text-center">
@@ -22,7 +22,7 @@
     <div class="row">
         <h5>Status</h5>
         {% for bench_status, count in bench_status_counts.items %}
-            <div class="col-lg-2">
+            <div class="col">
                 <div class="card">
                     <div class="card-body widget-user">
                         <div class="text-center">
@@ -35,7 +35,7 @@
             </div>
         {% endfor %}
         {% for status, count in status_counts.items %}
-            <div class="col-lg-2">
+            <div class="col">
                 <div class="card">
                     <div class="card-body widget-user">
                         <div class="text-center">
@@ -49,9 +49,9 @@
         {% endfor %}
     </div>
     <div class="row">
-    <h5>Technical Report Status</h5>
+        <h5>Technical Report Status</h5>
         {% for tr_status, count in tr_status_counts.items %}
-            <div class="col-lg-2">
+            <div class="col">
                 <div class="card">
                     <div class="card-body widget-user">
                         <div class="text-center">
@@ -155,29 +155,6 @@
 
 
     </div>
-    <div class="row">
-        <div class="col-xl-2 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="header-title mt-0 mb-4">Remarks</h4>
-                    <div class="widget-chart-1">
-                        <div class="widget-chart-box-1 float-start" dir="ltr">
-                            <input data-plugin="knob" data-width="50" data-height="50" data-fgColor="#f05050 "
-                                   data-bgColor="#F9B9B9" value="50"
-                                   data-skin="tron" data-angleOffset="180" data-readOnly=true
-                                   data-thickness=".15"/>
-                        </div>
-
-                        <div class="widget-detail-1 text-end">
-                            <h2 class="fw-normal pt-2 mb-1"> 256 </h2>
-                            <p class="text-muted mb-1">Revenue today</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- end col -->
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
