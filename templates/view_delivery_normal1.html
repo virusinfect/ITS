@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Delivery{% endblock %}
+
+{% block content %}
+
+    <div class="content-wrapper">
+        <div class="content">
+            <div class="card container-fluid" id="delivery-note">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Main content -->
+                        <div class="invoice p-3 mb-3">
+                            <!-- title row -->
+                            <div class="row p-4">
+                                <div class="col-sm">
+                                    <div class="d-flex justify-content-center mb-2">
+                                        <img src="{% static 'logo black.png' %}" height="125" width="125">
+                                    </div>
+                                </div><!-- ./col -->
+
+                                <div class="col-sm">
+                                    <div class="d-flex justify-content-center">
+                                        <h2>INTELLITECH LTD.</h2>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h5>ITL/DN/{{ delivery.id }}</h5>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h4><u>Delivery Note</u></h4>
+                                    </div>
+
+                                </div><!-- ./col -->
+
+                                <div class="col-sm">
+                                    <div class="d-flex justify-content-center mb-2">
+                                        <p class="text-right">
+                                            Ground Floor, Corporate Insurance Building<br>
+                                            Yusuf A. Karim Rd,<br>
+                                            East End, Treasury Square<br>
+                                            P.O. Box 42716 - 80100,<br>
+                                            Mombasa - Kenya<br>
+                                            Tel: +254 41 2221792/696/932/231500/2311364<br>
+                                            Cell: 0728 786014 | 0732 786012 | 0773 963114<br>
+                                            www.intellitech.co.ke
+                                        </p>
+                                    </div>
+                                </div><!-- ./col -->
+
+                            </div><!-- ./row -->
+
+                            <div class="row">
+                                <div class="col-md-4 offset-1">
+                                    <dl class="row">
+                                        <dd class="col-sm-3 ">Date:</dd>
+                                        <dt class="col-sm-9 ">{{ delivery.created }}</dt>
+                                        <dd class="col-sm-3 ">To:</dd>
+                                        <dt class="col-sm-9 ">{{ delivery.client }}</dt>
+                                        <dd class="col-sm-3 ">P.O. Box:</dd>
+                                        <dt class="col-sm-9 ">{{ delivery.address }}</dt>
+                                    </dl>
+                                </div>
+                                <!-- ./col -->
+                            </div>
+                            <!-- ./row -->
+
+                            <div class="row">
+                                <div class="col-md-7 offset-1">
+                                    <div class="row">
+                                        <p>Type : {{ delivery.type }}</p>
+                                    </div>
+                                </div>
+                                <!-- ./col -->
+                                <div class="col-md-3">
+                                    <p class="text-right"><strong>LPO
+                                        No.: </strong> {{ delivery.lpo }}</p>
+
+                                </div><!-- /. col -->
+                            </div>
+                            <!-- ./row -->
+
+                            <div class="row">
+                                <div class="col-md-10 offset-1">
+                                    <div class="d-flex justify-content-left mb-2">
+                                        <p class="text-left mb-2">
+                                            Emails:<br>
+                                            For sales: sales@intellitech.co.ke<br>
+                                            For support: support@intellitech.co.ke<br><br>
+                                            <i>Please receive the following goods in good order and condition</i>
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- ./col -->
+                            </div>
+                            <!-- ./row -->
+
+                            <div class="row">
+                                <div class="col-md-10 offset-1">
+                                    <table id="" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th class="">Qty</th>
+                                            <th class="">Serial No.</th>
+                                            <th class="">Particulars</th>
+                                            <th class="">Rate</th>
+                                            <th class="">Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in items %}
+                                            <tr>
+                                                <td class="text-end">{{ item.quantity }}</td>
+                                                <td class="text-end">{{ item.serial_no }}</td>
+                                                <td class="text-end">{{ item.particulars }}</td>
+                                                <td class="text-end">{{ item.amount }}</td>
+                                                <td class="text-end">{{ item.total }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <th colspan="4" class="text-end">SUBTOTALS</th>
+                                            <th class="text-end">{{ subtotals }}</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-danger" colspan="4" style="text-align: right;">ADD VAT
+                                                16%
+                                            </th>
+                                            <td class="text-danger"
+                                                style="text-align: right;">{{ vat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="" colspan="4" style="text-align: right;">TOTAL AMOUNT</th>
+                                            <td class=""
+                                                style="text-align: right;">{{ total_amount }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <!-- ./col -->
+                            </div>
+                            <!-- ./row -->
+
+                            <div class="row">
+                                <div class="col-5 offset-1">
+                                    <p><i>Received the above goods in good order and condition</i></p>
+                                    <p>DN/<?php echo $dateUpdated; ?>
+                                        /No. <?php echo htmlentities($dn_data['dn_id']); ?></p>
+                                    <p>VAT No. 0107676V</p>
+                                    <p>PIN No. P051118610N</p>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-5">
+                                    <div class="row">
+                                        <label class="col-sm-2 col-form-label">Collected By : Allan Bico</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <p>Collected By: {{ delivery.collected_by }}</p>
+                                        <div class="card w-70 h-70 mt-3 shadow p-3 mb-5 bg-body-tertiary rounded">
+                                            {% if signature %}
+                                                <img src="{{ signature.signature_image.url }}" class="card-img-top"
+                                                     alt="Signature">
+
+                                            {% else %}
+                                                <p class="card-text">No signature available for this delivery.</p>
+
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div id="editSignature" style="display: none;">
+                                        <label>Signature <small class="text-muted">(Edit)</small></label>
+                                        <div class="form-group">
+                                            <div class="canvas-container">
+                                                <div class="form-control mb-2" id="sig"
+                                                     oncontextmenu="return false;"></div>
+                                                <button class="btn btn-tool" id="clear" title="Erase signature">
+                                                    <i
+                                                            class="fa-solid fa-eraser"></i></button>
+                                            </div>
+                                            <textarea class="form-control" name="signature" id="signature64"
+                                                      hidden></textarea>
+                                        </div>
+                                        <!-- /.form-group -->
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+            </div>
+            <!-- /.invoice -->
+        </div><!-- /.col -->
+    </div>
+    <div>
+        <a href="{% url 'sign' delivery.id %}" class="btn btn-warning waves-effect waves-light mb-1 me-1"><span
+                class="btn-label"><i class="mdi mdi-signature-freehand"></i></span>Sign
+            this
+            delivery</a>
+        <a id="print-button" class="btn btn-primary">Print</a>
+    </div>
+
+    <script>
+        document.getElementById('print-button').addEventListener('click', function () {
+            printDeliveryNote();
+        });
+
+        function printDeliveryNote() {
+            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+            document.body.style.margin = "0";
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+{% endblock %}
+
+
+
+

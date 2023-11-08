@@ -1,6 +1,6 @@
 import base64
 from datetime import timedelta
-
+from django.views import View
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -714,3 +714,11 @@ def equipment_lookup(request):
         return JsonResponse({'results': results})
 
     return JsonResponse({})
+
+class CompanyAutocompleteView(View):
+    def get(self, request):
+        query = request.GET.get('query', '')
+        companies = Company.objects.filter(name__icontains=query)
+        company_names = [company.name for company in companies]
+        print("Retrieved company names:", company_names)  # Add this line for debugging
+        return JsonResponse({'company_names': company_names})

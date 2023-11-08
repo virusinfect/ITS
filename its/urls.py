@@ -2,6 +2,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 from . import views
+from .views import CompanyAutocompleteView
 
 urlpatterns = [
     path('', views.test_view, name='home'),
@@ -46,6 +47,7 @@ urlpatterns = [
     path('equipment-lookup/', views.equipment_lookup, name='equipment_lookup'),
     path('clients/delete/<int:client_id>/', views.delete_client, name='delete_client'),
     path('tasks/create/', views.create_task, name='create_task'),
+    path('get_company_names/', CompanyAutocompleteView.as_view(), name='get_company_names'),
 
 ]
 handler500 = 'its.views.server_error'

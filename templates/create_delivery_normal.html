@@ -1,8 +1,32 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Create Delivery{% endblock %}
-
 {% block content %}
+    <style>
+        /* Apply Bootstrap styling to the Awesomplete dropdown */
+        .awesomplete ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ced4da;
+            border-top: none;
+        }
+
+        .awesomplete li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .awesomplete li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .awesomplete li:focus {
+            outline: none;
+            background-color: #f8f9fa;
+        }
+
+    </style>
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
@@ -15,18 +39,16 @@
             </div>
         </div> <!-- end col -->
     </div>
-
     <div class="col-lg-8 mx-auto">
         <div class="card">
             <div class="card-body">
                 <h4 class="mb-3 header-title text-center">Create Delivery</h4>
-
                 <form method="post" enctype="multipart/form-data" action="{% url 'create_delivery_normal' %}">
                     {% csrf_token %}
                     <div class="row mb-3">
                         <div class="col-6">
                             <label for="client" class="form-label">TO :</label>
-                            <input type="text" name="client" class="form-control" id="client"
+                            <input type="text" name="client" class="awesomplete  form-control" id="company-input"
                                    aria-describedby="emailHelp"
                                    placeholder="Client">
                         </div>
@@ -40,12 +62,17 @@
                     <div class="row mb-3">
                         <div class="col-6">
                             <label for="type" class="form-label">Type:</label>
-                            <input type="text" name="type" class="form-control" id="type"
-                                   aria-describedby="emailHelp"
-                                   placeholder="type">
+                            <select name="type" class="form-control" id="type" aria-describedby="emailHelp">
+                                <option value="Sales">Sales</option>
+                                <option value="Sample">Sample</option>
+                                <option value="Returns">Returns</option>
+                                <option value="Claims">Claims</option>
+                                <option value="Replacement">Replacement</option>
+                                <option value="Repairs">Repairs</option>
+                            </select>
                         </div>
                         <div class="col-6">
-                            <label for="lpo" class="form-label">lpo:</label>
+                            <label for="lpo" class="form-label">LPO:</label>
                             <input type="text" name="lpo" class="form-control" id="lpo"
                                    aria-describedby="emailHelp"
                                    placeholder="lpo">
@@ -53,20 +80,23 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
-                            <label for="currency" class="form-label">currency:</label>
-                            <input type="text" name="currency" class="form-control" id="currency"
-                                   aria-describedby="emailHelp"
-                                   placeholder="currency">
+                            <label for="currency" class="form-label">Currency:</label>
+                            <select name="currency" class="form-control" id="currency" aria-describedby="emailHelp">
+                                <option value="KSH">KSH</option>
+                                <option value="USD">USD</option>
+                                <option value="CAD">CAD</option>
+                                <option value="EUR">EUR</option>
+                            </select>
                         </div>
                         <div class="col-6">
-                            <label for="vat_status" class="form-label">vat_status:</label>
-                            <input type="text" name="vat_status" class="form-control" id="vat_status"
-                                   aria-describedby="emailHelp"
-                                   placeholder="vat_status">
+                            <label for="vat_status" class="form-label">Vat Status:</label>
+                            <select name="vat_status" class="form-control" id="vat_status" aria-describedby="emailHelp">
+                                <option value="Inclusive">Inclusive</option>
+                                <option value="Exclusive">Exclusive</option>
+                                <option value="Exempted">Exempted</option>
+                            </select>
                         </div>
                     </div>
-
-
                     <div class="mb-3">
                         <div class="table-responsive">
                             <h4 class="text-center mb-2 border-bottom pb-2">Items</h4>
@@ -105,18 +135,47 @@
                         </div>
                         <div class="col-6">
                             <label for="status" class="form-label">Status:</label>
-                            <input type="text" name="status" class="form-control"
-
-                                   placeholder="status">
+                            <select name="status" class="form-select">
+                                <option value="">Status</option> <!-- Blank option -->
+                                <option value="Pending">Pending</option>
+                                <option value="Return">Return</option>
+                            </select>
                         </div>
                     </div>
                     <button type="submit" id="save-button" class="btn btn-primary waves-effect waves-light">Submit
                     </button>
                 </form>
-
             </div> <!-- end card-body-->
         </div> <!-- end card-->
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
+            integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"
+            integrity="sha512-t3zV/oAkSZUrvb/7p1q1+uh/i56JinQ+bmiulnHhbHZc7dq09CxJ1BByyi7A4+lF76+CcJtSVFtb7na7Oe7Cgg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var input = document.getElementById("company-input");
+            var awesomplete = new Awesomplete(input, {
+                minChars: 1,
+            });
+
+            input.addEventListener("input", function () {
+                $.ajax({
+                    url: "/get_company_names/",  // Replace with your actual URL
+                    data: {query: input.value},
+                    success: function (data) {
+                        awesomplete.list = data.company_names;  // Update the list with retrieved names
+                    }
+                });
+            });
+        });
+
+    </script>
     <script>
         // Counter to keep track of the number of rows
         let rowCount = 1;
@@ -138,7 +197,6 @@
             document.querySelector('#items-table tbody').appendChild(newRow);
         });
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 {% endblock %}
 

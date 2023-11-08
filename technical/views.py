@@ -1,5 +1,6 @@
 import base64
 import datetime
+import math
 import uuid
 
 from django.contrib import messages
@@ -435,12 +436,12 @@ def view_delivery_normal(request, delivery_id):
     for item in items:
         item.total = item.amount * item.quantity
 
-        if delivery.vat_status == "inclusive":
-            item.amount -= round((item.amount / 1.16) * 0.16)  # Deduct VAT from item.amount
-            item.total -= round((item.total / 1.16) * 0.16)
+        if delivery.vat_status == "Inclusive":
+            item.amount -= math.ceil((item.amount / 1.16) * 0.16)  # Deduct VAT from item.amount
+            item.total -= math.ceil((item.total / 1.16) * 0.16)
             subtotals += item.total
-            vat = round(subtotals * 0.16)
-            total_amount = round(subtotals + vat)
+            vat = math.ceil(subtotals * 0.16)
+            total_amount = math.ceil(subtotals + vat)
 
 
         else:

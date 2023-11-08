@@ -4,16 +4,16 @@
 
 {% block content %}
 
-    <div class="card col-lg-7 p-2 mx-auto" id="delivery-note">
+    <div class="card" id="delivery-note">
 
 
         <div class="container">
-            <div class="mx-auto text-center">
+            <div class=text-center">
                 <h3>Delivery Note</h3>
             </div>
             <div class="row mb-3">
                 <div class="col-6">
-                    <img src="{% static 'logo.png' %}" alt="Company Logo" width="150">
+                    <img src="{% static 'logo black.png' %}" alt="Company Logo" width="150">
                     <h2>INTELLITECH LTD.</h2>
 
                 </div>
@@ -32,7 +32,7 @@
             <div class="text-end">
                 <p>Date: {{ delivery.created }}</p>
             </div>
-            <div class="row mt-4 mx-auto">
+            <div class="row mt-4">
                 <div class="col-6 ">
 
                     <h4>Client Information</h4>
@@ -104,9 +104,10 @@
                 </div>
                 <div class="col-6">
                     <p>Collected By: {{ delivery.collected_by }}</p>
-                    <div class="card w-70 h-70 mt-3 shadow p-3 mb-5 bg-body-tertiary rounded">
+                    <div class="card w-50 h-50 mt-3 shadow p-3 mb-5 bg-body-tertiary rounded ">
                         {% if signature %}
-                            <img src="{{ signature.signature_image.url }}" class="card-img-top" alt="Signature">
+                            <img src="{{ signature.signature_image.url }}" class="card-img-top justify-content-end me-0"
+                                 alt="Signature">
 
                         {% else %}
                             <p class="card-text">No signature available for this delivery.</p>
@@ -119,10 +120,12 @@
             </div>
         </div>
 
+        <img src="{% static 'tr_footer.png' %}" id="footer-image">
 
     </div>
     <div>
-        <a href="{% url 'sign' delivery.id %}" class="btn btn-warning waves-effect waves-light mb-1 me-1"><span class="btn-label"><i class="mdi mdi-signature-freehand"></i></span>Sign
+        <a href="{% url 'sign' delivery.id %}" class="btn btn-warning waves-effect waves-light mb-1 me-1"><span
+                class="btn-label"><i class="mdi mdi-signature-freehand"></i></span>Sign
             this
             delivery</a>
         <a id="print-button" class="btn btn-primary">Print</a>
@@ -137,12 +140,34 @@
             var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
             var originalContents = document.body.innerHTML;
 
+            // Create a style tag and append it to the head to define a CSS rule for the footer image and remove margins
+            var style = document.createElement('style');
+            style.innerHTML = `
+            @media print {
+                #footer-image {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    max-width: 100%;
+                }
+                body {
+                    margin: 0 !important; /* Force margin removal */
+                }
+            }
+        `;
+            document.head.appendChild(style);
+
             document.body.innerHTML = printContents;
-            document.body.style.margin = "0";
             window.print();
             document.body.innerHTML = originalContents;
+
+            // Remove the added CSS rule
+            document.head.removeChild(style);
         }
     </script>
+
+
 {% endblock %}
 
 
