@@ -20,8 +20,8 @@ def sales_tickets_list(request):
 
 @login_required
 def tickets_in_status(request, status):
-    tickets = SalesTickets.objects.filter(status=status, is_active=1)
-    return render(request, 'sales/sales_tickets.html', {'tickets': tickets,'status': status,})
+    active_sales_tickets = SalesTickets.objects.filter(status=status, is_active=1)
+    return render(request, 'sales/sales_tickets.html', {'active_sales_tickets': active_sales_tickets,'status': status,})
 
 @login_required
 def edit_sales_ticket(request, ticket_id):
