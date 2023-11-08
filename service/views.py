@@ -43,6 +43,17 @@ def client_view(request, client_id):
     client = get_object_or_404(Clients, pk=client_id)
     equipments = Equipment.objects.filter(client=client_id)
     software = Software.objects.filter(client=client_id)
+    if request.method == 'POST':
+        # If the form is submitted, update the client's information
+        client.f_name = request.POST.get('f_name')
+        client.l_name = request.POST.get('l_name')
+        client.email = request.POST.get('email')
+        client.telephone = request.POST.get('telephone')
+        client.mobile = request.POST.get('mobile')
+        client.description = request.POST.get('description')
+        client.save()
+        messages.success(request, 'Client Details Edited successfully.')
+
     context = {'client': client, 'equipments': equipments, 'software': software}
     return render(request, "service/client_view.html", context)
 
