@@ -50,6 +50,7 @@ class EquipmentSpecs(models.Model):
     ram = models.CharField(max_length=100)
     cd_dvd = models.CharField(max_length=100)
     processor = models.CharField(max_length=100)
+    gen = models.CharField(max_length=100,null=True)
     hdd = models.CharField(max_length=100)
     hdd_status = models.CharField(max_length=100)
     mainboard = models.CharField(max_length=100)

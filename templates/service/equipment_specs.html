@@ -62,23 +62,46 @@
                                    value="{{ equipment_specs.processor }}">
                         </div>
                         <div class="col-6 mb-3">
-                            <label for="hdd" class="form-label">HDD</label>
-                            <input type="text" name="hdd" class="form-control" value="{{ equipment_specs.hdd }}">
+                            <label for="gen" class="form-label">Generation</label>
+                            <select name="gen" class="form-select">
+                                <option value="" {% if equipment_specs.gen == '' %}selected{% endif %}></option>
+                                <option value="1" {% if equipment_specs.gen == '1' %}selected{% endif %}>First</option>
+                                <option value="2" {% if equipment_specs.gen == '2' %}selected{% endif %}>Second</option>
+                                <option value="3" {% if equipment_specs.gen == '3' %}selected{% endif %}>Third</option>
+                                <option value="4" {% if equipment_specs.gen == '4' %}selected{% endif %}>Fourth</option>
+                                <option value="5" {% if equipment_specs.gen == '5' %}selected{% endif %}>Fifth</option>
+                                <option value="6" {% if equipment_specs.gen == '6' %}selected{% endif %}>Sixth</option>
+                                <option value="7" {% if equipment_specs.gen == '7' %}selected{% endif %}>Seventh
+                                </option>
+                                <option value="8" {% if equipment_specs.gen == '8' %}selected{% endif %}>Eighth</option>
+                                <option value="9" {% if equipment_specs.gen == '9' %}selected{% endif %}>Ninth</option>
+                                <option value="10" {% if equipment_specs.gen == '10' %}selected{% endif %}>Tenth
+                                </option>
+                                <option value="11" {% if equipment_specs.gen == '11' %}selected{% endif %}>Eleventh
+                                </option>
+                                <option value="12" {% if equipment_specs.gen == '12' %}selected{% endif %}>Twelve
+                                </option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="hdd" class="form-label">HDD</label>
+                            <input type="text" name="hdd" class="form-control" value="{{ equipment_specs.hdd }}">
+                        </div>
                         <div class="col-6 mb-3">
                             <label for="hdd_status" class="form-label">HDD Status</label>
                             <input type="text" name="hdd_status" class="form-control"
                                    value="{{ equipment_specs.hdd_status }}">
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-6 mb-3">
                             <label for="mainboard" class="form-label">Mainboard</label>
                             <input type="text" name="mainboard" class="form-control"
                                    value="{{ equipment_specs.mainboard }}">
                         </div>
                     </div>
-
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
 
