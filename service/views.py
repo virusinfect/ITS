@@ -141,6 +141,7 @@ def create_or_edit_equipment_specs(request, equipment_id):
         equipment_specs.cd_dvd = request.POST['cd_dvd']
         equipment_specs.processor = request.POST['processor']
         equipment_specs.hdd = request.POST['hdd']
+        equipment_specs.gen = request.POST['gen']
         equipment_specs.hdd_status = request.POST['hdd_status']
         equipment_specs.mainboard = request.POST['mainboard']
 
