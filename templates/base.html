@@ -116,8 +116,8 @@
                     <i class="fe-search noti-icon"></i>
                 </a>
                 <div class="dropdown-menu dropdown-lg dropdown-menu-end p-0">
-                    <form class="p-3">
-                        <input type="text" class="form-control" placeholder="Seaffrch ..."
+                    <form class="p-3" method="get" action="{% url 'search' %}">
+                        <input type="text" class="form-control" placeholder="search ..."
                                aria-label="Recipient's username">
                     </form>
                 </div>
