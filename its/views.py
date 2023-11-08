@@ -359,7 +359,6 @@ def create_client(request, company_id):
             l_name=l_name,
             email=email,
             telephone=telephone,
-            mobile=telephone,
             description=description
         )
         messages.success(request, 'Client Created successfully')

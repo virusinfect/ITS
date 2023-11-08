@@ -56,7 +56,6 @@ class Clients(models.Model):
     l_name = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
     telephone = models.CharField(max_length=25)
-    mobile = models.CharField(max_length=25, null=True)
     description = models.CharField(max_length=500)
     is_active = models.IntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)  # Automatically set upon creation
