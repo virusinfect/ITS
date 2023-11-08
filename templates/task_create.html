@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Create Task{% endblock %}
+{% block header %}Create Task{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'tasks' %}">Tasks</a></li>
+                    <li class="breadcrumb-item active">Create Task</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-6 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Add Task</h4>
+            <div class="row ">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3 col-9 mx-auto">
+                        <label for="title" class="form-label">Title:</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3 col-9 mx-auto">
+                        <label for="description" class="form-label">Description:</label>
+                        <textarea name="description" required class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3 col-9 mx-auto"></div>
+                    <div class="mb-3 col-9 mx-auto">
+                        <label for="user" class="form-label">Assigned to:</label>
+                        <select class="form-select" name="user" id="user">
+                            {% for tech in asignees %}
+                                <option value="{{ tech.pk }}">{{ tech.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3 col-9 mx-auto">
+                        <label for="asignees" class="form-label">CC:</label>
+                        <select class="form-select" name="asignees" id="asignees" multiple>
+                            {% for tech in asignees %}
+                                <option value="{{ tech.pk }}">{{ tech.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3 col-9 mx-auto">
+                        <label for="status" class="form-label">Status:</label>
+                        <select name="status" class="form-select">
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <!-- Add other status options as needed -->
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Add New</button>
+                </form></div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

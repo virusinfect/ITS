@@ -326,6 +326,7 @@ def client_list(request, company_id):
     clients = Clients.objects.filter(company_id=company_id)
     return render(request, 'client_list.html', {'clients': clients})
 
+
 @login_required
 def delete_client(request, client_id):
     client = Clients.objects.get(pk=client_id)
@@ -338,7 +339,8 @@ def delete_client(request, client_id):
         return redirect('client-list',
                         company_id=company.id)
 
-    return render(request, 'client_confirm_delete.html', {'client': client,'company':company})    # Redirect to a client list view or another appropriate URL
+    return render(request, 'client_confirm_delete.html',
+                  {'client': client, 'company': company})  # Redirect to a client list view or another appropriate URL
 
 
 @login_required
@@ -452,17 +454,30 @@ def delete_user(request, user_id):
 
     return render(request, 'delete_user.html', {'user': user})
 
+
+@login_required
 def create_task(request):
+    asignees = User.objects.all()
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
         status = request.POST.get('status')
-
-        task = Task(title=title, description=description, status=status)
+        user_id = request.POST.get('user')
+        user = User.objects.get(id=user_id)
+        asignees_ids = request.POST.getlist('asignees')
+        creator = request.user
+        task = Task(title=title, description=description, status=status, user=user, creator=creator)
         task.save()
-        return redirect('task_list')  # Redirect to a task list view or another appropriate URL
+        # Add users to the cc_users many-to-many relationship
+        for user_ids in asignees_ids:
+            users = User.objects.get(id=user_ids)  # Replace with your actual user lookup logic
+            task.cc_users.add(users)
+        messages.success(request, 'Task Created successfully')
+        return redirect('tasks')  # Redirect to a task list view or another appropriate URL
 
-    return render(request, 'task_create.html')
+    return render(request, 'task_create.html', {'asignees': asignees})
+
+
 @login_required
 def Tasks(request):
     current_user = request.user  # Replace 'your_username' with the actual username
