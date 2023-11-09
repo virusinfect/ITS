@@ -519,6 +519,11 @@
             for (let input of inputs) {
                 input.value = '';
             }
+            // Hide the button with id "btn5" in the new row
+            const btn5 = newRow.querySelector('#btn5');
+            if (btn5) {
+                btn5.style.display = 'none';
+            }
 
             // Clear select options in the new row (optional)
             const selects = newRow.getElementsByTagName('select');
