@@ -54,9 +54,15 @@
                         </div>
                         <div class="col-6">
                             <label for="address" class="form-label">Address:</label>
-                            <input type="text" name="address" class="form-control" id=address"
+                            <input type="text" name="address" class="form-control awesomplete" id=address"
                                    aria-describedby="emailHelp"
-                                   placeholder="Address">
+                                   placeholder="Address" list="mylist" >
+                            <datalist id="mylist">
+                                <option>Mombasa</option>
+                                <option>Watamu</option>
+                                <option>Nairobi</option>
+                                <option>Diani</option>
+                            </datalist>
                         </div>
                     </div>
                     <div class="row mb-3">
