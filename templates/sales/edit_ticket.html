@@ -3,6 +3,31 @@
 {% block title %}Ticket List{% endblock %}
 {% block header %}Ticket List{% endblock %}
 {% block content %}
+    <style>
+        /* Apply Bootstrap styling to the Awesomplete dropdown */
+        .awesomplete ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ced4da;
+            border-top: none;
+        }
+
+        .awesomplete li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .awesomplete li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .awesomplete li:focus {
+            outline: none;
+            background-color: #f8f9fa;
+        }
+
+    </style>
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
@@ -110,7 +135,7 @@
                                                                        value="{{ product.price }}" id="price"
                                                                        class="form-control">
                                                             </td>
-                                                            <td><input type="text" name="quantity[]" id="qty"
+                                                            <td><input type="number" name="quantity[]" id="qty"
                                                                        value="{{ product.quantity }}"
                                                                        class="form-control">
                                                             </td>
@@ -133,29 +158,18 @@
                                                                 </option>
                                                                 <!-- Add more currency options as needed -->
                                                             </select></td>
-                                                            <td><select name="availability[]" class="form-select">
-                                                                <option value="Available"
-                                                                        {% if "Available" == product.availability %}selected{% endif %}>
-                                                                    Available
-                                                                </option>
-                                                                <option value="Expected"
-                                                                        {% if "Expected" == product.availability %}selected{% endif %}>
-                                                                    Expected
-                                                                </option>
-                                                                <option value="Back to back order"
-                                                                        {% if "Back to back order" == product.availability %}selected{% endif %}>
-                                                                    Back to back order
-                                                                </option>
-                                                                <option value="Limited"
-                                                                        {% if "Limited" == product.availability %}selected{% endif %}>
-                                                                    Limited
-                                                                </option>
-                                                                <option value=""
-                                                                        {% if "" == product.availability %}selected{% endif %}>
-
-                                                                </option>
-                                                                <!-- Add more availability options as needed -->
-                                                            </select></td>
+                                                            <td>
+                                                                <input name="availability[]"
+                                                                       class="form-control awesomplete"
+                                                                       value="{{ product.availability }}"
+                                                                       list="mylist"/>
+                                                                <datalist id="mylist">
+                                                                    <option>Available</option>
+                                                                    <option>Expected</option>
+                                                                    <option>Back to back order</option>
+                                                                    <option>Limited</option>
+                                                                </datalist>
+                                                            </td>
                                                             <td><input type="text" name="supplier[]"
                                                                        value="{{ product.supplier }}"
                                                                        class="form-control">
@@ -169,84 +183,74 @@
                                                                 </a><a
                                                                     href="{% url 'delete_row' product.product_id ticket.ticket_id %}"
                                                                     title="delete" tabindex="0"
-                                                                    data-plugin="tippy" data-tippy-interactive="true">
+                                                                    data-plugin="tippy" id="btn5"
+                                                                    data-tippy-interactive="true">
                                                                 <i class="s mdi mdi-delete-outline mdi-18px"></i>
                                                             </a>
                                                             </td>
                                                         </tr>
+                                                        {% empty %}
+                                                        <tr>
+                                                            <td><input type="text" name="part_no[]"
+                                                                       value="{{ product.part_no }}"
+                                                                       class="form-control">
+                                                            </td>
+                                                            <td><input type="text" name="description[]"
+                                                                       value="{{ product.description }}"
+                                                                       class="form-control">
+                                                            </td>
+                                                            <td><input type="text" name="price[]" id
+                                                                       value="0"
+                                                                       class="form-control" required>
+                                                            </td>
+                                                            <td><input type="number" name="quantity[]"
+                                                                       value="0"
+                                                                       class="form-control" required>
+                                                            </td>
+                                                            <td><select name="currency[]" class="form-select">
+                                                                <option value="USD"
+                                                                        {% if "USD" == product.currency %}selected{% endif %}>
+                                                                    USD
+                                                                </option>
+                                                                <option value="KES"
+                                                                        {% if "KES" == product.currency %}selected{% endif %}>
+                                                                    KES
+                                                                </option>
+                                                                <option value="CHF"
+                                                                        {% if "CHF" == product.currency %}selected{% endif %}>
+                                                                    CHF
+                                                                </option>
+                                                                <option value=""
+                                                                        {% if "" == product.currency %}selected{% endif %}>
+
+                                                                </option>
+                                                                <!-- Add more currency options as needed -->
+                                                            </select></td>
+                                                            <td><input name="availability[]"
+                                                                       class="form-control awesomplete"
+                                                                       value="{{ product.availability }}"
+                                                                       list="mylist"/>
+                                                                <datalist id="mylist">
+                                                                    <option>Available</option>
+                                                                    <option>Expected</option>
+                                                                    <option>Back to back order</option>
+                                                                    <option>Limited</option>
+                                                                </datalist>
+                                                            </td>
+                                                            <td><input type="text" name="supplier[]"
+                                                                       value="{{ product.supplier }}"
+                                                                       class="form-control">
+                                                            </td>
+                                                            <td>
+                                                                <a class="add-row-button" onclick="addBlankRow(this)"
+                                                                   title="add row"
+                                                                   tabindex="0"
+                                                                   data-plugin="tippy" data-tippy-interactive="true"><i
+                                                                        class="s mdi mdi-plus-circle mdi-18px"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
                                                     {% endfor %}
-                                                    <tr>
-                                                        <td><input type="text" name="part_no[]"
-                                                                   value="{{ product.part_no }}"
-                                                                   class="form-control">
-                                                        </td>
-                                                        <td><input type="text" name="description[]"
-                                                                   value="{{ product.description }}"
-                                                                   class="form-control">
-                                                        </td>
-                                                        <td><input type="text" name="price[]" id
-                                                                   value="0"
-                                                                   class="form-control">
-                                                        </td>
-                                                        <td><input type="text" name="quantity[]"
-                                                                   value="0"
-                                                                   class="form-control">
-                                                        </td>
-                                                        <td><select name="currency[]" class="form-select">
-                                                            <option value="USD"
-                                                                    {% if "USD" == product.currency %}selected{% endif %}>
-                                                                USD
-                                                            </option>
-                                                            <option value="KES"
-                                                                    {% if "KES" == product.currency %}selected{% endif %}>
-                                                                KES
-                                                            </option>
-                                                            <option value="CHF"
-                                                                    {% if "CHF" == product.currency %}selected{% endif %}>
-                                                                CHF
-                                                            </option>
-                                                            <option value=""
-                                                                    {% if "" == product.currency %}selected{% endif %}>
-
-                                                            </option>
-                                                            <!-- Add more currency options as needed -->
-                                                        </select></td>
-                                                        <td><select name="availability[]" class="form-select">
-                                                            <option value="Available"
-                                                                    {% if "Available" == product.availability %}selected{% endif %}>
-                                                                Available
-                                                            </option>
-                                                            <option value="Expected"
-                                                                    {% if "Expected" == product.availability %}selected{% endif %}>
-                                                                Expected
-                                                            </option>
-                                                            <option value="Back to back order"
-                                                                    {% if "Back to back order" == product.availability %}selected{% endif %}>
-                                                                Back to back order
-                                                            </option>
-                                                            <option value="Limited"
-                                                                    {% if "Limited" == product.availability %}selected{% endif %}>
-                                                                Limited
-                                                            </option>
-                                                            <option value=""
-                                                                    {% if "" == product.availability %}selected{% endif %}>
-
-                                                            </option>
-                                                            <!-- Add more availability options as needed -->
-                                                        </select></td>
-                                                        <td><input type="text" name="supplier[]"
-                                                                   value="{{ product.supplier }}"
-                                                                   class="form-control">
-                                                        </td>
-                                                        <td>
-                                                            <a class="add-row-button" onclick="addBlankRow(this)"
-                                                               title="add row"
-                                                               tabindex="0"
-                                                               data-plugin="tippy" data-tippy-interactive="true"><i
-                                                                    class="s mdi mdi-plus-circle mdi-18px"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
                                                     </tbody>
                                                 </table>
 
@@ -496,12 +500,14 @@
             </div>
         </div>
     </div>
-    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
-    <!-- Plugins js-->
-    <script src="{% static 'libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js' %}"></script>
 
-    <!-- Init js-->
-    <script src="{% static 'js/pages/form-wizard.init.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
+            integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"
+            integrity="sha512-t3zV/oAkSZUrvb/7p1q1+uh/i56JinQ+bmiulnHhbHZc7dq09CxJ1BByyi7A4+lF76+CcJtSVFtb7na7Oe7Cgg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         function addBlankRow(button) {
             // Create a new row by cloning the current row
@@ -530,10 +536,36 @@
                 qtyInput.value = '0';
             }
 
+            // Hide all existing delete links in the new row
+            const existingDeleteLinks = newRow.querySelectorAll('a.delete-link');
+            for (let deleteLink of existingDeleteLinks) {
+                deleteLink.style.display = 'none';
+            }
+
+            // Create a new delete link for the new row
+            const deleteLink = document.createElement('a');
+            deleteLink.href = '#';
+            deleteLink.title = 'delete';
+            deleteLink.classList.add('delete-link'); // Add a class for easier identification
+            deleteLink.innerHTML = '<i class="s mdi mdi-delete-outline mdi-18px"></i>';
+            deleteLink.addEventListener('click', function () {
+                // Add your delete row logic here
+                // For example, you can call a function to handle row deletion
+                deleteRow(newRow);
+            });
+
+            // Append the new delete link to the new row
+            newRow.querySelector('td:last-child').appendChild(deleteLink);
+
             // Insert the new row below the current row
             currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
         }
 
+        function deleteRow(row) {
+            // Add your logic to delete the row
+            // For example, you can use row.parentNode.removeChild(row);
+            row.parentNode.removeChild(row);
+        }
 
         function addBlankRowAtEnd() {
             // Create a new row to add at the end
@@ -550,10 +582,32 @@
                 qtyInput.value = '0';
             }
 
+            // Hide all existing delete links in the new row
+            const existingDeleteLinks = newRow.querySelectorAll('a.delete-link');
+            for (let deleteLink of existingDeleteLinks) {
+                deleteLink.style.display = 'none';
+            }
+
+            // Create a new delete link for the new row
+            const deleteLink = document.createElement('a');
+            deleteLink.href = '#';
+            deleteLink.title = 'delete';
+            deleteLink.classList.add('delete-link'); // Add a class for easier identification
+            deleteLink.innerHTML = '<i class="s mdi mdi-delete-outline mdi-18px"></i>';
+            deleteLink.addEventListener('click', function () {
+                // Add your delete row logic here
+                // For example, you can call a function to handle row deletion
+                deleteRow(newRow);
+            });
+
+            // Append the new delete link to the new row
+            newRow.querySelector('td:last-child').appendChild(deleteLink);
+
             // Append the new row to the end of the table
             tableBody.appendChild(newRow);
         }
     </script>
+
 {% endblock %}
 
 
