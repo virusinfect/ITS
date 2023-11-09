@@ -133,7 +133,7 @@ def edit_sales_ticket(request, ticket_id):
                 status2 = "quoting"
 
             # Your existing code to create new_sourcing_data objects
-            url = "http://127.0.0.1:8000/sales/edit/" + str(ticket.ticket_id) + "/"  # Replace with your actual URL
+            url = "http://146.190.61.23:8500/sales/edit/" + str(ticket.ticket_id) + "/"  # Replace with your actual URL
             clickable_url = f"<a href='{url}'>#" + str(ticket.ticket_id) + "</a>"
             # Use the 'table' string in the email message
             message = (
@@ -678,7 +678,7 @@ def create_ticket(request):
             status = "Quote"
 
         # Your existing code to create new_sourcing_data objects
-        url = "http://127.0.0.1:8000/sales/edit/" + str(ticket.ticket_id) + "/"  # Replace with your actual URL
+        url = "http://146.190.61.23:8500/sales/edit/" + str(ticket.ticket_id) + "/"  # Replace with your actual URL
         clickable_url = f"<a href='{url}'>#" + str(ticket.ticket_id) + "</a>"
         # Use the 'table' string in the email message
         message = (
