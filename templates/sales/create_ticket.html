@@ -27,7 +27,6 @@
             outline: none;
             background-color: #f8f9fa;
         }
-
     </style>
     <div class="row">
         <div class="col-md-6">
@@ -40,8 +39,6 @@
             </div>
         </div> <!-- end col -->
     </div>
-
-
     <div class="card">
         <div class=" card-body col-11 mx-auto">
             <h3 class="header-title mb-4">Create Ticket</h3>
@@ -61,7 +58,7 @@
                     <div class="col-md-6">
                         <label for="contact" class="form-label">Contact:</label>
                         <input type="text" class="form-control" name="contact"
-                               placeholder="Contact">
+                               placeholder="Contact" required>
                     </div>
                 </div>
                 <div class="row mx-auto mb-3">
@@ -88,11 +85,11 @@
                         <tr>
                             <td><input type="text" name="part_no[]"
                                        value="{{ product.part_no }}"
-                                       class="form-control">
+                                       class="form-control" >
                             </td>
                             <td><input type="text" name="description[]"
                                        value="{{ product.description }}"
-                                       class="form-control">
+                                       class="form-control" >
                             </td>
                             <td><input type="text" name="price[]"
                                        value="0" placeholder="0" id="price"
@@ -142,7 +139,6 @@
                                 </a>
                             </td>
                         </tr>
-
                         </tbody>
                     </table>
                 </div>
