@@ -18,6 +18,7 @@ class SalesTickets(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, db_column='company_id')
     task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=True)
 
+
     class Meta:
         managed = False  # If you want to manage this model, change to True
         db_table = 'sales_tickets'
