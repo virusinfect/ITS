@@ -117,7 +117,7 @@
                                     <td width="10%"><input class="form-control" name="quantity_1"/></td>
                                     <td width="30%"><input class="form-control" name="serial_no_1"/></td>
                                     <td><input class="form-control" name="particulars_1"/></td>
-                                    <td><input class="form-control" name="amount_1"/></td>
+                                    <td><input class="form-control" name="amount_1" required/></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -187,14 +187,21 @@
             const templateRow = document.querySelector('#items-table tbody tr');
             const newRow = templateRow.cloneNode(true);
 
+// Reset input values in the cloned row
+            newRow.querySelectorAll('input').forEach(input => {
+                input.value = ''; // Set the value to an empty string or any default value you prefer
+            });
+
+// Update other elements as you did before
             newRow.querySelector('th').textContent = rowCount;
             newRow.querySelector('input[name="quantity_1"]').name = `quantity_${rowCount}`;
             newRow.querySelector('input[name="serial_no_1"]').name = `serial_no_${rowCount}`;
             newRow.querySelector('input[name="particulars_1"]').name = `particulars_${rowCount}`;
             newRow.querySelector('input[name="amount_1"]').name = `amount_${rowCount}`;
 
-            // Append the new row to the table
+// Append the new row to the table
             document.querySelector('#items-table tbody').appendChild(newRow);
+
         });
     </script>
 
