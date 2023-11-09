@@ -4,13 +4,13 @@
 
 {% block content %}
 
-    <div class="card" id="delivery-note">
+    <div class="card col-8 mx-auto" id="delivery-note">
 
 
         <div class="container">
             <div class=text-center mx-auto">
-                <h3>Delivery Note</h3>
-            <h4>INTELLITECH LTD</h4>
+            <h2>INTELLITECH LTD</h2>
+            <h3>Delivery Note</h3>
             </div>
             <div class="row mb-3">
                 <div class="col-6 mt-4">
@@ -43,10 +43,10 @@
                 </div>
                 <div class="col-6 text-end">
                     <h4>Delivery Note</h4>
-                    <small>Delivery Note : ITL/DN/{{ delivery.id }}</small><br>
-                    <small>VAT No. 0107676V</small><br>
-                    <small>PIN No. P051118610N</small><br>
-                    <small>LPO No. LPO:{{ delivery.lpo }}</small>
+                    <small style="font-size:10px">Delivery Note : ITL/DN/{{ delivery.id }}</small><br>
+                    <small style="font-size:10px">VAT No. 0107676V</small><br>
+                    <small style="font-size:10px">PIN No. P051118610N</small><br>
+                    <small style="font-size:10px">LPO No. LPO:{{ delivery.lpo }}</small>
 
                 </div>
             </div>
@@ -73,21 +73,21 @@
                                     <td>{{ item.quantity }}</td>
                                     <td>{{ item.particulars }}</td>
                                     <td>{{ item.amount }}</td>
-                                    <td>{{ item.total }}</td>
+                                    <td class="text-end">{{ item.total }}</td>
 
                                 </tr>
                             {% endfor %}
                             <tr>
                                 <td colspan="4" class="text-end">SUBTOTALS</td>
-                                <td>{{ subtotals }}</td>
+                                <td class="text-end">{{ subtotals }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end  text-danger">ADD VAT 16%</td>
-                                <td class=" text-danger">{{ vat }}</td>
+                                <td class=" text-danger text-end">{{ vat }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end">TOTAL AMOUNT</td>
-                                <td>{{ total_amount }}</td>
+                                <td  class="text-end">{{ total_amount }}</td>
                             </tr>
 
                             </tbody>
@@ -97,20 +97,20 @@
                     {% endif %}
                 </div>
             </div>
-            <div><small>Received the above goods in good order and condition</small></div>
+            <div><small  style="font-size:10px">Received the above goods in good order and condition</small></div>
             <div class="row">
                 <div class="col-6">
 
                 </div>
                 <div class="col-6">
-                    <p>Collected By: {{ delivery.collected_by }}</p>
+                    <p  style="font-size:10px">Collected By: {{ delivery.collected_by }}</p>
                     <div class="card w-50 h-50 mt-3 shadow p-3 mb-5 bg-body-tertiary rounded ">
                         {% if signature %}
                             <img src="{{ signature.signature_image.url }}" class="card-img-top justify-content-end me-0"
                                  alt="Signature">
 
                         {% else %}
-                            <p class="card-text">No signature available for this delivery.</p>
+                            <p class="card-text"  style="font-size:10px">No signature available for this delivery.</p>
 
                         {% endif %}
                     </div>
