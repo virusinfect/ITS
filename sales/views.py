@@ -241,12 +241,14 @@ def edit_order(request, order_id):
                 order_product = OrderProducts(
                     product=product_list[i],
                     quantity=quantity_list[i],
-                    date_ordered=date_ordered_list[i],
                     supplier=supplier_list[i],
-                    date_received=date_received_list[i],
                     is_active=True,
                     orders=order,
                 )
+                if date_received_list[i]:
+                    order_product.date_received = date_received_list[i]
+                if date_ordered_list[i]:
+                    order_product.date_ordered = date_ordered_list[i]
                 new_sourcing_data.append(order_product)
 
             # Delete old order data
@@ -558,19 +560,24 @@ def create_order(request):
         date_ordered_list = request.POST.getlist('date_ordered[]')
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
-
         for i in range(len(product_list)):
             if (product_list[i]):
                 order_product = OrderProducts(
                     product=product_list[i],
                     quantity=quantity_list[i],
-                    date_ordered=date_ordered_list[i],
                     supplier=supplier_list[i],
-                    date_received=date_received_list[i],
                     is_active=True,
                     orders=order,
+
                 )
                 order_product.save()
+                if date_received_list[i]:
+                    order_product.date_received = date_received_list[i]
+                    order_product.save()
+
+                if date_ordered_list[i]:
+                    order_product.date_ordered = date_ordered_list[i]
+                    order_product.save()
 
         messages.success(request, 'Ticket successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page

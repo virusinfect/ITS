@@ -103,7 +103,7 @@
                                                    value="{{ product.product }}" class="form-control">
                                         </td>
                                         <td><input type="number" name="quantity[]"
-                                                   value="{{ product.quantity }}" class="form-control"></td>
+                                                   value="{{ product.quantity }}" id="qty" class="form-control"></td>
                                         <td><input type="date" name="date_ordered[]"
                                                    value="{{ product.date_ordered|date:'Y-m-d' }}"
                                                    class="form-control"></td>
@@ -136,7 +136,7 @@
                                            class="form-control">
                                 </td>
                                 <td><input type="number" name="quantity[]"
-                                           class="form-control"></td>
+                                           class="form-control" id="qty" value="0"></td>
                                 <td><input type="date" name="date_ordered[]"
                                            class="form-control"></td>
                                 <td><input type="text" name="supplier[]"
