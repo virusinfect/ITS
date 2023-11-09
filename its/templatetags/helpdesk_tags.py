@@ -160,3 +160,19 @@ def is_management(user):
         return helpdesk_group in user.groups.all()
     except Group.DoesNotExist:
         return False
+
+@register.filter
+def is_store(user):
+    try:
+        helpdesk_group = Group.objects.get(name='Store')
+        return helpdesk_group in user.groups.all()
+    except Group.DoesNotExist:
+        return False
+
+@register.filter
+def is_accounts(user):
+    try:
+        helpdesk_group = Group.objects.get(name='Accounts')
+        return helpdesk_group in user.groups.all()
+    except Group.DoesNotExist:
+        return False
