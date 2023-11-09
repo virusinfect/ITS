@@ -152,7 +152,7 @@ def edit_sales_ticket(request, ticket_id):
             # Create an EmailMessage instance for HTML content
             email_message = EmailMessage(subject, message, from_email, recipient_list)
             email_message.content_subtype = 'html'  # Set content type to HTML
-            email_message.send(fail_silently=False)
+            email_message.send()
 
         messages.success(request, 'Ticket Edited successfully.')
 
@@ -697,7 +697,7 @@ def create_ticket(request):
         # Create an EmailMessage instance for HTML content
         email_message = EmailMessage(subject, message, from_email, recipient_list)
         email_message.content_subtype = 'html'  # Set content type to HTML
-        email_message.send(fail_silently=False)
+        email_message.send()
 
         messages.success(request, 'Ticket Created Succesfully.')
 
