@@ -2,6 +2,7 @@ import base64
 import datetime
 import math
 import uuid
+from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -11,13 +12,11 @@ from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
-from django.http import HttpResponseNotFound, Http404, HttpResponseRedirect
+from django.http import HttpResponseNotFound, Http404
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
-from datetime import time,datetime
-
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 from django.views.generic import ListView
@@ -260,7 +259,9 @@ def edit_ticket(request, ticket_id):
     return render(request, 'technical/edit_ticket.html',
                   {'ticket': ticket, 'users': users, 'product_details': product_details, 'companies': companies,
                    'requisitions': requisitions, 'tsourcing_data': tsourcing_data, 'tquote_data': tquote_data,
-                   'parts': parts,'action_images':action_images,'diagnosis_images':diagnosis_images,'recommendation_images':recommendation_images})
+                   'parts': parts, 'action_images': action_images, 'diagnosis_images': diagnosis_images,
+                   'recommendation_images': recommendation_images})
+
 
 def delete_image(request, image_id):
     if request.method == 'POST':
@@ -272,6 +273,7 @@ def delete_image(request, image_id):
             return JsonResponse({'message': 'Image not found.'})
     else:
         return JsonResponse({'message': 'Invalid request method.'}, status=400)
+
 
 @require_GET
 def get_clients(request):
@@ -358,6 +360,7 @@ def create_delivery_normal(request):
     if request.method == 'POST':
         # Process the form data and create a new delivery
         client = request.POST.get('client')
+        address = request.POST.get('address')
         delivery_type = request.POST.get('type')
         lpo = request.POST.get('lpo')
         collected_by = request.POST.get('collected_by')
@@ -377,6 +380,7 @@ def create_delivery_normal(request):
             status=status,
             remarks=remarks,
             department=department,
+            address=address,
 
         )
 
@@ -443,10 +447,14 @@ def view_delivery_normal(request, delivery_id):
             vat = math.ceil(subtotals * 0.16)
             total_amount = math.ceil(subtotals + vat)
 
-
-        else:
+        if delivery.vat_status == "Exclusive":
             subtotals += item.total
-            vat = round(subtotals * 0.16)
+            vat = math.ceil(subtotals * 0.16)
+            total_amount = math.ceil(subtotals + vat)
+
+        elif delivery.vat_status == "Exempted":
+            subtotals += item.total
+            vat = 0
             total_amount = subtotals + vat
 
     try:
@@ -458,6 +466,62 @@ def view_delivery_normal(request, delivery_id):
                   {'delivery': delivery, 'signature': signature, 'items': items, 'subtotals': subtotals, 'vat': vat,
                    'total_amount': total_amount, })
 
+
+def edit_delivery(request, delivery_id):
+    try:
+        delivery = Delivery.objects.get(pk=delivery_id)
+    except Delivery.DoesNotExist:
+        raise Http404("Delivery does not exist")
+
+    if request.method == 'POST':
+        # Update Delivery details
+        delivery.client = request.POST.get('client')
+        delivery.type = request.POST.get('type')
+        delivery.lpo = request.POST.get('lpo')
+        delivery.collected_by = request.POST.get('collected_by')
+        delivery.currency = request.POST.get('currency')
+        delivery.vat_status = request.POST.get('vat_status')
+        delivery.status = request.POST.get('status')
+        delivery.remarks = request.POST.get('remarks')
+        delivery.department = request.POST.get('department')
+        delivery.updated = timezone.now()
+        delivery.address = request.POST.get('address')
+        delivery.save()
+
+        # Update Items
+        quantity_list = request.POST.getlist('quantity[]')
+        amount_list = request.POST.getlist('amount[]')
+        serial_no_list = request.POST.getlist('serial_no[]')
+        particulars_list = request.POST.getlist('particulars[]')
+
+        for quantity, amount, serial_no, particulars in zip(quantity_list, amount_list, serial_no_list,
+                                                            particulars_list):
+            item, created = Items.objects.get_or_create(delivery=delivery, serial_no=serial_no)
+            item.quantity = quantity
+            item.amount = amount
+            item.particulars = particulars
+            item.save()
+        messages.success(request, 'Delivery Edited successfully')
+        return redirect('view_delivery_normal',
+                        delivery.id)  # Replace 'your_success_url' with the actual URL you want to redirect to after editing
+
+    return render(request, 'edit_delivery.html', {'delivery': delivery})
+
+def delete_item(request, delivery_id, item_id):
+    # Get the delivery
+    delivery = get_object_or_404(Delivery, pk=delivery_id)
+
+    # Get the item to delete
+    item = get_object_or_404(Items, pk=item_id, delivery=delivery)
+
+    if request.method == 'POST':
+        # Delete the item
+        item.delete()
+        messages.warning(request, 'Item Deleted successfully')
+        # Redirect to    the delivery edit page or any other desired URL
+        return redirect('edit_delivery', delivery_id=delivery.id)
+
+    return render(request, 'delete_item.html', {'item': item,'delivery':delivery})
 
 @login_required
 def list_deliveries(request):
@@ -944,7 +1008,6 @@ def create_ticket(request):
         else:
             messages.success(request, 'Ticket Created successfully')
 
-
             # Assuming you are in a view function, you can access the current user through the request object
         user = request.user
         # Create a new Task instance without saving it
@@ -957,7 +1020,6 @@ def create_ticket(request):
             creator=user,
 
         )
-
 
         # Save the new_task instance
         new_task.save()
@@ -1128,8 +1190,6 @@ def sourcing_tickets(request, ticket_id):
             ticket.task.user_id = handler_id  # Correctly set the user_id
             ticket.task.save()  # Save the task
 
-
-
         messages.success(request, 'Sourcing Products Updated.')
 
     return redirect('edit-ticket', ticket_id=ticket_id)
@@ -1163,6 +1223,7 @@ def copy_to_quote(request, entry_id):
     except Tsourcing.DoesNotExist:
         return JsonResponse({'error': 'Product not found in Tsourcing'}, status=404)
 
+
 def approve_report(request, report_id):
     # Retrieve the technical report associated with the given report_id
     report = get_object_or_404(TechnicalReport, pk=report_id)
@@ -1170,14 +1231,15 @@ def approve_report(request, report_id):
     if request.method == 'POST':
         # Check if the request is a POST request (e.g., a form submission)
         status = request.POST.get('approval_status')
-            # If the report is not already approved, mark it as approved
+        # If the report is not already approved, mark it as approved
         report.is_approved = status
         report.approved_by = user
         report.approval_date = datetime.now()
-        report.save() # You can pass the currently logged-in user
+        report.save()  # You can pass the currently logged-in user
         messages.success(request, 'Report Approved successfully')
     # Redirect back to the report's detail page (or wherever you prefer)
     return redirect('report', report_id=report_id)
+
 
 def mark_sent_for_approval(request, report_id):
     # Retrieve the technical report associated with the given report_id
@@ -1200,6 +1262,7 @@ def mark_sent_for_approval(request, report_id):
     # Redirect back to the report's detail page (or wherever you prefer)
     return redirect('report', report_id=report.id)
 
+
 def generate_report(request, ticket_id):
     # Retrieve the ticket associated with the given ticket_id
     ticket = get_object_or_404(Tickets, pk=ticket_id)
@@ -1213,6 +1276,7 @@ def generate_report(request, ticket_id):
 
     # Redirect to the ticket's URL
     return redirect('report', report_id=report.id)
+
 
 @login_required
 def report(request, report_id):
@@ -1252,14 +1316,14 @@ def report(request, report_id):
     return render(request, 'technical/report.html',
                   {'ticket': ticket, 'tquote_data': tquote_data, 'parts': parts, 'vat': vat,
                    'total_amount': total_amount, 'subtotals': subtotals, 'quote_subtotals': quote_subtotals,
-                   'quote_total_amount': quote_total_amount, 'quote_vat': quote_vat,'report':report})
-
+                   'quote_total_amount': quote_total_amount, 'quote_vat': quote_vat, 'report': report})
 
 
 class TechnicalReportListView(ListView):
     model = TechnicalReport
     template_name = 'technical/technical_report_list.html'
     context_object_name = 'reports'
+
 
 def delete_report(request, report_id):
     report = get_object_or_404(TechnicalReport, pk=report_id)
@@ -1270,6 +1334,7 @@ def delete_report(request, report_id):
         return redirect('technical_report_list')  # Redirect to the report list after deletion
 
     return render(request, 'technical/report_confirm_delete.html', {'report': report})
+
 
 @login_required
 def create_format_approval(request, ticket_id):
@@ -1483,6 +1548,7 @@ def requisitions_created_monthly(request):
 
     return JsonResponse(data, safe=False)
 
+
 @csrf_exempt
 def save_signature_view_ticket(request):
     if request.method == 'POST':
@@ -1561,8 +1627,6 @@ def save_signature_view_ticket(request):
         from_email = 'its-noreply@intellitech.co.ke'
         send_mail(subject, message, from_email, recipient_list)
         # Redirect to a success page or any other desired action
-
-
 
         # Extract the Base64 data after the comma
         base64_data = signature_data.split(',')[1]

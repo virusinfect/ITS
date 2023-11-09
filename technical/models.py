@@ -84,6 +84,7 @@ class TicketImage(models.Model):
 class Delivery(models.Model):
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE, null=True)
     client = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
     type = models.CharField(max_length=50)
     lpo = models.CharField(max_length=20, null=True)
     collected_by = models.CharField(max_length=100)
@@ -99,7 +100,7 @@ class Delivery(models.Model):
 
 class Items(models.Model):
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, related_name='items')
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(null=True)
     amount = models.IntegerField(null=True)
     serial_no = models.CharField(max_length=30, null=True)
     particulars = models.TextField()

@@ -62,6 +62,8 @@ urlpatterns = [
     path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
     path('save-signature-view-ticket/', views.save_signature_view_ticket, name='save-signature-view-ticket'),
     path('delete_image/<int:image_id>/', views.delete_image, name='delete_image'),
+    path('edit_delivery/<int:delivery_id>/', views.edit_delivery, name='edit_delivery'),
+    path('delete_item/<int:delivery_id>/<int:item_id>/', views.delete_item, name='delete_item'),
 
 ]
 if settings.DEBUG:

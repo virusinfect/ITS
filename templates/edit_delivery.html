@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Create Delivery{% endblock %}
+{% block title %}Edit Delivery{% endblock %}
 {% block content %}
     <style>
         /* Apply Bootstrap styling to the Awesomplete dropdown */
@@ -34,7 +34,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'list_deliveries' %}">Deliveries</a></li>
-                    <li class="breadcrumb-item active">Add Delivery</li>
+                    <li class="breadcrumb-item active">Edit Delivery</li>
                 </ol>
             </div>
         </div> <!-- end col -->
@@ -43,20 +43,20 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="mb-3 header-title text-center">Create Delivery</h4>
-                <form method="post" enctype="multipart/form-data" action="{% url 'create_delivery_normal' %}">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="row mb-3">
                         <div class="col-6">
                             <label for="client" class="form-label">TO :</label>
                             <input type="text" name="client" class="awesomplete  form-control" id="company-input"
                                    aria-describedby="emailHelp"
-                                   placeholder="Client" required>
+                                   value="{{ delivery.client }}" required>
                         </div>
                         <div class="col-6">
                             <label for="address" class="form-label">Address:</label>
                             <input type="text" name="address" class="form-control" id=address"
                                    aria-describedby="emailHelp"
-                                   placeholder="Address">
+                                   value="{{ delivery.address }}">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -75,7 +75,7 @@
                             <label for="lpo" class="form-label">LPO:</label>
                             <input type="text" name="lpo" class="form-control" id="lpo"
                                    aria-describedby="emailHelp"
-                                   placeholder="lpo">
+                                   value="{{ delivery.lpo }}">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -109,16 +109,27 @@
                                     <th>Serial No</th>
                                     <th>Particulars</th>
                                     <th>Amount</th>
+                                    <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <th>1</th>
-                                    <td width="10%"><input class="form-control" name="quantity_1"/></td>
-                                    <td width="30%"><input class="form-control" name="serial_no_1"/></td>
-                                    <td><input class="form-control" name="particulars_1"/></td>
-                                    <td><input class="form-control" name="amount_1" required/></td>
-                                </tr>
+                                {% for item in delivery.items.all %}
+                                    <tr>
+                                        <th>1</th>
+                                        <td width="10%"><input class="form-control"
+                                                               name="quantity[]"
+                                                               value="{{ item.quantity }}"/></td>
+                                        <td width="30%"><input class="form-control"
+                                                               name="serial_no[]"
+                                                               value="{{ item.serial_no }}"/></td>
+                                        <td><input class="form-control" name="particulars[]"
+                                                   value="{{ item.particulars }}"/></td>
+                                        <td><input class="form-control" name="amount[]"
+                                                   value="{{ item.amount }}"/></td>
+                                        <td><a id="btn5" href="{% url 'delete_item' delivery.id item.id %}"
+                                               class="btn btn-danger"><i class="mdi mdi-delete-outline"></i></a></td>
+                                    </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -131,7 +142,7 @@
                             <label for="collected_by" class="form-label">Collected by:</label>
                             <input type="text" name="collected_by" class="form-control" id="collected_by"
                                    aria-describedby="emailHelp"
-                                   placeholder="Collected by">
+                                   value="{{ delivery.collected_by }}">
                         </div>
                         <div class="col-6">
                             <label for="status" class="form-label">Status:</label>
@@ -142,7 +153,8 @@
                             </select>
                         </div>
                     </div>
-                    <button type="submit" id="save-button" class="btn btn-primary waves-effect waves-light">Submit
+                    <button type="submit" id="save-button" class="btn btn-primary waves-effect waves-light">Update
+                        Changes
                     </button>
                 </form>
             </div> <!-- end card-body-->
@@ -193,25 +205,44 @@
             });
 
             // Update other elements as you did before
-            newRow.querySelector('th').textContent = rowCount;
-            newRow.querySelector('input[name="quantity_1"]').name = `quantity_${rowCount}`;
-            newRow.querySelector('input[name="serial_no_1"]').name = `serial_no_${rowCount}`;
-            newRow.querySelector('input[name="particulars_1"]').name = `particulars_${rowCount}`;
-            newRow.querySelector('input[name="amount_1"]').name = `amount_${rowCount}`;
+            const thElement = newRow.querySelector('th');
+            if (thElement) {
+                thElement.textContent = rowCount;
+            }
 
-            // Create a delete button with MDI icon
-            const deleteButton = document.createElement('button');
-            deleteButton.innerHTML = '<i class="mdi mdi-delete"></i>';
+            const quantityInput = newRow.querySelector(`input[name="quantity_1"]`);
+            const serialNoInput = newRow.querySelector(`input[name="serial_no_1"]`);
+            const particularsInput = newRow.querySelector(`input[name="particulars_1"]`);
+            const amountInput = newRow.querySelector(`input[name="amount_1"]`);
+
+            if (quantityInput && serialNoInput && particularsInput && amountInput) {
+                quantityInput.name = `quantity_${rowCount}`;
+                serialNoInput.name = `serial_no_${rowCount}`;
+                particularsInput.name = `particulars_${rowCount}`;
+                amountInput.name = `amount_${rowCount}`;
+            }
+
+            // Create a delete button with the specified class and icon
+            const deleteButton = document.createElement('a');
+            deleteButton.className = 'btn btn-danger';
+            deleteButton.innerHTML = '<i class="mdi mdi-delete-outline"></i>';
+            deleteButton.href = '#'; // You can set the href based on your requirement
             deleteButton.addEventListener('click', function () {
                 // Remove the row when the delete button is clicked
                 newRow.remove();
             });
 
-            // Append the delete button to the new row
-            newRow.appendChild(deleteButton);
+
+            // Append the new delete button to the action column
+            newRow.querySelector('td:last-child').appendChild(deleteButton);
 
             // Append the new row to the table
             document.querySelector('#items-table tbody').appendChild(newRow);
+            // Hide the delete button with id "btn5" on the new row
+            const newDeleteButton = newRow.querySelector('#btn5');
+            if (newDeleteButton) {
+                newDeleteButton.style.display = 'none';
+            }
         });
 
     </script>

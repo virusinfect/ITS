@@ -23,7 +23,8 @@
             <h4 class="mt-0 header-title">Delivery List</h4>
             <table id="responsive-datatable" class="table table-bordered table-bordered dt-responsive nowrap">
 
-                <a type="button" class="btn btn-primary waves-effect waves-light mb-1" href="{% url 'create_delivery_normal' %}">
+                <a type="button" class="btn btn-primary waves-effect waves-light mb-1"
+                   href="{% url 'create_delivery_normal' %}">
                     <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New
                 </a>
                 <thead class="table-dark">
@@ -43,9 +44,15 @@
                         <td>{{ delivery.status }}</td>
                         <td>{{ delivery.type }}</td>
                         <td>
-                            <a href="{% url 'view_delivery_normal' delivery.id %}" title="view" tabindex="0" data-plugin="tippy"
+                            <a href="{% url 'view_delivery_normal' delivery.id %}" title="view" tabindex="0"
+                               data-plugin="tippy"
                                data-tippy-interactive="true">
                                 <i class="mdi mdi-eye-outline mdi-18px"></i>
+                            </a>
+                            <a href="{% url 'edit_delivery' delivery.id %}" title="edit" tabindex="0"
+                               data-plugin="tippy"
+                               data-tippy-interactive="true">
+                                <i class="mdi mdi-square-edit-outline mdi-18px"></i>
                             </a>
                             <a href="{% url 'delete_delivery' delivery.id %}" title="delete" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
@@ -58,7 +65,7 @@
             </table>
         </div>
     </div>
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
           type="text/css"/>
