@@ -247,13 +247,13 @@ def edit_order(request, order_id):
                     is_active=True,
                     orders=order,
                 )
-            new_sourcing_data.append(order_product)
+                new_sourcing_data.append(order_product)
 
             # Delete old order data
-            OrderProducts.objects.filter(orders=order).delete()
+        OrderProducts.objects.filter(orders=order).delete()
 
             # Insert the new data
-            OrderProducts.objects.bulk_create(new_sourcing_data)
+        OrderProducts.objects.bulk_create(new_sourcing_data)
 
         messages.success(request, 'Order Edited successfully')
 
@@ -503,13 +503,26 @@ def convert_to_order(request, ticket_id):
         date_received_list = request.POST.getlist('date_received[]')
 
         for i in range(len(product_list)):
-            if (product_list[i]):
+            if product_list[i]:
+                date_received = date_received_list[i]
+                # Check if date_received is blank and set it to '0000-00-00'
+                if  date_received == "":
+                    date_received = '0000-00-00'
+                else:
+                    # Validate and convert the date to the 'YYYY-MM-DD' format
+                    try:
+                        date_received = datetime.strptime(date_received, '%Y-%m-%d').date()
+                    except ValueError:
+                        # Handle invalid date format
+                        date_received = '0000-00-00'
+                print('date received')
+                print(date_received)
                 order_product = OrderProducts(
                     product=product_list[i],
                     quantity=quantity_list[i],
                     date_ordered=date_ordered_list[i],
                     supplier=supplier_list[i],
-                    date_received=date_received_list[i],
+                    date_received=date_received,
                     is_active=True,
                     orders=order,
                 )

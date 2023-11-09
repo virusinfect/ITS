@@ -92,6 +92,9 @@
                                                tabindex="0"
                                                data-plugin="tippy" data-tippy-interactive="true"><i
                                                 class="s mdi mdi-plus-circle mdi-18px"></i>
+                                        </a> <a class="delete-row-button" onclick="deleteRow(this)" title="delete row"
+                                                tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                                            <i class="s mdi mdi-minus-circle mdi-18px"></i>
                                         </a></td>
                                         <!-- Add other table cells for additional fields -->
                                     </tr>
@@ -282,6 +285,12 @@
 
             // Insert the new row below the current row
             currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+        }
+
+        function deleteRow(button) {
+            // Get the current row and remove it
+            const currentRow = button.parentNode.parentNode;
+            currentRow.parentNode.removeChild(currentRow);
         }
 
         function addBlankRowAtEnd() {

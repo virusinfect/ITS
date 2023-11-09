@@ -102,6 +102,9 @@
                                                tabindex="0"
                                                data-plugin="tippy" data-tippy-interactive="true"><i
                                                 class="s mdi mdi-plus-circle mdi-18px"></i>
+                                        </a><a class="delete-row-button" onclick="deleteRow(this)" title="delete row"
+                                               tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                                            <i class="s mdi mdi-minus-circle mdi-18px"></i>
                                         </a></td>
                                         <!-- Add other table cells for additional fields -->
                                     </tr>
@@ -224,7 +227,11 @@
             // Clear input values in the new row
             const inputs = newRow.getElementsByTagName('input');
             for (let input of inputs) {
-                input.value = '';
+                if (input.id === 'price' || input.id === 'qty') {
+                    input.value = '0';
+                } else {
+                    input.value = '';
+                }
             }
 
             // Clear select options in the new row (optional)
@@ -233,21 +240,15 @@
                 select.selectedIndex = 0;
             }
 
-            // Set the default values for fields with id "price" and "qty" to 0
-            const priceField = newRow.querySelector('#price');
-            if (priceField) {
-                priceField.value = '0';
-            }
-
-            const qtyField = newRow.querySelector('#qty');
-            if (qtyField) {
-                qtyField.value = '0';
-            }
-
             // Insert the new row below the current row
             currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
         }
 
+        function deleteRow(button) {
+            // Get the current row and remove it
+            const currentRow = button.parentNode.parentNode;
+            currentRow.parentNode.removeChild(currentRow);
+        }
 
         function addBlankRowAtEnd() {
             // Create a new row to add at the end
@@ -257,7 +258,11 @@
             // Clear input values in the new row
             const inputs = newRow.getElementsByTagName('input');
             for (let input of inputs) {
-                input.value = '';
+                if (input.id === 'price' || input.id === 'qty') {
+                    input.value = '0';
+                } else {
+                    input.value = '';
+                }
             }
 
             // Clear select options in the new row (optional)
@@ -270,7 +275,6 @@
             tableBody.appendChild(newRow);
         }
     </script>
-
 
 
 {% endblock %}

@@ -4,6 +4,31 @@
 {% block header %}Create Order{% endblock %}
 
 {% block content %}
+    <style>
+        /* Apply Bootstrap styling to the Awesomplete dropdown */
+        .awesomplete ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ced4da;
+            border-top: none;
+        }
+
+        .awesomplete li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .awesomplete li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .awesomplete li:focus {
+            outline: none;
+            background-color: #f8f9fa;
+        }
+
+    </style>
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
@@ -25,12 +50,14 @@
                     <div class="row mb-3">
                         <div class="col-lg-6">
                             <label for="client" class="form-label">Client:</label>
-                            <input class="form-control" name="client" value="{{ ticket.contact }}">
+                            <input class="awesomplete  form-control" id="company-input" name="client"
+                                   value="{{ ticket.contact }}">
                         </div>
                         <div class="col-lg-6">
                             <label for="ticket" class="form-label">Associated Ticket:</label>
                             {% if ticket %}
-                                <input type="text" class="form-control" value="ITL/TN/{{ ticket.ticket_id }} .. {{ ticket.issue_summary }}"
+                                <input type="text" class="form-control"
+                                       value="ITL/TN/{{ ticket.ticket_id }} .. {{ ticket.issue_summary }}"
                                        disabled>
                             {% else %}
                                 <input type="text" class="form-control" value="NO Associated Ticket"
@@ -80,20 +107,23 @@
                                     </td>
                                     <td><input type="number" name="quantity[]"
                                                value="{{ product.quantity }}" class="form-control"></td>
-                                    <td><input type="date" name="date_ordered[]"
-                                               value="04/10/2023"
+                                    <td><input type="datetime-local" name="date_ordered[]"
+                                               value=" "
                                                class="form-control"></td>
                                     <td><input type="text" name="supplier[]"
                                                value="{{ product.supplier }}" class="form-control"></td>
-                                    <td><input type="date" name="date_received[]"
-                                               value="04/10/2023"
+                                    <td><input type="datetime-local" name="date_received[]"
+                                               value="00-00-0000"
                                                class="form-control"></td>
 
                                     <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
-                                               tabindex="0"
-                                               data-plugin="tippy" data-tippy-interactive="true"><i
-                                                class="s mdi mdi-plus-circle mdi-18px"></i>
-                                        </a></td>
+                                           tabindex="0"
+                                           data-plugin="tippy" data-tippy-interactive="true"><i
+                                            class="s mdi mdi-plus-circle mdi-18px"></i>
+                                    </a> <a class="delete-row-button" onclick="deleteRow(this)" title="delete row"
+                                            tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                                        <i class="s mdi mdi-minus-circle mdi-18px"></i>
+                                    </a></td>
 
 
                                 </tr>
@@ -113,8 +143,13 @@
                                 <td><input type="date" name="date_received[]"
                                            class="form-control" value="00-00-0000"></td>
 
-                                <td><a class="add-row-button"
-                                       onclick="addBlankRow(this)">Add Row
+                                <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
+                                       tabindex="0"
+                                       data-plugin="tippy" data-tippy-interactive="true"><i
+                                        class="s mdi mdi-plus-circle mdi-18px"></i>
+                                </a> <a class="delete-row-button" onclick="deleteRow(this)" title="delete row"
+                                        tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="s mdi mdi-minus-circle mdi-18px"></i>
                                 </a></td>
                             </tr>
                             </tbody>
@@ -145,6 +180,32 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
+            integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"
+            integrity="sha512-t3zV/oAkSZUrvb/7p1q1+uh/i56JinQ+bmiulnHhbHZc7dq09CxJ1BByyi7A4+lF76+CcJtSVFtb7na7Oe7Cgg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var input = document.getElementById("company-input");
+            var awesomplete = new Awesomplete(input, {
+                minChars: 1,
+            });
+
+            input.addEventListener("input", function () {
+                $.ajax({
+                    url: "/get_company_names/",  // Replace with your actual URL
+                    data: {query: input.value},
+                    success: function (data) {
+                        awesomplete.list = data.company_names;  // Update the list with retrieved names
+                    }
+                });
+            });
+        });
+
+    </script>
     <script>
         function addBlankRow(button) {
             // Create a new row by cloning the current row
@@ -154,7 +215,11 @@
             // Clear input values in the new row
             const inputs = newRow.getElementsByTagName('input');
             for (let input of inputs) {
-                input.value = '';
+                if (input.id === 'price' || input.id === 'qty') {
+                    input.value = '0';
+                } else {
+                    input.value = '';
+                }
             }
 
             // Clear select options in the new row (optional)
@@ -167,6 +232,12 @@
             currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
         }
 
+        function deleteRow(button) {
+            // Get the current row and remove it
+            const currentRow = button.parentNode.parentNode;
+            currentRow.parentNode.removeChild(currentRow);
+        }
+
         function addBlankRowAtEnd() {
             // Create a new row to add at the end
             const tableBody = document.querySelector('table tbody');
@@ -175,7 +246,11 @@
             // Clear input values in the new row
             const inputs = newRow.getElementsByTagName('input');
             for (let input of inputs) {
-                input.value = '';
+                if (input.id === 'price' || input.id === 'qty') {
+                    input.value = '0';
+                } else {
+                    input.value = '';
+                }
             }
 
             // Clear select options in the new row (optional)

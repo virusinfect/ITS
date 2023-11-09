@@ -4,6 +4,31 @@
 {% block header %}Edit Order{% endblock %}
 
 {% block content %}
+    <style>
+        /* Apply Bootstrap styling to the Awesomplete dropdown */
+        .awesomplete ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ced4da;
+            border-top: none;
+        }
+
+        .awesomplete li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .awesomplete li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .awesomplete li:focus {
+            outline: none;
+            background-color: #f8f9fa;
+        }
+
+    </style>
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
@@ -25,7 +50,7 @@
                     <div class="row mb-3">
                         <div class="col-lg-6">
                             <label for="client" class="form-label">Client:</label>
-                            <input class="form-control" value="{{ order.client }}">
+                            <input class="awesomplete  form-control" id="company-input" value="{{ order.client }}">
                         </div>
                         <div class="col-lg-6">
                             <label for="ticket" class="form-label">Associated Ticket:</label>
@@ -93,12 +118,12 @@
                                                 class="s mdi mdi-plus-circle mdi-18px"></i>
                                         </a>
                                             <a href="{% url 'deactivate_order_product' product.op_id order.o_id %}"
-                                               title="receive" tabindex="0" id="recive"
+                                               title="receive" tabindex="0" id="btn6"
                                                data-plugin="tippy" data-tippy-interactive="true">
                                                 <i class="s mdi mdi-call-received mdi-18px"></i>
                                             </a>
                                             <a href="{% url 'delete_row_order' product.op_id order.o_id %}"
-                                               title="delete" tabindex="0" id="delete"
+                                               title="delete" tabindex="0" id="btn5"
                                                data-plugin="tippy" data-tippy-interactive="true">
                                                 <i class="s mdi mdi-delete-outline mdi-18px"></i>
                                             </a>
@@ -107,30 +132,29 @@
                                 {% endif %}
                             {% endfor %}
                             <tr>
-
                                 <td><input type="text" name="product[]"
                                            class="form-control">
                                 </td>
                                 <td><input type="number" name="quantity[]"
                                            class="form-control"></td>
                                 <td><input type="date" name="date_ordered[]"
-
                                            class="form-control"></td>
                                 <td><input type="text" name="supplier[]"
                                            class="form-control"></td>
                                 <td><input type="date" name="date_received[]"
-
                                            class="form-control"></td>
                                 <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
                                        tabindex="0"
                                        data-plugin="tippy" data-tippy-interactive="true"><i
                                         class="s mdi mdi-plus-circle mdi-18px"></i>
+                                </a> <a class="delete-row-button" onclick="deleteRow(this)" title="delete row"
+                                        tabindex="0" id="btn5" data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="s mdi mdi-delete-outline mdi-18px"></i>
                                 </a>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
-
                     </div>
                     <div class="row mb-3 mx-auto">
                         <label for="status" class="form-label">Status:</label>
@@ -156,56 +180,132 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
+            integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"
+            integrity="sha512-t3zV/oAkSZUrvb/7p1q1+uh/i56JinQ+bmiulnHhbHZc7dq09CxJ1BByyi7A4+lF76+CcJtSVFtb7na7Oe7Cgg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var input = document.getElementById("company-input");
+            var awesomplete = new Awesomplete(input, {
+                minChars: 1,
+            });
 
+            input.addEventListener("input", function () {
+                $.ajax({
+                    url: "/get_company_names/",  // Replace with your actual URL
+                    data: {query: input.value},
+                    success: function (data) {
+                        awesomplete.list = data.company_names;  // Update the list with retrieved names
+                    }
+                });
+            });
+        });
+
+    </script>
     <script>
         function addBlankRow(button) {
             // Create a new row by cloning the current row
             const currentRow = button.parentNode.parentNode;
             const newRow = currentRow.cloneNode(true);
-
             // Clear input values in the new row
             const inputs = newRow.getElementsByTagName('input');
             for (let input of inputs) {
                 input.value = '';
             }
-
+            // Hide the button with id "btn5" in the new row
+            const btn5 = newRow.querySelector('#btn5');
+            if (btn5) {
+                btn5.style.display = 'none';
+            }
+            const btn6 = newRow.querySelector('#btn6');
+            if (btn6) {
+                btn6.style.display = 'none';
+            }
             // Clear select options in the new row (optional)
             const selects = newRow.getElementsByTagName('select');
             for (let select of selects) {
                 select.selectedIndex = 0;
             }
-
-            // Hide icons with id "recive" and "delete" in the new row
-            const iconsToHide = newRow.querySelectorAll('#recive, #delete');
-            for (let icon of iconsToHide) {
-                icon.style.display = 'none';
+            // Find input elements with id "price" and "qty" and set their values to zero
+            const priceInput = newRow.querySelector('input#price');
+            if (priceInput) {
+                priceInput.value = '0';
             }
+            const qtyInput = newRow.querySelector('input#qty');
+            if (qtyInput) {
+                qtyInput.value = '0';
+            }
+            // Hide all existing delete links in the new row
+            const existingDeleteLinks = newRow.querySelectorAll('a.delete-link');
+            for (let deleteLink of existingDeleteLinks) {
+                deleteLink.style.display = 'none';
+            }
+            // Create a new delete link for the new row
+            const deleteLink = document.createElement('a');
+            deleteLink.href = '#';
+            deleteLink.title = 'delete';
+            deleteLink.classList.add('delete-link'); // Add a class for easier identification
+            deleteLink.innerHTML = '<i class="s mdi mdi-delete-outline mdi-18px"></i>';
+            deleteLink.addEventListener('click', function () {
+                // Add your delete row logic here
+                // For example, you can call a function to handle row deletion
+                deleteRow(newRow);
+            });
+            // Append the new delete link to the new row
+            newRow.querySelector('td:last-child').appendChild(deleteLink);
 
             // Insert the new row below the current row
             currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
         }
 
+        function deleteRow(row) {
+            // Add your logic to delete the row
+            // For example, you can use row.parentNode.removeChild(row);
+            row.parentNode.removeChild(row);
+        }
 
         function addBlankRowAtEnd() {
             // Create a new row to add at the end
             const tableBody = document.querySelector('table tbody');
             const newRow = tableBody.children[0].cloneNode(true);
 
-            // Clear input values in the new row
-            const inputs = newRow.getElementsByTagName('input');
-            for (let input of inputs) {
-                input.value = '';
+            // Find input elements with id "price" and "qty" and set their values to 0
+            const priceInput = newRow.querySelector('input#price');
+            const qtyInput = newRow.querySelector('input#qty');
+            if (priceInput) {
+                priceInput.value = '0';
+            }
+            if (qtyInput) {
+                qtyInput.value = '0';
             }
 
-            // Clear select options in the new row (optional)
-            const selects = newRow.getElementsByTagName('select');
-            for (let select of selects) {
-                select.selectedIndex = 0;
+            // Hide all existing delete links in the new row
+            const existingDeleteLinks = newRow.querySelectorAll('a.delete-link');
+            for (let deleteLink of existingDeleteLinks) {
+                deleteLink.style.display = 'none';
             }
+
+            // Create a new delete link for the new row
+            const deleteLink = document.createElement('a');
+            deleteLink.href = '#';
+            deleteLink.title = 'delete';
+            deleteLink.classList.add('delete-link'); // Add a class for easier identification
+            deleteLink.innerHTML = '<i class="s mdi mdi-delete-outline mdi-18px"></i>';
+            deleteLink.addEventListener('click', function () {
+                // Add your delete row logic here
+                // For example, you can call a function to handle row deletion
+                deleteRow(newRow);
+            });
+
+            // Append the new delete link to the new row
+            newRow.querySelector('td:last-child').appendChild(deleteLink);
 
             // Append the new row to the end of the table
             tableBody.appendChild(newRow);
         }
     </script>
-
 {% endblock %}
