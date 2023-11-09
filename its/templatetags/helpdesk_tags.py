@@ -129,3 +129,34 @@ def can_access_view_invoice(user):
         return helpdesk_group in user.groups.all()
     except Group.DoesNotExist:
         return False
+
+@register.filter
+def is_sales(user):
+    try:
+        helpdesk_group = Group.objects.get(name='Sales')
+        return helpdesk_group in user.groups.all()
+    except Group.DoesNotExist:
+        return False
+@register.filter
+def is_tech(user):
+    try:
+        helpdesk_group = Group.objects.get(name='Technician')
+        return helpdesk_group in user.groups.all()
+    except Group.DoesNotExist:
+        return False
+
+@register.filter
+def is_helpdesk(user):
+    try:
+        helpdesk_group = Group.objects.get(name='Helpdesk')
+        return helpdesk_group in user.groups.all()
+    except Group.DoesNotExist:
+        return False
+
+@register.filter
+def is_management(user):
+    try:
+        helpdesk_group = Group.objects.get(name='Management')
+        return helpdesk_group in user.groups.all()
+    except Group.DoesNotExist:
+        return False

@@ -147,7 +147,7 @@ def is_member_of_group(user, group_name):
 
 @login_required
 def test_view(request):
-    if is_member_of_group(request.user, 'Admin'):
+    if is_member_of_group(request.user, 'Sales'):
         return redirect('sales_dashboard')
     elif is_member_of_group(request.user, 'Helpdesk'):
         return redirect('helpdesk_dashboard')
