@@ -1000,20 +1000,20 @@ def quote(request, quote_id):
             if quote.vat_stats == "Inclusive":
                 item.price -= round((item.price / 1.16) * 0.16)  # Deduct VAT from item.amount
                 item.total -= round((item.total / 1.16) * 0.16)
-                subtotals += item.total
-                vat = round(subtotals * 0.16)
-                total_amount = round(subtotals + vat)
+                item.subtotals = item.total
+                item.vat = round(item.total * 0.16)
+                item.total_amount = round(item.total + item.vat)
 
 
             elif quote.vat_stats == "Exclusive":
-                subtotals += item.total
-                vat = round(subtotals * 0.16)
-                total_amount = subtotals + vat
+                subtotals = item.total
+                item.vat = round(item.total * 0.16)
+                item.total_amount = round(item.total + item.vat)
 
             elif quote.vat_stats == "Exempted":
-                subtotals += item.total
-                vat = 0
-                total_amount = subtotals + vat
+                subtotals = item.total
+                item.vat = 0
+                item.total_amount = round(item.total + item.vat)
 
 
     return render(request, 'sales/quote.html', {'quote': quote, 'items': items, 'subtotals': subtotals, 'vat': vat,

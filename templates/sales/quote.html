@@ -93,7 +93,8 @@
 
                                 {% endif %}
                                 {% if quote.layout == "Classified" %}
-                                    <table class="table table-bordered">
+                                     {% for item in items %}
+                                        <table class="table table-bordered">
                                         <thead>
                                         <tr>
                                             <th style="width: 20%; text-transform: uppercase;">Part No.</th>
@@ -102,41 +103,39 @@
                                             <th style="width: 10%; text-transform: uppercase; text-align: center;">
                                                 Price
                                             </th>
-                                            <th style="width: 10%; text-transform: uppercase; text-align: center;">Qty
+                                            <th style="width: 5%; text-transform: uppercase; text-align: center;">Qty
                                             </th>
-                                            <th style="width: 10%; text-transform: uppercase; text-align: center;">
+                                            <th style="width: 20%; text-transform: uppercase; text-align: center;">
                                                 Price
                                             </th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for item in items %}
-                                            <tr>
-                                                <td>{{ item.part_no }}</td>
-                                                <td>{{ item.description }}</td>
-                                                <td>{{ item.availability }}</td>
-                                                <td style="text-align: center;">{{ item.price }}</td>
-                                                <td style="text-align: center;">{{ item.quantity }}</td>
-                                                <td style="text-align: right;">{{ item.total }}</td>
-                                            </tr>
-                                        {% endfor %}
+                                        <tr>
+                                            <td>{{ item.part_no }}</td>
+                                            <td>{{ item.description }}</td>
+                                            <td>{{ item.availability }}</td>
+                                            <td style="text-align: center;">{{ item.price }}</td>
+                                            <td style="text-align: center;">{{ item.quantity }}</td>
+                                            <td style="text-align: right;">{{ item.total }}</td>
+                                        </tr>
                                         <tr>
                                             <th colspan="5" style="text-align: right;">SUB TOTALS</th>
-                                            <td style="text-align: right;">{{ subtotals }}</td>
+                                            <td style="text-align: right;">{{ item.total }}</td>
                                         </tr>
                                         <tr>
                                             <th class="text-danger" colspan="5" style="text-align: right;">ADD VAT 16%
                                             </th>
                                             <td class="text-danger"
-                                                style="text-align: right;">{{ vat }}</td>
+                                                style="text-align: right;">{{ item.vat }}</td>
                                         </tr>
                                         <tr>
                                             <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
-                                            <td style="text-align: right;">{{ total_amount }}</td>
+                                            <td style="text-align: right;">{{ item.total_amount }}</td>
                                         </tr>
-
-                                        </tbody>
-                                    </table>
+                                    {% endfor %}
+                                </tbody>
+                                </table>
 
                                 {% endif %}
                                 {% if quote.layout == "Separated" %}
