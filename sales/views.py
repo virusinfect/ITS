@@ -217,7 +217,8 @@ def bank_list(request):
 @login_required
 def edit_order(request, order_id):
     order = get_object_or_404(Orders, o_id=order_id)
-    users = User.objects.all()
+    sales_group = Group.objects.get(name='Sales')
+    users = sales_group.user_set.all()
     companies = Company.objects.all().order_by('name')
 
     if request.method == 'POST':
@@ -432,7 +433,8 @@ def delete_quote_ticket(request, quote_id, ticket_id):
 @login_required
 def convert_to_quote(request, ticket_id):
     ticket = get_object_or_404(SalesTickets, ticket_id=ticket_id)
-    users = User.objects.all()
+    sales_group = Group.objects.get(name='Sales')
+    users = sales_group.user_set.all()
     if request.method == 'POST':
         handler_id = request.POST.get('handler')
         handler = User.objects.get(id=handler_id)
@@ -483,7 +485,8 @@ def convert_to_quote(request, ticket_id):
 @login_required
 def convert_to_order(request, ticket_id):
     ticket = get_object_or_404(SalesTickets, pk=ticket_id)
-    users = User.objects.all()
+    sales_group = Group.objects.get(name='Sales')
+    users = sales_group.user_set.all()
     if request.method == 'POST':
         handler_id = request.POST.get('handler')
         handler = User.objects.get(id=handler_id)
@@ -539,7 +542,8 @@ def convert_to_order(request, ticket_id):
 
 @login_required
 def create_order(request):
-    users = User.objects.all()
+    sales_group = Group.objects.get(name='Sales')
+    users = sales_group.user_set.all()
     if request.method == 'POST':
         handler_id = request.POST.get('handler')
         handler = User.objects.get(id=handler_id)
@@ -731,7 +735,8 @@ def create_ticket(request):
 
 @login_required
 def view_invoice(request, invoice_id):
-    users = User.objects.all()
+    sales_group = Group.objects.get(name='Sales')
+    users = sales_group.user_set.all()
     banks = OurBanks.objects.all()
     invoice = ProformaInvoice.objects.get(pfq_id=invoice_id)
     products = ProformaInvoiceProducts.objects.filter(pfi=invoice)
@@ -845,7 +850,8 @@ def delete_order_ticket(request, order_id, ticket_id):
 @login_required
 def convert_to_invoice(request, ticket_id):
     ticket = get_object_or_404(SalesTickets, pk=ticket_id)
-    users = User.objects.all()
+    sales_group = Group.objects.get(name='Sales')
+    users = sales_group.user_set.all()
     if request.method == 'POST':
         handler_id = request.POST.get('handler')
         handler = User.objects.get(id=handler_id)
