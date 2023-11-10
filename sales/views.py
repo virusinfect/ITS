@@ -380,7 +380,7 @@ def edit_quote(request, quote_id):
         new_sourcing_data = []
 
         for i in range(len(part_no_list)):
-            if (part_no_list[i] and desc_list[i]):
+            if (desc_list[i]):
                 products = SalesQuoteProducts(
                     part_no=part_no_list[i],
                     description=desc_list[i],
@@ -510,35 +510,74 @@ def convert_to_order(request, ticket_id):
 
         for i in range(len(product_list)):
             if product_list[i]:
-                date_received = date_received_list[i]
-                # Check if date_received is blank and set it to '0000-00-00'
-                if  date_received == "":
-                    date_received = '0000-00-00'
-                else:
-                    # Validate and convert the date to the 'YYYY-MM-DD' format
-                    try:
-                        date_received = datetime.strptime(date_received, '%Y-%m-%d').date()
-                    except ValueError:
-                        # Handle invalid date format
-                        date_received = '0000-00-00'
-                print('date received')
-                print(date_received)
                 order_product = OrderProducts(
                     product=product_list[i],
                     quantity=quantity_list[i],
-                    date_ordered=date_ordered_list[i],
                     supplier=supplier_list[i],
-                    date_received=date_received,
                     is_active=True,
                     orders=order,
                 )
                 order_product.save()
+                if date_received_list[i]:
+                    order_product.date_received = date_received_list[i]
+                    order_product.save()
+
+                if date_ordered_list[i]:
+                    order_product.date_ordered = date_ordered_list[i]
+                    order_product.save()
 
         messages.success(request, 'Ticket successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
     return render(request, 'sales/convert_to_order.html', {'ticket': ticket, 'users': users})
 
+@login_required
+def convert_quote_to_order(request, quote_id):
+    quote = get_object_or_404(SalesQuotes, sq_id=quote_id)
+    sales_group = Group.objects.get(name='Sales')
+    users = sales_group.user_set.all()
+    if request.method == 'POST':
+        handler_id = request.POST.get('handler')
+        handler = User.objects.get(id=handler_id)
+        # Create a new Orders record
+        order = Orders(
+            client=request.POST.get('client'),
+            lpo_no=request.POST.get('lpo_no'),
+            assignee=handler,  # Set assignee to the current user
+            status=request.POST.get('status'),
+            is_active=True,
+        )
+        order.save()
+
+        # Create OrderProducts from the form data
+        product_list = request.POST.getlist('product[]')
+        quantity_list = request.POST.getlist('quantity[]')
+        date_ordered_list = request.POST.getlist('date_ordered[]')
+        supplier_list = request.POST.getlist('supplier[]')
+        date_received_list = request.POST.getlist('date_received[]')
+
+        for i in range(len(product_list)):
+            if product_list[i]:
+                order_product = OrderProducts(
+                    product=product_list[i],
+                    quantity=quantity_list[i],
+                    supplier=supplier_list[i],
+                    is_active=True,
+                    orders=order,
+                )
+                order_product.save()
+                if date_received_list[i]:
+                    order_product.date_received = date_received_list[i]
+                    order_product.save()
+
+                if date_ordered_list[i]:
+                    order_product.date_ordered = date_ordered_list[i]
+                    order_product.save()
+
+        messages.success(request, 'Ticket successfully converted to an order.')
+        return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
+
+    return render(request, 'sales/convert_quote_to_order.html', {'quote': quote, 'users': users})
 
 @login_required
 def create_order(request):

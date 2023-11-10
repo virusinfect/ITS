@@ -17,6 +17,7 @@ urlpatterns = [
     path('delete-quote-ticket/<int:quote_id>/<int:ticket_id>/', views.delete_quote_ticket, name='delete-quote-ticket'),
     path('convert-to-quote/<int:ticket_id>/', views.convert_to_quote, name='convert-to-quote'),
     path('convert-to-order/<int:ticket_id>/', views.convert_to_order, name='convert-to-order'),
+    path('convert-quote-to-order/<int:quote_id>/', views.convert_quote_to_order, name='convert-quote-to-order'),
     path('convert-to-invoice/<int:ticket_id>/', views.convert_to_invoice, name='convert-to-invoice'),
     path('create_ticket/', views.create_ticket, name='create_ticket_sales'),
     path('invoice/<int:invoice_id>/', views.view_invoice, name='view_invoice'),

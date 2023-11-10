@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Delivery{% endblock %}
+
+{% block content %}
+
+    <div class="card col-lg-7 p-2 mx-auto" id="delivery-note">
+
+
+        <div class="container">
+            <div class="mx-auto text-center">
+                <h3>Delivery Note</h3>
+            </div>
+            <div class="row mb-3">
+                <div class="col-6">
+                    <img src="{% static 'logo.png' %}" alt="Company Logo" width="150">
+                    <h2>INTELLITECH LTD.</h2>
+
+                </div>
+                <div class="col-6 text-end mt-4">
+
+                    <small>Ground Floor, Corporate Insurance Building </small><br>
+                    <small>Yusuf A. Karim Rd, East End, Treasury Square </small><br>
+                    <small> P.O. Box 42716 - 80100,</small><br>
+                    <small>Cell: 0728 786014 | 0732 786012 | 0773 963114</small><br>
+                    <small>Tel: +254 41 2221792 | 696/932/231500 | 2311364</small><br>
+                    <small><i class="mdi mdi-email-outline"></i> sales: sales@intellitech.co.ke | For support:
+                        support@intellitech.co.ke</small><br>
+                    <small>Website: www.intellitech.co.ke</small>
+                </div>
+            </div>
+            <div class="text-end">
+                <p>Date: {{ delivery.created }}</p>
+            </div>
+            <div class="row mt-4 mx-auto">
+                <div class="col-6 ">
+
+                    <h4>Client Information</h4>
+                    <small>{{ delivery.ticket.company.name }}</small><br>
+                    <small>{{ delivery.ticket.company.address }}</small>
+
+                </div>
+                <div class="col-6 text-end">
+                    <h4>Delivery Note</h4>
+                    <small>Delivery Note : ITL/DN/{{ delivery.id }}</small><br>
+                    <small>VAT No. 0107676V</small><br>
+                    <small>PIN No. P051118610N</small>
+
+                </div>
+            </div>
+
+            <div class="row mt-4 ">
+                <h4>Items</h4>
+                <div class="col-12 table-responsive">
+
+
+                    <table class="table table-bordered ">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Serial No</th>
+                            <th>Quantity</th>
+                            <th>Particulars</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{ ticket.serial_no }}</td>
+                            <td>1</td>
+                            <td>{{ ticket.equipment }}</td>
+                        </tr>
+                        {% for item in items %}
+                            <tr>
+                                <td>{{ item.serial_no }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.particulars }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div><small>Received the above goods in good order and condition</small></div>
+            <div class="row">
+                <div class="col-6">
+
+                </div>
+                <div class="col-6">
+                    <p>Collected By: {{ delivery.collected_by }}</p>
+                    <div class="card w-70 h-70 mt-3 shadow p-3 mb-5 bg-body-tertiary rounded">
+                        {% if signature %}
+                            <img src="{{ signature.signature_image.url }}" class="card-img-top" alt="Signature">
+
+                        {% else %}
+                            <p class="card-text">No signature available for this delivery.</p>
+
+                        {% endif %}
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+    <div>
+        <a href="{% url 'sign' delivery.id %}" class="btn btn-warning waves-effect waves-light mb-1 me-1"><span class="btn-label"><i class="mdi mdi-signature-freehand"></i></span>Sign
+            this
+            delivery</a>
+
+        <a id="print-button" class="btn btn-primary">Print</a>
+    </div>
+
+    <script>
+        document.getElementById('print-button').addEventListener('click', function () {
+            printDeliveryNote();
+        });
+
+        function printDeliveryNote() {
+            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+            document.body.style.margin = "0";
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+{% endblock %}
+
+<h1>Delivery for {{ ticket.company }}</h1>
+<p>Client: {{ delivery.client }}</p>
+<p>Type: {{ delivery.type }}</p>
+<p>Collected by: {{ delivery.collected_by }}</p>
+<p>Status: {{ delivery.status }}</p>
+<p>Remarks: {{ delivery.remarks }}</p>
+
+
+

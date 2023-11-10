@@ -89,7 +89,7 @@
                                 {% for product in products %}
                                     <tr>
                                         <td><input type="text" name="part_no[]" value="{{ product.part_no }}"
-                                                   class="form-control" required></td>
+                                                   class="form-control"></td>
                                         <td><input type="text" name="description[]" value="{{ product.description }}"
                                                    class="form-control" required>
                                         </td>
@@ -270,6 +270,10 @@
             <button class="btn btn-primary" type="submit">Update
                 Quote
             </button>
+            <a href="{% url 'convert-quote-to-order' quote.sq_id %}" type="button"
+               class="btn btn-primary waves-effect waves-light  me-1">
+                <span class="btn-label"><i class="mdi mdi-clipboard-list"></i></span>Generate Order
+            </a>
             <a type="button" class="btn btn-primary waves-effect waves-light me-1">
                 <span class="btn-label"><i class="mdi mdi-email-send-outline"></i></span>Send Mail
             </a>
