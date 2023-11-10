@@ -4,6 +4,30 @@
 {% block header %}Convert to Quote{% endblock %}
 
 {% block content %}
+    <style>
+        /* Apply Bootstrap styling to the Awesomplete dropdown */
+        .awesomplete ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ced4da;
+            border-top: none;
+        }
+
+        .awesomplete li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .awesomplete li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .awesomplete li:focus {
+            outline: none;
+            background-color: #f8f9fa;
+        }
+    </style>
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
@@ -66,25 +90,16 @@
                                         </td>
                                         <td><input type="text" value="{{ product.price }}" class="form-control"
                                                    name="price[]" id="price"></td>
-                                        <td><select name="availability[]" class="form-select">
-                                            <option value="">Select availability</option>
-                                            <option value="AVAILABLE"
-                                                    {% if product.availability|lower == "available" %}selected{% endif %}>
-                                                AVAILABLE
-                                            </option>
-                                            <option value="EXPECTED"
-                                                    {% if product.availability|lower == "expected" %}selected{% endif %}>
-                                                EXPECTED
-                                            </option>
-                                            <option value="BACK TO BACK ORDER"
-                                                    {% if product.availability|lower == "back to back order" %}selected{% endif %}>
-                                                BACK TO BACK ORDER
-                                            </option>
-                                            <option value="LIMITED"
-                                                    {% if product.availability|lower == "limited" %}selected{% endif %}>
-                                                LIMITED
-                                            </option>
-                                        </select></td>
+                                        <td>
+                                            <input name="availability[]" class="form-control awesomplete"
+                                                   list="mylist"/>
+                                            <datalist id="mylist">
+                                                <option>Available</option>
+                                                <option>Expected</option>
+                                                <option>Back to back order</option>
+                                                <option>Limited</option>
+                                            </datalist>
+                                        </td>
                                         <td><input type="text" value="{{ product.quantity }}" class="form-control"
                                                    name="quantity[]" id="qty"></td>
                                         <td><input type="file" class="form-control"></td>
@@ -236,6 +251,12 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
+            integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"
+            integrity="sha512-t3zV/oAkSZUrvb/7p1q1+uh/i56JinQ+bmiulnHhbHZc7dq09CxJ1BByyi7A4+lF76+CcJtSVFtb7na7Oe7Cgg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 
 

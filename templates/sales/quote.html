@@ -3,195 +3,206 @@
 {% block header %}Quote{% endblock %}
 {% load static %}
 {% block content %}
-    <style>
-    .scaled-content {
-    transform: scale(0.5); /* Adjust the scale factor as needed */
-  }
-    </style>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'active-quotes' %}">Quotations</a></li>
-                    <li class="breadcrumb-item active">Quote</li>
-                </ol>
+    <div class=" card col-8 mx-auto wrapper px-2">
+        <!-- Main content -->
+        <section class="card invoice" id="delivery-note">
+            <div id="content">
+
+                <div class="page-header">
+                    <div class="d-flex justify-content-center mb-1 mt-1">
+                        <img src="{% static 'logo black.png' %}" height="125" width="125">
+                    </div>
+                </div>
+
+                <table class="table table-borderless">
+                    <thead>
+                    <tr>
+                        <td>
+                            <!--place holder for the fixed-position header-->
+                            <div class="page-header-space"></div>
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="page">
+                                <div class="row">
+                                    <div class="col-6 text-start">
+                                        <p>{{ quote.company.name }}</p>
+                                        <p>{{ quote.company.address }}</p>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <p>DATE: {{ quote.created|date:"d/m/Y" }}</p>
+                                        <p>OUR REF: ITLQ/{{ quote.updated|date:"m/Y" }}-{{ quote.sq_id }}</p>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered layout-fixed">
+                                    <tbody>
+                                    <tr>
+                                        <td class=" d-flex justify-content-center"><strong>RE: QUOTATION</strong></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <p>{{ quote.mail_text|safe }}</p>
+                                {% if quote.layout == "Grouped" %}
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 20%; text-transform: uppercase;">Part No.</th>
+                                            <th style="width: 40%; text-transform: uppercase;">Description</th>
+                                            <th style="width: 20%; text-transform: uppercase;">Availability</th>
+                                            <th style="width: 10%; text-transform: uppercase; text-align: center;">
+                                                Price
+                                            </th>
+                                            <th style="width: 10%; text-transform: uppercase; text-align: center;">Qty
+                                            </th>
+                                            <th style="width: 10%; text-transform: uppercase; text-align: center;">
+                                                Price
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in items %}
+                                            <tr>
+                                                <td>{{ item.part_no }}</td>
+                                                <td>{{ item.description }}</td>
+                                                <td>{{ item.availability }}</td>
+                                                <td style="text-align: center;">{{ item.price }}</td>
+                                                <td style="text-align: center;">{{ item.quantity }}</td>
+                                                <td style="text-align: right;">{{ item.total }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <th colspan="5" style="text-align: right;">SUB TOTALS</th>
+                                            <td style="text-align: right;">{{ subtotals }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-danger" colspan="5" style="text-align: right;">ADD VAT 16%
+                                            </th>
+                                            <td class="text-danger"
+                                                style="text-align: right;">{{ vat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
+                                            <td style="text-align: right;">{{ total_amount }}</td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+
+                                {% endif %}
+                                {% if quote.layout == "Classified" %}
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 20%; text-transform: uppercase;">Part No.</th>
+                                            <th style="width: 40%; text-transform: uppercase;">Description</th>
+                                            <th style="width: 20%; text-transform: uppercase;">Availability</th>
+                                            <th style="width: 10%; text-transform: uppercase; text-align: center;">
+                                                Price
+                                            </th>
+                                            <th style="width: 10%; text-transform: uppercase; text-align: center;">Qty
+                                            </th>
+                                            <th style="width: 10%; text-transform: uppercase; text-align: center;">
+                                                Price
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in items %}
+                                            <tr>
+                                                <td>{{ item.part_no }}</td>
+                                                <td>{{ item.description }}</td>
+                                                <td>{{ item.availability }}</td>
+                                                <td style="text-align: center;">{{ item.price }}</td>
+                                                <td style="text-align: center;">{{ item.quantity }}</td>
+                                                <td style="text-align: right;">{{ item.total }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <th colspan="5" style="text-align: right;">SUB TOTALS</th>
+                                            <td style="text-align: right;">{{ subtotals }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-danger" colspan="5" style="text-align: right;">ADD VAT 16%
+                                            </th>
+                                            <td class="text-danger"
+                                                style="text-align: right;">{{ vat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
+                                            <td style="text-align: right;">{{ total_amount }}</td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+
+                                {% endif %}
+                                {% if quote.layout == "Separated" %}
+                                    {% for item in items %}
+                                        <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 20%; text-transform: uppercase;">Part No.</th>
+                                            <th style="width: 40%; text-transform: uppercase;">Description</th>
+                                            <th style="width: 20%; text-transform: uppercase;">Availability</th>
+                                            <th style="width: 10%; text-transform: uppercase; text-align: center;">
+                                                Price
+                                            </th>
+                                            <th style="width: 5%; text-transform: uppercase; text-align: center;">Qty
+                                            </th>
+                                            <th style="width: 20%; text-transform: uppercase; text-align: center;">
+                                                Price
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>{{ item.part_no }}</td>
+                                            <td>{{ item.description }}</td>
+                                            <td>{{ item.availability }}</td>
+                                            <td style="text-align: center;">{{ item.price }}</td>
+                                            <td style="text-align: center;">{{ item.quantity }}</td>
+                                            <td style="text-align: right;">{{ item.total }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="5" style="text-align: right;">SUB TOTALS</th>
+                                            <td style="text-align: right;">{{ item.total }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-danger" colspan="5" style="text-align: right;">ADD VAT 16%
+                                            </th>
+                                            <td class="text-danger"
+                                                style="text-align: right;">{{ item.vat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
+                                            <td style="text-align: right;">{{ item.total_amount }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                </table>
+
+                                {% endif %}
+
+
+                                {{ quote.footer_note|safe }}
+
+                            </div> <!-- /. page -->
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-        </div> <!-- end col -->
-    </div>
-    <div class="mx-auto" >
-
-        <div class="card col-lg-9 p-2 mx-auto text-sm" id="delivery-note">
-            <div class="card-body ">
-                <div class="row mb-3">
-                    <div class="col-6">
-                        <img src="{% static 'logo.png' %}" alt="Company Logo" width="150">
-
-
-                    </div>
-                    <div class="col-6 text-end mt-4">
-
-                        <small>Ground Floor, Corporate Insurance Building </small><br>
-                        <small>Yusuf A. Karim Rd, East End, Treasury Square </small><br>
-                        <small> P.O. Box 42716 - 80100,</small><br>
-                        <small>Cell: 0728 786014 | 0732 786012 | 0773 963114</small><br>
-                        <small>Tel: +254 41 2221792 | 696/932/231500 | 2311364</small><br>
-                        <small><i class="mdi mdi-email-outline"></i> sales: sales@intellitech.co.ke | For support:
-                            support@intellitech.co.ke</small><br>
-                        <small>Website: www.intellitech.co.ke</small>
-                    </div>
-                </div>
-                <div class="text-end">
-                    <p>Date: {{ quote.created|date:"d/m/Y" }}</p>
-                </div>
-                <div class="row mt-4 mx-auto">
-                    <div class="col-6 ">
-
-                        <h4>Client Information</h4>
-                        <small>{{ quote.company.name }}</small><br>
-                        <small>{{ quote.company.address }}</small>
-
-                    </div>
-                    <div class="col-6 text-end">
-                        <h4>REF:</h4>
-                        <small>ITLQ/{{ quote.created|date:"m/Y" }}/{{ quote.sq_id }}</small><br>
-
-                    </div>
-                </div>
-                <div class="text-center text-black border border-bottom-1 p-1 my-2"> RE: QUOATATION </div>
-                <div class="row mt-2">
-                    <div class="mx-auto ">
-                        {{ quote.mail_text|safe }}
-                    </div>
-                </div>
-                <div class="row mx-auto mt-1">
-                    <div class="table">
-                        <table class="table table-bordered text-sm">
-                            <thead class="table-light">
-                            <tr>
-                                <th>Part No</th>
-                                <th>Description</th>
-                                <th>Price</th>
-                                <th>Availability</th>
-                                <th>Quantity</th>
-                                <th>Amount</th>
-                                <!-- Add other table headers for additional fields -->
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for item in items %}
-                                <tr>
-                                    <td>{{ item.part_no }}</td>
-                                    <td class="text-sm">{{ item.description }}</td>
-                                    <td>{{ item.price }}</td>
-                                    <td>{{ item.availability }}</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td> {{ item.total }}</td>
-                                    <!-- Add other table cells for additional fields -->
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="5">No products associated with this quote.</td>
-                                </tr>
-                            {% endfor %}
-
-                            <tr>
-                                <td colspan="5" class="text-end  text-danger">ADD VAT 16%</td>
-                                <td class=" text-danger">{{ vat }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" class="text-end">TOTAL AMOUNT</td>
-                                <td>{{ total_amount }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="row mt-2">
-                    <div class="mx-auto">
-                        {{ quote.footer_note|safe }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <a type="button" class="btn btn-primary waves-effect waves-light  me-1" id="print-button">
-            <span class="btn-label"><i class="mdi mdi-printer" ></i></span>Print
-        </a>
+            <img src="{% static 'tr_footer.png' %}" id="footer-image" class="mb-1">
+        </section>
 
     </div>
-    <!-- Include jQuery -->
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
-
-
-
-    <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'))
-            .then(editor => {
-                console.log(editor);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    </script>
-    <script>
-        ClassicEditor
-            .create(document.querySelector('#editor2'))
-            .then(editor2 => {
-                console.log(editor2);
-            })
-            .catch(error => {
-                console.error(error2);
-            });
-    </script>
-    <script>
-        function addBlankRow(button) {
-            // Create a new row by cloning the current row
-            const currentRow = button.parentNode.parentNode;
-            const newRow = currentRow.cloneNode(true);
-
-            // Clear input values in the new row
-            const inputs = newRow.getElementsByTagName('input');
-            for (let input of inputs) {
-                input.value = '';
-            }
-
-            // Clear select options in the new row (optional)
-            const selects = newRow.getElementsByTagName('select');
-            for (let select of selects) {
-                select.selectedIndex = 0;
-            }
-
-            // Insert the new row below the current row
-            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
-        }
-
-        function addBlankRowAtEnd() {
-            // Create a new row to add at the end
-            const tableBody = document.querySelector('table tbody');
-            const newRow = tableBody.children[0].cloneNode(true);
-
-            // Clear input values in the new row
-            const inputs = newRow.getElementsByTagName('input');
-            for (let input of inputs) {
-                input.value = '';
-            }
-
-            // Clear select options in the new row (optional)
-            const selects = newRow.getElementsByTagName('select');
-            for (let select of selects) {
-                select.selectedIndex = 0;
-            }
-
-            // Append the new row to the end of the table
-            tableBody.appendChild(newRow);
-        }
-    </script>
+    <a type="button" class="btn btn-primary waves-effect waves-light  me-1" id="print-button">
+        <span class="btn-label"><i class="mdi mdi-printer"></i></span>Print
+    </a>
     <script>
         document.getElementById('print-button').addEventListener('click', function () {
             printDeliveryNote();
@@ -201,12 +212,30 @@
             var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
             var originalContents = document.body.innerHTML;
 
+            // Create a style tag and append it to the head to define a CSS rule for the footer image and remove margins
+            var style = document.createElement('style');
+            style.innerHTML = `
+            @media print {
+                #footer-image {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    max-width: 98%;
+                }
+                body {
+                    margin: 0 !important; /* Force margin removal */
+                }
+            }
+        `;
+            document.head.appendChild(style);
+
             document.body.innerHTML = printContents;
-            document.body.style.margin = "0";
             window.print();
             document.body.innerHTML = originalContents;
+
+            // Remove the added CSS rule
+            document.head.removeChild(style);
         }
     </script>
-
-
 {% endblock %}
