@@ -12,15 +12,10 @@
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'tasks' %}">Tasks</a></li>
                     <li class="breadcrumb-item">Task Details</li>
-
-
                 </ol>
             </div>
-
         </div> <!-- end col -->
-
     </div>
-
     <div class="card">
         <div class="card-body">
             <h2 class="mt-0 header-title mb-3">Task Details</h2>
@@ -28,25 +23,19 @@
                 <div class="col-md-8">
                     <div class="card  shadow-lg p-3 mb-3 bg-body-tertiary">
                         <div class="card-body task-detail">
-
                             <div class="d-flex mb-3">
                                 <img class="flex-shrink-0 me-3 rounded-circle avatar-md" alt="64x64"
                                      src="{% static 'images/profile.png' %}">
                                 <div class="flex-grow-1">
-
                                     <h4 class="media-heading mt-0">{{ task.user.username }}</h4>
                                     <span>Created by <span
-                                            class="badge bg-primary">{{ task.creator.username }}</span></span>
+                                            class="badge bg-primary">{{ task.created_by.username }}</span></span>
                                 </div>
                             </div>
-
                             <h4 class="mb-2">{{ task.title }}</h4>
-
                             <p class="text-muted">
                                 {{ task.description }}
                             </p>
-
-
                             <div class="clearfix"></div>
 
                             <div class="assign-team mt-3">
@@ -62,7 +51,8 @@
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="row">
-                                    <div class="">
+                                    <div class="col-6">
+                                        <label for="status" class="form-label">Status</label>
                                         <select name="status" class="form-select mb-2">
                                             <option value="Pending"
                                                     {% if task.status == 'Pending' %}selected{% endif %}>Pending
@@ -78,35 +68,27 @@
                                         <input type="submit" class="btn btn-primary" value="Update Status">
                                         <a href="{% url 'tasks' %}" class="btn btn-primary ">Back to Task List</a>
                                     </div>
+                                    <div class="col-6">
+                                        <label for="assignee" class="form-label">Assignee</label>
+                                        <select class="form-select" name="assignee" id="assignee">
+                                            {% for tech in asignees %}
+                                                <option value="{{ tech.pk }}"
+                                                        {% if tech.pk == user.pk %}selected{% endif %}>
+                                                    {{ tech.username }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-
                 </div><!-- end col -->
 
                 <div class="col-md-4">
                     <div class="card shadow p-3 mb-3 bg-body-tertiary">
                         <div class="card-body">
-                            <div class="dropdown float-end">
-                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-                                    <i class="mdi mdi-dots-vertical"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item">Action</a>
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item">Another action</a>
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item">Something else</a>
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
-                                </div>
-                            </div>
-
                             <h4 class="header-title mt-0 mb-3">Comments</h4>
-
                             <div>
                                 {% for comment in task.comment_set.all %}
                                     <div class="d-flex mb-3">
@@ -125,8 +107,6 @@
                                         </div>
                                     </div>
                                 {% endfor %}
-
-
                                 <div class="d-flex mb-3">
                                     <div class=" me-3">
                                         <a href="#"> <img class="rounded-circle avatar-sm" alt="64x64"
@@ -136,16 +116,11 @@
                                         <input type="text" class="form-control" placeholder="Some text value...">
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-
                     </div>
-
-
                 </div><!-- end col -->
             </div>
-
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

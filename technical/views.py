@@ -52,8 +52,6 @@ def helpdesk_dash(request):
         "To be collected",
         "To be delivered",
         "Warranty",
-        "Collected",
-        "Delivered",
     ]
 
     # Initialize a dictionary to store the counts for each remark

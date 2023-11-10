@@ -78,7 +78,7 @@ class Task(models.Model):
     is_active = models.BooleanField(default=True)
     status = models.CharField(max_length=20)
     cc_users = models.ManyToManyField(User, related_name='cc_tasks', blank=True)
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_tasks')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_tasks')
 
     def __str__(self):
         return self.title

@@ -12,7 +12,7 @@
                         <div class="text-center">
                             <a href="{% url 'remark_tickets' remark %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>{% if remark == "Warranty" %}Warranty/Claims {% elif remark == "Repairs"  %} Sent for Repairs {% elif remark == "To be collected"  %} Waiting Collection {% elif remark == "To be delivered"  %} Waiting Delivery {% elif remark == "Collected"  %} Equipment Collected  {% elif remark == "Delivered"  %} Equipment Delivered{% else %}{{ remark }}{% endif %}</h5></a>
+                                <h5>{{ remark }}</h5></a>
                         </div>
                     </div>
                 </div>

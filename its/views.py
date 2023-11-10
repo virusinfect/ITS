@@ -466,7 +466,7 @@ def create_task(request):
         user = User.objects.get(id=user_id)
         asignees_ids = request.POST.getlist('asignees')
         creator = request.user
-        task = Task(title=title, description=description, status=status, user=user, creator=creator)
+        task = Task(title=title, description=description, status=status, user=user, created_by=creator)
         task.save()
         # Add users to the cc_users many-to-many relationship
         for user_ids in asignees_ids:
@@ -485,8 +485,9 @@ def Tasks(request):
 
     # Filter for pending tasks where you are either the 'cc_user' or 'user'
     pending_tasks = Task.objects.filter(
-        Q(status='Pending', is_active=True, cc_users=current_user, creator_id=current_user) |
-        Q(status='Pending', is_active=True, user=current_user, creator_id=current_user)
+        Q(status='Pending', is_active=True, cc_users=current_user) |
+        Q(status='Pending', is_active=True, user=current_user)|
+        Q(status='Pending', is_active=True, created_by=current_user)
     ).annotate(
         comment_count=Count('comment'),
         cc_users_count=Count('cc_users')
@@ -494,8 +495,9 @@ def Tasks(request):
 
     # Filter for in-progress tasks where you are either the 'cc_user' or 'user'
     in_progress_tasks = Task.objects.filter(
-        Q(status='In Progress', is_active=True, cc_users=current_user, creator=current_user) |
-        Q(status='In Progress', is_active=True, user=current_user, creator=current_user)
+        Q(status='In Progress', is_active=True, cc_users=current_user) |
+        Q(status='In Progress', is_active=True, user=current_user)|
+        Q(status='In Progress', is_active=True, created_by=current_user)
     ).annotate(
         comment_count=Count('comment'),
         cc_users_count=Count('cc_users')
@@ -503,8 +505,9 @@ def Tasks(request):
 
     # Filter for completed tasks where you are either the 'cc_user' or 'user'
     completed_tasks = Task.objects.filter(
-        Q(status='Completed', is_active=True, cc_users=current_user, creator=current_user) |
-        Q(status='Completed', is_active=True, user=current_user, creator=current_user),
+        Q(status='Completed', is_active=True, cc_users=current_user) |
+        Q(status='Completed', is_active=True, user=current_user)|
+        Q(status='Completed', is_active=True, created_by=current_user),
         updated__date=specific_date  # Filter tasks updated on the specific date
     ).annotate(
         comment_count=Count('comment'),
@@ -521,14 +524,16 @@ def Tasks(request):
 @login_required
 def view_task_details(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
+    asignees = User.objects.all()
     if request.method == 'POST':
-        new_status = request.POST.get('status')
-        task.status = new_status
+        user_ids = request.POST.get('assignee')
+        task.user = User.objects.get(id=user_ids)
+        task.status = request.POST.get('status')
         task.save()
         messages.success(request, 'Task Updated successfully')
         return redirect('tasks')
 
-    return render(request, 'task_details.html', {'task': task})
+    return render(request, 'task_details.html', {'task': task,'asignees': asignees})
 
 
 @login_required

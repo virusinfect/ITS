@@ -240,7 +240,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="bank" class="form-label">Bank Details:</label>
-                        <select name="bank" class="form-select">
+                        <select name="bank" class="form-select" required>
                             <option value="">Choose A Bank</option>
                             {% for bank in banks %}
                                 <option value="{{ bank.bank_id }}"
