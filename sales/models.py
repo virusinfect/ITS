@@ -133,9 +133,7 @@ class OurBanks(models.Model):
 class ProformaInvoice(models.Model):
     pfq_id = models.AutoField(primary_key=True)
     ref_no = models.CharField(max_length=255)
-    mail_text = models.CharField(max_length=1000)
-    footer_note = models.CharField(max_length=1000)
-    currency = models.CharField(max_length=255)
+    currency = models.CharField(max_length=255,null=True)
     status = models.CharField(max_length=255)
     vat_stats = models.TextField()
     remark = models.TextField()

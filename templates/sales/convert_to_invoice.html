@@ -4,6 +4,30 @@
 {% block header %}Create Proforma{% endblock %}
 
 {% block content %}
+    <style>
+        /* Apply Bootstrap styling to the Awesomplete dropdown */
+        .awesomplete ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ced4da;
+            border-top: none;
+        }
+
+        .awesomplete li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .awesomplete li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .awesomplete li:focus {
+            outline: none;
+            background-color: #f8f9fa;
+        }
+    </style>
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
@@ -49,7 +73,6 @@
                                     <th>Price</th>
                                     <th>Availability</th>
                                     <th>Quantity</th>
-                                    <th>Currency</th>
                                     <th>Att</th>
                                     <!-- Add other table headers for additional fields -->
                                 </tr>
@@ -64,39 +87,18 @@
                                         </td>
                                         <td><input type="text" name="price[]" value="{{ product.price }}" id="price"
                                                    class="form-control"></td>
-                                        <td><select name="availability[]" class="form-select">
-                                            <option value="">Select availability</option>
-                                            <option value="AVAILABLE"
-                                                    {% if product.availability|lower == "available" %}selected{% endif %}>
-                                                AVAILABLE
-                                            </option>
-                                            <option value="EXPECTED"
-                                                    {% if product.availability|lower == "expected" %}selected{% endif %}>
-                                                EXPECTED
-                                            </option>
-                                            <option value="BACK TO BACK ORDER"
-                                                    {% if product.availability|lower == "back to back order" %}selected{% endif %}>
-                                                BACK TO BACK ORDER
-                                            </option>
-                                            <option value="LIMITED"
-                                                    {% if product.availability|lower == "limited" %}selected{% endif %}>
-                                                LIMITED
-                                            </option>
-                                        </select></td>
+                                        <td>
+                                            <input name="availability[]" class="form-control awesomplete"
+                                                   list="mylist"/>
+                                            <datalist id="mylist">
+                                                <option>Available</option>
+                                                <option>Expected</option>
+                                                <option>Back to back order</option>
+                                                <option>Limited</option>
+                                            </datalist>
+                                        </td>
                                         <td><input type="text" name="quantity[]" value="{{ product.quantity }}" id="qty"
                                                    class="form-control"></td>
-                                        <td><select name="currency[]" class="form-select">
-                                            <option value="">Select currency</option>
-                                            <option value="KES" {% if product.currency == "KES" %}selected{% endif %}>
-                                                KES
-                                            </option>
-                                            <option value="USD" {% if product.currency == "USD" %}selected{% endif %}>
-                                                USD
-                                            </option>
-                                            <option value="EUR" {% if product.currency == "EUR" %}selected{% endif %}>
-                                                EUR
-                                            </option>
-                                        </select></td>
                                         <td><input type="file" class="form-control"></td>
                                         <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
                                                tabindex="0"
@@ -118,67 +120,70 @@
                         </div>
                     </div>
                     <div class="row col-lg-10 mx-auto">
-                        <div class="col-lg-4">
-                            <label for="vat_stats" class="form-label">VAT Status:</label>
-                            <select name="vat_stats" class="form-select">
-                                <option value="">Select VAT status</option>
-                                <option value="Exclusive" {% if invoice.vat_stats == "Exclusive" %}selected{% endif %}>
-                                    Exclusive
-                                </option>
-                                <option value="Inclusive" {% if invoice.vat_stats == "Inclusive" %}selected{% endif %}>
-                                    Inclusive
-                                </option>
-                                <option value="Exempted" {% if invoice.vat_stats == "Exempted" %}selected{% endif %}>
-                                    Exempted
-                                </option>
-                            </select>
-
-                        </div>
-                        <div class="col-lg-4">
-                            <label for="layout" class="form-label">Layout:</label>
-                            <select name="layout" class="form-select">
-                                <option value="">Select layout</option>
-                                <option value="Grouped" {% if invoice.layout == "Grouped" %}selected{% endif %}>Grouped
-                                </option>
-                                <option value="Separated" {% if invoice.layout == "Separated" %}selected{% endif %}>
-                                    Separated
-                                </option>
-                                <option value="Classified" {% if invoice.layout == "Classified" %}selected{% endif %}>
-                                    Classified
-                                </option>
-                            </select></div>
-                        <div class="col-lg-4">
-                            <label for="handler" class="form-label">Assignee:</label>
-                            <select name="handler" class="form-select">
-                                {% for user in users %}
-                                    <option value="{{ user.id }}"
-                                            {% if user.id == ticket.handler.id %}selected{% endif %}>
-                                        {{ user.username }}
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label for="vat_stats" class="form-label">VAT Status:</label>
+                                <select name="vat_stats" class="form-select" required>
+                                    <option value="">Select VAT status</option>
+                                    <option value="Exclusive"
+                                            {% if invoice.vat_stats == "Exclusive" %}selected{% endif %}>
+                                        Exclusive
                                     </option>
-                                {% endfor %}
-                            </select>
+                                    <option value="Inclusive"
+                                            {% if invoice.vat_stats == "Inclusive" %}selected{% endif %}>
+                                        Inclusive
+                                    </option>
+                                    <option value="Exempted"
+                                            {% if invoice.vat_stats == "Exempted" %}selected{% endif %}>
+                                        Exempted
+                                    </option>
+                                </select>
+
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label for="layout" class="form-label">Layout:</label>
+                                <select name="layout" class="form-select" required>
+                                    <option value="">Select layout</option>
+                                    <option value="Grouped" {% if invoice.layout == "Grouped" %}selected{% endif %}>
+                                        Grouped
+                                    </option>
+                                    <option value="Separated" {% if invoice.layout == "Separated" %}selected{% endif %}>
+                                        Separated
+                                    </option>
+                                    <option value="Classified"
+                                            {% if invoice.layout == "Classified" %}selected{% endif %}>
+                                        Classified
+                                    </option>
+                                </select></div>
                         </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label for="handler" class="form-label">Assignee:</label>
+                                <select name="handler" class="form-select" required>
+                                    {% for user in users %}
+                                        <option value="{{ user.id }}"
+                                                {% if user.id == ticket.handler.id %}selected{% endif %}>
+                                            {{ user.username }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="currency" class="form-label">Currency:</label>
+                                <select name="currency" class="form-select" required>
+                                    <option value="">Select currency</option>
+                                    <option value="KES"
+                                            {% if invoice.currency == "KES" %}selected{% endif %}>KES
+                                    </option>
+                                    <option value="USD"
+                                            {% if invoice.currency == "USD" %}selected{% endif %}>USD
+                                    </option>
+                                    <option value="EUR"
+                                            {% if invoice.currency == "EUR" %}selected{% endif %}>EUR
+                                    </option>
+                                </select>
+                            </div>
 
-
-                    </div>
-                    <div class="row mt-5">
-                        <div class="col-lg-10 mx-auto">
-                            <textarea id="editor2" class="form-control" name="footer_note">                                                                                                                                                                                                                        <strong><u>NB</u></strong><br>
-                        Stock position changes daily. Kindly confirm availability before placing your order. <br><br>
-
-                        <strong><u>VALIDITY</u></strong><br>
-                        This Quotation is valid for a period of 7 days from the date indicated above OR while stock lasts. <br><br>
-
-                        <strong><u>Terms of Payment</u></strong><br>
-                        <strong><span class="text-danger">30 DAYS</span></strong><br><br>
-
-                        Should you require any further clarifications or details, please do not hesitate to contact us.<br>
-                        We look forward to doing business with you.<br><br>
-
-                        Yours faithfully,<br>
-                        <strong>A. A. KASSAMALI</strong><br>
-                        <strong>DIRECTOR</strong><br>
-                        <strong>INTELLITECH LTD.</strong><br></textarea>
                         </div>
                     </div>
                 </div>
@@ -194,6 +199,12 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
+            integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"
+            integrity="sha512-t3zV/oAkSZUrvb/7p1q1+uh/i56JinQ+bmiulnHhbHZc7dq09CxJ1BByyi7A4+lF76+CcJtSVFtb7na7Oe7Cgg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 
 

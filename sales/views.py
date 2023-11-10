@@ -751,8 +751,6 @@ def view_invoice(request, invoice_id):
             banks = None
 
         invoice.bank = banks
-        invoice.mail_text = request.POST.get('mail_text')
-        invoice.footer_note = request.POST.get('footer_note')
         invoice.currency = request.POST.get('currency')
         invoice.status = request.POST.get('status')
         invoice.layout = request.POST.get('layout')
@@ -767,7 +765,6 @@ def view_invoice(request, invoice_id):
         desc_list = request.POST.getlist('description[]')
         qty_list = request.POST.getlist('quantity[]')
         availability_list = request.POST.getlist('availability[]')
-        currency_list = request.POST.getlist('currency[]')
         price_list = request.POST.getlist('price[]')
 
         # Create a list to hold the new sourcing objects
@@ -781,7 +778,6 @@ def view_invoice(request, invoice_id):
                     quantity=qty_list[i],
                     price=price_list[i],
                     availability=availability_list[i],
-                    currency=currency_list[i],
                     pfi=invoice,
                 )
                 new_sourcing_data.append(products)
@@ -857,11 +853,10 @@ def convert_to_invoice(request, ticket_id):
         handler = User.objects.get(id=handler_id)
         # Create a new Invoice record
         invoice = ProformaInvoice(
-            mail_text=request.POST.get('mail_text'),
-            footer_note=request.POST.get('footer_note'),
             company=ticket.company,
             vat_stats=request.POST.get('vat_stats'),
             layout=request.POST.get('layout'),
+            currency=request.POST.get('currency'),
             is_active=True,
             invoice_handler=handler,
             ticket=ticket,
@@ -874,7 +869,7 @@ def convert_to_invoice(request, ticket_id):
         quantity_list = request.POST.getlist('quantity[]')
         availability_list = request.POST.getlist('availability[]')
         price_list = request.POST.getlist('price[]')
-        currency_list = request.POST.getlist('currency[]')
+
 
         for i in range(len(part_no_list)):
             order_product = ProformaInvoiceProducts(
@@ -882,7 +877,6 @@ def convert_to_invoice(request, ticket_id):
                 quantity=quantity_list[i],
                 availability=availability_list[i],
                 price=price_list[i],
-                currency=currency_list[i],
                 is_active=True,
                 pfi=invoice,
                 description=description_list[i],
