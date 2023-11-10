@@ -34,7 +34,8 @@ def edit_sales_ticket(request, ticket_id):
     # Get the SalesTickets instance to edit
     ticket = get_object_or_404(SalesTickets, ticket_id=ticket_id)
     companies = Company.objects.all()
-    users = User.objects.all()
+    sales_group = Group.objects.get(name='Sales')
+    users = sales_group.user_set.all()
     handler1 = ticket.handler
     try:
         sales_quote = SalesQuotes.objects.filter(ticket=ticket, is_active=True)
