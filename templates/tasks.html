@@ -17,7 +17,8 @@
     <div class="card">
         <div class="card-body table-responsive">
             <h4 class="mt-0 header-title mb-3">Task List</h4>
-        <a href="{% url 'create_task' %}" class="btn btn-primary mb-2"><span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New</a>
+            <a href="{% url 'create_task' %}" class="btn btn-primary mb-2"><span class="btn-label"><i
+                    class="mdi mdi-plus"></i></span>Add New</a>
             <div class="row">
                 <div class="col-xl-4">
                     <div class="card shadow-lg p-3 mb-3 bg-body-tertiary">
@@ -83,6 +84,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="kanban-detail">
+                                                    <span class="badge bg-primary float-end">{{ task.user.username }}</span>
                                                     <span class="badge bg-primary float-end">{{ task.creator.username }}</span>
                                                     <h5 class="mt-0"><a href="{% url 'view_task_details' task.id %}"
                                                                         class="text-dark">{{ task.title }}</a></h5>
@@ -131,6 +133,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="kanban-detail">
+                                                    <span class="badge bg-primary float-end">{{ task.user.username }}</span>
                                                     <span class="badge bg-primary float-end">{{ task.creator.username }}</span>
                                                     <h5 class="mt-0"><a href="{% url 'view_task_details' task.id %}"
                                                                         class="text-dark">{{ task.title }}</a></h5>
