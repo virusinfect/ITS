@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-body widget-user">
                         <div class="text-center">
-                            <a href="{% url 'bench_status_tickets' "Bench" bench_status %}">
+                            <a href="{% url 'bench_status_tickets' "Bench" "Pending Benchwork" bench_status %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
                                 <h5>{{ bench_status }} Benchwork</h5></a>
                         </div>
@@ -24,7 +24,7 @@
                 <div class="card">
                     <div class="card-body widget-user">
                         <div class="text-center">
-                            <a href="{% url 'bench_status_tickets' "On-site" site_status %}">
+                            <a href="{% url 'bench_status_tickets' "On-site" "Pending On-Site" site_status %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
                                 <h5>{{ site_status }} Onsite</h5></a>
                         </div>
@@ -37,7 +37,7 @@
                 <div class="card">
                     <div class="card-body widget-user">
                         <div class="text-center">
-                            <a href="{% url 'status_tickets' status %}">
+                            <a href="{% url 'status_tickets' status "Open Tickets" %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
                                 <h5>{{ status }} Tickets</h5></a>
                         </div>
