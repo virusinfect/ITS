@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Ticket List{% endblock %}
-{% block header %}Ticket List{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block header %}{{ title}}{% endblock %}
 {% block content %}
     <style>
         .static-action {
@@ -30,7 +30,7 @@
 
     <div class="card">
         <div class="card-body table-responsive">
-            <h4 class="mt-0 header-title">Ticket List</h4>
+            <h4 class="mt-0 header-title">{{ title }}</h4>
             <table id="responsive-datatable" class="table table-bordered  dt-responsive wrap">
                 <thead class="table-dark text-sm">
                 <tr>

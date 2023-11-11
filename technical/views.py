@@ -187,23 +187,26 @@ def tech_dash(request):
 
 
 @login_required
-def remark_tickets(request, remark):
+def remark_tickets(request, remark,title):
+    title = title
     # Filter tickets with the specified remark and that are active
     tickets = Tickets.objects.filter(remark=remark, is_active=1)
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets})
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets,'title':title})
 
 
 @login_required
-def status_tickets(request, status):
+def status_tickets(request,status,title):
+    title = title
     # Filter tickets with the specified status and that are active
     tickets = Tickets.objects.filter(status=status, is_active=1)
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets})
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets,'title':title})
 
 
 @login_required
-def bench_status_tickets(request,type, bench_status):
+def bench_status_tickets(request,type, bench_status,title):
+    title=title
     if request.user.groups.filter(name='Technician').exists():
         # If the user belongs to the "Technician" group, show only their assigned tickets
         tickets = Tickets.objects.filter(tech=request.user, is_active=1,bench_status=bench_status,type=type).order_by('-created')
@@ -211,7 +214,7 @@ def bench_status_tickets(request,type, bench_status):
         # If the user doesn't belong to the "Technician" group, show all tickets
         tickets = Tickets.objects.filter(is_active=1,bench_status=bench_status,type=type).order_by('-created')
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets})
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets,'title':title})
 
 
 @login_required
@@ -224,6 +227,7 @@ def tr_status_tickets(request, tr_status):
 
 @login_required
 def ticket_list(request):
+    title = "Ticket List"
     if request.user.groups.filter(name='Technician').exists():
         # If the user belongs to the "Technician" group, show only their assigned tickets
         tickets = Tickets.objects.filter(tech=request.user, is_active=1).order_by('-created')
@@ -231,7 +235,7 @@ def ticket_list(request):
         # If the user doesn't belong to the "Technician" group, show all tickets
         tickets = Tickets.objects.filter(is_active=1).order_by('-created')
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets})
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets,'title':title})
 
 
 @login_required
