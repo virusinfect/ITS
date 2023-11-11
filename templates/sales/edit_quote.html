@@ -40,7 +40,7 @@
         </div> <!-- end col -->
     </div>
     <div class="mx-auto">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="card">
                 <div class="card-body">
@@ -148,7 +148,7 @@
                                                 LIMITED
                                             </option>
                                         </select></td>
-                                        <td><input type="text" name="quantity[]" value="{{ product.quantity }}"
+                                        <td><input type="text" name="image[]"
                                                    class="form-control" required></td>
                                         <td><input type="file" class="form-control"></td>
                                         <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"

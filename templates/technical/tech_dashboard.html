@@ -3,22 +3,7 @@
 {% block title %}Dashboard{% endblock %}
 {% block header %}Dashboard{% endblock %}
 {% block content %}
-    <div class="row">
-        <h5>Remarks</h5>
-        {% for remark, count in remark_counts.items %}
-            <div class="col">
-                <div class="card">
-                    <div class="card-body widget-user">
-                        <div class="text-center">
-                            <a href="{% url 'remark_tickets' remark %}">
-                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>{{ remark }}</h5></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+
     <div class="row">
         <h5>Status</h5>
         {% for bench_status, count in bench_status_counts.items %}
@@ -26,9 +11,22 @@
                 <div class="card">
                     <div class="card-body widget-user">
                         <div class="text-center">
-                            <a href="{% url 'bench_status_tickets' bench_status %}">
+                            <a href="{% url 'bench_status_tickets' "Bench" bench_status %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>{{ bench_status }}</h5></a>
+                                <h5>{{ bench_status }} Benchwork</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% for site_status, count in site_status_counts.items %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'bench_status_tickets' "On-site" site_status %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>{{ site_status }} Onsite</h5></a>
                         </div>
                     </div>
                 </div>
@@ -41,23 +39,7 @@
                         <div class="text-center">
                             <a href="{% url 'status_tickets' status %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>{{ status }}</h5></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="row">
-        <h5>Technical Report Status</h5>
-        {% for tr_status, count in tr_status_counts.items %}
-            <div class="col">
-                <div class="card">
-                    <div class="card-body widget-user">
-                        <div class="text-center">
-                            <a href="{% url 'tr_status_tickets' tr_status %}">
-                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>{{ tr_status }}</h5></a>
+                                <h5>{{ status }} Tickets</h5></a>
                         </div>
                     </div>
                 </div>
@@ -68,7 +50,7 @@
         <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title mt-0 mb-3">Tickets Overview</h4>
+                    <h4 class="header-title mt-0 mb-3">Your Tickets Overview</h4>
 
                     <div class="chartjs-chart">
                         <canvas id="ticket-chart" height="200"></canvas>
@@ -92,7 +74,7 @@
         <div class="col-xl-4 h-50">
             <div class="card h-50">
                 <div class="card-body h-50">
-                    <h4 class="header-title mt-0 mb-3">Requisition Overview</h4>
+                    <h4 class="header-title mt-0 mb-3">Requisitions Collected</h4>
 
                     <div class="chartjs-chart">
                         <canvas id="requisition-chart" height="200"></canvas>
@@ -103,58 +85,7 @@
         </div>
     </div><!-- end col-->
 
-    <div class="row">
-        <div class="col-xl-3">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="header-title mt-0 mb-3">Technical Reports</h4>
 
-                    <div class="chartjs-chart">
-                        <canvas id="tr-status-pie-chart" height="200"></canvas>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="header-title mt-0 mb-3">Ticket Remarks</h4>
-
-                    <div class="chartjs-chart">
-                        <canvas id="remark-pie-chart" height="200"></canvas>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="header-title mt-0 mb-3">Bench Status This Month(%)</h4>
-
-                    <div class="chartjs-chart">
-                        <canvas id="bench-status-pie-chart" height="200"></canvas>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="header-title mt-0 mb-3">Ticket Status This Month(%)</h4>
-
-                    <div class="chartjs-chart">
-                        <canvas id="status-pie-chart" height="200"></canvas>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
@@ -163,7 +94,7 @@
             "July", "August", "September", "October", "November", "December"
         ];
 
-        fetch('{% url 'tickets_created_monthly_this_year' %}')
+        fetch('{% url 'tickets_created_monthly_this_year_tech' %}')
             .then(response => response.json())
             .then(data => {
                 var labels = data.map(item => monthNames[item.month - 1]);
@@ -220,7 +151,7 @@
             });
     </script>
     <script>
-        fetch('{% url 'service_schedules_yearly' %}')
+        fetch('{% url 'service_schedules_yearly_tech' %}')
             .then(response => response.json())
             .then(data => {
                 var months = [...Array(12).keys()].map(i => i + 1);  // 1 to 12 representing months
@@ -338,7 +269,7 @@
             "July", "August", "September", "October", "November", "December"
         ];
 
-        fetch('{% url 'requisitions_created_monthly' %}')
+        fetch('{% url 'requisitions_created_monthly_tech' %}')
             .then(response => response.json())
             .then(data => {
                 var labels = data.map(item => monthNames[item.month - 1]); // Map to month names

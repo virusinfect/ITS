@@ -75,7 +75,7 @@ class SalesQuoteProducts(models.Model):
     description = models.CharField(max_length=2000)
     price = models.FloatField()
     quantity = models.FloatField()
-    attachment = models.CharField(max_length=1000)
+    attachment = models.ImageField(upload_to='sales_images/')
     currency = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)

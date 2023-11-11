@@ -1,5 +1,6 @@
 from datetime import datetime
-
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -375,7 +376,7 @@ def edit_quote(request, quote_id):
         qty_list = request.POST.getlist('quantity[]')
         availability_list = request.POST.getlist('availability[]')
         price_list = request.POST.getlist('price[]')
-
+        uploaded_images = request.FILES.getlist('image[]')
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
 
@@ -389,6 +390,22 @@ def edit_quote(request, quote_id):
                     availability=availability_list[i],
                     quote=quote,
                 )
+                # Check if there is an uploaded image for the current index
+                if i < len(uploaded_images):
+                    image_file = uploaded_images[i]
+
+                    # Handle file upload for each product
+                    if image_file:
+                        # Generate a unique file name or use the original name
+                        file_name = f"sales_image_{part_no_list[i]}_{image_file.name}"
+
+                        # Save the image file to your desired storage location
+                        file_path = default_storage.save(file_name, ContentFile(image_file.read()))
+                        print("image")
+                        print(file_path)
+                        # Update your model instance with the file path
+                        products.attachment = file_path
+
                 new_sourcing_data.append(products)
 
         # Delete old quote data

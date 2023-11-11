@@ -121,14 +121,14 @@
                                         <div class="mb-3 col-lg-6">
                                             <label for="fault" class="form-label"><strong>Fault:</strong></label>
                                             <textarea class="form-control" id="fault"
-                                                      name="fault" rows="5">{{ ticket.fault }}</textarea>
+                                                      name="fault" rows="5">{{ ticket.fault|safe }}</textarea>
                                             <input type="file" name="file" class="form-control form-control-sm mt-1">
                                         </div>
                                         <div class="mb-3 col-lg-6">
                                             <label for="diagnosis"
                                                    class="form-label"><strong>Diagnosis:</strong></label>
                                             <textarea class="form-control" id="diagnosis"
-                                                      name="diagnosis" rows="5">{{ ticket.diagnosis }}</textarea>
+                                                      name="diagnosis" rows="5">{{ ticket.diagnosis|safe }}</textarea>
                                             {% for image in diagnosis_images %}
                                                 <div class="card w-25 h-25">
                                                     <img class="card-img-top img-fluid" src="{{ image.image.url }}">
@@ -146,7 +146,7 @@
                                         <div class="mb-3 col-lg-6">
                                             <label for="action" class="form-label"><strong>Action:</strong></label>
                                             <textarea class="form-control" id="action"
-                                                      name="action" rows="5">{{ ticket.action }}</textarea>
+                                                      name="action" rows="5">{{ ticket.action|safe }}</textarea>
                                             {% for image in action_images %}
                                                 <div class="card w-25 h-25">
                                                     <img class="card-img-top img-fluid" src="{{ image.image.url }}">
@@ -162,7 +162,7 @@
                                                    class="form-label"><strong>Recommendation:</strong></label>
                                             <textarea class="form-control" id="recommendation"
                                                       name="recommendation"
-                                                      rows="5">{{ ticket.recommendation }}</textarea>
+                                                      rows="5">{{ ticket.recommendation|safe }}</textarea>
                                             {% for image in recommendation_images %}
                                                 <div class="card w-25 h-25">
                                                     <img class="card-img-top img-fluid" src="{{ image.image.url }}">
@@ -181,7 +181,7 @@
                                                    class="form-label"><strong>Accessories:</strong></label>
                                             <textarea class="form-control" id="accessories"
                                                       name="accessories"
-                                                      rows="5">{{ ticket.accessories }}</textarea>
+                                                      rows="5">{{ ticket.accessories|safe }}</textarea>
                                         </div>
                                         <div class="mb-3 col-lg-6">
                                             <label for="notes"

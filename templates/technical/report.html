@@ -8,88 +8,90 @@
                 <div class="mx-auto text-center tex-sm">
                     <h3 style="font-size: 15px;">Technical Report</h3>
                 </div>
-                <div class="row mb-3">
+                <div class="row mb-1">
                     <div class="col-6">
                         <img src="{% static 'logo.png' %}" alt="Company Logo" width="150">
                     </div>
-                    <div class="col-6 text-end mt-4" style="font-size: 9px;">
+                    <div class="col-6 text-end mt-1" style="font-size: 9px;">
 
-                        <small>Ground Floor, Corporate Insurance Building </small><br>
-                        <small>Yusuf A. Karim Rd, East End, Treasury Square </small><br>
-                        <small> P.O. Box 42716 - 80100,</small><br>
-                        <small>Cell: 0728 786014 | 0732 786012 | 0773 963114</small><br>
-                        <small>Tel: +254 41 2221792 | 696/932/231500 | 2311364</small><br>
-                        <small><i class="mdi mdi-email-outline"></i> sales: sales@intellitech.co.ke | For support:
+                        <small style="font-size:10px">Ground Floor, Corporate Insurance Building </small><br>
+                        <small style="font-size:10px">Yusuf A. Karim Rd, East End, Treasury Square </small><br>
+                        <small style="font-size:10px"> P.O. Box 42716 - 80100,</small><br>
+                        <small style="font-size:10px">Cell: 0728 786014 | 0732 786012 | 0773 963114</small><br>
+                        <small style="font-size:10px">Tel: +254 41 2221792 | 696/932/231500 | 2311364</small><br>
+                        <small style="font-size:10px"><i class="mdi mdi-email-outline"></i> sales:
+                            sales@intellitech.co.ke | For support:
                             support@intellitech.co.ke</small><br>
-                        <small>Website: www.intellitech.co.ke</small>
+                        <small style="font-size:10px">Website: www.intellitech.co.ke</small>
                     </div>
                 </div>
                 <div class="text-end">
-                    <p>Date: {{ ticket.created }}</p>
+                    <p style="font-size:10px">Date: {{ ticket.created }}</p>
                 </div>
-                <div class="row mt-2 mx-auto">
+                <div class="row mt-1 mx-auto">
                     <div class="col-6 ">
 
-                        <h4>Client Information</h4>
-                        <small>TO : {{ ticket.company }} / {{ ticket.client }}</small><br>
-                        <small> ADDRESS : {{ ticket.company.address }}</small><br><br>
+                        <h4 style="font-size:10px">Client Information</h4>
+                        <small style="font-size:10px">TO : {{ ticket.company }} / {{ ticket.client }}</small><br>
+                        <small style="font-size:10px"> ADDRESS : {{ ticket.company.address }}</small><br><br>
 
                     </div>
                     <div class="col-6 text-end">
-                        <h4>Report Details</h4>
-                        <small>REF : ITL/TR-{{ ticket.created|date:"d/m/Y" }}/{{ ticket.ticket_id }}</small><br>
-                        <small>Ticket No: : ITL/TN/{{ ticket.ticket_id }}</small><br>
+                        <h4 style="font-size:10px">Report Details</h4>
+                        <small style="font-size:10px">REF :
+                            ITL/TR-{{ ticket.created|date:"d/m/Y" }}/{{ ticket.ticket_id }}</small><br>
+                        <small style="font-size:10px">Ticket No: : ITL/TN/{{ ticket.ticket_id }}</small><br>
 
                     </div>
                 </div>
-                <div class="row mt-2 ">
+                <div class="row mt-1 ">
                     <div class="col-6">
-                        <h5>Equipment Information</h5>
-                        <small>Equipment : {{ ticket.equipment }}</small><br>
-                        <small>Serial Number : {{ ticket.serial_no }}</small>
+                        <h5 style="font-size:10px">Equipment Information</h5>
+                        <small style="font-size:10px">Equipment : {{ ticket.equipment }}</small><br>
+                        <small style="font-size:10px">Serial Number : {{ ticket.serial_no }}</small>
                     </div>
                 </div>
-                <div class="row mt-4">
+                <div class="row mt-1">
                     <div class="table">
                         <table class="table table-bordered">
                             <thead class="table-light">
                             <tr>
                                 <th class="text-center p-1" colspan="2">
-                                    <h4>DETAILS</h4>
+                                    <h4 style="font-size:10px">DETAILS</h4>
                                 </th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td width="20%">
+                                <td width="20%" style="font-size:10px">
                                     Fault:
                                 </td>
-                                <td>
-                                    {{ ticket.fault }}
+                                <td style="font-size:10px">
+                                    {{ ticket.fault|safe }}
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td style="font-size:10px">
                                     Diagnosis:
                                 </td>
-                                <td>
-                                    {{ ticket.diagnosis }}
+                                <td style="font-size:10px">
+                                    {{ ticket.diagnosis|safe }}
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td style="font-size:10px">
                                     Action:
                                 </td>
-                                <td>
-                                    {{ ticket.action }}
+                                <td style="font-size:10px">
+                                    {{ ticket.action|safe }}
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td style="font-size:10px">
                                     Recommendation:
                                 </td>
-                                <td>
-                                    {{ ticket.recommendation }}
+                                <td style="font-size:10px">
+                                    {{ ticket.recommendation|safe }}
                                 </td>
                             </tr>
                             </tbody>
@@ -151,7 +153,7 @@
                     </div>
                 {% endif %}
                 <div class="row">
-                    <div class="row mb-3 mt-3 table-responsive">
+                    <div class="row mb-1 mt-1 table-responsive">
                         <table class="table table-bordered">
                             <thead class="table-light">
                             <tr>
@@ -206,7 +208,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="card">
+                    <div class="">
                         <p>
                         <p>Stock position changes daily. Kindly confirm availability before placing your order.</p>
                         <p><strong>VALIDITY:</strong><br>
@@ -219,12 +221,13 @@
 
                 </div>
             </div>
+            <img src="{% static 'tr_footer.png' %}" id="footer-image">
         </div>
 
     </div>
     <div class="card p-4">
         <div class="row">
-            <div class="col-lg-6 mb3">
+            <div class="col-lg-6 mb-1">
                 <label class="form-label">
                     Report Status:
                 </label>
@@ -273,19 +276,46 @@
                 class="mdi mdi-printer"></i></span>Print</a>
     </div>
 
-    <script>
-        document.getElementById('print-button').addEventListener('click', function () {
-            printDeliveryNote();
-        });
+<script>
+    document.getElementById('print-button').addEventListener('click', function () {
+        printDeliveryNote();
+    });
 
-        function printDeliveryNote() {
-            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
-            var originalContents = document.body.innerHTML;
+    function printDeliveryNote() {
+        var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+        var originalContents = document.body.innerHTML;
 
-            document.body.innerHTML = printContents;
-            document.body.style.margin = "0";
-            window.print();
-            document.body.innerHTML = originalContents;
+        // Create a style tag and append it to the head to define a CSS rule for the footer image and remove margins
+        var style = document.createElement('style');
+        style.innerHTML = `
+        @media print {
+            #footer-image {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-width: 100%;
+            }
+            body {
+                margin: 0 !important; /* Force margin removal */
+            }
+            .new-page {
+                page-break-before: always;
+            }
         }
-    </script>
+    `;
+        document.head.appendChild(style);
+
+        // Wrap the content after the footer in a div with a class 'new-page' to force a page break
+        printContents = printContents.replace(/<div id="footer-image">/g, '<div class="new-page"></div><div id="footer-image">');
+
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+
+        // Remove the added CSS rule
+        document.head.removeChild(style);
+    }
+</script>
+
 {% endblock %}

@@ -6,17 +6,25 @@
     <div class="row">
         <h5>Remarks</h5>
         {% for remark, count in remark_counts.items %}
-            <div class="col">
-                <div class="card">
-                    <div class="card-body widget-user">
-                        <div class="text-center">
-                            <a href="{% url 'remark_tickets' remark %}">
-                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>{% if remark == "Warranty" %}Warranty/Claims {% elif remark == "Repairs"  %} Sent for Repairs {% elif remark == "To be collected"  %} Waiting Collection {% elif remark == "To be delivered"  %} Waiting Delivery {% elif remark == "Collected"  %} Equipment Collected  {% elif remark == "Delivered"  %} Equipment Delivered{% else %}{{ remark }}{% endif %}</h5></a>
+            {% if count != 0 %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body widget-user">
+                            <div class="text-center">
+                                <a href="{% url 'remark_tickets' remark %}">
+                                    <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                    <h5>{% if remark == "Warranty" %}Warranty/Claims {% elif remark == "Repairs" %} Sent
+                                        for
+                                        Repairs {% elif remark == "To be collected" %} Waiting
+                                        Collection {% elif remark == "To be delivered" %} Waiting
+                                        Delivery {% elif remark == "Collected" %} Equipment
+                                        Collected  {% elif remark == "Delivered" %} Equipment Delivered{% else %}
+                                        {{ remark }}{% endif %}</h5></a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         {% endfor %}
     </div>
     <div class="row">
@@ -26,9 +34,22 @@
                 <div class="card">
                     <div class="card-body widget-user">
                         <div class="text-center">
-                            <a href="{% url 'bench_status_tickets' bench_status %}">
+                            <a href="{% url 'bench_status_tickets' "Bench" bench_status %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>{{ bench_status }}</h5></a>
+                                <h5>{{ bench_status }} Benchwork</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% for site_status, count in site_status_counts.items %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'bench_status_tickets' "On-site" site_status %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>{{ site_status }} Onsite</h5></a>
                         </div>
                     </div>
                 </div>
@@ -41,7 +62,7 @@
                         <div class="text-center">
                             <a href="{% url 'status_tickets' status %}">
                                 <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>{{ status }}</h5></a>
+                                <h5>{{ status }} Tickets</h5></a>
                         </div>
                     </div>
                 </div>
@@ -51,17 +72,19 @@
     <div class="row">
         <h5>Technical Report Status</h5>
         {% for tr_status, count in tr_status_counts.items %}
-            <div class="col">
-                <div class="card">
-                    <div class="card-body widget-user">
-                        <div class="text-center">
-                            <a href="{% url 'tr_status_tickets' tr_status %}">
-                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                <h5>{{ tr_status }}</h5></a>
+            {% if count != 0 %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body widget-user">
+                            <div class="text-center">
+                                <a href="{% url 'tr_status_tickets' tr_status %}">
+                                    <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                    <h5>{{ tr_status }}</h5></a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         {% endfor %}
     </div>
     <div class="row">

@@ -299,6 +299,14 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if user|is_tech %}
+                        <li>
+                            <a href="{% url 'tech_dashboard' %}">
+                                <i class="mdi mdi-view-dashboard"></i>
+                                <span>Technician Dashboard</span>
+                            </a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="{% url 'personal_task' %}">
                             <i class="mdi mdi-calendar-account-outline"></i>
@@ -321,9 +329,9 @@
                                         <a href="{% url 'active_call_cards' %}">Call Cards</a>
                                     </li>
                                     {% if user|is_helpdesk or user|is_management %}
-                                    <li>
-                                        <a href="{% url 'technical_report_list' %}">Technical Reports</a>
-                                    </li>
+                                        <li>
+                                            <a href="{% url 'technical_report_list' %}">Technical Reports</a>
+                                        </li>
                                     {% endif %}
                                 </ul>
                             </div>
@@ -337,7 +345,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% if user|can_access_view_service or user|is_tech or user|is_helpdesk  %}
+                    {% if user|can_access_view_service or user|is_tech or user|is_helpdesk %}
                         <li>
                             <a href="#service" data-bs-toggle="collapse">
                                 <i class="mdi mdi-screwdriver"></i>
@@ -356,7 +364,7 @@
                             </div>
                         </li>
                     {% endif %}
-                    {% if user|can_access_view_quotes or user|is_sales  %}
+                    {% if user|can_access_view_quotes or user|is_sales %}
                         <li>
                             <a href="{% url 'active-quotes' %}">
                                 <i class="mdi mdi-format-quote-close"></i>
@@ -364,7 +372,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% if user|can_access_view_orders or user|is_sales  %}
+                    {% if user|can_access_view_orders or user|is_sales %}
                         <li>
                             <a href="{% url 'active-orders' %}">
                                 <i class="mdi mdi-clipboard-list"></i>
@@ -372,7 +380,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% if user|can_access_view_invoice or user|is_sales  %}
+                    {% if user|can_access_view_invoice or user|is_sales %}
                         <li>
                             <a href="{% url 'active-invoice' %}">
                                 <i class="mdi mdi-file-document"></i>

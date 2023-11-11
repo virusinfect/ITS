@@ -2,7 +2,7 @@ import base64
 import datetime
 import math
 import uuid
-from datetime import datetime
+from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -32,7 +32,6 @@ def helpdesk_dash(request):
     # Define the list of statuses you want to count
     statuses_to_count = [
         "Open",
-        "Closed",
     ]
 
     # Initialize a dictionary to store the counts for each status
@@ -63,8 +62,7 @@ def helpdesk_dash(request):
         remark_counts[remark] = count
 
     bench_statuses_to_count = [
-        "Pending",
-        "Done",
+        "Pending"
     ]
 
     # Initialize a dictionary to store the counts for each bench status
@@ -72,27 +70,118 @@ def helpdesk_dash(request):
 
     # Loop through each bench status and count the tickets with that status
     for bench_status in bench_statuses_to_count:
-        count = Tickets.objects.filter(bench_status=bench_status, is_active=1).count()
+        count = Tickets.objects.filter(bench_status=bench_status,type="Bench",is_active=1).count()
         bench_status_counts[bench_status] = count
 
+    site_statuses_to_count = [
+            "Pending"
+    ]
+
+    # Initialize a dictionary to store the counts for each bench status
+    site_status_counts = {}
+
+    # Loop through each bench status and count the tickets with that status
+    for site_status in site_statuses_to_count:
+        count = Tickets.objects.filter(bench_status=site_status, type="On-site", is_active=1).count()
+        site_status_counts[site_status] = count
+
         # Define the list of tr_statuses you want to count
-        tr_statuses_to_count = [
+    tr_statuses_to_count = [
             "Follow up",
             "Awaiting LPO",
             "On hold",
             "Not interested",
             "Done",
-        ]
+    ]
 
-        # Initialize a dictionary to store the counts for each tr_status
-        tr_status_counts = {}
+    # Initialize a dictionary to store the counts for each tr_status
+    tr_status_counts = {}
 
-        # Loop through each tr_status and count the tickets with that tr_status
-        for tr_status in tr_statuses_to_count:
+    # Loop through each tr_status and count the tickets with that tr_status
+    for tr_status in tr_statuses_to_count:
             count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
             tr_status_counts[tr_status] = count
 
     return render(request, "technical/helpdesk_dashboard.html",
+                  {'remark_counts': remark_counts, 'site_status_counts': site_status_counts, 'bench_status_counts': bench_status_counts,
+                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts})
+
+@login_required
+def tech_dash(request):
+    # Define the list of statuses you want to count
+    statuses_to_count = [
+        "Open",
+    ]
+
+    # Initialize a dictionary to store the counts for each status
+    status_counts = {}
+
+    # Loop through each status and count the tickets with that status
+    for status in statuses_to_count:
+        count = Tickets.objects.filter(status=status, is_active=1).count()
+        status_counts[status] = count
+    # Define the list of remarks you want to count
+    remarks_to_count = [
+        "Awaiting feedback",
+        "Awaiting parts",
+        "Repairs",
+        "LPO follow up",
+        "MD LPO follow up",
+        "To be collected",
+        "To be delivered",
+        "Warranty",
+    ]
+
+    # Initialize a dictionary to store the counts for each remark
+    remark_counts = {}
+
+    # Loop through each remark and count the tickets with that remark
+    for remark in remarks_to_count:
+        count = Tickets.objects.filter(remark=remark, is_active=1).count()
+        remark_counts[remark] = count
+
+    bench_statuses_to_count = [
+        "Pending"
+    ]
+
+    # Initialize a dictionary to store the counts for each bench status
+    bench_status_counts = {}
+
+    # Loop through each bench status and count the tickets with that status
+    for bench_status in bench_statuses_to_count:
+        count = Tickets.objects.filter(bench_status=bench_status, type="Bench", is_active=1,tech=request.user).count()
+        bench_status_counts[bench_status] = count
+
+    site_statuses_to_count = [
+        "Pending"
+    ]
+
+    # Initialize a dictionary to store the counts for each bench status
+    site_status_counts = {}
+
+    # Loop through each bench status and count the tickets with that status
+    for site_status in site_statuses_to_count:
+        count = Tickets.objects.filter(bench_status=site_status, type="On-site", is_active=1,tech=request.user).count()
+        site_status_counts[site_status] = count
+
+        # Define the list of tr_statuses you want to count
+    tr_statuses_to_count = [
+            "Follow up",
+            "Awaiting LPO",
+            "On hold",
+            "Not interested",
+            "Done",
+    ]
+
+    # Initialize a dictionary to store the counts for each tr_status
+    tr_status_counts = {}
+
+    # Loop through each tr_status and count the tickets with that tr_status
+    for tr_status in tr_statuses_to_count:
+            count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
+            tr_status_counts[tr_status] = count
+
+    return render(request, "technical/tech_dashboard.html",
                   {'remark_counts': remark_counts, 'bench_status_counts': bench_status_counts,
                    'status_counts': status_counts, 'tr_status_counts': tr_status_counts})
 
@@ -114,9 +203,13 @@ def status_tickets(request, status):
 
 
 @login_required
-def bench_status_tickets(request, bench_status):
-    # Filter tickets with the specified bench_status and that are active
-    tickets = Tickets.objects.filter(bench_status=bench_status, is_active=1)
+def bench_status_tickets(request,type, bench_status):
+    if request.user.groups.filter(name='Technician').exists():
+        # If the user belongs to the "Technician" group, show only their assigned tickets
+        tickets = Tickets.objects.filter(tech=request.user, is_active=1,bench_status=bench_status,type=type).order_by('-created')
+    else:
+        # If the user doesn't belong to the "Technician" group, show all tickets
+        tickets = Tickets.objects.filter(is_active=1,bench_status=bench_status,type=type).order_by('-created')
 
     return render(request, 'technical/ticket_list.html', {'tickets': tickets})
 
@@ -131,7 +224,13 @@ def tr_status_tickets(request, tr_status):
 
 @login_required
 def ticket_list(request):
-    tickets = Tickets.objects.filter(is_active=1).order_by('-created')
+    if request.user.groups.filter(name='Technician').exists():
+        # If the user belongs to the "Technician" group, show only their assigned tickets
+        tickets = Tickets.objects.filter(tech=request.user, is_active=1).order_by('-created')
+    else:
+        # If the user doesn't belong to the "Technician" group, show all tickets
+        tickets = Tickets.objects.filter(is_active=1).order_by('-created')
+
     return render(request, 'technical/ticket_list.html', {'tickets': tickets})
 
 
@@ -721,6 +820,7 @@ def service(request):
 
 @login_required
 def get_events(request):
+
     status_colors = {
         "Awaiting confirmation": "red",
         "Confirmed": "green",
@@ -831,7 +931,7 @@ def create_service_schedule(request):
                 is_active=True,
                 status="Pending",
                 user=user,
-                creator=user,
+                created_by=user,
             )
 
             # Save the new_task instance
@@ -1015,7 +1115,7 @@ def create_ticket(request):
             is_active=True,
             status="In Progress",
             user=get_object_or_404(User, id=tech_id),
-            creator=user,
+            created_by=user,
 
         )
 
@@ -1180,7 +1280,7 @@ def sourcing_tickets(request, ticket_id):
                 is_active=True,
                 status="In Progress",
                 user_id=handler_id,  # Correctly set the user_id
-                creator=user,
+                created_by=user,
             )
             # Save the new_task instance
             new_task.save()
@@ -1456,6 +1556,23 @@ def tickets_created_monthly_this_year(request):
 
     return JsonResponse(data, safe=False)
 
+def tickets_created_monthly_this_year_tech(request):
+    current_year = timezone.now().year
+
+    monthly_ticket_counts = Tickets.objects.filter(
+        created__year=current_year,
+        is_active=1,tech=request.user  # Filter by active tickets if needed
+    ).annotate(
+        month=ExtractMonth('created')
+    ).values(
+        'month'
+    ).annotate(
+        count=Count('ticket_id')
+    ).order_by('month')
+
+    data = list(monthly_ticket_counts)
+
+    return JsonResponse(data, safe=False)
 
 def tr_status_pie_chart(request):
     tr_status_counts = Tickets.objects.values('tr_status').annotate(count=Count('ticket_id'))
@@ -1484,6 +1601,26 @@ def service_schedules_yearly(request):
 
     return JsonResponse(data, safe=False)
 
+
+def service_schedules_yearly_tech(request):
+    # Get the current year
+    current_year = timezone.now().year
+
+    # Query the database to get the count of service schedules created each month this year
+    monthly_schedule_counts = ServiceSchedules.objects.filter(
+        from_date__year=current_year,
+        is_active=1,
+    ).annotate(
+        month=ExtractMonth('from_date')
+    ).values(
+        'month'
+    ).annotate(
+        count=Count('ss_id')
+    ).order_by('month')
+
+    data = list(monthly_schedule_counts)
+
+    return JsonResponse(data, safe=False)
 
 def remark_pie_chart(request):
     remark_counts = Tickets.objects.values('remark').annotate(count=Count('ticket_id'))
@@ -1534,6 +1671,25 @@ def requisitions_created_monthly(request):
     monthly_requisition_counts = Requisition.objects.filter(
         created__year=current_year,
         is_active=True  # Filter by active requisitions if needed
+    ).annotate(
+        month=ExtractMonth('created')
+    ).values(
+        'month'
+    ).annotate(
+        count=Count('req_id')
+    ).order_by('month')
+
+    data = list(monthly_requisition_counts)
+
+    return JsonResponse(data, safe=False)
+
+def requisitions_created_monthly_tech(request):
+    current_year = timezone.now().year
+
+    monthly_requisition_counts = Requisition.objects.filter(
+        created__year=current_year,
+        is_active=True,
+        collected_by=request.user# Filter by active requisitions if needed
     ).annotate(
         month=ExtractMonth('created')
     ).values(
@@ -1600,7 +1756,7 @@ def save_signature_view_ticket(request):
             is_active=True,
             status="In Progress",
             user=get_object_or_404(User, id=tech_id),
-            creator=user,
+            created_by=user,
 
         )
 

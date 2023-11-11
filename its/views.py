@@ -151,6 +151,8 @@ def test_view(request):
         return redirect('sales_dashboard')
     elif is_member_of_group(request.user, 'Helpdesk'):
         return redirect('helpdesk_dashboard')
+    elif is_member_of_group(request.user, 'Technician'):
+        return redirect('tech_dashboard')
     else:
         return render(request, 'base.html')
 
