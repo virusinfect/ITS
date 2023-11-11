@@ -440,7 +440,7 @@ def create_delivery(request, ticket_id):
             serial_no = request.POST.get(f'serial_no_{i}')
             particulars = request.POST.get(f'particulars_{i}')
 
-            if quantity and serial_no and particulars:
+            if particulars:
                 item = Items(
                     delivery=new_delivery,
                     quantity=quantity,
@@ -493,7 +493,7 @@ def create_delivery_normal(request):
             amount = request.POST.get(f'amount_{i}')
             particulars = request.POST.get(f'particulars_{i}')
 
-            if quantity and serial_no and particulars:
+            if  particulars:
                 item = Items(
                     delivery=new_delivery,
                     quantity=quantity,
@@ -597,11 +597,12 @@ def edit_delivery(request, delivery_id):
 
         for quantity, amount, serial_no, particulars in zip(quantity_list, amount_list, serial_no_list,
                                                             particulars_list):
-            item, created = Items.objects.get_or_create(delivery=delivery, serial_no=serial_no)
-            item.quantity = quantity
-            item.amount = amount
-            item.particulars = particulars
-            item.save()
+            if particulars:
+                item, created = Items.objects.get_or_create(delivery=delivery, serial_no=serial_no)
+                item.quantity = quantity
+                item.amount = amount
+                item.particulars = particulars
+                item.save()
         messages.success(request, 'Delivery Edited successfully')
         return redirect('view_delivery_normal',
                         delivery.id)  # Replace 'your_success_url' with the actual URL you want to redirect to after editing

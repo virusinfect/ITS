@@ -2,7 +2,6 @@
 {% load static %}
 {% block title %}Create Ticket{% endblock %}
 {% block header %}Create Ticket{% endblock %}
-
 {% block content %}
     <div class="row">
         <div class="col-md-6">
@@ -19,12 +18,10 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="mb-3 header-title text-center">Create Ticket</h4>
-
                 <form method="post">
                     {% csrf_token %}
                     <div class="col-11 mx-auto mt-3">
                         <div class="row">
-
                             <div class="mb-2 col-lg-6">
                                 <label for="type" class="form-label"><strong>Ticket
                                     Type:</strong></label>
@@ -68,7 +65,6 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-
                             <div class="col-lg-6 mb-3">
                                 <label for="equipment"
                                        class="form-label"><strong>Equipment:</strong></label>
@@ -82,7 +78,6 @@
                                        name="serial_no" placeholder="Serial No" required>
                             </div>
                         </div>
-
                         <div class="row mb-3">
                             <div class="mb-3 col-lg-6">
                                 <label for="fault" class="form-label"><strong>Fault:</strong></label>
@@ -90,13 +85,11 @@
                                           name="fault" rows="5" placeholder="Fault" required></textarea>
                             </div>
                             <div class="mb-3 col-lg-6">
-
                                 <label for="accessories"
                                        class="form-label"><strong>Accessories:</strong></label>
                                 <textarea class="form-control" id="accessories"
                                           name="accessories"
                                           rows="5" placeholder="Accessories"></textarea>
-
                             </div>
                         </div>
                         <div class="row mb-3 mx-auto">
@@ -104,21 +97,17 @@
                                    class="form-label"><strong>Notes:</strong></label>
                             <textarea class="form-control" id="notes"
                                       name="notes" rows="5" placeholder="Other Details"></textarea></div>
-
                     </div>
-                    <canvas id="signature-pad"
-                            class="card border shadow-lg bg-body-tertiary rounded mt-2 mx-auto" width="400"
-                            height="250"></canvas>
-                    <input type="hidden" id="cc_id" value="{{ call_card.cc_id }}">
-                </form>
 
+                </form>
+                <canvas id="signature-pad"
+                        class="card border shadow-lg bg-body-tertiary rounded mt-2 mx-auto" width="400"
+                        height="250"></canvas>
                 <button id="save-signature"
                         class="btn btn-primary waves-effect waves-light me-1 mt-2">Create Ticket
                 </button>
             </div>
         </div>
-        aa<canvas id="signature-pad" width="400"
-                height="250"></canvas>aa
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
@@ -137,10 +126,8 @@
             var companyId = this.value;
             var clientSelect = document.getElementById('client');
             var clientNo = clientSelect.value;
-
             // Clear existing options and add the "Select a client" option
             clientSelect.innerHTML = '<option value="" disabled selected>Select a client</option>';
-
             if (companyId) {
                 // Make an AJAX request to fetch clients based on the selected company.
                 // Replace the URL with your Django view or API endpoint.
@@ -153,20 +140,16 @@
                             option.textContent = client.f_name;
                             clientSelect.appendChild(option);
                         });
-
                         // Now that options are populated, attach the event listener
                         attachChangeEventListener();
                     });
             }
         });
-
-
         $(document).ready(function () {
             // Function to clear the signature
             function clearSignature() {
                 signaturePad.clear();
             }
-
             $('#save-signature').click(function () {
                 var canvas = document.getElementById('signature-pad');
                 var signaturePad = new SignaturePad(canvas);
@@ -208,7 +191,6 @@
                     toastr.error("One or more fields are empty", "Validation Error");
                 }
             });
-
             // Attach the clearSignature function to the "Clear Signature" button
             $('#clear-signature').click(clearSignature);
         });

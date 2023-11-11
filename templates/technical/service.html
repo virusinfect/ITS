@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load helpdesk_tags %}
 {% load static %}
 {% block title %}Service Schedule{% endblock %}
 {% block header %}Service Schedule{% endblock %}
@@ -25,9 +26,10 @@
                 <div class="card-body">
                     <div class="row mb-3">
                         <h2 class="border-bottom-1  col-9">Service List</h2>
+                        {% if user|is_helpdesk %}
                         <a class="btn btn-primary waves-effect waves-light col-3"
                            href="{% url 'create_service_schedule' %}">
-                            New</a>
+                            New</a>{% endif %}
                     </div>
 
                     {% for event in events %}

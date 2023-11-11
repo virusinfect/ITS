@@ -120,10 +120,10 @@
                                 <tbody>
                                 <tr>
                                     <th>1</th>
-                                    <td width="10%"><input class="form-control" name="quantity_1"/></td>
+                                    <td width="10%"><input type="number" class="form-control" name="quantity_1" id="qty1" value="1"/></td>
                                     <td width="30%"><input class="form-control" name="serial_no_1"/></td>
                                     <td><input class="form-control" name="particulars_1"/></td>
-                                    <td><input class="form-control" name="amount_1" required/></td>
+                                    <td><input class="form-control" name="amount_1" value="0" id="qty" required/></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -197,6 +197,14 @@
             newRow.querySelectorAll('input').forEach(input => {
                 input.value = '';
             });
+            const qtyInput = newRow.querySelector('input#qty');
+            if (qtyInput) {
+                qtyInput.value = '0';
+            }
+            const qtyInput1 = newRow.querySelector('input#qty1');
+            if (qtyInput1) {
+                qtyInput1.value = '1';
+            }
 
             // Update other elements as you did before
             newRow.querySelector('th').textContent = rowCount;

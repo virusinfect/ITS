@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load helpdesk_tags %}
 {% load static %}
 {% block title %}Report{% endblock %}
 {% block content %}
@@ -233,32 +234,35 @@
                 </label>
                 <input class="form-control" value="{{ ticket.tr_status }}" disabled>
             </div>
-            <div class="col-lg-6 mb3">
-                <form method="post" action="{% url 'approve_report' report.id %}">
-                    {% csrf_token %}
-                    <div class="row">
-                        <label for="approval_status" class="form-label">Approval Status:</label>
-                        <div class="col-9">
-                            <select id="approval_status" name="approval_status" class="form-select">
-                                <option value=""
-                                        {% if report.is_approved == '' %}selected{% endif %}>
-                                </option>
-                                <option value="approved"
-                                        {% if report.is_approved == "approved" %}selected{% endif %}>Approved
-                                </option>
-                                <option value="rejected"
-                                        {% if report.is_approved == "rejected" %}selected{% endif %}>Rejected
-                                </option>
-                            </select>
+            {% if user|is_management %}
+                <div class="col-lg-6 mb3">
+                    <form method="post" action="{% url 'approve_report' report.id %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <label for="approval_status" class="form-label">Approval Status:</label>
+                            <div class="col-9">
+                                <select id="approval_status" name="approval_status" class="form-select">
+                                    <option value=""
+                                            {% if report.is_approved == '' %}selected{% endif %}>
+                                    </option>
+                                    <option value="approved"
+                                            {% if report.is_approved == "approved" %}selected{% endif %}>Approved
+                                    </option>
+                                    <option value="rejected"
+                                            {% if report.is_approved == "rejected" %}selected{% endif %}>Rejected
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-3">
+                                <button type="submit" class="btn btn-primary waves-effect waves-light me-1">Submit
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-3">
-                            <button type="submit" class="btn btn-primary waves-effect waves-light me-1">Submit</button>
-                        </div>
-                    </div>
 
-                </form>
+                    </form>
 
-            </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 
@@ -276,18 +280,18 @@
                 class="mdi mdi-printer"></i></span>Print</a>
     </div>
 
-<script>
-    document.getElementById('print-button').addEventListener('click', function () {
-        printDeliveryNote();
-    });
+    <script>
+        document.getElementById('print-button').addEventListener('click', function () {
+            printDeliveryNote();
+        });
 
-    function printDeliveryNote() {
-        var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
-        var originalContents = document.body.innerHTML;
+        function printDeliveryNote() {
+            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+            var originalContents = document.body.innerHTML;
 
-        // Create a style tag and append it to the head to define a CSS rule for the footer image and remove margins
-        var style = document.createElement('style');
-        style.innerHTML = `
+            // Create a style tag and append it to the head to define a CSS rule for the footer image and remove margins
+            var style = document.createElement('style');
+            style.innerHTML = `
         @media print {
             #footer-image {
                 position: fixed;
@@ -304,18 +308,18 @@
             }
         }
     `;
-        document.head.appendChild(style);
+            document.head.appendChild(style);
 
-        // Wrap the content after the footer in a div with a class 'new-page' to force a page break
-        printContents = printContents.replace(/<div id="footer-image">/g, '<div class="new-page"></div><div id="footer-image">');
+            // Wrap the content after the footer in a div with a class 'new-page' to force a page break
+            printContents = printContents.replace(/<div id="footer-image">/g, '<div class="new-page"></div><div id="footer-image">');
 
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
 
-        // Remove the added CSS rule
-        document.head.removeChild(style);
-    }
-</script>
+            // Remove the added CSS rule
+            document.head.removeChild(style);
+        }
+    </script>
 
 {% endblock %}
