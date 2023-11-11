@@ -1,8 +1,6 @@
 {% extends "base.html" %}
-
 {% block title %}Create Requisition{% endblock %}
 {% block header %}Create Requisition{% endblock %}
-
 {% block content %}
     <div class="row">
         <div class="col-md-6">
@@ -33,11 +31,8 @@
                             {% endfor %}
                         </select>
                     </div>
-
-
                     <div class="row">
                         <div class="mb-3 col-lg-6">
-
                             <label for="selected_category" class="form-label">Select a Category:</label>
                             <select name="selected_category" id="selected_category" class="form-select mb-3" required>
                                 <option value="" disabled selected>Select a Category</option>
@@ -52,15 +47,13 @@
                                 <option value="" disabled selected>Select a Product</option>
                             </select>
                         </div>
-
                     </div>
                     <div class="row">
-                        <div class="col-lg-4">
+                        <div class="col-lg-4 mb-3">
                             <label for="collected_by" class="form-label">Quantity:</label>
                             <input name="quantity" id="quantity" class="form-control" required>
-
                         </div>
-                        <div class="col-lg-8">
+                        <div class="col-lg-8 mb-3">
                             <label for="collected_by" class="form-label">Collected By:</label>
                             <select name="collected_by" id="collected_by" class="form-select mb-3" required>
                                 <option value="" disabled selected>Select a User</option>
@@ -68,25 +61,19 @@
                                     <option value="{{ user.id }}">{{ user.username }}</option>
                                 {% endfor %}
                             </select>
-
                         </div>
                     </div>
-
                     <div class="mb-3">
                         <label for="exampleFormControlTextarea1" class="form-label"> Remarks</label>
                         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
                                   placeholder="Enter your remarks.."></textarea>
                     </div>
-
                     <button type="submit" class="btn btn-primary waves-effect waves-light">Submit</button>
                 </div>
             </form>
-
         </div> <!-- end card-body-->
     </div> <!-- end card-->
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script>
         document.getElementById('selected_category').addEventListener('change', function () {
             var categoryId = this.value;
@@ -114,8 +101,4 @@
             }
         });
     </script>
-
-
-
-
 {% endblock %}
