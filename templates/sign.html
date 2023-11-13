@@ -9,18 +9,13 @@
         <input type="hidden" id="delivery_id" value="{{ delivery_id }}">
     <a href="{% url 'view_delivery_normal' delivery_id %}"> Back to Delivery</a>
     </div>
-
-
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
-
     <script>
         $(document).ready(function () {
             var canvas = document.getElementById('signature-pad');
             var signaturePad = new SignaturePad(canvas);
             var deliveryId = $('#delivery_id').val();  // Get the delivery ID from the hidden input field
-
             $('#save-signature').click(function () {
                 var signatureData = signaturePad.toDataURL();
                 $.ajax({
@@ -42,6 +37,4 @@
             });
         });
     </script>
-
-
 {% endblock %}

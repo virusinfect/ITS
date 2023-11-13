@@ -260,7 +260,8 @@ class TSignature(models.Model):
     signature_image = models.ImageField(upload_to='signatures/')
     approved = models.CharField(max_length=255)
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
-# Technical Report Model
+
+
 class TechnicalReport(models.Model):
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
     report_text = models.TextField(blank=True)

@@ -1,12 +1,9 @@
 {% extends "base.html" %}
-
 {% block title %}Create Delivery{% endblock %}
-
 {% block content %}
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
-
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'list_deliveries' %}">Deliveries</a></li>
@@ -15,12 +12,10 @@
             </div>
         </div> <!-- end col -->
     </div>
-
     <div class="col-lg-8 mx-auto">
         <div class="card">
             <div class="card-body">
                 <h4 class="mb-3 header-title text-center">Create Delivery</h4>
-
                 <form method="post" enctype="multipart/form-data" action="{% url 'create_delivery' ticket.ticket_id %}">
                     {% csrf_token %}
                     <div class="mb-3">
@@ -33,7 +28,6 @@
                         <div class="table-responsive">
                             <h4 class="text-center mb-2 border-bottom pb-2">Items</h4>
                             <table class="table mb-0" id="items-table">
-
                                 <thead>
                                 <tr>
                                     <th>#</th>
@@ -45,13 +39,16 @@
                                 <tbody>
                                 <tr>
                                     <th>1</th>
-                                    <td width="10%"><input class="form-control" name="quantity_1"/></td>
-                                    <td width="30%"><input class="form-control" name="serial_no_1"/></td>
-                                    <td><input class="form-control" name="particulars_1"/></td>
-
+                                    <td width="10%"><input value="1" class="form-control" name="quantity_[]"/></td>
+                                    <td width="30%"><input value="{{ ticket.serial_no }}" class="form-control" name="serial_no_[]"/></td>
+                                    <td><input class="form-control" value="{{ ticket.equipment }}" name="particulars_[]"/></td>
                                 </tr>
-
-
+                                <tr>
+                                    <th>1</th>
+                                    <td width="10%"><input class="form-control" name="quantity_[]"/></td>
+                                    <td width="30%"><input class="form-control" name="serial_no_[]"/></td>
+                                    <td><input class="form-control" name="particulars_[]"/></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -62,26 +59,21 @@
                     <button type="submit" id="save-button" class="btn btn-primary waves-effect waves-light">Submit
                     </button>
                 </form>
-
             </div> <!-- end card-body-->
         </div> <!-- end card-->
     </div>
     <script>
         // Counter to keep track of the number of rows
         let rowCount = 1;
-
         document.getElementById('add-row-button').addEventListener('click', function () {
             rowCount++;
-
             // Clone the template row and update input names
             const templateRow = document.querySelector('#items-table tbody tr');
             const newRow = templateRow.cloneNode(true);
-
             newRow.querySelector('th').textContent = rowCount;
-            newRow.querySelector('input[name="quantity_1"]').name = `quantity_${rowCount}`;
-            newRow.querySelector('input[name="serial_no_1"]').name = `serial_no_${rowCount}`;
-            newRow.querySelector('input[name="particulars_1"]').name = `particulars_${rowCount}`;
-
+            newRow.querySelector('input[name="quantity_[]"]').name = `quantity_${rowCount}`;
+            newRow.querySelector('input[name="serial_no_[]"]').name = `serial_no_${rowCount}`;
+            newRow.querySelector('input[name="particulars_[]"]').name = `particulars_${rowCount}`;
             // Append the new row to the table
             document.querySelector('#items-table tbody').appendChild(newRow);
         });

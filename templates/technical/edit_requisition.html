@@ -2,7 +2,7 @@
 
 {% block title %}Edit Requisition{% endblock %}
 {% block header %}Edit Requisition{% endblock %}
-
+{% load helpdesk_tags %}
 {% block content %}
     <div class="col-md-6">
         <div class="mb-4">
@@ -70,61 +70,66 @@
                         </div>
                         <div class="card mt-5 mb-5 shadow p-3 mb-2  p-4">
                             <div class="row">
-                                <div class="col-md-6 mt-3">
-                                    <label for="req_status" class="form-label">Requisition Status:</label>
-                                    <select name="req_status" class="form-select mb-3">
-                                        <option value="Approved"
-                                                {% if requisition.req_status == "Approved" %}selected{% endif %}>
-                                            Approved
-                                        </option>
-                                        <option value="Pending"
-                                                {% if requisition.req_status == "Pending" %}selected{% endif %}>Pending
-                                        </option>
-                                        <!-- Add more options as needed -->
-                                    </select>
-                                </div>
-                                {% if requisition.req_status == "Approved" %}
+                                {% if user|is_helpdesk or user|is_management %}
                                     <div class="col-md-6 mt-3">
-                                        <label for="issue_status" class="form-label">Issue Status:</label>
-                                        <select name="issue_status" id="issue_status" class="form-select mb-3">
+                                        <label for="req_status" class="form-label">Requisition Status:</label>
+                                        <select name="req_status" class="form-select mb-3">
+                                            <option value="Approved"
+                                                    {% if requisition.req_status == "Approved" %}selected{% endif %}>
+                                                Approved
+                                            </option>
                                             <option value="Pending"
-                                                    {% if requisition.issue_status == "Pending" %}selected{% endif %}>
+                                                    {% if requisition.req_status == "Pending" %}selected{% endif %}>
                                                 Pending
                                             </option>
-                                            <option value="Issue"
-                                                    {% if requisition.issue_status == "Issue" %}selected{% endif %}>
-                                                Issue
-                                            </option>
-                                            <option value="Returned"
-                                                    {% if requisition.issue_status == "Returned" %}selected{% endif %}>
-                                                Return
-                                            </option>
-
                                             <!-- Add more options as needed -->
                                         </select>
                                     </div>
+
+                                    {% if requisition.req_status == "Approved" %}
+                                        <div class="col-md-6 mt-3">
+                                            <label for="issue_status" class="form-label">Issue Status:</label>
+                                            <select name="issue_status" id="issue_status" class="form-select mb-3">
+                                                <option value="Pending"
+                                                        {% if requisition.issue_status == "Pending" %}selected{% endif %}>
+                                                    Pending
+                                                </option>
+                                                <option value="Issue"
+                                                        {% if requisition.issue_status == "Issue" %}selected{% endif %}>
+                                                    Issue
+                                                </option>
+                                                <option value="Returned"
+                                                        {% if requisition.issue_status == "Returned" %}selected{% endif %}>
+                                                    Return
+                                                </option>
+
+                                                <!-- Add more options as needed -->
+                                            </select>
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
-                            {% if requisition.issue_status == "Returned" %}
-                                <div>
-                                    <label for="return_status" class="form-label">Return Status:</label>
-                                    <select name="return_status" class="form-select mb-3" id="return_status">
-                                        <option value="Approved"
-                                                {% if requisition.return_status == "Received" %}selected{% endif %}>
-                                            Approved
-                                        </option>
-                                        <option value="Pending"
-                                                {% if requisition.return_status == "Not Received" %}selected{% endif %}>
-                                            Pending
-                                        </option>
-                                        <option value=""
-                                                {% if requisition.return_status is None %}selected{% endif %}>
-                                            None
-                                        </option>
-                                        <!-- Add more options as needed -->
-                                    </select>
-                                </div>
-                            {% endif %}
+                            {% if user|is_store or user|is_accounts %}
+                                {% if requisition.issue_status == "Returned" %}
+                                    <div>
+                                        <label for="return_status" class="form-label">Return Status:</label>
+                                        <select name="return_status" class="form-select mb-3" id="return_status">
+                                            <option value="Approved"
+                                                    {% if requisition.return_status == "Received" %}selected{% endif %}>
+                                                Approved
+                                            </option>
+                                            <option value="Pending"
+                                                    {% if requisition.return_status == "Not Received" %}selected{% endif %}>
+                                                Pending
+                                            </option>
+                                            <option value=""
+                                                    {% if requisition.return_status is None %}selected{% endif %}>
+                                                None
+                                            </option>
+                                            <!-- Add more options as needed -->
+                                        </select>
+                                    </div>
+                                {% endif %}{% endif %}
                         </div>
                         <button type="submit" class="btn btn-primary waves-effect waves-light">Update Changes</button>
                     </form>

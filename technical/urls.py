@@ -46,6 +46,7 @@ urlpatterns = [
     path('format-approval/<int:format_approval_id>/', views.format_approval_detail, name='format_approval_detail'),
     path('send-format-email/<int:format_approval_id>/', views.send_format_email, name='send_format_email'),
     path('tr_status/<str:tr_status>/', views.tr_status_tickets, name='tr_status_tickets'),
+    path('pending_requisitions/<str:status>/', views.pending_requisitions, name='pending_requisitions'),
     path('bench_status/<str:type>/<str:title>/<str:bench_status>/', views.bench_status_tickets, name='bench_status_tickets'),
     path('status/<str:status>/<str:title>/', views.status_tickets, name='status_tickets'),
     path('remark/<str:remark>/<str:title>/', views.remark_tickets, name='remark_tickets'),
@@ -68,8 +69,6 @@ urlpatterns = [
     path('save-signature-view-ticket/', views.save_signature_view_ticket, name='save-signature-view-ticket'),
     path('delete_image/<int:image_id>/', views.delete_image, name='delete_image'),
     path('edit_delivery/<int:delivery_id>/', views.edit_delivery, name='edit_delivery'),
-    path('delete_item/<int:delivery_id>/<int:item_id>/', views.delete_item, name='delete_item'),
-
-]
+    path('delete_item/<int:delivery_id>/<int:item_id>/', views.delete_item, name='delete_item'),]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

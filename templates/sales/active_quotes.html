@@ -14,34 +14,17 @@
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
-
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'active-quotes' %}">Quotations</a></li>
-
-
                 </ol>
             </div>
-
         </div> <!-- end col -->
-
     </div>
-
     <div class="card">
         <div class="card-body table-responsive">
             <h4 class="mt-0 header-title">Quotations List</h4>
             <table id="responsive-datatable" class="table table-bordered dt-responsive">
-
-                {#                <a type="button" class="btn btn-primary waves-effect waves-light mb-1" href="{% url 'add-part' %}">#}
-                {#                    <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New#}
-                {#                </a>#}
-                {% comment %}<a type="button" class="btn btn-primary waves-effect waves-light mb-1 me-1">
-                    <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New
-                </a>{% endcomment %}
-                {% comment %}
-                    <button type="button" class="btn btn-warning waves-effect waves-light mb-1 me-1" id="print-table">
-                        <span class="btn-label"><i class="mdi mdi-printer"></i></span>Print
-                    </button>{% endcomment %}
                 <thead class="table-dark">
                 <tr>
                     <th width="5%">No.</th>

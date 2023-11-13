@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load helpdesk_tags %}
 {% block title %}Requisitions List{% endblock %}
 {% block header %}Requisitions List{% endblock %}
 {% block content %}
@@ -57,11 +58,12 @@
                 {% for requisition in requisitions %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                    {% if requisition.ticket %}
-                        <td>ITL/TN/{{ requisition.ticket.ticket_id }}</td>
-                    {% else %}
-                        <td><i class=" mdi mdi-alpha-x-circle-outline mdi-18px btn-outline-warning"> No Ticket</i></td>
-                    {% endif %}
+                        {% if requisition.ticket %}
+                            <td>ITL/TN/{{ requisition.ticket.ticket_id }}</td>
+                        {% else %}
+                            <td><i class=" mdi mdi-alpha-x-circle-outline mdi-18px btn-outline-warning"> No Ticket</i>
+                            </td>
+                        {% endif %}
                         <td>
                             {% if requisition.req_status == "Approved" %}
                                 <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i> Approved
@@ -95,19 +97,20 @@
                         </td>
                         <td>{{ requisition.return_approved_by }}</td>
                         <td>{{ requisition.remarks }}</td>
-                        <td>
+                        <td>{% if user|is_helpdesk or user|is_management %}
                             {% if requisition.issue_status == "Pending" %}
-                            <a href="{% url 'change_requisition_status' requisition.req_id %}" title="Status"
-                               tabindex="0"
-                               data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="mdi mdi-list-status mdi-18px"></i>
-                            </a>
-                            {% endif %}
+                                <a href="{% url 'change_requisition_status' requisition.req_id %}" title="Status"
+                                   tabindex="0"
+                                   data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="mdi mdi-list-status mdi-18px"></i>
+                                </a>
+                            {% endif %}{% endif %}
                             <a href="{% url 'edit_requisition' requisition.req_id %}" title="edit" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="s mdi mdi-square-edit-outline mdi-18px"></i>
                             </a>
-                            <a href="{% url 'delete_requisition' requisition.req_id %}" title="delete" tabindex="0" data-plugin="tippy" data-tippy-interactive="true">
+                            <a href="{% url 'delete_requisition' requisition.req_id %}" title="delete" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="s mdi mdi-delete-outline mdi-18px"></i>
                             </a>
                         </td>
@@ -117,7 +120,7 @@
             </table>
         </div>
     </div>
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
           type="text/css"/>

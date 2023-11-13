@@ -25,7 +25,6 @@
             outline: none;
             background-color: #f8f9fa;
         }
-
     </style>
     <div class="row">
         <div class="col-md-6">
@@ -159,6 +158,21 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="card">
+                            <label for="signature-pad">Signature:</label>
+                            <canvas id="signature-pad" width="400" height="200"
+                                    class="card border border-primary mt-1 mx-auto"></canvas>
+                            <input type="hidden" id="delivery_id" value="{{ delivery.id }}">
+                        </div>
+                    </div>
+                    <a id="save-signature"
+                       class="btn btn-primary waves-effect waves-light me-1"><span
+                            class="btn-label"><i class="mdi mdi-signature-freehand"></i></span>Submit Signature</a>
+                    <a id="clear-signature" class="btn btn-secondary waves-effect waves-light me-1 "><span
+                            class="btn-label"><i
+                            class="mdi mdi-eraser-variant"></i></span>Clear Signature
+                    </a>
                     <button type="submit" id="save-button" class="btn btn-primary waves-effect waves-light">Update
                         Changes
                     </button>
@@ -167,21 +181,19 @@
         </div> <!-- end card-->
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
             integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"
             integrity="sha512-t3zV/oAkSZUrvb/7p1q1+uh/i56JinQ+bmiulnHhbHZc7dq09CxJ1BByyi7A4+lF76+CcJtSVFtb7na7Oe7Cgg=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var input = document.getElementById("company-input");
             var awesomplete = new Awesomplete(input, {
                 minChars: 1,
             });
-
             input.addEventListener("input", function () {
                 $.ajax({
                     url: "/get_company_names/",  // Replace with your actual URL
@@ -192,19 +204,15 @@
                 });
             });
         });
-
     </script>
     <script>
         // Counter to keep track of the number of rows
         let rowCount = 1;
-
         document.getElementById('add-row-button').addEventListener('click', function () {
             rowCount++;
-
             // Clone the template row and update input names
             const templateRow = document.querySelector('#items-table tbody tr');
             const newRow = templateRow.cloneNode(true);
-
             // Reset input values in the cloned row
             newRow.querySelectorAll('input').forEach(input => {
                 input.value = '';
@@ -217,25 +225,21 @@
             if (qtyInput1) {
                 qtyInput1.value = '1';
             }
-
             // Update other elements as you did before
             const thElement = newRow.querySelector('th');
             if (thElement) {
                 thElement.textContent = rowCount;
             }
-
             const quantityInput = newRow.querySelector(`input[name="quantity_1"]`);
             const serialNoInput = newRow.querySelector(`input[name="serial_no_1"]`);
             const particularsInput = newRow.querySelector(`input[name="particulars_1"]`);
             const amountInput = newRow.querySelector(`input[name="amount_1"]`);
-
             if (quantityInput && serialNoInput && particularsInput && amountInput) {
                 quantityInput.name = `quantity_${rowCount}`;
                 serialNoInput.name = `serial_no_${rowCount}`;
                 particularsInput.name = `particulars_${rowCount}`;
                 amountInput.name = `amount_${rowCount}`;
             }
-
             // Create a delete button with the specified class and icon
             const deleteButton = document.createElement('a');
             deleteButton.className = 'btn btn-danger';
@@ -245,11 +249,8 @@
                 // Remove the row when the delete button is clicked
                 newRow.remove();
             });
-
-
             // Append the new delete button to the action column
             newRow.querySelector('td:last-child').appendChild(deleteButton);
-
             // Append the new row to the table
             document.querySelector('#items-table tbody').appendChild(newRow);
             // Hide the delete button with id "btn5" on the new row
@@ -258,7 +259,41 @@
                 newDeleteButton.style.display = 'none';
             }
         });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var canvas = document.getElementById('signature-pad');
+            var signaturePad = new SignaturePad(canvas);
+            var deliveryId = $('#delivery_id').val();
 
+            // Function to clear the signature
+            function clearSignature() {
+                signaturePad.clear();
+            }
+
+            // Get the delivery ID from the hidden input field
+            $('#save-signature').click(function () {
+                var signatureData = signaturePad.toDataURL();
+                $.ajax({
+                    url: '/save-signature-view/',  // Replace with the actual URL
+                    method: 'POST',
+                    data: {
+                        signature_data: signatureData,
+                        delivery_id: deliveryId  // Include the delivery ID in the data
+                    },
+                    success: function (response) {
+                        // Check if the response indicates success (you can define this)
+                        if (response.success) {
+                            toastr.success("Signature submitted successfully ", "Signature ");
+                            window.location.href = "{% url 'view_delivery_normal' delivery.id %}";
+                        } else {
+                            // Handle failure if needed
+                        }
+                    }
+                });
+            });// Attach the clearSignature function to the "Clear Signature" button
+            $('#clear-signature').click(clearSignature);
+        });
     </script>
 
 {% endblock %}

@@ -67,11 +67,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>{{ ticket.serial_no }}</td>
-                            <td>1</td>
-                            <td>{{ ticket.equipment }}</td>
-                        </tr>
                         {% for item in items %}
                             <tr>
                                 <td>{{ item.serial_no }}</td>
@@ -89,7 +84,6 @@
         <div><small style="font-size:10px">Received the above goods in good order and condition</small></div>
         <div class="row">
             <div class="col-6">
-
             </div>
             <div class="col-6">
                 <p style="font-size:10px">Collected By: {{ delivery.collected_by }}</p>
@@ -104,22 +98,13 @@
                     {% endif %}
                 </div>
             </div>
-
-
         </div>
     </div>
-
     <img src="{% static 'tr_footer.png' %}" id="footer-image">
-
     </div>
     <div>
         <a href="{% url 'edit_delivery' delivery.id %}" class="btn btn-primary waves-effect waves-light me-1"><span
                 class="btn-label"><i class="mdi mdi-square-edit-outline"></i></span>Edit</a>
-        <a href="{% url 'sign' delivery.id %}"
-           class="btn btn-primary waves-effect waves-light me-1"><span
-                class="btn-label"><i class="mdi mdi-signature-freehand"></i></span>Sign
-            this
-            delivery</a>
         <a id="print-button" class="btn btn-primary">Print</a>
     </div>
 

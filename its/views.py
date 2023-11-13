@@ -68,11 +68,10 @@ def save_signature_view(request):
             delivery = Delivery.objects.get(pk=delivery_id)
             signature.delivery = delivery  # Associate the delivery with the signature
             signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
+            return JsonResponse({'success': True})
         except Delivery.DoesNotExist:
             return JsonResponse({'message': 'Delivery not found'}, status=400)
 
-        redirect_url = reverse('view_delivery_normal', args=[delivery_id])
-        return HttpResponseRedirect(redirect_url)
     return JsonResponse({'message': 'Invalid request method'}, status=400)
 
 

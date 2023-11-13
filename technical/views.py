@@ -41,6 +41,19 @@ def helpdesk_dash(request):
     for status in statuses_to_count:
         count = Tickets.objects.filter(status=status, is_active=1).count()
         status_counts[status] = count
+
+    req_statuses_to_count = [
+        "Pending",
+    ]
+
+    # Initialize a dictionary to store the counts for each status
+    req_status_counts = {}
+
+    # Loop through each status and count the tickets with that status
+    for status in req_statuses_to_count:
+        count = Requisition.objects.filter(req_status=status, is_active=1).count()
+        req_status_counts[status] = count
+
     # Define the list of remarks you want to count
     remarks_to_count = [
         "Awaiting feedback",
@@ -104,7 +117,7 @@ def helpdesk_dash(request):
 
     return render(request, "technical/helpdesk_dashboard.html",
                   {'remark_counts': remark_counts, 'site_status_counts': site_status_counts, 'bench_status_counts': bench_status_counts,
-                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts})
+                   'status_counts': status_counts,'req_status_counts': req_status_counts, 'tr_status_counts': tr_status_counts})
 
 @login_required
 def tech_dash(request):
@@ -203,6 +216,10 @@ def status_tickets(request,status,title):
 
     return render(request, 'technical/ticket_list.html', {'tickets': tickets,'title':title})
 
+@login_required
+def pending_requisitions(request,status):
+    requisitions = Requisition.objects.filter(req_status=status,is_active=True).order_by('-created')
+    return render(request, 'technical/list_requisitions.html', {'requisitions': requisitions})
 
 @login_required
 def bench_status_tickets(request,type, bench_status,title):
@@ -393,7 +410,6 @@ def get_clients(request):
 
 @login_required
 def create_delivery(request, ticket_id):
-    signature_path = ''
     ticket_id = ticket_id
     try:
         ticket = Tickets.objects.get(pk=ticket_id)
@@ -401,7 +417,7 @@ def create_delivery(request, ticket_id):
         return HttpResponseNotFound("Ticket not found")
 
         # Check if a delivery already exists for this ticket
-    existing_delivery = Delivery.objects.filter(ticket=ticket).first()
+    existing_delivery = Delivery.objects.filter(ticket=ticket,is_active=True).first()
 
     if existing_delivery:
         # Redirect to another page or show a message if a delivery already exists
@@ -430,24 +446,16 @@ def create_delivery(request, ticket_id):
             status=status,
             remarks=remarks,
             department=department,
-
         )
-
         new_delivery.save()
 
-        for i in range(1, 11):  # Example: Create up to 10 items
-            quantity = request.POST.get(f'quantity_{i}')
-            serial_no = request.POST.get(f'serial_no_{i}')
-            particulars = request.POST.get(f'particulars_{i}')
+        quantity_list = request.POST.getlist('quantity_[]')
+        serial_no_list = request.POST.getlist('serial_no_[]')
+        particulars_list = request.POST.getlist('particulars_[]')
 
-            if particulars:
-                item = Items(
-                    delivery=new_delivery,
-                    quantity=quantity,
-                    serial_no=serial_no,
-                    particulars=particulars
-                )
-                item.save()
+        # Assuming you have a Ticket model
+        for quantity, serial_no, particulars in zip(quantity_list, serial_no_list, particulars_list):
+            Items.objects.create(delivery=new_delivery,quantity=quantity, serial_no=serial_no, particulars=particulars)
 
         messages.success(request, 'Delivery Created successfully')
         # Redirect to the ticket details page or a success page
@@ -514,7 +522,7 @@ def create_delivery_normal(request):
 def view_delivery(request, ticket_id):
     try:
         ticket = get_object_or_404(Tickets, pk=ticket_id)
-        delivery = Delivery.objects.get(ticket=ticket)
+        delivery = Delivery.objects.filter(ticket=ticket, is_active=True).last()
         signature = delivery.signatures.last()
         items = delivery.items.all()
     except (Tickets.DoesNotExist, Delivery.DoesNotExist):

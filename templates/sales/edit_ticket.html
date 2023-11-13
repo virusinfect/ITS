@@ -208,6 +208,9 @@
                                                                        class="form-control" required>
                                                             </td>
                                                             <td><select name="currency[]" class="form-select">
+                                                                <option value=""
+                                                                        {% if "" == product.currency %}selected{% endif %}>
+                                                                </option>
                                                                 <option value="USD"
                                                                         {% if "USD" == product.currency %}selected{% endif %}>
                                                                     USD
@@ -219,10 +222,6 @@
                                                                 <option value="CHF"
                                                                         {% if "CHF" == product.currency %}selected{% endif %}>
                                                                     CHF
-                                                                </option>
-                                                                <option value=""
-                                                                        {% if "" == product.currency %}selected{% endif %}>
-
                                                                 </option>
                                                                 <!-- Add more currency options as needed -->
                                                             </select></td>

@@ -3,28 +3,20 @@
 {% block title %}Users List{% endblock %}
 {% block header %}Users List{% endblock %}
 {% block content %}
-
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
-
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'user_list' %}">Users</a></li>
-
-
                 </ol>
             </div>
-
         </div> <!-- end col -->
-
     </div>
-
     <div class="card">
         <div class="card-body table-responsive">
             <h4 class="mt-0 header-title">User List</h4>
             <table id="responsive-datatable" class="table table-bordered table-bordered dt-responsive nowrap">
-
                 <a type="button" class="btn btn-primary waves-effect waves-light mb-1" href="{% url 'create_user' %}">
                     <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New
                 </a>
@@ -57,7 +49,6 @@
                         <td>{{ user.first_name }}</td>
                         <td>{{ user.last_name }}</td>
                         <td>{{ user.email }}</td>
-
                         <td>
                             <a href="{% url 'edit_user' user.id %}" title="edit" tabindex="0" data-plugin="tippy"
                                data-tippy-interactive="true">
@@ -84,7 +75,6 @@
           type="text/css"/>
     <link href="{% static 'libs/datatables.net-select-bs5/css/select.bootstrap5.min.css' %}" rel="stylesheet"
           type="text/css"/>
-
     <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
     <!-- third party js -->
     <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
@@ -101,7 +91,6 @@
     <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
     <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
     <!-- third party js ends -->
-
     <!-- Datatables init -->
     <script src="{% static 'js/pages/datatables.init.js' %}"></script>
     <script>
@@ -124,8 +113,5 @@
                 }
             }
         });
-
     </script>
-
-
 {% endblock %}

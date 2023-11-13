@@ -18,30 +18,14 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'sales_tickets' %}">Tickets</a></li>
-
-
                 </ol>
             </div>
-
         </div> <!-- end col -->
-
     </div>
-
     <div class="card">
         <div class="card-body table-responsive">
             <h4 class="mt-0 header-title">Ticket List</h4>
             <table id="responsive-datatable" class="table table-bordered table-bordered dt-responsive nowrap">
-
-                {#                <a type="button" class="btn btn-primary waves-effect waves-light mb-1" href="{% url 'add-part' %}">#}
-                {#                    <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New#}
-                {#                </a>#}
-                {% comment %}<a type="button" class="btn btn-primary waves-effect waves-light mb-1 me-1">
-                    <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New
-                </a>{% endcomment %}
-                {% comment %}
-                    <button type="button" class="btn btn-warning waves-effect waves-light mb-1 me-1" id="print-table">
-                        <span class="btn-label"><i class="mdi mdi-printer"></i></span>Print
-                    </button>{% endcomment %}
                 <thead class="table-dark">
                 <tr>
                     <th>No.</th>
@@ -49,6 +33,7 @@
                     <th>Date</th>
                     <th>Company</th>
                     <th>Contact</th>
+                    <th width="12%">Products</th>
                     <th>Asset</th>
                     <th>Via</th>
                     <th>Status</th>
@@ -63,6 +48,18 @@
                         <td>{{ ticket.created }}</td>
                         <td>{{ ticket.company.name }}</td>
                         <td>{{ ticket.contact }}</td>
+                        <td>
+                            <div class="product-list" data-quote-id="{{ ticket.ticket_id }}" style="display: none;">
+                                {% for product in ticket.salesticketproducts_set.all %}
+                                    <li>{{ product.description }}</li>
+                                    {% empty %}
+                                    No products associated
+                                {% endfor %}
+                            </div>
+                            <button class="show-more-btn btn btn-outline-primary py-0 px-3"
+                                    data-quote-id="{{ ticket.ticket_id }}">More
+                            </button>
+                        </td>
                         <td>{{ ticket.issue_summary }}</td>
                         <td>{{ ticket.via }}</td>
                         <td>
@@ -101,27 +98,38 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
           type="text/css"/>
-    {#    <link href="{% static 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />#}
     <link href="{% static 'libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"
           type="text/css"/>
     <link href="{% static 'libs/datatables.net-select-bs5/css/select.bootstrap5.min.css' %}" rel="stylesheet"
           type="text/css"/>
-
     <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
     <!-- third party js -->
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.css"
           rel="stylesheet">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.js"></script>
     <!-- third party js ends -->
-
     <!-- Datatables init -->
     <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('show-more-btn')) {
+                const quoteId = e.target.getAttribute('data-quote-id');
+                const productList = document.querySelector(`.product-list[data-quote-id="${quoteId}"]`);
+
+                if (productList.style.display === "none" || productList.style.display === "") {
+                    productList.style.display = "block";
+                    e.target.textContent = "Less";
+                } else {
+                    productList.style.display = "none";
+                    e.target.textContent = "More";
+                }
+            }
+        });
+    </script>
     <script>
         jQuery(document).ready(function ($) {
             $('#responsive-datatable').DataTable({
@@ -168,8 +176,6 @@
                 ]
             });
         });
-
-
         jQuery(document).ready(function ($) {
             var table = $('#responsive-datatable').DataTable();
 
@@ -203,9 +209,6 @@
                 win.close();
             });
         });
-
-
     </script>
-
 {% endblock %}
 

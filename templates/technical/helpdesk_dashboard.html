@@ -70,23 +70,46 @@
         {% endfor %}
     </div>
     <div class="row">
-        <h5>Technical Report Status</h5>
-        {% for tr_status, count in tr_status_counts.items %}
-            {% if count != 0 %}
-                <div class="col">
-                    <div class="card">
-                        <div class="card-body widget-user">
-                            <div class="text-center">
-                                <a href="{% url 'tr_status_tickets' tr_status %}">
-                                    <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                    <h5>{{ tr_status }}</h5></a>
+        {% if req_status_counts %}
+            <div class="col">
+                <h5>Requisitions</h5>
+                {% for req_status, count in req_status_counts.items %}
+                    {% if count != 0 %}
+                        <div class="card">
+                            <div class="card-body widget-user">
+                                <div class="text-center">
+                                    <a href="{% url 'pending_requisitions' req_status %}">
+                                        <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                        <h5>{{ req_status }}</h5></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="col">
+            <h5>Technical Report Status</h5>
+            <div class="row">
+                <div class="d-inline-block">
+                    {% for tr_status, count in tr_status_counts.items %}
+                        {% if count != 0 %}
+                            <div class=" col  card d-inline-block">
+                                <div class="card-body widget-user">
+                                    <div class="text-center">
+                                        <a href="{% url 'tr_status_tickets' tr_status %}">
+                                            <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                            <h5>{{ tr_status }}</h5></a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-            {% endif %}
-        {% endfor %}
+            </div>
+        </div>
     </div>
+
     <div class="row">
         <div class="col-xl-4">
             <div class="card">
