@@ -549,7 +549,6 @@ def convert_to_order(request, ticket_id):
             "<tr style='border-bottom: 3px solid #ddd;'>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
-            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
@@ -578,7 +577,7 @@ def convert_to_order(request, ticket_id):
         message = (
             f"Dear {handler},<br><br>"
             f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
-            f"Client: {order.client};"
+            f"Client: {order.client};<br><br>"
             f"Kindly order for below::<br><br>{table}<br><br>"
             "This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
@@ -645,7 +644,6 @@ def convert_quote_to_order(request, quote_id):
             "<tr style='border-bottom: 3px solid #ddd;'>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
-            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
@@ -674,7 +672,7 @@ def convert_quote_to_order(request, quote_id):
         message = (
             f"Dear {handler},<br><br>"
             f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
-            f"Client: {order.client};"
+            f"Client: {order.client};<br><br>"
             f"Kindly order for below::<br><br>{table}<br><br>"
             "This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
@@ -742,7 +740,6 @@ def create_order(request):
             "<tr style='border-bottom: 3px solid #ddd;'>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
-            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
@@ -771,7 +768,7 @@ def create_order(request):
         message = (
             f"Dear {handler},<br><br>"
             f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
-            f"Client: {order.client};"
+            f"Client: {order.client};<br><br>"
             f"Kindly order for below::<br><br>{table}<br><br>"
             "This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
@@ -784,7 +781,7 @@ def create_order(request):
         email_message.content_subtype = 'html'  # Set content type to HTML
         email_message.send()
 
-        messages.success(request, 'Ticket successfully converted to an order.')
+        messages.success(request, 'Order Created successfully.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
     return render(request, 'sales/convert_to_order.html', {'users': users})
