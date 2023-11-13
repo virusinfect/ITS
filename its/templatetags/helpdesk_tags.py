@@ -121,6 +121,13 @@ def can_access_view_invoice(user):
     except Group.DoesNotExist:
         return False
 
+@register.filter
+def can_access_store_dashboard(user):
+    try:
+        helpdesk_group = Group.objects.get(name='R_view_store_dashboard')
+        return helpdesk_group in user.groups.all()
+    except Group.DoesNotExist:
+        return False
 
 @register.filter
 def can_access_view_invoice(user):

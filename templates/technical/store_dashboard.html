@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Dashboard{% endblock %}
+{% block content %}
+    <div class="row">
+        <h5>Status</h5>
+        {% for bench_status, count in bench_status_counts.items %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'bench_status_tickets' "Bench" "Pending Benchwork" bench_status %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>{{ bench_status }} Benchwork</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% for site_status, count in site_status_counts.items %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'bench_status_tickets' "On-site" "Pending On-Site" site_status %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>{{ site_status }} Onsite</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% for status, count in status_counts.items %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'status_tickets' status "Open Tickets" %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>{{ status }} Tickets</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Your Tickets Overview</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="ticket-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-xl-4 h-50">
+            <div class="card h-50">
+                <div class="card-body h-50">
+                    <h4 class="header-title mt-0 mb-3">Service Overview</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="service-schedules-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-xl-4 h-50">
+            <div class="card h-50">
+                <div class="card-body h-50">
+                    <h4 class="header-title mt-0 mb-3">Requisitions Collected</h4>
+
+                    <div class="chartjs-chart">
+                        <canvas id="requisition-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div><!-- end col-->
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Array to map month numbers to month names
+        var monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        fetch('{% url 'requisitions_created_monthly_tech' %}')
+            .then(response => response.json())
+            .then(data => {
+                var labels = data.map(item => monthNames[item.month - 1]); // Map to month names
+                var requisitionCounts = data.map(item => item.count);
+
+                var ctx = document.getElementById('requisition-chart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Requisitions Collected',
+                            data: requisitionCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+{% endblock %}

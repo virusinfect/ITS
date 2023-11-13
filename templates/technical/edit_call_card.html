@@ -3,214 +3,220 @@
 {% block title %}Edit Call Card{% endblock %}
 {% block header %}Edit Call Card{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-6">
-        <div class="mb-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
 
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'active_call_cards' %}">Call Cards</a></li>
-                <li class="breadcrumb-item active">Edit Call Card</li>
-            </ol>
-        </div>
-    </div> <!-- end col -->
-</div>
-<div class="col-lg-8 mx-auto">
-    <div class="card">
-        <div class="card-body">
-            <h4 class="mb-3 header-title text-center">Edit Call Card</h4>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'active_call_cards' %}">Call Cards</a></li>
+                    <li class="breadcrumb-item active">Edit Call Card</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Edit Call Card</h4>
 
-            <form method="post">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="mb-3 col-lg-3">
-                        <label for="type" class="form-label">Call Type:</label>
-                        <select name="type" class="form-select">
-                            <option value="Remote" {% if call_card.type == "Remote" %}selected{% endif %}>Remote
-                            </option>
-                            <option value="On-site" {% if call_card.type == "On-site" %}selected{% endif %}>On
-                                Site
-                            </option>
-                        </select>
-                    </div>
-                    <div class="mb-3 col-lg-5">
-                        <label for="company_id" class="form-label">Company:</label>
-                        <input class="form-control" disabled value="{{ call_card.company }}">
-                    </div>
-                    <div class="mb-3 col-lg-4">
-                        <label for="client" class="form-label">Client:</label>
-                        <input class="form-control" value="{{ call_card.client }}" disabled>
-                    </div>
-
-                </div>
-
-
-                <div class="row">
-                    <div class="mb-3 col-lg-6">
-                        <label for="tech_id" class="form-label">Technician:</label>
-                        <select class="form-select" name="tech_id" id="tech_id">
-                            <option value="">{{ call_card.tech_id }}</option>
-                            {% for user in technicians %}
-                                <option value="{{ user.id }}"
-                                        {% if user.id == call_card.tech_id.id %}selected{% endif %}>
-                                    {{ user.username }}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="mb-3 col-lg-3">
+                            <label for="type" class="form-label">Call Type:</label>
+                            <select name="type" class="form-select">
+                                <option value="Remote" {% if call_card.type == "Remote" %}selected{% endif %}>Remote
                                 </option>
-                            {% endfor %}
+                                <option value="On-site" {% if call_card.type == "On-site" %}selected{% endif %}>On
+                                    Site
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-5">
+                            <label for="company_id" class="form-label">Company:</label>
+                            <input class="form-control" disabled value="{{ call_card.company }}">
+                        </div>
+                        <div class="mb-3 col-lg-4">
+                            <label for="client" class="form-label">Client:</label>
+                            <input class="form-control" value="{{ call_card.client }}" disabled>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <label for="tech_id" class="form-label">Technician:</label>
+                            <select class="form-select" name="tech_id" id="tech_id">
+                                <option value="">{{ call_card.tech_id }}</option>
+                                {% for user in technicians %}
+                                    <option value="{{ user.id }}"
+                                            {% if user.id == call_card.tech_id.id %}selected{% endif %}>
+                                        {{ user.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+
+                        <div class="mb-3 col-lg-6">
+                            <label for="equipment" class="form-label">Equipment:</label>
+                            <input type="text" class="form-control" name="equipment" value="{{ call_card.equipment }}"
+                                   required>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <label for="time_in" class="form-label">Time In:</label>
+                            <input type="time" class="form-control" name="time_in"
+                                   value="{{ call_card.time_in|time:'H:i' }}" required>
+                        </div>
+
+
+                        <div class="mb-3 col-lg-6">
+                            <label for="time_out" class="form-label">Time Out:</label>
+                            <input type="time" class="form-control" name="time_out" required
+                                   value="{{ call_card.time_out|time:'H:i' }}">
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="fault" class="form-label">Fault:</label>
+                        <textarea class="form-control" name="fault" id="fault" rows="4"
+                                  required>{{ call_card.fault }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="remarks" class="form-label">Remarks:</label>
+                        <textarea class="form-control" name="remarks" required id="remarks"
+                                  rows="4">{{ call_card.remarks }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Call Card Status:</label>
+                        <select name="status" class="form-select">
+                            <option value="Pending" {% if call_card.status == "Pending" %}selected{% endif %}>Pending
+                            </option>
+                            <option value="Done" {% if call_card.status == "Done" %}selected{% endif %}>Done
+                            </option>
                         </select>
                     </div>
-
-
-                    <div class="mb-3 col-lg-6">
-                        <label for="equipment" class="form-label">Equipment:</label>
-                        <input type="text" class="form-control" name="equipment" value="{{ call_card.equipment }}"
-                               required>
+                    <div class="mt-3">
+                        <h5>Signature:</h5>
+                        <div class="col-lg-4 col-sm-6">
+                            {% if signature %}
+                                <div class="row mx-auto">
+                                    <div class="card">
+                                        <img src="{{ signature.signature_image.url }}" width="400"
+                                             class="card border border-primary mt-1 mx-auto"
+                                             alt="Signature">
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="row mx-auto">
+                                    <div class="card">
+                                        <canvas id="signature-pad" width="400" height="200"
+                                                class="card border border-primary mt-1 mx-auto"></canvas>
+                                        <input type="hidden" id="cc_id" value="{{ call_card.cc_id }}">
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
 
-                </div>
-                <div class="row">
-                    <div class="mb-3 col-lg-6">
-                        <label for="time_in" class="form-label">Time In:</label>
-                        <input type="time" class="form-control" name="time_in"
-                               value="{{ call_card.time_in|time:'H:i' }}" required>
-                    </div>
 
+                    <button type="submit" class="btn btn-primary waves-effect waves-light mt-2">Update Call Card
+                    </button>
+                </form><!-- Add a "Clear Signature" button -->
+                {% if not signature %}
+                    <button id="clear-signature" class="btn btn-secondary waves-effect waves-light me-1 mt-2"><span
+                            class="btn-label"><i
+                            class="mdi mdi-eraser-variant"></i></span>Clear Signature
+                    </button>
+                    <button id="save-signature"
+                            class="btn btn-warning waves-effect waves-light me-1 mt-2"><span class="btn-label"><i
+                            class="mdi mdi-signature-freehand"></i></span>Submit Signature
+                    </button>
+                {% endif %}
 
-                    <div class="mb-3 col-lg-6">
-                        <label for="time_out" class="form-label">Time Out:</label>
-                        <input type="time" class="form-control" name="time_out" required
-                               value="{{ call_card.time_out|time:'H:i' }}">
-                    </div>
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 
-                </div>
+    <script>
+        $(document).ready(function () {
+            var canvas = document.getElementById('signature-pad');
+            var signaturePad = new SignaturePad(canvas);
+            var ccId = $('#cc_id').val();  // Get the delivery ID from the hidden input field
 
+            // Function to clear the signature
+            function clearSignature() {
+                signaturePad.clear();
+            }
 
-                <div class="mb-3">
-                    <label for="fault" class="form-label">Fault:</label>
-                    <textarea class="form-control" name="fault" id="fault" rows="4"
-                              required>{{ call_card.fault }}</textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="remarks" class="form-label">Remarks:</label>
-                    <textarea class="form-control" name="remarks" required id="remarks"
-                              rows="4">{{ call_card.remarks }}</textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="status" class="form-label">Call Card Status:</label>
-                    <select name="status" class="form-select">
-                        <option value="Pending" {% if call_card.status == "Pending" %}selected{% endif %}>Pending
-                        </option>
-                        <option value="Done" {% if call_card.status == "Done" %}selected{% endif %}>Done
-                        </option>
-                    </select>
-                </div>
-                <div class="mt-3">
-                    <h5>Signature:</h5>
-                    <div class="col-lg-4 col-sm-6">
-                        {% if signature %}
-                            <div class="shadow border-lg bg-body-tertiary rounded">
-                                <img src="{{ signature.signature_image.url }}" width="400" class="card-img-top mb-3"
-                                     alt="Signature">
-                            </div>
-                        {% else %}
-                            <canvas id="signature-pad"
-                                    class="card border shadow-lg bg-body-tertiary rounded mt-2 mx-auto" width="400"
-                                    height="250"></canvas>
-                            <input type="hidden" id="cc_id" value="{{ call_card.cc_id }}">
-                        {% endif %}
-                    </div>
-                </div>
-
-
-                <button type="submit" class="btn btn-primary waves-effect waves-light mt-2">Update Call Card
-                </button>
-            </form><!-- Add a "Clear Signature" button -->
-            {% if not signature %}
-            <button id="clear-signature" class="btn btn-secondary waves-effect waves-light me-1 mt-2"><span
-                    class="btn-label"><i
-                    class="mdi mdi-eraser-variant"></i></span>Clear Signature
-            </button>
-            <button id="save-signature"
-                    class="btn btn-warning waves-effect waves-light me-1 mt-2"><span class="btn-label"><i
-                    class="mdi mdi-signature-freehand"></i></span>Submit Signature
-            </button>
-            {% endif %}
-
-        </div> <!-- end card-body-->
-    </div> <!-- end card-->
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
-
-<script>
-    $(document).ready(function () {
-        var canvas = document.getElementById('signature-pad');
-        var signaturePad = new SignaturePad(canvas);
-        var ccId = $('#cc_id').val();  // Get the delivery ID from the hidden input field
-
-        // Function to clear the signature
-        function clearSignature() {
-            signaturePad.clear();
-        }
-
-        $('#save-signature').click(function () {
-            var signatureData = signaturePad.toDataURL();
-            $.ajax({
-                url: '/save-signature-view-call/',  // Replace with the actual URL
-                method: 'POST',
-                data: {
-                    signature_data: signatureData,
-                    cc_id: ccId  // Include the delivery ID in the data
-                },
-                success: function (response) {
-                    // Check if the response indicates success (you can define this)
-                    if (response.success) {
-                        toastr.success("Signature submitted successfully ", "Signature ");
-                        location.reload();
-                    } else {
-                        // Handle failure if needed
+            $('#save-signature').click(function () {
+                var signatureData = signaturePad.toDataURL();
+                $.ajax({
+                    url: '/save-signature-view-call/',  // Replace with the actual URL
+                    method: 'POST',
+                    data: {
+                        signature_data: signatureData,
+                        cc_id: ccId  // Include the delivery ID in the data
+                    },
+                    success: function (response) {
+                        // Check if the response indicates success (you can define this)
+                        if (response.success) {
+                            toastr.success("Signature submitted successfully ", "Signature ");
+                            location.reload();
+                        } else {
+                            // Handle failure if needed
+                        }
                     }
-                }
-            });
-        });
-
-        // Attach the clearSignature function to the "Clear Signature" button
-        $('#clear-signature').click(clearSignature);
-    });
-</script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    const companyDropdown = document.getElementById("company");
-    const clientDropdown = document.getElementById("client");
-
-    companyDropdown.addEventListener("change", () => {
-        // Fetch clients based on the selected company
-        const selectedCompanyId = companyDropdown.value;
-        if (selectedCompanyId) {
-            fetch(`/get-clients/${selectedCompanyId}/`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    clientDropdown.innerHTML = '<option value="" selected disabled>Select a Client</option>';
-                    data.clients.forEach(client => {
-                        const option = document.createElement("option");
-                        option.value = client.id;
-                        option.textContent = client.f_name;
-                        clientDropdown.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
                 });
-        } else {
-            // Clear the client dropdown if no company is selected
-            clientDropdown.innerHTML = '<option value="" selected disabled>Select a Client</option>';
-        }
-    });
-</script>
+            });
+
+            // Attach the clearSignature function to the "Clear Signature" button
+            $('#clear-signature').click(clearSignature);
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const companyDropdown = document.getElementById("company");
+        const clientDropdown = document.getElementById("client");
+
+        companyDropdown.addEventListener("change", () => {
+            // Fetch clients based on the selected company
+            const selectedCompanyId = companyDropdown.value;
+            if (selectedCompanyId) {
+                fetch(`/get-clients/${selectedCompanyId}/`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Network response was not ok: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        clientDropdown.innerHTML = '<option value="" selected disabled>Select a Client</option>';
+                        data.clients.forEach(client => {
+                            const option = document.createElement("option");
+                            option.value = client.id;
+                            option.textContent = client.f_name;
+                            clientDropdown.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                // Clear the client dropdown if no company is selected
+                clientDropdown.innerHTML = '<option value="" selected disabled>Select a Client</option>';
+            }
+        });
+    </script>
 {% endblock %}

@@ -299,6 +299,14 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if user|can_access_store_dashboard or user|is_store %}
+                        <li>
+                            <a href="{% url 'store_dashboard' %}">
+                                <i class="mdi mdi-view-dashboard"></i>
+                                <span>Store Dashboard</span>
+                            </a>
+                        </li>
+                    {% endif %}
                     {% if user|is_tech %}
                         <li>
                             <a href="{% url 'tech_dashboard' %}">
