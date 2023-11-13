@@ -1,9 +1,10 @@
 from datetime import datetime
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.core.mail import EmailMessage
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
@@ -257,7 +258,7 @@ def edit_order(request, order_id):
             # Delete old order data
         OrderProducts.objects.filter(orders=order).delete()
 
-            # Insert the new data
+        # Insert the new data
         OrderProducts.objects.bulk_create(new_sourcing_data)
 
         messages.success(request, 'Order Edited successfully')
@@ -543,10 +544,58 @@ def convert_to_order(request, ticket_id):
                     order_product.date_ordered = date_ordered_list[i]
                     order_product.save()
 
+        table = (
+            "<table style='border-collapse: collapse; width: 100%;'>"
+            "<tr style='border-bottom: 3px solid #ddd;'>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
+            "</tr>"
+        )
+
+        for i in range(len(product_list)):
+            if product_list[i]:
+                row = (
+                    "<tr>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{product_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{quantity_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_ordered_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_received_list[i]}</td>"
+                    "</tr>"
+                )
+                table += row
+
+        table += "</table>"
+
+        # Your existing code to create new_sourcing_data objects
+        url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
+        clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
+        # Use the 'table' string in the email message
+        message = (
+            f"Dear {handler},<br><br>"
+            f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+            f"Client: {order.client};"
+            f"Kindly order for below::<br><br>{table}<br><br>"
+            "This is an auto-generated email | © 2023 ITS. All rights reserved."
+        )
+        subject = f"ORDER: SO-{order.o_id}"
+        recipient_list = [handler.email]
+        from_email = 'its-noreply@intellitech.co.ke'
+
+        # Create an EmailMessage instance for HTML content
+        email_message = EmailMessage(subject, message, from_email, recipient_list)
+        email_message.content_subtype = 'html'  # Set content type to HTML
+        email_message.send()
+
         messages.success(request, 'Ticket successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
     return render(request, 'sales/convert_to_order.html', {'ticket': ticket, 'users': users})
+
 
 @login_required
 def convert_quote_to_order(request, quote_id):
@@ -591,10 +640,58 @@ def convert_quote_to_order(request, quote_id):
                     order_product.date_ordered = date_ordered_list[i]
                     order_product.save()
 
-        messages.success(request, 'Ticket successfully converted to an order.')
+        table = (
+            "<table style='border-collapse: collapse; width: 100%;'>"
+            "<tr style='border-bottom: 3px solid #ddd;'>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
+            "</tr>"
+        )
+
+        for i in range(len(product_list)):
+            if product_list[i]:
+                row = (
+                    "<tr>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{product_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{quantity_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_ordered_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_received_list[i]}</td>"
+                    "</tr>"
+                )
+                table += row
+
+        table += "</table>"
+
+        # Your existing code to create new_sourcing_data objects
+        url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
+        clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
+        # Use the 'table' string in the email message
+        message = (
+            f"Dear {handler},<br><br>"
+            f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+            f"Client: {order.client};"
+            f"Kindly order for below::<br><br>{table}<br><br>"
+            "This is an auto-generated email | © 2023 ITS. All rights reserved."
+        )
+        subject = f"ORDER: SO-{order.o_id}"
+        recipient_list = [handler.email]
+        from_email = 'its-noreply@intellitech.co.ke'
+
+        # Create an EmailMessage instance for HTML content
+        email_message = EmailMessage(subject, message, from_email, recipient_list)
+        email_message.content_subtype = 'html'  # Set content type to HTML
+        email_message.send()
+
+        messages.success(request, 'Quote successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
     return render(request, 'sales/convert_quote_to_order.html', {'quote': quote, 'users': users})
+
 
 @login_required
 def create_order(request):
@@ -639,6 +736,53 @@ def create_order(request):
                 if date_ordered_list[i]:
                     order_product.date_ordered = date_ordered_list[i]
                     order_product.save()
+
+        table = (
+            "<table style='border-collapse: collapse; width: 100%;'>"
+            "<tr style='border-bottom: 3px solid #ddd;'>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
+            "</tr>"
+        )
+
+        for i in range(len(product_list)):
+            if product_list[i]:
+                row = (
+                    "<tr>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{product_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{quantity_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_ordered_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_received_list[i]}</td>"
+                    "</tr>"
+                )
+                table += row
+
+        table += "</table>"
+
+        # Your existing code to create new_sourcing_data objects
+        url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
+        clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
+        # Use the 'table' string in the email message
+        message = (
+            f"Dear {handler},<br><br>"
+            f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+            f"Client: {order.client};"
+            f"Kindly order for below::<br><br>{table}<br><br>"
+            "This is an auto-generated email | © 2023 ITS. All rights reserved."
+        )
+        subject = f"ORDER: SO-{order.o_id}"
+        recipient_list = [handler.email]
+        from_email = 'its-noreply@intellitech.co.ke'
+
+        # Create an EmailMessage instance for HTML content
+        email_message = EmailMessage(subject, message, from_email, recipient_list)
+        email_message.content_subtype = 'html'  # Set content type to HTML
+        email_message.send()
 
         messages.success(request, 'Ticket successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
@@ -926,7 +1070,6 @@ def convert_to_invoice(request, ticket_id):
         availability_list = request.POST.getlist('availability[]')
         price_list = request.POST.getlist('price[]')
 
-
         for i in range(len(part_no_list)):
             order_product = ProformaInvoiceProducts(
                 part_no=part_no_list[i],
@@ -1070,7 +1213,6 @@ def quote(request, quote_id):
                 subtotals = item.total
                 item.vat = 0
                 item.total_amount = round(item.total + item.vat)
-
 
     return render(request, 'sales/quote.html', {'quote': quote, 'items': items, 'subtotals': subtotals, 'vat': vat,
                                                 'total_amount': total_amount})
