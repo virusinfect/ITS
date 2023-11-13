@@ -146,13 +146,14 @@
             }
         });
         $(document).ready(function () {
+            var canvas = document.getElementById('signature-pad');
+            var signaturePad = new SignaturePad(canvas);
             // Function to clear the signature
             function clearSignature() {
                 signaturePad.clear();
             }
             $('#save-signature').click(function () {
-                var canvas = document.getElementById('signature-pad');
-                var signaturePad = new SignaturePad(canvas);
+
                 var serialNo = $('#serial_no').val();
                 var typeNo = $('#type').val();
                 var companyNo = $('#company').val();
