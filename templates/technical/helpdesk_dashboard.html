@@ -70,24 +70,24 @@
         {% endfor %}
     </div>
     <div class="row">
-        {% if req_status_counts %}
-            <div class="col">
-                <h5>Requisitions</h5>
-                {% for req_status, count in req_status_counts.items %}
-                    {% if count != 0 %}
-                        <div class="card">
-                            <div class="card-body widget-user">
-                                <div class="text-center">
-                                    <a href="{% url 'pending_requisitions' req_status %}">
-                                        <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
-                                        <h5>{{ req_status }}</h5></a>
-                                </div>
+        {% for req_status, count in req_status_counts.items %}
+            {% if count != 0 %}
+                <div class="col">
+                    <h5>Requisitions</h5>
+
+                    <div class="card">
+                        <div class="card-body widget-user">
+                            <div class="text-center">
+                                <a href="{% url 'pending_requisitions' req_status %}">
+                                    <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                    <h5>{{ req_status }}</h5></a>
                             </div>
                         </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
         <div class="col">
             <h5>Technical Report Status</h5>
             <div class="row">
@@ -109,19 +109,16 @@
             </div>
         </div>
     </div>
-
     <div class="row">
         <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title mt-0 mb-3">Tickets Overview</h4>
-
                     <div class="chartjs-chart">
                         <canvas id="ticket-chart" height="200"></canvas>
                     </div>
                 </div>
             </div>
-
         </div>
         <div class="col-xl-4 h-50">
             <div class="card h-50">
@@ -133,7 +130,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <div class="col-xl-4 h-50">
             <div class="card h-50">
@@ -145,20 +141,16 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div><!-- end col-->
-
     <div class="row">
         <div class="col-xl-3">
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title mt-0 mb-3">Technical Reports</h4>
-
                     <div class="chartjs-chart">
                         <canvas id="tr-status-pie-chart" height="200"></canvas>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -166,11 +158,9 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title mt-0 mb-3">Ticket Remarks</h4>
-
                     <div class="chartjs-chart">
                         <canvas id="remark-pie-chart" height="200"></canvas>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -178,11 +168,9 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title mt-0 mb-3">Bench Status This Month(%)</h4>
-
                     <div class="chartjs-chart">
                         <canvas id="bench-status-pie-chart" height="200"></canvas>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -190,25 +178,19 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title mt-0 mb-3">Ticket Status This Month(%)</h4>
-
                     <div class="chartjs-chart">
                         <canvas id="status-pie-chart" height="200"></canvas>
                     </div>
-
                 </div>
             </div>
         </div>
-
-
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script>
         var monthNames = [
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ];
-
         fetch('{% url 'tickets_created_monthly_this_year' %}')
             .then(response => response.json())
             .then(data => {
