@@ -197,7 +197,6 @@
             </div>
             <img src="{% static 'tr_footer.png' %}" id="footer-image" class="mb-1">
         </section>
-
     </div>
     <a type="button" class="btn btn-primary waves-effect waves-light  me-1" id="print-button">
         <span class="btn-label"><i class="mdi mdi-printer"></i></span>Print
@@ -206,7 +205,6 @@
         document.getElementById('print-button').addEventListener('click', function () {
             printDeliveryNote();
         });
-
         function printDeliveryNote() {
             var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
             var originalContents = document.body.innerHTML;

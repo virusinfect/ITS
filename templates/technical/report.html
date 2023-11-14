@@ -99,71 +99,19 @@
                         </table>
                     </div>
                 </div>
-                {% if tquote_data %}
-                    <div class="row">
-                        <div class="card">
-                            <div class="mt-1">
-                                <div class="table-responsive">
 
-                                    <table class="table table-bordered">
-                                        <thead class="table-light">
-                                        <tr>
-                                            <th class="text-center" colspan="5">
-                                                NEW PRODUCT QUOTE
-                                            </th>
-                                        </tr>
-                                        <tr>
-
-                                            <th>Description</th>
-                                            <th>Part Number</th>
-                                            <th>Price</th>
-                                            <th>Qty</th>
-                                            <th>Amount</th>
-                                            <!-- Add more headers for other fields -->
-                                        </tr>
-                                        </thead>
-                                        <tbody id="table-body">
-                                        {% for item in tquote_data %}
-                                            <tr data-entry-id="{{ item.id }}">
-
-                                                <td>{{ item.description }}</td>
-                                                <td>{{ item.part_no }}</td>
-                                                <td>{{ item.price }}</td>
-                                                <td>{{ item.quantity }}</td>
-                                                <td>{{ item.total }}</td>
-                                                <!-- Add more cells for other fields -->
-                                            </tr>
-                                        {% endfor %}
-                                        <tr>
-                                            <td colspan="4" class="text-end">SUBTOTALS</td>
-                                            <td colspan="4">{{ quote_subtotals }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="4" class="text-end text-danger">VAT</td>
-                                            <td colspan="4" class="text-danger">{{ quote_vat }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="4" class="text-end">TOTAL AMOUNT</td>
-                                            <td colspan="4">{{ quote_total_amount }}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div> <!-- end col -->
-                        </div>
-                    </div>
-                {% endif %}
                 <div class="row">
                     <div class="row mb-1 mt-1 table-responsive">
                         <table class="table table-bordered">
                             <thead class="table-light">
                             <tr>
-                                <th colspan="4" class="text-center">QUOTATION</th>
+                                <th colspan="5" class="text-center">QUOTATION</th>
                             </tr>
                             <tr>
-                                <th>Item</th>
+                                <th>Part Number</th>
+                                <th>Description</th>
                                 <th>Price</th>
-                                <th>Quantity</th>
+                                <th>Qty</th>
                                 <th>Amount</th>
 
                             </tr>
@@ -174,34 +122,42 @@
                                 {% for requisition in parts %}
                                     <tr>
                                         <td>{{ requisition.part.code }}</td>
+                                        <td>{{ requisition.part.description }}</td>
+                                        <td>{{ requisition.price|floatformat:2 }}</td>
                                         <td>{{ requisition.quantity }}</td>
-                                        <td>{{ requisition.price }}</td>
-                                        <td>{{ requisition.total }}</td>
+                                        <td class="text-end">{{ requisition.total|floatformat:2 }}</td>
                                     </tr>
                                 {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td class="text-center" colspan="4">
-                                        <h4>No Parts Used</h4>
-                                    </td>
-                                </tr>
 
                             {% endif %}
+                            {% if tquote_data %}
+                                {% for item in tquote_data %}
+                                    <tr data-entry-id="{{ item.id }}">
+
+                                        <td>{{ item.description }}</td>
+                                        <td>{{ item.part_no }}</td>
+                                        <td>{{ item.price|floatformat:2 }}</td>
+                                        <td>{{ item.quantity|floatformat:0 }}</td>
+                                        <td class="text-end">{{ item.total|floatformat:2 }}</td>
+                                        <!-- Add more cells for other fields -->
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
                             <tr>
-                                <td colspan="3" class="text-end">LABOUR</td>
-                                <td colspan="3">{{ ticket.labour }}</td>
+                                <td colspan="4" class="text-end">LABOUR</td>
+                                <td colspan="4" class="text-end">{{ ticket.labour|floatformat:2 }}</td>
                             </tr>
                             <tr>
-                                <td colspan="3" class="text-end">SUBTOTALS</td>
-                                <td colspan="3">{{ subtotals }}</td>
+                                <td colspan="4" class="text-end">SUBTOTALS</td>
+                                <td colspan="4" class="text-end">{{ subtotals|floatformat:2 }}</td>
                             </tr>
                             <tr>
-                                <td colspan="3" class="text-end text-danger">VAT</td>
-                                <td colspan="3" class="text-danger">{{ vat }}</td>
+                                <td colspan="4" class="text-end text-danger">VAT</td>
+                                <td colspan="4" class="text-danger text-end">{{ vat|floatformat:2 }}</td>
                             </tr>
                             <tr>
-                                <td colspan="3" class="text-end">TOTAL AMOUNT</td>
-                                <td colspan="3">{{ total_amount }}</td>
+                                <td colspan="4" class="text-end">TOTAL AMOUNT</td>
+                                <td colspan="4  " class="text-end">{{ total_amount|floatformat:2 }}</td>
                             </tr>
                             </tbody>
                         </table>

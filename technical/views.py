@@ -1488,24 +1488,21 @@ def report(request, report_id):
     report = get_object_or_404(TechnicalReport, pk=report_id)
 
     # Retrieve the associated ticket
+    subtotals=0
     ticket = report.ticket
-    quote_subtotals = 0
-    quote_vat = 0
-    quote_total_amount = 0
-
+    subtotals = ticket.labour
+    vat = 0
     try:
         tquote_data = tQuote.objects.filter(ticket=ticket)
         for item in tquote_data:
             item.total = item.quantity * item.price
-            quote_subtotals += item.total
-            quote_vat = round(quote_subtotals * 0.16)
-            quote_total_amount = quote_subtotals + quote_vat
+            subtotals += item.total
+
 
     except tQuote.DoesNotExist:
         tquote_data = None
 
-    subtotals = ticket.labour
-    vat = 0
+
 
     try:
         parts = Requisition.objects.filter(ticket=ticket, is_active=True, issue_status="Issue")
@@ -1519,8 +1516,7 @@ def report(request, report_id):
     total_amount = subtotals + vat
     return render(request, 'technical/report.html',
                   {'ticket': ticket, 'tquote_data': tquote_data, 'parts': parts, 'vat': vat,
-                   'total_amount': total_amount, 'subtotals': subtotals, 'quote_subtotals': quote_subtotals,
-                   'quote_total_amount': quote_total_amount, 'quote_vat': quote_vat, 'report': report})
+                   'total_amount': total_amount, 'subtotals': subtotals, 'report': report})
 
 
 class TechnicalReportListView(ListView):
