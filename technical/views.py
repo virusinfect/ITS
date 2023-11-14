@@ -352,7 +352,8 @@ def delivery_list(request):
 
 @login_required
 def edit_ticket(request, ticket_id):
-    users = User.objects.all()
+    technician_group = Group.objects.get(name='Technician')
+    users = technician_group.user_set.filter(is_active=True)
     companies = Company.objects.all().order_by("name")
     ticket = get_object_or_404(Tickets, ticket_id=ticket_id)
     product_details = ProductDetail.objects.filter(ticket=ticket.ticket_id)
