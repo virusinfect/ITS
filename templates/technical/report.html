@@ -14,7 +14,6 @@
                         <img src="{% static 'logo black.png' %}" alt="Company Logo" width="150">
                     </div>
                     <div class="col-6 text-end mt-1" style="font-size: 9px;">
-
                         <small style="font-size:10px">Ground Floor, Corporate Insurance Building </small><br>
                         <small style="font-size:10px">Yusuf A. Karim Rd, East End, Treasury Square </small><br>
                         <small style="font-size:10px"> P.O. Box 42716 - 80100,</small><br>
@@ -31,18 +30,15 @@
                 </div>
                 <div class="row mt-1 mx-auto">
                     <div class="col-6 ">
-
                         <h4 style="font-size:10px">Client Information</h4>
                         <small style="font-size:10px">TO : {{ ticket.company }} / {{ ticket.client }}</small><br>
                         <small style="font-size:10px"> ADDRESS : {{ ticket.company.address }}</small><br><br>
-
                     </div>
                     <div class="col-6 text-end">
                         <h4 style="font-size:10px">Report Details</h4>
                         <small style="font-size:10px">REF :
                             ITL/TR-{{ ticket.created|date:"d/m/Y" }}/{{ ticket.ticket_id }}</small><br>
                         <small style="font-size:10px">Ticket No: : ITL/TN/{{ ticket.ticket_id }}</small><br>
-
                     </div>
                 </div>
                 <div class="row mt-1 ">
@@ -99,7 +95,6 @@
                         </table>
                     </div>
                 </div>
-
                 <div class="row mx-auto">
                     <div class="row mb-1 mt-1 table-responsive mx-auto">
                         <table class="table table-bordered">
@@ -116,7 +111,6 @@
 
                             </tr>
                             </thead>
-
                             <tbody>
                             {% if parts %}
                                 {% for requisition in parts %}
@@ -128,7 +122,6 @@
                                         <td>{{ requisition.total|floatformat:2 }}</td>
                                     </tr>
                                 {% endfor %}
-
                             {% endif %}
                             {% if tquote_data %}
                                 {% for item in tquote_data %}
@@ -160,12 +153,11 @@
                             </tr>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
                 <div class="row">
                     <div class="">
-                        <p>
+                        <p>Add 16% VAT ON ALL PRODUCTS</p>
                         <p>Stock position changes daily. Kindly confirm availability before placing your order.</p>
                         <p><strong>VALIDITY:</strong><br>
                             This Quote is Valid for 7 days from the date indicated above.</p>
@@ -174,12 +166,10 @@
                             IT SUPPORT - INTELLITECH LTD</p>
                         </p>
                     </div>
-
                 </div>
             </div>
             <img src="{% static 'tr_footer.png' %}" id="footer-image">
         </div>
-
     </div>
     <div class="card p-4">
         <div class="row">
@@ -213,14 +203,11 @@
                                 </button>
                             </div>
                         </div>
-
                     </form>
-
                 </div>
             {% endif %}
         </div>
     </div>
-
     <div>
         <a href="{% url 'edit-ticket' ticket.ticket_id %}" class="btn btn-primary"><span class="btn-label"><i
                 class="mdi mdi-square-edit-outline"></i></span> Edit Ticket
@@ -234,12 +221,10 @@
         <a id="print-button" class="btn btn-primary waves-effect waves-light me-1"><span class="btn-label"><i
                 class="mdi mdi-printer"></i></span>Print</a>
     </div>
-
     <script>
         document.getElementById('print-button').addEventListener('click', function () {
             printDeliveryNote();
         });
-
         function printDeliveryNote() {
             var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
             var originalContents = document.body.innerHTML;
@@ -276,5 +261,4 @@
             document.head.removeChild(style);
         }
     </script>
-
 {% endblock %}
