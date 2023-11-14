@@ -535,7 +535,8 @@ def create_delivery(request, ticket_id):
 
         # Assuming you have a Ticket model
         for quantity, serial_no, particulars in zip(quantity_list, serial_no_list, particulars_list):
-            Items.objects.create(delivery=new_delivery,quantity=quantity, serial_no=serial_no, particulars=particulars)
+            if particulars:
+                Items.objects.create(delivery=new_delivery,quantity=quantity, serial_no=serial_no, particulars=particulars)
 
         messages.success(request, 'Delivery Created successfully')
         # Redirect to the ticket details page or a success page
