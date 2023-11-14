@@ -827,7 +827,7 @@ def create_ticket(request):
         new_sourcing_data = []
 
         for i in range(len(part_no_list)):
-            if (part_no_list[i] and desc_list[i]):
+            if (part_no_list[i]):
                 products = SalesTicketProducts(
                     part_no=part_no_list[i],
                     description=desc_list[i],
