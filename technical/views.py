@@ -1464,7 +1464,7 @@ def generate_report(request, ticket_id):
         report = TechnicalReport.objects.get(ticket=ticket)
     except TechnicalReport.DoesNotExist:
         # If no report exists, generate one (you can customize this logic)
-        report = TechnicalReport.objects.create(ticket=ticket, report_text="Generated report text")
+        report = TechnicalReport.objects.create(ticket=ticket, report_text="Generated report text",is_approved=0)
         messages.success(request, 'Report Generated successfully')
 
     # Redirect to the ticket's URL
