@@ -1397,6 +1397,14 @@ def delete_entry(request, entry_id):
     except Tsourcing.DoesNotExist:
         return JsonResponse({'error': 'Entry not found'}, status=404)
 
+@login_required
+def delete_entry_quote(request, entry_id):
+    try:
+        entry = tQuote.objects.get(id=entry_id)  # Replace YourModel with the appropriate model name
+        entry.delete()
+        return JsonResponse({'message': 'Entry deleted successfully'})
+    except Tsourcing.DoesNotExist:
+        return JsonResponse({'error': 'Entry not found'}, status=404)
 
 @login_required
 def copy_to_quote(request, entry_id):

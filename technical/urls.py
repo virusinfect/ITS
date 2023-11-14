@@ -41,6 +41,7 @@ urlpatterns = [
     path('sourcing_ticket/<int:ticket_id>/delete/', views.sourcing_tickets, name='sourcing_ticket'),
     path('quote_ticket/<int:ticket_id>/delete/', views.quote_tickets, name='quote_ticket'),
     path('delete-entry/<int:entry_id>/', views.delete_entry, name='delete-entry'),
+    path('delete-entry-quote/<int:entry_id>/', views.delete_entry_quote, name='delete-entry-quote'),
     path('copy-to-quote/<int:entry_id>/', views.copy_to_quote, name='copy-to-quote'),
     path('report/<int:report_id>/', views.report, name='report'),
     path('create_format_approval/<int:ticket_id>/', views.create_format_approval, name='create_format_approval'),

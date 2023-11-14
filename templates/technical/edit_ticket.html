@@ -449,7 +449,7 @@
                                                         </option>
                                                     </select></td>
 
-                                                    <td><a href="#" class="delete-entry" title="delete" tabindex="0"
+                                                    <td><a href="#" class="delete-entry-quote" title="delete" tabindex="0"
                                                            data-plugin="tippy" data-tippy-interactive="true">
                                                         <i class="  mdi mdi-delete-outline mdi-18px"></i>
                                                     </a></td>
@@ -478,7 +478,7 @@
                                         </table>
 
                                         <div class="mt-3">
-                                            <button type="button" id="add-row-button"
+                                            <button type="button" id="add-row-button-quote"
                                                     class="btn btn-primary waves-effect waves-light">Add Row
                                             </button>
 
@@ -714,6 +714,36 @@
             var newRow = document.createElement('tr');
 
             // Create new input fields for each column
+            var columns = ['description', 'part_no', 'price', 'quantity', 'currency'];
+            for (var i = 0; i < columns.length; i++) {
+                var cell = document.createElement('td');
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.name = columns[i] + '[]'; // Ensure the name matches the POST data
+                input.className = 'form-control';
+
+                // Set a default value for the "price" input
+                if (columns[i] === 'price') {
+                    input.value = '0.00'; // You can set your desired default price here
+                }
+                if (columns[i] === 'qty') {
+                    input.value = '0'; // You can set your desired default price here
+                }
+
+                cell.appendChild(input);
+                newRow.appendChild(cell);
+            }
+
+            // Append the new row to the table
+            tableBody.appendChild(newRow);
+        });
+    </script>
+    <script>
+        document.getElementById('add-row-button-quote').addEventListener('click', function () {
+            var tableBody = document.getElementById('table-body');
+            var newRow = document.createElement('tr');
+
+            // Create new input fields for each column
             var columns = ['desc', 'part_no', 'price', 'qty', 'currency', 'availability', 'supplier', 'att'];
             for (var i = 0; i < columns.length; i++) {
                 var cell = document.createElement('td');
@@ -738,7 +768,45 @@
             tableBody.appendChild(newRow);
         });
     </script>
+    <script>
+        document.querySelectorAll('.delete-entry-quote').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var row = this.closest('tr');
+                var entryId = row.getAttribute('data-entry-id');
 
+                // Send an AJAX request to delete the entry
+                fetch('/technical/delete-entry-quote/' + entryId + '/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+                    },
+                }).then(function (response) {
+                    if (response.ok) {
+
+                        row.remove();
+                    } else {
+                        // Handle any errors here
+                    }
+                });
+            });
+        });
+
+        // Function to get the CSRF token from cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
     <script>
         document.querySelectorAll('.delete-entry').forEach(function (button) {
             button.addEventListener('click', function () {
