@@ -846,24 +846,7 @@ def create_ticket(request):
         # Insert the new data
         SalesTicketProducts.objects.bulk_create(new_sourcing_data)
 
-        user = request.user
-        # Create a new Task instance without saving it
-        new_task = Task(
-            title="Ticket for " + str(ticket.company) + ", Ticket NO : #" + str(ticket.ticket_id),
-            description="You have been assigned Ticket for " + str(ticket.company) + " description " + str(
-                ticket.issue_summary),
-            is_active=True,
-            status="In Progress",
-            user=ticket.handler,
-            creator=user,
 
-        )
-
-        # Save the new_task instance
-        new_task.save()
-
-        ticket.task = new_task
-        ticket.save()
 
         table = (
             "<table style='border-collapse: collapse; width: 100%;'>"
