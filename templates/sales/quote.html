@@ -81,11 +81,11 @@
                                             <th class="text-danger" colspan="5" style="text-align: right;">ADD VAT 16%
                                             </th>
                                             <td class="text-danger"
-                                                style="text-align: right;">{{ vat }}</td>
+                                                style="text-align: right;">{{ vat|floatformat:2 }}</td>
                                         </tr>
                                         <tr>
                                             <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
-                                            <td style="text-align: right;">{{ total_amount }}</td>
+                                            <td style="text-align: right;">{{ total_amount|floatformat:2 }}</td>
                                         </tr>
 
                                         </tbody>
@@ -127,11 +127,11 @@
                                             <th class="text-danger" colspan="5" style="text-align: right;">ADD VAT 16%
                                             </th>
                                             <td class="text-danger"
-                                                style="text-align: right;">{{ item.vat }}</td>
+                                                style="text-align: right;">{{ item.vat|floatformat:2 }}</td>
                                         </tr>
                                         <tr>
                                             <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
-                                            <td style="text-align: right;">{{ item.total_amount }}</td>
+                                            <td style="text-align: right;">{{ item.total_amount|floatformat:2 }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -173,11 +173,11 @@
                                             <th class="text-danger" colspan="5" style="text-align: right;">ADD VAT 16%
                                             </th>
                                             <td class="text-danger"
-                                                style="text-align: right;">{{ item.vat }}</td>
+                                                style="text-align: right;">{{ item.vat|floatformat:2 }}</td>
                                         </tr>
                                         <tr>
                                             <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
-                                            <td style="text-align: right;">{{ item.total_amount }}</td>
+                                            <td style="text-align: right;">{{ item.total_amount|floatformat:2 }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
