@@ -133,9 +133,8 @@
                             {% if tquote_data %}
                                 {% for item in tquote_data %}
                                     <tr data-entry-id="{{ item.id }}">
-
-                                        <td>{{ item.description }}</td>
                                         <td>{{ item.part_no }}</td>
+                                        <td>{{ item.description }}</td>
                                         <td>{{ item.price|floatformat:2 }}</td>
                                         <td>{{ item.quantity|floatformat:0 }}</td>
                                         <td class="text-end">{{ item.total|floatformat:2 }}</td>
