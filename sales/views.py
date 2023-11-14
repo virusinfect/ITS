@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -1124,80 +1124,77 @@ def quote(request, quote_id):
 
     items = SalesQuoteProducts.objects.filter(quote=quote)
 
-    subtotals = 0
-    vat = 0
-    total_amount = 0
+    subtotals = Decimal(0)
+    vat = Decimal(0)
+    total_amount = Decimal(0)
+    d_vat = Decimal(0)
 
     if quote.layout == "Grouped":
         for item in items:
-            item.total = item.price * item.quantity
+            item.total = Decimal(item.price) * Decimal(item.quantity)  # Ensure price is a Decimal
 
             if quote.vat_stats == "Inclusive":
-                item.price -= round((item.price / 1.16) * 0.16)  # Deduct VAT from item.amount
-                item.total -= round((item.total / 1.16) * 0.16)
-                subtotals += item.total
-                vat = round(subtotals * 0.16)
-                total_amount = round(subtotals + vat)
-
+                item.price -= Decimal(round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
+                item.total -= Decimal(round((Decimal(item.total) / Decimal(1.16)) * Decimal(0.16)))
+                subtotals += Decimal(item.total)
+                vat += Decimal(round(subtotals * Decimal(0.16)))
+                total_amount += Decimal(round(subtotals + vat))
 
             elif quote.vat_stats == "Exclusive":
-                subtotals += item.total
-                vat = round(subtotals * 0.16)
-                total_amount = subtotals + vat
+                subtotals += Decimal(item.total)
+                vat += Decimal(round(subtotals * Decimal(0.16)))
+                total_amount += Decimal(subtotals + vat)
 
             elif quote.vat_stats == "Exempted":
-                subtotals += item.total
-                vat = 0
-                total_amount = subtotals + vat
-
-
+                subtotals += Decimal(item.total)
+                vat += Decimal(0)
+                total_amount += Decimal(subtotals + vat)
 
     elif quote.layout == "Separated":
         for item in items:
-            item.total = item.price * item.quantity
+            item.total = Decimal(item.price) * Decimal(item.quantity)  # Ensure price is a Decimal
 
             if quote.vat_stats == "Inclusive":
-                item.price -= round((item.price / 1.16) * 0.16)  # Deduct VAT from item.amount
-                item.total -= round((item.total / 1.16) * 0.16)
-                item.subtotals = item.total
-                item.vat = round(item.total * 0.16)
-                item.total_amount = round(item.total + item.vat)
-
+                item.price -= Decimal(round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
+                item.total -= Decimal(round((Decimal(item.total) / Decimal(1.16)) * Decimal(0.16)))
+                item.subtotals = Decimal(item.total)
+                item.vat = Decimal(round(item.total * Decimal(0.16)))
+                item.total_amount = Decimal(round(item.total + item.vat))
 
             elif quote.vat_stats == "Exclusive":
-                subtotals = item.total
-                item.vat = round(item.total * 0.16)
-                item.total_amount = round(item.total + item.vat)
+                subtotals = Decimal(item.total)
+                item.vat = Decimal(round(subtotals * Decimal(0.16)))
+                item.total_amount = Decimal(round(item.total + item.vat))
 
             elif quote.vat_stats == "Exempted":
-                subtotals = item.total
-                item.vat = 0
-                item.total_amount = round(item.total + item.vat)
+                subtotals = Decimal(item.total)
+                item.vat = Decimal(0)
+                item.total_amount = Decimal(round(item.total + item.vat))
 
     elif quote.layout == "Classified":
         for item in items:
-            item.total = item.price * item.quantity
+            item.total = Decimal(item.price) * Decimal(item.quantity)  # Ensure price is a Decimal
 
             if quote.vat_stats == "Inclusive":
-                item.price -= round((item.price / 1.16) * 0.16)  # Deduct VAT from item.amount
-                item.total -= round((item.total / 1.16) * 0.16)
-                item.subtotals = item.total
-                item.vat = round(item.total * 0.16)
-                item.total_amount = round(item.total + item.vat)
-
+                item.price -= Decimal(round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
+                item.total -= Decimal(round((Decimal(item.total) / Decimal(1.16)) * Decimal(0.16)))
+                item.subtotals = Decimal(item.total)
+                item.vat = Decimal(round(item.total * Decimal(0.16)))
+                item.total_amount = Decimal(round(item.total + item.vat))
 
             elif quote.vat_stats == "Exclusive":
-                subtotals = item.total
-                item.vat = round(item.total * 0.16)
-                item.total_amount = round(item.total + item.vat)
+                subtotals = Decimal(item.total)
+                item.vat = Decimal(round(subtotals * Decimal(0.16)))
+                item.total_amount = Decimal(round(item.total + item.vat))
 
             elif quote.vat_stats == "Exempted":
-                subtotals = item.total
-                item.vat = 0
-                item.total_amount = round(item.total + item.vat)
+                subtotals = Decimal(item.total)
+                item.vat = Decimal(0)
+                item.total_amount = Decimal(round(item.total + item.vat))
 
     return render(request, 'sales/quote.html', {'quote': quote, 'items': items, 'subtotals': subtotals, 'vat': vat,
                                                 'total_amount': total_amount})
+
 
 
 @login_required
