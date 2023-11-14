@@ -798,6 +798,7 @@ def create_ticket(request):
         issue = request.POST.get('issue_summary')
         more = request.POST.get('more')
         handler_id = request.POST.get('handler_id')
+        via = request.POST.get('via')
         handler = User.objects.get(id=handler_id)
         company = Company.objects.get(id=company_id)
         # Create a new Ticket record
@@ -810,6 +811,7 @@ def create_ticket(request):
             issue_summary=issue,
             company=company,
             more=more,
+            via=via,
 
         )
         ticket.save()
