@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'technical',
     'sales',
     'service',
-    'login_history',
+
 ]
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
