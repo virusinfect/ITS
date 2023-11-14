@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'technical',
     'sales',
     'service',
-    'auditlog',
 
 ]
 AUTHENTICATION_BACKENDS = (
