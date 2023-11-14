@@ -88,11 +88,11 @@
                                         <td><input type="text" value="{{ product.description }}" class="form-control"
                                                    name="description[]">
                                         </td>
-                                        <td><input type="text" value="{{ product.price }}" class="form-control"
+                                        <td><input type="text" value="{{ product.price|floatformat:2  }}" class="form-control"
                                                    name="price[]" id="price"></td>
                                         <td>
                                             <input name="availability[]" class="form-control awesomplete"
-                                                   list="mylist"/>
+                                                   list="mylist" value="{{ product.availability }}"/>
                                             <datalist id="mylist">
                                                 <option>Available</option>
                                                 <option>Expected</option>
