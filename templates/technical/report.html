@@ -108,10 +108,10 @@
                                 <th colspan="5" class="text-center">QUOTATION</th>
                             </tr>
                             <tr>
-                                <th class="text-center">Part Number</th>
-                                <th class="text-center">Description</th>
-                                <th class="text-center">Price</th>
-                                <th class="text-center">Qty</th>
+                                <th>Part Number</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Qty</th>
                                 <th>Amount</th>
 
                             </tr>
@@ -121,11 +121,11 @@
                             {% if parts %}
                                 {% for requisition in parts %}
                                     <tr>
-                                        <td class="text-center">{{ requisition.part.code }}</td>
-                                        <td class="text-center">{{ requisition.part.description }}</td>
-                                        <td class="text-center">{{ requisition.price|floatformat:2 }}</td>
-                                        <td class="text-center">{{ requisition.quantity }}</td>
-                                        <td class="text-end">{{ requisition.total|floatformat:2 }}</td>
+                                        <td>{{ requisition.part.code }}</td>
+                                        <td>{{ requisition.part.description }}</td>
+                                        <td>{{ requisition.price|floatformat:2 }}</td>
+                                        <td>{{ requisition.quantity }}</td>
+                                        <td>{{ requisition.total|floatformat:2 }}</td>
                                     </tr>
                                 {% endfor %}
 
@@ -133,11 +133,11 @@
                             {% if tquote_data %}
                                 {% for item in tquote_data %}
                                     <tr data-entry-id="{{ item.id }}">
-                                        <td class="text-center">{{ item.part_no }}</td>
-                                        <td class="text-center">{{ item.description }}</td>
-                                        <td class="text-center">{{ item.price|floatformat:2 }}</td>
-                                        <td class="text-center">{{ item.quantity|floatformat:0 }}</td>
-                                        <td class="text-end">{{ item.total|floatformat:2 }}</td>
+                                        <td>{{ item.part_no }}</td>
+                                        <td>{{ item.description }}</td>
+                                        <td>{{ item.price|floatformat:2 }}</td>
+                                        <td>{{ item.quantity|floatformat:0 }}</td>
+                                        <td>{{ item.total|floatformat:2 }}</td>
                                         <!-- Add more cells for other fields -->
                                     </tr>
                                 {% endfor %}

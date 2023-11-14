@@ -31,16 +31,18 @@
                             Requisitions
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#sourcing" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
-                            Sourcing
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#quote" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
-                            Quotation
-                        </a>
-                    </li>
+                    {% if user|is_helpdesk or user|is_management %}
+                        <li class="nav-item">
+                            <a href="#sourcing" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                Sourcing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#quote" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                Quotation
+                            </a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a href="#misc" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             Misc
@@ -278,298 +280,312 @@
                                 A requisition</a></h2>
                         </div>
                     </div>
-                    <div class="tab-pane " id="sourcing">
-                        <div class="row mb-3 mt-3">
-                            <div class="mx-auto">
-                                <div class="table-responsive">
-                                    <form method="POST" action="{% url 'sourcing_ticket' ticket.ticket_id %}">
-                                        {% csrf_token %}
-                                        <table class="table">
-                                            <thead class="table-dark">
-                                            <tr>
+                    {% if user|is_helpdesk or user|is_management %}
+                        <div class="tab-pane " id="sourcing">
+                            <div class="row mb-3 mt-3">
+                                <div class="mx-auto">
+                                    <div class="table-responsive">
+                                        <form method="POST" action="{% url 'sourcing_ticket' ticket.ticket_id %}">
+                                            {% csrf_token %}
+                                            <table class="table">
+                                                <thead class="table-dark">
+                                                <tr>
 
-                                                <th>Description</th>
-                                                <th>Part Number</th>
-                                                <th>Price</th>
-                                                <th>Qty</th>
-                                                <th>Currency</th>
-                                                <th>Availability</th>
-                                                <th>Supplier</th>
-                                                <th>Attachment</th>
-                                                <th>Action</th>
+                                                    <th>Description</th>
+                                                    <th>Part Number</th>
+                                                    <th>Price</th>
+                                                    <th>Qty</th>
+                                                    <th>Currency</th>
+                                                    <th>Availability</th>
+                                                    <th>Supplier</th>
+                                                    <th>Attachment</th>
+                                                    <th>Action</th>
 
-                                                <!-- Add more headers for other fields -->
-                                            </tr>
-                                            </thead>
-                                            <tbody id="table-body">
-                                            {% for item in tsourcing_data %}
-                                                <tr data-entry-id="{{ item.id }}">
+                                                    <!-- Add more headers for other fields -->
+                                                </tr>
+                                                </thead>
+                                                <tbody id="table-body">
+                                                {% for item in tsourcing_data %}
+                                                    <tr data-entry-id="{{ item.id }}">
 
-                                                    <td><input type="text" name="desc[]" class="form-control"
-                                                               value="{{ item.desc }}">
+                                                        <td><input type="text" name="desc[]" class="form-control"
+                                                                   value="{{ item.desc }}">
+                                                        </td>
+                                                        <td><input name="part_no[]" type="text" class="form-control"
+                                                                   value="{{ item.part_no }}"></td>
+                                                        <td><input name="price[]" type="text" class="form-control"
+                                                                   value="{{ item.price }}"></td>
+                                                        <td><input name="qty[]" type="text" class="form-control"
+                                                                   value="{{ item.qty }}">
+                                                        </td>
+                                                        <td><select name="currency[]" class="form-select">
+                                                            <option value="">Select currency</option>
+                                                            <option value="KES"
+                                                                    {% if item.currency == "KES" %}selected{% endif %}>
+                                                                KES
+                                                            </option>
+                                                            <option value="USD"
+                                                                    {% if item.currency == "USD" %}selected{% endif %}>
+                                                                USD
+                                                            </option>
+                                                            <option value="EUR"
+                                                                    {% if item.currency == "EUR" %}selected{% endif %}>
+                                                                EUR
+                                                            </option>
+                                                        </select></td>
+                                                        <td><input name="availability[]" type="text"
+                                                                   class="form-control"
+                                                                   value="{{ item.availability }}"></td>
+                                                        <td><input name="supplier[]" type="text" class="form-control"
+                                                                   value="{{ item.supplier }}"></td>
+                                                        <td><input type="file" class="form-control" name="att[]"></td>
+                                                        <td><a href="#" class="delete-entry" title="delete" tabindex="0"
+                                                               data-plugin="tippy" data-tippy-interactive="true">
+                                                            <i class="  mdi mdi-delete-outline mdi-18px"></i>
+                                                        </a>
+                                                            <a href="#" class="quote-entry" title="quote" tabindex="0"
+                                                               data-plugin="tippy" data-tippy-interactive="true">
+                                                                <i class="mdi mdi-comment-quote-outline mdi-18px"></i>
+                                                            </a></td>
+
+                                                        <!-- Add more cells for other fields -->
+                                                    </tr>
+                                                {% endfor %}
+                                                <tr>
+
+                                                    <td><input type="text" name="desc[]" class="form-control"></td>
+                                                    <td><input name="part_no[]" type="text" class="form-control">
                                                     </td>
-                                                    <td><input name="part_no[]" type="text" class="form-control"
-                                                               value="{{ item.part_no }}"></td>
                                                     <td><input name="price[]" type="text" class="form-control"
-                                                               value="{{ item.price }}"></td>
-                                                    <td><input name="qty[]" type="text" class="form-control"
-                                                               value="{{ item.qty }}">
+                                                               value="0.0">
+                                                    </td>
+                                                    <td><input name="qty[]" type="text" class="form-control" value="0">
                                                     </td>
                                                     <td><select name="currency[]" class="form-select">
                                                         <option value="">Select currency</option>
-                                                        <option value="KES"
-                                                                {% if item.currency == "KES" %}selected{% endif %}>KES
+                                                        <option value="KES">KES
                                                         </option>
-                                                        <option value="USD"
-                                                                {% if item.currency == "USD" %}selected{% endif %}>USD
+                                                        <option value="USD">USD
                                                         </option>
-                                                        <option value="EUR"
-                                                                {% if item.currency == "EUR" %}selected{% endif %}>EUR
+                                                        <option value="EUR">EUR
                                                         </option>
                                                     </select></td>
-                                                    <td><input name="availability[]" type="text" class="form-control"
-                                                               value="{{ item.availability }}"></td>
-                                                    <td><input name="supplier[]" type="text" class="form-control"
-                                                               value="{{ item.supplier }}"></td>
+                                                    <td><input name="availability[]" type="text" class="form-control">
+                                                    </td>
+                                                    <td><input name="supplier[]" type="text" class="form-control"></td>
                                                     <td><input type="file" class="form-control" name="att[]"></td>
-                                                    <td><a href="#" class="delete-entry" title="delete" tabindex="0"
-                                                           data-plugin="tippy" data-tippy-interactive="true">
-                                                        <i class="  mdi mdi-delete-outline mdi-18px"></i>
-                                                    </a>
-                                                        <a href="#" class="quote-entry" title="quote" tabindex="0"
-                                                           data-plugin="tippy" data-tippy-interactive="true">
-                                                            <i class="mdi mdi-comment-quote-outline mdi-18px"></i>
-                                                        </a></td>
 
                                                     <!-- Add more cells for other fields -->
                                                 </tr>
-                                            {% endfor %}
-                                            <tr>
-
-                                                <td><input type="text" name="desc[]" class="form-control"></td>
-                                                <td><input name="part_no[]" type="text" class="form-control">
-                                                </td>
-                                                <td><input name="price[]" type="text" class="form-control" value="0.0">
-                                                </td>
-                                                <td><input name="qty[]" type="text" class="form-control" value="0"></td>
-                                                <td><select name="currency[]" class="form-select">
-                                                    <option value="">Select currency</option>
-                                                    <option value="KES">KES
-                                                    </option>
-                                                    <option value="USD">USD
-                                                    </option>
-                                                    <option value="EUR">EUR
-                                                    </option>
-                                                </select></td>
-                                                <td><input name="availability[]" type="text" class="form-control"></td>
-                                                <td><input name="supplier[]" type="text" class="form-control"></td>
-                                                <td><input type="file" class="form-control" name="att[]"></td>
-
-                                                <!-- Add more cells for other fields -->
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <label class="form-label" for="handler"> Asignee:</label>
-                                                <select name="handler" class="form-select" required>
-                                                    <option value="">Select Assignee</option>
-                                                    {% for user in users %}
-                                                        <option value="{{ user.id }}"
-                                                                {% if user.id == ticket.sourcing_parts.id %}selected{% endif %}>{{ user.username }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                                </tbody>
+                                            </table>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label class="form-label" for="handler"> Asignee:</label>
+                                                    <select name="handler" class="form-select" required>
+                                                        <option value="">Select Assignee</option>
+                                                        {% for user in users %}
+                                                            <option value="{{ user.id }}"
+                                                                    {% if user.id == ticket.sourcing_parts.id %}selected{% endif %}>{{ user.username }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="mt-3">
-                                            <button type="button" id="add-row-button"
-                                                    class="btn btn-primary waves-effect waves-light">Add Row
-                                            </button>
+                                            <div class="mt-3">
+                                                <button type="button" id="add-row-button"
+                                                        class="btn btn-primary waves-effect waves-light">Add Row
+                                                </button>
 
-                                            <button type="submit" name="form_type" value="form3"
-                                                    class="btn btn-primary waves-effect waves-light">Save
-                                            </button>
+                                                <button type="submit" name="form_type" value="form3"
+                                                        class="btn btn-primary waves-effect waves-light">Save
+                                                </button>
 
-                                        </div>
-                                    </form>
-
-                                </div>
-                            </div> <!-- end col -->
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="quote">
-                        <form method="POST" action="{% url 'quote_ticket' ticket.ticket_id %}">
-                            {% csrf_token %}
-                            <div class="row mb-3 mt-1">
-                                <div class="card-header">
-                                    <p>Quotes Products</p>
-                                </div>
-                                <div class="mx-auto mt-1">
-                                    <div class="table-responsive">
-
-                                        <table class="table">
-                                            <thead class="table-dark">
-                                            <tr>
-
-                                                <th>Description</th>
-                                                <th>Part Number</th>
-                                                <th>Price</th>
-                                                <th>Qty</th>
-                                                <th>Currency</th>
-                                                <th>Action</th>
-
-                                                <!-- Add more headers for other fields -->
-                                            </tr>
-                                            </thead>
-                                            <tbody id="table-body">
-                                            {% for item in tquote_data %}
-                                                <tr data-entry-id="{{ item.id }}">
-
-                                                    <td><input type="text" name="description[]" class="form-control"
-                                                               value="{{ item.description }}">
-                                                    </td>
-                                                    <td><input name="part_no[]" type="text" class="form-control"
-                                                               value="{{ item.part_no }}"></td>
-                                                    <td><input name="price[]" type="text" class="form-control"
-                                                               value="{{ item.price }}"></td>
-                                                    <td><input name="quantity[]" type="text" class="form-control"
-                                                               value="{{ item.quantity }}">
-                                                    </td>
-                                                    <td><select name="currency[]" class="form-select" required>
-                                                        <option value="">Select currency</option>
-                                                        <option value="KES"
-                                                                {% if item.currency == "KES" %}selected{% endif %}>KES
-                                                        </option>
-                                                        <option value="USD"
-                                                                {% if item.currency == "USD" %}selected{% endif %}>USD
-                                                        </option>
-                                                        <option value="EUR"
-                                                                {% if item.currency == "EUR" %}selected{% endif %}>EUR
-                                                        </option>
-                                                    </select></td>
-
-                                                    <td><a href="#" class="delete-entry-quote" title="delete" tabindex="0"
-                                                           data-plugin="tippy" data-tippy-interactive="true">
-                                                        <i class="  mdi mdi-delete-outline mdi-18px"></i>
-                                                    </a></td>
-                                                    <!-- Add more cells for other fields -->
-                                                </tr>
-                                            {% endfor %}
-                                            <tr>
-
-                                                <td><input type="text" name="description[]" class="form-control"></td>
-                                                <td><input name="part_no[]" type="text" class="form-control"></td>
-                                                <td><input name="price[]" type="text" class="form-control"></td>
-                                                <td><input name="quantity[]" type="text" class="form-control"></td>
-                                                <td><select name="currency[]" class="form-select">
-                                                    <option value="">Select currency</option>
-                                                    <option value="KES">KES
-                                                    </option>
-                                                    <option value="USD">USD
-                                                    </option>
-                                                    <option value="EUR">EUR
-                                                    </option>
-                                                </select></td>
-
-                                                <!-- Add more cells for other fields -->
-                                            </tr>
-                                            </tbody>
-                                        </table>
-
-                                        <div class="mt-3">
-                                            <button type="button" id="add-row-button-quote"
-                                                    class="btn btn-primary waves-effect waves-light">Add Row
-                                            </button>
-
-
-                                        </div>
-
+                                            </div>
+                                        </form>
 
                                     </div>
                                 </div> <!-- end col -->
                             </div>
-                            <div class="row ">
-                                <div class="card border border-0 border-top-2">
+                        </div>
+
+                        <div class="tab-pane" id="quote">
+                            <form method="POST" action="{% url 'quote_ticket' ticket.ticket_id %}">
+                                {% csrf_token %}
+                                <div class="row mb-3 mt-1">
                                     <div class="card-header">
-                                        <p>Parts Used</p>
+                                        <p>Quotes Products</p>
                                     </div>
-                                    <div class="row mb-3 mt-3 table-responsive">
-                                        {% if parts %}
+                                    <div class="mx-auto mt-1">
+                                        <div class="table-responsive">
+
                                             <table class="table">
-                                                <thead class="table-light">
+                                                <thead class="table-dark">
                                                 <tr>
-                                                    <th>NO.</th>
-                                                    <th>Requisition Item</th>
-                                                    <th>Issue Status</th>
-                                                    <th>Quantity</th>
+
+                                                    <th>Description</th>
+                                                    <th>Part Number</th>
                                                     <th>Price</th>
+                                                    <th>Qty</th>
+                                                    <th>Currency</th>
+                                                    <th>Action</th>
+
+                                                    <!-- Add more headers for other fields -->
                                                 </tr>
                                                 </thead>
+                                                <tbody id="table-body">
+                                                {% for item in tquote_data %}
+                                                    <tr data-entry-id="{{ item.id }}">
 
-                                                <tbody>
-
-                                                {% for requisition in parts %}
-                                                    <tr>
-                                                        <td>{{ forloop.counter }}</td>
-                                                        <td>{{ requisition.part.code }}</td>
-                                                        <td>
-                                                            {% if requisition.issue_status == "Issue" %}
-                                                                <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i>
-                                                                Issued
-                                                            {% elif requisition.issue_status == "Pending" %}
-                                                                <i class=" mdi mdi-alert-circle-outline mdi-18px btn-outline-warning"></i>
-                                                                Pending
-                                                            {% elif requisition.issue_status == "Returned" %}
-                                                                <i class=" mdi mdi-alert-circle-check mdi-18px btn-outline-danger"></i>
-                                                                Returned
-                                                            {% else %}
-                                                                <span class="badge">{{ requisition.issue_status }}</span>
-                                                            {% endif %}
+                                                        <td><input type="text" name="description[]" class="form-control"
+                                                                   value="{{ item.description }}">
                                                         </td>
-                                                        <td>{{ requisition.quantity }}</td>
-                                                        <td><input type="number"
-                                                                   name="req_price_{{ requisition.req_id }}"
-                                                                   class="form-control" value="{{ requisition.price }}">
+                                                        <td><input name="part_no[]" type="text" class="form-control"
+                                                                   value="{{ item.part_no }}"></td>
+                                                        <td><input name="price[]" type="text" class="form-control"
+                                                                   value="{{ item.price }}"></td>
+                                                        <td><input name="quantity[]" type="text" class="form-control"
+                                                                   value="{{ item.quantity }}">
                                                         </td>
+                                                        <td><select name="currency[]" class="form-select" required>
+                                                            <option value="">Select currency</option>
+                                                            <option value="KES"
+                                                                    {% if item.currency == "KES" %}selected{% endif %}>
+                                                                KES
+                                                            </option>
+                                                            <option value="USD"
+                                                                    {% if item.currency == "USD" %}selected{% endif %}>
+                                                                USD
+                                                            </option>
+                                                            <option value="EUR"
+                                                                    {% if item.currency == "EUR" %}selected{% endif %}>
+                                                                EUR
+                                                            </option>
+                                                        </select></td>
 
+                                                        <td><a href="#" class="delete-entry-quote" title="delete"
+                                                               tabindex="0"
+                                                               data-plugin="tippy" data-tippy-interactive="true">
+                                                            <i class="  mdi mdi-delete-outline mdi-18px"></i>
+                                                        </a></td>
+                                                        <!-- Add more cells for other fields -->
                                                     </tr>
                                                 {% endfor %}
+                                                <tr>
+
+                                                    <td><input type="text" name="description[]" class="form-control">
+                                                    </td>
+                                                    <td><input name="part_no[]" type="text" class="form-control"></td>
+                                                    <td><input name="price[]" type="text" class="form-control"></td>
+                                                    <td><input name="quantity[]" type="text" class="form-control"></td>
+                                                    <td><select name="currency[]" class="form-select">
+                                                        <option value="">Select currency</option>
+                                                        <option value="KES">KES
+                                                        </option>
+                                                        <option value="USD">USD
+                                                        </option>
+                                                        <option value="EUR">EUR
+                                                        </option>
+                                                    </select></td>
+
+                                                    <!-- Add more cells for other fields -->
+                                                </tr>
                                                 </tbody>
                                             </table>
-                                        {% else %}
-                                            <div class="text-center">
-                                                <h2 class="mt-0">
-                                                    <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
-                                                </h2>
-                                                <h3 class="mt-0 mb-3">No Parts Used </h3>
+
+                                            <div class="mt-3">
+                                                <button type="button" id="add-row-button-quote"
+                                                        class="btn btn-primary waves-effect waves-light">Add Row
+                                                </button>
+
 
                                             </div>
-                                        {% endif %}
+
+
+                                        </div>
+                                    </div> <!-- end col -->
+                                </div>
+                                <div class="row ">
+                                    <div class="card border border-0 border-top-2">
+                                        <div class="card-header">
+                                            <p>Parts Used</p>
+                                        </div>
+                                        <div class="row mb-3 mt-3 table-responsive">
+                                            {% if parts %}
+                                                <table class="table">
+                                                    <thead class="table-light">
+                                                    <tr>
+                                                        <th>NO.</th>
+                                                        <th>Requisition Item</th>
+                                                        <th>Issue Status</th>
+                                                        <th>Quantity</th>
+                                                        <th>Price</th>
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody>
+
+                                                    {% for requisition in parts %}
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ requisition.part.code }}</td>
+                                                            <td>
+                                                                {% if requisition.issue_status == "Issue" %}
+                                                                    <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i>
+                                                                    Issued
+                                                                {% elif requisition.issue_status == "Pending" %}
+                                                                    <i class=" mdi mdi-alert-circle-outline mdi-18px btn-outline-warning"></i>
+                                                                    Pending
+                                                                {% elif requisition.issue_status == "Returned" %}
+                                                                    <i class=" mdi mdi-alert-circle-check mdi-18px btn-outline-danger"></i>
+                                                                    Returned
+                                                                {% else %}
+                                                                    <span class="badge">{{ requisition.issue_status }}</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>{{ requisition.quantity }}</td>
+                                                            <td><input type="number"
+                                                                       name="req_price_{{ requisition.req_id }}"
+                                                                       class="form-control"
+                                                                       value="{{ requisition.price }}">
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            {% else %}
+                                                <div class="text-center">
+                                                    <h2 class="mt-0">
+                                                        <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                                                    </h2>
+                                                    <h3 class="mt-0 mb-3">No Parts Used </h3>
+
+                                                </div>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <label class="form-label" for="labour">Labour Charge:</label>
-                                        <input class="form-control" name="labour" value="{{ ticket.labour }}"
-                                               type="number">
+                                <div class="card">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="form-label" for="labour">Labour Charge:</label>
+                                            <input class="form-control" name="labour" value="{{ ticket.labour }}"
+                                                   type="number">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card">
-                                <div class="row">
+                                <div class="card">
+                                    <div class="row">
 
+                                    </div>
                                 </div>
-                            </div>
 
-                            <button type="submit" name="form_type" value="form3"
-                                    class="btn btn-primary waves-effect waves-light">Update
-                            </button>
-                        </form>
-                    </div>
-
+                                <button type="submit" name="form_type" value="form3"
+                                        class="btn btn-primary waves-effect waves-light">Update
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
                     <div class="tab-pane" id="misc">
                         <div class="col-10 mx-auto mt-3">
                             <form method="post">
@@ -696,9 +712,12 @@
                                 <a href="{% url 'create_format_approval' ticket.ticket_id %}" class="btn btn-secondary"><span
                                         class="btn-label"><i class="mdi mdi-file-document"></i></span> Format Approval
                                 </a>
-                                <a href="{% url 'generate_report' ticket.ticket_id %}" class="btn btn-primary"><span
-                                        class="btn-label"><i class="mdi mdi-file-document"></i></span>Technical Report
-                                </a>
+                                {% if user|is_helpdesk or user|is_management %}
+                                    <a href="{% url 'generate_report' ticket.ticket_id %}" class="btn btn-primary"><span
+                                            class="btn-label"><i class="mdi mdi-file-document"></i></span>Technical
+                                        Report
+                                    </a>
+                                {% endif %}
                             </form>
                         </div>
                     </div>
