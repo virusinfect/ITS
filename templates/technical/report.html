@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <p style="font-size:10px">Date: {{ ticket.created }}</p>
+                    <p style="font-size:10px">Date: {{ ticket.created|date:"d/m/Y"s }}</p>
                 </div>
                 <div class="row mt-1 mx-auto">
                     <div class="col-6 ">
