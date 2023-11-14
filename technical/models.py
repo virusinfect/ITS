@@ -94,6 +94,7 @@ class Delivery(models.Model):
     remarks = models.TextField(null=True)
     department = models.CharField(max_length=50, null=True)
     created = models.DateTimeField(auto_now_add=True)  # Automatically set upon creation
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     updated = models.DateTimeField(auto_now=True)  # Automatically updated on each save
     is_active = models.IntegerField(default=1)
 

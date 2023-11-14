@@ -527,6 +527,7 @@ def create_delivery(request, ticket_id):
             status=status,
             remarks=remarks,
             department=department,
+            created_by=request.user,
         )
         new_delivery.save()
 
@@ -572,6 +573,7 @@ def create_delivery_normal(request):
             remarks=remarks,
             department=department,
             address=address,
+            created_by=request.user,
 
         )
 
@@ -717,7 +719,8 @@ def delete_item(request, delivery_id, item_id):
 
 @login_required
 def list_deliveries(request):
-    deliveries = Delivery.objects.filter(is_active=1).order_by('-id')
+    user = request.user
+    deliveries = Delivery.objects.filter(is_active=1, created_by=user).order_by('-id')
     return render(request, 'list_deliveries.html', {'deliveries': deliveries})
 
 
@@ -1818,6 +1821,7 @@ def save_signature_view_ticket(request):
         accessories = request.POST.get('accessories')
         notes = request.POST.get('notes')
         tech_id = request.POST.get('tech')
+        eqpass = request.POST.get('eqpass')
         client_id = Clients.objects.get(id=client)
 
         # Create the ticket
@@ -1831,6 +1835,7 @@ def save_signature_view_ticket(request):
             notes="notes",
             tech_id=tech_id,
             type=type,
+            eqpass=eqpass,
         )
 
         if type == "On-site":

@@ -70,13 +70,18 @@
                     <div class="mb-3">
                         <label for="status" class="form-label">Status:</label>
                         <select class="form-select" name="status">
-                            <option value="Pending" {% if ups_checklist.status == "Pending" %}selected{% endif %}>Pending
+                            <option value="Pending" {% if ups_checklist.status == "Pending" %}selected{% endif %}>
+                                Pending
                             </option>
                             <option value="Done" {% if ups_checklist.status == "Done" %}selected{% endif %}>Done
                             </option>
                             <option value="Consider as soon as possible"
                                     {% if ups_checklist.status == "Consider as soon as possible" %}selected{% endif %}>
                                 Consider as soon as possible
+                            </option>
+                            <option value="Critical and requires immediate action"
+                                    {% if ups_checklist.status == "Critical and requires immediate action" %}selected{% endif %}>
+                                Critical and requires immediate action
                             </option>
                         </select>
                     </div>
