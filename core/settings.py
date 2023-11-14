@@ -13,8 +13,10 @@ SECRET_KEY = 'django-insecure-t%=hf2%c4*^38&u6_etw#-e0**&73uwy9#0_dz%juwlsp#e*@f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '146.190.61.23:8600', '146.190.61.23', '146.190.61.23:8500', '*','http://146.190.61.23:8500']
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://146.190.61.23:8600', 'http://146.190.61.23','http://146.190.61.23:8500']
+ALLOWED_HOSTS = ['127.0.0.1', '146.190.61.23:8600', '146.190.61.23', '146.190.61.23:8500', '*',
+                 'http://146.190.61.23:8500']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://146.190.61.23:8600', 'http://146.190.61.23',
+                        'http://146.190.61.23:8500']
 
 # Application definition
 
@@ -29,6 +31,7 @@ INSTALLED_APPS = [
     'technical',
     'sales',
     'service',
+    'login_history',
 ]
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -80,9 +83,9 @@ CORS_ALLOW_CREDENTIALS = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'oo',
+        'NAME': '00',
         'USER': 'root',
-        'PASSWORD': 'rot',
+        'PASSWORD': 'root',
         'HOST': 'localhost',  # If MySQL is running on the same server, use 'localhost'
         'PORT': '3306',  # Leave empty to use the default MySQL port (usually 3306)
     }
