@@ -130,7 +130,7 @@
                                         <td>{{ item.part_no }}</td>
                                         <td>{{ item.description }}</td>
                                         <td>{{ item.price|floatformat:2|intcomma }}</td>
-                                        <td>{{ item.quantity|floatformat:2|intcomma }}</td>
+                                        <td>{{ item.quantity|floatformat:0 }}</td>
                                         <td>{{ item.total|floatformat:2|intcomma }}</td>
                                         <!-- Add more cells for other fields -->
                                     </tr>
