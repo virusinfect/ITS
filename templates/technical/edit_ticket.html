@@ -280,7 +280,7 @@
                                 A requisition</a></h2>
                         </div>
                     </div>
-                    {% if user|is_helpdesk or user|is_management %}
+                    {% if user|is_helpdesk or user|is_sales %}
                         <div class="tab-pane " id="sourcing">
                             <div class="row mb-3 mt-3">
                                 <div class="mx-auto">
@@ -384,7 +384,7 @@
                                                     <label class="form-label" for="handler"> Asignee:</label>
                                                     <select name="handler" class="form-select" required>
                                                         <option value="">Select Assignee</option>
-                                                        {% for user in users %}
+                                                        {% for user in sales %}
                                                             <option value="{{ user.id }}"
                                                                     {% if user.id == ticket.sourcing_parts.id %}selected{% endif %}>{{ user.username }}</option>
                                                         {% endfor %}
@@ -433,7 +433,7 @@
                                                     <!-- Add more headers for other fields -->
                                                 </tr>
                                                 </thead>
-                                                <tbody id="table-body">
+                                                <tbody id="table-body-quote">
                                                 {% for item in tquote_data %}
                                                     <tr data-entry-id="{{ item.id }}">
 
@@ -476,7 +476,7 @@
                                                     <td><input type="text" name="description[]" class="form-control">
                                                     </td>
                                                     <td><input name="part_no[]" type="text" class="form-control"></td>
-                                                    <td><input name="price[]" type="text" class="form-control"></td>
+                                                    <td><input name="price[]" type="text" class="form-control" value="0.00"></td>
                                                     <td><input name="quantity[]" type="text" class="form-control"></td>
                                                     <td><select name="currency[]" class="form-select">
                                                         <option value="">Select currency</option>
@@ -494,7 +494,7 @@
                                             </table>
 
                                             <div class="mt-3">
-                                                <button type="button" id="add-row-button-quote"
+                                                <button type="button" id="add-row-quote"
                                                         class="btn btn-primary waves-effect waves-light">Add Row
                                                 </button>
 
@@ -763,8 +763,8 @@
         });
     </script>
     <script>
-        document.getElementById('add-row-button').addEventListener('click', function () {
-            var tableBody = document.getElementById('table-body');
+        document.getElementById('add-row-quote').addEventListener('click', function () {
+            var tableBody = document.getElementById('table-body-quote');
             var newRow = document.createElement('tr');
 
             // Create new input fields for each column
@@ -793,7 +793,7 @@
         });
     </script>
     <script>
-        document.getElementById('add-row-button-quote').addEventListener('click', function () {
+        document.getElementById('add-row-button').addEventListener('click', function () {
             var tableBody = document.getElementById('table-body');
             var newRow = document.createElement('tr');
 

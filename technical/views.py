@@ -2,8 +2,7 @@ import base64
 import datetime
 import math
 import uuid
-from datetime import timedelta
-
+from django.core.mail import EmailMessage
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -84,11 +83,11 @@ def helpdesk_dash(request):
 
     # Loop through each bench status and count the tickets with that status
     for bench_status in bench_statuses_to_count:
-        count = Tickets.objects.filter(bench_status=bench_status,type="Bench",is_active=1).count()
+        count = Tickets.objects.filter(bench_status=bench_status, type="Bench", is_active=1).count()
         bench_status_counts[bench_status] = count
 
     site_statuses_to_count = [
-            "Pending"
+        "Pending"
     ]
 
     # Initialize a dictionary to store the counts for each bench status
@@ -101,11 +100,11 @@ def helpdesk_dash(request):
 
         # Define the list of tr_statuses you want to count
     tr_statuses_to_count = [
-            "Follow up",
-            "Awaiting LPO",
-            "On hold",
-            "Not interested",
-            "Done",
+        "Follow up",
+        "Awaiting LPO",
+        "On hold",
+        "Not interested",
+        "Done",
     ]
 
     # Initialize a dictionary to store the counts for each tr_status
@@ -113,12 +112,15 @@ def helpdesk_dash(request):
 
     # Loop through each tr_status and count the tickets with that tr_status
     for tr_status in tr_statuses_to_count:
-            count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
-            tr_status_counts[tr_status] = count
+        count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
+        tr_status_counts[tr_status] = count
 
     return render(request, "technical/helpdesk_dashboard.html",
-                  {'remark_counts': remark_counts, 'site_status_counts': site_status_counts, 'bench_status_counts': bench_status_counts,
-                   'status_counts': status_counts,'req_status_counts': req_status_counts, 'tr_status_counts': tr_status_counts})
+                  {'remark_counts': remark_counts, 'site_status_counts': site_status_counts,
+                   'bench_status_counts': bench_status_counts,
+                   'status_counts': status_counts, 'req_status_counts': req_status_counts,
+                   'tr_status_counts': tr_status_counts})
+
 
 @login_required
 def tech_dash(request):
@@ -163,7 +165,7 @@ def tech_dash(request):
 
     # Loop through each bench status and count the tickets with that status
     for bench_status in bench_statuses_to_count:
-        count = Tickets.objects.filter(bench_status=bench_status, type="Bench", is_active=1,tech=request.user).count()
+        count = Tickets.objects.filter(bench_status=bench_status, type="Bench", is_active=1, tech=request.user).count()
         bench_status_counts[bench_status] = count
 
     site_statuses_to_count = [
@@ -175,16 +177,16 @@ def tech_dash(request):
 
     # Loop through each bench status and count the tickets with that status
     for site_status in site_statuses_to_count:
-        count = Tickets.objects.filter(bench_status=site_status, type="On-site", is_active=1,tech=request.user).count()
+        count = Tickets.objects.filter(bench_status=site_status, type="On-site", is_active=1, tech=request.user).count()
         site_status_counts[site_status] = count
 
         # Define the list of tr_statuses you want to count
     tr_statuses_to_count = [
-            "Follow up",
-            "Awaiting LPO",
-            "On hold",
-            "Not interested",
-            "Done",
+        "Follow up",
+        "Awaiting LPO",
+        "On hold",
+        "Not interested",
+        "Done",
     ]
 
     # Initialize a dictionary to store the counts for each tr_status
@@ -192,8 +194,8 @@ def tech_dash(request):
 
     # Loop through each tr_status and count the tickets with that tr_status
     for tr_status in tr_statuses_to_count:
-            count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
-            tr_status_counts[tr_status] = count
+        count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
+        tr_status_counts[tr_status] = count
 
     return render(request, "technical/tech_dashboard.html",
                   {'remark_counts': remark_counts, 'bench_status_counts': bench_status_counts,
@@ -243,7 +245,7 @@ def store_dash(request):
 
     # Loop through each bench status and count the tickets with that status
     for bench_status in bench_statuses_to_count:
-        count = Tickets.objects.filter(bench_status=bench_status, type="Bench", is_active=1,tech=request.user).count()
+        count = Tickets.objects.filter(bench_status=bench_status, type="Bench", is_active=1, tech=request.user).count()
         bench_status_counts[bench_status] = count
 
     site_statuses_to_count = [
@@ -255,16 +257,16 @@ def store_dash(request):
 
     # Loop through each bench status and count the tickets with that status
     for site_status in site_statuses_to_count:
-        count = Tickets.objects.filter(bench_status=site_status, type="On-site", is_active=1,tech=request.user).count()
+        count = Tickets.objects.filter(bench_status=site_status, type="On-site", is_active=1, tech=request.user).count()
         site_status_counts[site_status] = count
 
         # Define the list of tr_statuses you want to count
     tr_statuses_to_count = [
-            "Follow up",
-            "Awaiting LPO",
-            "On hold",
-            "Not interested",
-            "Done",
+        "Follow up",
+        "Awaiting LPO",
+        "On hold",
+        "Not interested",
+        "Done",
     ]
 
     # Initialize a dictionary to store the counts for each tr_status
@@ -272,8 +274,8 @@ def store_dash(request):
 
     # Loop through each tr_status and count the tickets with that tr_status
     for tr_status in tr_statuses_to_count:
-            count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
-            tr_status_counts[tr_status] = count
+        count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
+        tr_status_counts[tr_status] = count
 
     return render(request, "technical/store_dashboard.html",
                   {'remark_counts': remark_counts, 'bench_status_counts': bench_status_counts,
@@ -281,38 +283,41 @@ def store_dash(request):
 
 
 @login_required
-def remark_tickets(request, remark,title):
+def remark_tickets(request, remark, title):
     title = title
     # Filter tickets with the specified remark and that are active
     tickets = Tickets.objects.filter(remark=remark, is_active=1)
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets,'title':title})
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
 
 
 @login_required
-def status_tickets(request,status,title):
+def status_tickets(request, status, title):
     title = title
     # Filter tickets with the specified status and that are active
     tickets = Tickets.objects.filter(status=status, is_active=1)
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets,'title':title})
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
+
 
 @login_required
-def pending_requisitions(request,status):
-    requisitions = Requisition.objects.filter(req_status=status,is_active=True).order_by('-created')
+def pending_requisitions(request, status):
+    requisitions = Requisition.objects.filter(req_status=status, is_active=True).order_by('-created')
     return render(request, 'technical/list_requisitions.html', {'requisitions': requisitions})
 
+
 @login_required
-def bench_status_tickets(request,type, bench_status,title):
-    title=title
+def bench_status_tickets(request, type, bench_status, title):
+    title = title
     if request.user.groups.filter(name='Technician').exists():
         # If the user belongs to the "Technician" group, show only their assigned tickets
-        tickets = Tickets.objects.filter(tech=request.user, is_active=1,bench_status=bench_status,type=type).order_by('-created')
+        tickets = Tickets.objects.filter(tech=request.user, is_active=1, bench_status=bench_status, type=type).order_by(
+            '-created')
     else:
         # If the user doesn't belong to the "Technician" group, show all tickets
-        tickets = Tickets.objects.filter(is_active=1,bench_status=bench_status,type=type).order_by('-created')
+        tickets = Tickets.objects.filter(is_active=1, bench_status=bench_status, type=type).order_by('-created')
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets,'title':title})
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
 
 
 @login_required
@@ -333,7 +338,7 @@ def ticket_list(request):
         # If the user doesn't belong to the "Technician" group, show all tickets
         tickets = Tickets.objects.filter(is_active=1).order_by('-created')
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets,'title':title})
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
 
 
 @login_required
@@ -351,18 +356,21 @@ def delivery_list(request):
     return render(request, 'sign3.html', {'deliveries': deliveries})
 
 
-
 @login_required
 def ticket_print(request, ticket_id):
     ticket = get_object_or_404(Tickets, ticket_id=ticket_id)
     signature = TSignature.objects.get(ticket=ticket)
     tech_signature = TechSignature.objects.get(tech=ticket.tech)
-    return render(request, 'technical/ticket_print.html', {'ticket': ticket,'signature':signature,'tech_signature':tech_signature})
+    return render(request, 'technical/ticket_print.html',
+                  {'ticket': ticket, 'signature': signature, 'tech_signature': tech_signature})
+
 
 @login_required
 def edit_ticket(request, ticket_id):
     technician_group = Group.objects.get(name='Technician')
     users = technician_group.user_set.filter(is_active=True)
+    sales_group = Group.objects.get(name='Sales')
+    sales = sales_group.user_set.all()
     companies = Company.objects.all().order_by("name")
     ticket = get_object_or_404(Tickets, ticket_id=ticket_id)
     product_details = ProductDetail.objects.filter(ticket=ticket.ticket_id)
@@ -469,7 +477,7 @@ def edit_ticket(request, ticket_id):
                   {'ticket': ticket, 'users': users, 'product_details': product_details, 'companies': companies,
                    'requisitions': requisitions, 'tsourcing_data': tsourcing_data, 'tquote_data': tquote_data,
                    'parts': parts, 'action_images': action_images, 'diagnosis_images': diagnosis_images,
-                   'recommendation_images': recommendation_images})
+                   'recommendation_images': recommendation_images,'sales':sales})
 
 
 def delete_image(request, image_id):
@@ -508,7 +516,7 @@ def create_delivery(request, ticket_id):
         return HttpResponseNotFound("Ticket not found")
 
         # Check if a delivery already exists for this ticket
-    existing_delivery = Delivery.objects.filter(ticket=ticket,is_active=True).first()
+    existing_delivery = Delivery.objects.filter(ticket=ticket, is_active=True).first()
 
     if existing_delivery:
         # Redirect to another page or show a message if a delivery already exists
@@ -548,7 +556,8 @@ def create_delivery(request, ticket_id):
         # Assuming you have a Ticket model
         for quantity, serial_no, particulars in zip(quantity_list, serial_no_list, particulars_list):
             if particulars:
-                Items.objects.create(delivery=new_delivery,quantity=quantity, serial_no=serial_no, particulars=particulars)
+                Items.objects.create(delivery=new_delivery, quantity=quantity, serial_no=serial_no,
+                                     particulars=particulars)
 
         messages.success(request, 'Delivery Created successfully')
         # Redirect to the ticket details page or a success page
@@ -595,7 +604,7 @@ def create_delivery_normal(request):
             amount = request.POST.get(f'amount_{i}')
             particulars = request.POST.get(f'particulars_{i}')
 
-            if  particulars:
+            if particulars:
                 item = Items(
                     delivery=new_delivery,
                     quantity=quantity,
@@ -711,6 +720,7 @@ def edit_delivery(request, delivery_id):
 
     return render(request, 'edit_delivery.html', {'delivery': delivery})
 
+
 def delete_item(request, delivery_id, item_id):
     # Get the delivery
     delivery = get_object_or_404(Delivery, pk=delivery_id)
@@ -725,7 +735,8 @@ def delete_item(request, delivery_id, item_id):
         # Redirect to    the delivery edit page or any other desired URL
         return redirect('edit_delivery', delivery_id=delivery.id)
 
-    return render(request, 'delete_item.html', {'item': item,'delivery':delivery})
+    return render(request, 'delete_item.html', {'item': item, 'delivery': delivery})
+
 
 @login_required
 def list_deliveries(request):
@@ -928,7 +939,6 @@ def service(request):
 
 @login_required
 def get_events(request):
-
     status_colors = {
         "Awaiting confirmation": "red",
         "Confirmed": "green",
@@ -1352,12 +1362,6 @@ def sourcing_tickets(request, ticket_id):
         ticket.sourcing_parts = handler_id
         ticket.save()
         created_by = request.user
-        notification = Notification.create_notification(
-            users=[handler_id],  # Assign it to the user
-            message="Sourcing ITL/TN/" + str(ticket.ticket_id),
-            icon="mdi-ticket-confirmation-outline",
-            created_by=created_by,  # Replace with your MDI icon name
-        )
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
 
@@ -1380,6 +1384,57 @@ def sourcing_tickets(request, ticket_id):
 
         # Insert the new data
         Tsourcing.objects.bulk_create(new_sourcing_data)
+
+        table = (
+            "<table style='border-collapse: collapse; width: 100%;'>"
+            "<tr style='border-bottom: 3px solid #ddd;'>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Part No</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Description</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Availability</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Currency</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Price</th>"
+            "</tr>"
+        )
+
+        for i in range(len(desc_list)):
+            if desc_list[i]:
+                row = (
+                    "<tr>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{part_no_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{desc_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{qty_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{availability_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{currency_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{price_list[i]}</td>"
+                    "</tr>"
+                )
+                table += row
+
+        table += "</table>"
+
+        # Your existing code to create new_sourcing_data objects
+        url = "http://146.190.61.23:8500/technical/edit-ticket/" + str(ticket.ticket_id) + "/"  # Replace with your actual URL
+        clickable_url = f"<a href='{url}'>ITL/TN/" + str(ticket.ticket_id) + "</a>"
+        # Use the 'table' string in the email message
+        message = (
+            f"Dear {handler},<br><br>"
+            f"Our Technical team has made a sourcing request, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+            f"Company: {ticket.company};<br><br>"
+            f"Client :{ticket.client};<br><br>"
+            f"Kindly order for below::<br><br>{table}<br><br>"
+            "This is an auto-generated email | © 2023 ITS. All rights reserved."
+        )
+        subject = f"SOURCING FOR ITL/TN/{ticket.ticket_id}"
+        recipient_list = [ticket.sourcing_parts.email]
+        from_email = 'its-noreply@intellitech.co.ke'
+
+        # Create an EmailMessage instance for HTML content
+        email_message = EmailMessage(subject, message, from_email, recipient_list)
+        email_message.content_subtype = 'html'  # Set content type to HTML
+        email_message.send()
 
         user = request.user
         # Create a new Task instance without saving it
@@ -1412,6 +1467,7 @@ def delete_entry(request, entry_id):
     except Tsourcing.DoesNotExist:
         return JsonResponse({'error': 'Entry not found'}, status=404)
 
+
 @login_required
 def delete_entry_quote(request, entry_id):
     try:
@@ -1420,6 +1476,7 @@ def delete_entry_quote(request, entry_id):
         return JsonResponse({'message': 'Entry deleted successfully'})
     except Tsourcing.DoesNotExist:
         return JsonResponse({'error': 'Entry not found'}, status=404)
+
 
 @login_required
 def copy_to_quote(request, entry_id):
@@ -1487,7 +1544,7 @@ def generate_report(request, ticket_id):
         report = TechnicalReport.objects.get(ticket=ticket)
     except TechnicalReport.DoesNotExist:
         # If no report exists, generate one (you can customize this logic)
-        report = TechnicalReport.objects.create(ticket=ticket, report_text="Generated report text",is_approved=0)
+        report = TechnicalReport.objects.create(ticket=ticket, report_text="Generated report text", is_approved=0)
         messages.success(request, 'Report Generated successfully')
 
     # Redirect to the ticket's URL
@@ -1500,7 +1557,7 @@ def report(request, report_id):
     report = get_object_or_404(TechnicalReport, pk=report_id)
 
     # Retrieve the associated ticket
-    subtotals=0
+    subtotals = 0
     ticket = report.ticket
     subtotals = ticket.labour
     vat = 0
@@ -1513,8 +1570,6 @@ def report(request, report_id):
 
     except tQuote.DoesNotExist:
         tquote_data = None
-
-
 
     try:
         parts = Requisition.objects.filter(ticket=ticket, is_active=True, issue_status="Issue")
@@ -1670,12 +1725,13 @@ def tickets_created_monthly_this_year(request):
 
     return JsonResponse(data, safe=False)
 
+
 def tickets_created_monthly_this_year_tech(request):
     current_year = timezone.now().year
 
     monthly_ticket_counts = Tickets.objects.filter(
         created__year=current_year,
-        is_active=1,tech=request.user  # Filter by active tickets if needed
+        is_active=1, tech=request.user  # Filter by active tickets if needed
     ).annotate(
         month=ExtractMonth('created')
     ).values(
@@ -1687,6 +1743,7 @@ def tickets_created_monthly_this_year_tech(request):
     data = list(monthly_ticket_counts)
 
     return JsonResponse(data, safe=False)
+
 
 def tr_status_pie_chart(request):
     tr_status_counts = Tickets.objects.values('tr_status').annotate(count=Count('ticket_id'))
@@ -1735,6 +1792,7 @@ def service_schedules_yearly_tech(request):
     data = list(monthly_schedule_counts)
 
     return JsonResponse(data, safe=False)
+
 
 def remark_pie_chart(request):
     remark_counts = Tickets.objects.values('remark').annotate(count=Count('ticket_id'))
@@ -1797,13 +1855,14 @@ def requisitions_created_monthly(request):
 
     return JsonResponse(data, safe=False)
 
+
 def requisitions_created_monthly_tech(request):
     current_year = timezone.now().year
 
     monthly_requisition_counts = Requisition.objects.filter(
         created__year=current_year,
         is_active=True,
-        collected_by=request.user# Filter by active requisitions if needed
+        collected_by=request.user  # Filter by active requisitions if needed
     ).annotate(
         month=ExtractMonth('created')
     ).values(
@@ -1884,7 +1943,6 @@ def save_signature_view_ticket(request):
 
         ticket.task = new_task
         ticket.save()
-
 
         subject = "TICKET ITL/TN/" + str(ticket.ticket_id) + " OPENED - ITS"
         message = "Dear {0},\n\nA ticket ITL/TN/{1} has been raised for your work order, and our team is now reviewing the details to ensure a prompt and effective resolution.\n\nNote: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.\n\nThank you for your patience and understanding.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.".format(
