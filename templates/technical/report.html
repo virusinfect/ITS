@@ -137,20 +137,20 @@
                                 {% endfor %}
                             {% endif %}
                             <tr>
-                                <td colspan="4" class="text-end">LABOUR</td>
-                                <td colspan="4" class="text-end">{{ ticket.labour|floatformat:2|intcomma }}</td>
+                                <td colspan="4" >LABOUR</td>
+                                <td colspan="4" >{{ ticket.labour|floatformat:2|intcomma }}</td>
                             </tr>
                             <tr>
-                                <td colspan="4" class="text-end">SUBTOTALS</td>
-                                <td colspan="4" class="text-end">{{ subtotals|floatformat:2|intcomma }}</td>
+                                <td colspan="4" >SUBTOTALS</td>
+                                <td colspan="4" >{{ subtotals|floatformat:2|intcomma }}</td>
                             </tr>
                             <tr>
-                                <td colspan="4" class="text-end text-danger">VAT</td>
-                                <td colspan="4" class="text-danger text-end">{{ vat|floatformat:2|intcomma }}</td>
+                                <td colspan="4" class=" text-danger">VAT</td>
+                                <td colspan="4" class="text-danger">{{ vat|floatformat:2|intcomma }}</td>
                             </tr>
                             <tr>
-                                <td colspan="4" class="text-end">TOTAL AMOUNT</td>
-                                <td colspan="4  " class="text-end">{{ total_amount|floatformat:2|intcomma }}</td>
+                                <td colspan="4" >TOTAL AMOUNT</td>
+                                <td colspan="4  " >{{ total_amount|floatformat:2|intcomma }}</td>
                             </tr>
                             </tbody>
                         </table>
