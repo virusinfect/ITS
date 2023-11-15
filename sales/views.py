@@ -1137,12 +1137,12 @@ def quote(request, quote_id):
                 item.price -= Decimal(round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
                 item.total -= Decimal(round((Decimal(item.total) / Decimal(1.16)) * Decimal(0.16)))
                 subtotals += Decimal(item.total)
-                vat += Decimal(round(subtotals * Decimal(0.16)))
+                vat = Decimal(round(subtotals * Decimal(0.16)))
                 total_amount = Decimal(round(subtotals + vat))
 
             elif quote.vat_stats == "Exclusive":
                 subtotals += Decimal(item.total)
-                vat += Decimal(round(subtotals * Decimal(0.16)))
+                vat = Decimal(round(subtotals * Decimal(0.16)))
                 total_amount = Decimal(subtotals + vat)
 
             elif quote.vat_stats == "Exempted":
