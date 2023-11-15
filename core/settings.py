@@ -87,7 +87,11 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',  # If MySQL is running on the same server, use 'localhost'
-        'PORT': '3306',  # Leave empty to use the default MySQL port (usually 3306)
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET default_storage_engine=INNODB",
+        },
+        # Leave empty to use the default MySQL port (usually 3306)
     }
 }
 
