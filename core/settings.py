@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'technical',
     'sales',
     'service',
+    'django.contrib.humanize',
 ]
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
