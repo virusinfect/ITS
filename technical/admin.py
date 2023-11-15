@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ServiceSchedules, Delivery,FormatApproval, Signature, Deliverys, Items, Tickets,Tsourcing,tQuote ,ServiceTickets, CSignature,UniqueToken,FSignature,TechnicalReport,TSignature,TicketImage
+from .models import ServiceSchedules, Delivery,FormatApproval,TechSignature, Signature, Deliverys, Items, Tickets,Tsourcing,tQuote ,ServiceTickets, CSignature,UniqueToken,FSignature,TechnicalReport,TSignature,TicketImage
 # Register your models here.
 
 admin.site.register(ServiceSchedules)
@@ -18,6 +18,7 @@ admin.site.register(TechnicalReport)
 admin.site.register(TSignature)
 admin.site.register(TicketImage)
 admin.site.register(tQuote)
+admin.site.register(TechSignature)
 
 
 

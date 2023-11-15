@@ -262,6 +262,9 @@ class TSignature(models.Model):
     approved = models.CharField(max_length=255)
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
 
+class TechSignature(models.Model):
+    signature_image = models.ImageField(upload_to='signatures/')
+    tech = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class TechnicalReport(models.Model):
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)

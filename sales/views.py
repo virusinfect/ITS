@@ -1138,17 +1138,17 @@ def quote(request, quote_id):
                 item.total -= Decimal(round((Decimal(item.total) / Decimal(1.16)) * Decimal(0.16)))
                 subtotals += Decimal(item.total)
                 vat += Decimal(round(subtotals * Decimal(0.16)))
-                total_amount += Decimal(round(subtotals + vat))
+                total_amount = Decimal(round(subtotals + vat))
 
             elif quote.vat_stats == "Exclusive":
                 subtotals += Decimal(item.total)
                 vat += Decimal(round(subtotals * Decimal(0.16)))
-                total_amount += Decimal(subtotals + vat)
+                total_amount = Decimal(subtotals + vat)
 
             elif quote.vat_stats == "Exempted":
                 subtotals += Decimal(item.total)
                 vat += Decimal(0)
-                total_amount += Decimal(subtotals + vat)
+                total_amount = Decimal(subtotals + vat)
 
     elif quote.layout == "Separated":
         for item in items:

@@ -24,7 +24,8 @@ from its.models import Company, Clients, Parts, PartsCategory, Task, Notificatio
 
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
-    Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport, TSignature, TicketImage
+    Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport, TSignature, TicketImage, \
+    TechSignature
 
 
 @login_required
@@ -355,7 +356,8 @@ def delivery_list(request):
 def ticket_print(request, ticket_id):
     ticket = get_object_or_404(Tickets, ticket_id=ticket_id)
     signature = TSignature.objects.get(ticket=ticket)
-    return render(request, 'technical/ticket_print.html', {'ticket': ticket,'signature':signature})
+    tech_signature = TechSignature.objects.get(tech=ticket.tech)
+    return render(request, 'technical/ticket_print.html', {'ticket': ticket,'signature':signature,'tech_signature':tech_signature})
 
 @login_required
 def edit_ticket(request, ticket_id):
