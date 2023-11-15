@@ -85,16 +85,17 @@
                         <tr>
                             <td><input type="text" name="part_no[]"
                                        value="{{ product.part_no }}"
-                                       class="form-control" >
+                                       class="form-control">
                             </td>
                             <td><input type="text" name="description[]"
                                        value="{{ product.description }}"
-                                       class="form-control" >
-                            </td>
-                            <td><input type="text" name="price[]"
-                                       value="0" placeholder="0" id="price"
                                        class="form-control">
                             </td>
+                            <td>
+                                <input type="number" name="price[]" value="0" placeholder="0" id="price"
+                                       class="form-control" step="any" min="0">
+                            </td>
+
                             <td><input type="number" name="quantity[]"
                                        value="0" id="qty"
                                        class="form-control">

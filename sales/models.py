@@ -20,7 +20,7 @@ class SalesTickets(models.Model):
 
 
     class Meta:
-        managed = False  # If you want to manage this model, change to True
+        managed = False
         db_table = 'sales_tickets'
 
 

@@ -823,7 +823,7 @@ def create_ticket(request):
         supplier_list = request.POST.getlist('supplier[]')
         currency_list = request.POST.getlist('currency[]')
         price_list_strings = request.POST.getlist('price[]')
-        price_list_integers = [int(price) for price in price_list_strings]
+
 
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
@@ -834,7 +834,7 @@ def create_ticket(request):
                     part_no=part_no_list[i],
                     description=desc_list[i],
                     quantity=qty_list[i],
-                    price=price_list_integers[i],
+                    price=price_list_strings[i],
                     availability=availability_list[i],
                     supplier=supplier_list[i],
                     currency=currency_list[i],
@@ -870,7 +870,7 @@ def create_ticket(request):
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{part_no_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{desc_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{qty_list[i]}</td>"
-                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{price_list_integers[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{price_list_strings[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{availability_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{currency_list[i]}</td>"
