@@ -477,7 +477,7 @@
                                                     </td>
                                                     <td><input name="part_no[]" type="text" class="form-control"></td>
                                                     <td><input name="price[]" type="text" class="form-control" value="0.00"></td>
-                                                    <td><input name="quantity[]" type="text" class="form-control"></td>
+                                                    <td><input name="quantity[]" type="text" class="form-control" value="0"></td>
                                                     <td><select name="currency[]" class="form-select">
                                                         <option value="">Select currency</option>
                                                         <option value="KES">KES
@@ -762,36 +762,55 @@
             }
         });
     </script>
-    <script>
-        document.getElementById('add-row-quote').addEventListener('click', function () {
-            var tableBody = document.getElementById('table-body-quote');
-            var newRow = document.createElement('tr');
+<script>
+    document.getElementById('add-row-quote').addEventListener('click', function () {
+        var tableBody = document.getElementById('table-body-quote');
+        var newRow = document.createElement('tr');
 
-            // Create new input fields for each column
-            var columns = ['description', 'part_no', 'price', 'quantity', 'currency'];
-            for (var i = 0; i < columns.length; i++) {
-                var cell = document.createElement('td');
-                var input = document.createElement('input');
+        // Create new input fields for each column
+        var columns = ['description', 'part_no', 'price', 'quantity', 'currency'];
+        for (var i = 0; i < columns.length; i++) {
+            var cell = document.createElement('td');
+            var input;
+
+            if (columns[i] === 'currency') {
+                // For the 'currency' column, create a select element instead of an input
+                input = document.createElement('select');
+                input.name = columns[i] + '[]';
+                input.className = 'form-select';
+
+                // Add options to the select element
+                var currencies = ['Select currency', 'KES', 'USD', 'EUR'];
+                for (var j = 0; j < currencies.length; j++) {
+                    var option = document.createElement('option');
+                    option.value = currencies[j];
+                    option.text = currencies[j];
+                    input.appendChild(option);
+                }
+            } else {
+                // For other columns, create a regular text input
+                input = document.createElement('input');
                 input.type = 'text';
-                input.name = columns[i] + '[]'; // Ensure the name matches the POST data
+                input.name = columns[i] + '[]';
                 input.className = 'form-control';
 
-                // Set a default value for the "price" input
+                // Set default values for 'price' and 'quantity' inputs
                 if (columns[i] === 'price') {
-                    input.value = '0.00'; // You can set your desired default price here
+                    input.value = '0.00';
+                } else if (columns[i] === 'quantity') {
+                    input.value = '0';
                 }
-                if (columns[i] === 'qty') {
-                    input.value = '0'; // You can set your desired default price here
-                }
-
-                cell.appendChild(input);
-                newRow.appendChild(cell);
             }
 
-            // Append the new row to the table
-            tableBody.appendChild(newRow);
-        });
-    </script>
+            cell.appendChild(input);
+            newRow.appendChild(cell);
+        }
+
+        // Append the new row to the table
+        tableBody.appendChild(newRow);
+    });
+</script>
+
     <script>
         document.getElementById('add-row-button').addEventListener('click', function () {
             var tableBody = document.getElementById('table-body');
