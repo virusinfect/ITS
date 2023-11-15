@@ -951,7 +951,7 @@ def get_events(request):
         data.append({
             'title': company,
             'start': event.from_date.isoformat(),
-            'end': new_date.isoformat(),
+            'end': event.to_date.isoformat(),
             'color': color,
         })
 
