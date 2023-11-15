@@ -350,6 +350,13 @@ def delivery_list(request):
     return render(request, 'sign3.html', {'deliveries': deliveries})
 
 
+
+@login_required
+def ticket_print(request, ticket_id):
+    ticket = get_object_or_404(Tickets, ticket_id=ticket_id)
+    signature = TSignature.objects.get(ticket=ticket)
+    return render(request, 'technical/ticket_print.html', {'ticket': ticket,'signature':signature})
+
 @login_required
 def edit_ticket(request, ticket_id):
     technician_group = Group.objects.get(name='Technician')
@@ -1170,6 +1177,7 @@ def create_ticket(request):
         fault = request.POST.get('fault')
         accessories = request.POST.get('accessories')
         notes = request.POST.get('notes')
+        brought_by = request.POST.get('brought_by')
         tech_id = request.POST.get('tech')
         company_id = Company.objects.get(id=company)
         client_id = Clients.objects.get(id=client)
@@ -1185,6 +1193,7 @@ def create_ticket(request):
             notes=notes,
             tech_id=tech_id,
             type=type,
+            brought_by=brought_by,
         )
 
         if type == "On-site":
@@ -1819,7 +1828,9 @@ def save_signature_view_ticket(request):
         tech_id = request.POST.get('tech')
         eqpass = request.POST.get('eqpass')
         client_id = Clients.objects.get(id=client)
-
+        brought_by = request.POST.get('brought_by')
+        print("test")
+        print(brought_by)
         # Create the ticket
         ticket = Tickets.objects.create(
             company=client_id.company,
@@ -1832,6 +1843,7 @@ def save_signature_view_ticket(request):
             tech_id=tech_id,
             type=type,
             eqpass=eqpass,
+            brought_by=brought_by,
         )
 
         if type == "On-site":
@@ -1870,13 +1882,6 @@ def save_signature_view_ticket(request):
         ticket.task = new_task
         ticket.save()
 
-        created_by = request.user
-        notification = Notification.create_notification(
-            users=[tech_id],  # Assign it to the user
-            message="Assigned ITL/TN/" + str(ticket.ticket_id),
-            icon="mdi-book-alert",
-            created_by=created_by,  # Replace with your MDI icon name
-        )
 
         subject = "TICKET ITL/TN/" + str(ticket.ticket_id) + " OPENED - ITS"
         message = "Dear {0},\n\nA ticket ITL/TN/{1} has been raised for your work order, and our team is now reviewing the details to ensure a prompt and effective resolution.\n\nNote: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.\n\nThank you for your patience and understanding.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.".format(

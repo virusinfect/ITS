@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}{{ title }}{% endblock %}
-{% block header %}{{ title}}{% endblock %}
+{% block header %}{{ title }}{% endblock %}
 {% block content %}
     <style>
         .static-action {
@@ -82,6 +82,10 @@
                             <a href="{% url 'create_delivery' ticket.ticket_id %}" title="delivery" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="mdi mdi-truck-delivery-outline"></i>
+                            </a>
+                            <a href="{% url 'ticket_print' ticket.ticket_id %}" title="delivery" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="mdi mdi-printer"></i>
                             </a>
                             <a href="{% url 'delete_ticket' ticket.ticket_id %}" title="delete" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">

@@ -15,7 +15,7 @@ class Tickets(models.Model):
     tech = models.ForeignKey(User, on_delete=models.CASCADE, db_column='tech_id', related_name='tickets_tech')
     equipment = models.CharField(max_length=255, null=True)
     serial_no = models.CharField(max_length=255, null=True)
-    eqpass = models.CharField(max_length=255, blank=True)
+    eqpass = models.CharField(max_length=255, blank=True,null=True)
     machine_yom = models.CharField(max_length=255, blank=True)
     ram = models.CharField(max_length=255, blank=True)
     rom = models.CharField(max_length=255, blank=True)

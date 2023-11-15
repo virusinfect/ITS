@@ -107,12 +107,17 @@
                             </div>
 
                         </div>
+                        <div class="row mb-3 mx-auto">
+                            <label for="brought_by" class="form-label"><strong>Brought by:</strong></label>
+                            <input type="text" class="form-control" id="brought_by"
+                                   name="brought_by" placeholder="brought_by" required>
+                        </div>
                     </div>
 
                 </form>
                 <div class="row">
-                    <div class="card">
-                        <label for="signature-pad">Signature:</label>
+                    <div class="card ">
+                        <label for="signature-pad" class="ms-4">Signature:</label>
                         <canvas id="signature-pad" width="400" height="200"
                                 class="card border border-primary mt-1 mx-auto"></canvas>
                     </div>
@@ -175,6 +180,7 @@
             $('#save-signature').click(function () {
 
                 var serialNo = $('#serial_no').val();
+                var broughtNo = $('#brought_by').val();
                 var typeNo = $('#type').val();
                 var companyNo = $('#company').val();
                 var techNo = $('#tech').val();
@@ -197,6 +203,7 @@
                             client: clientNo,
                             company: companyNo,
                             type: typeNo,
+                            brought_by : broughtNo,
                         },
                         success: function (response) {
                             // Check if the response indicates success (you can define this)
