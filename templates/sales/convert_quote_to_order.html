@@ -55,12 +55,12 @@
                         </div>
                         <div class="col-lg-6">
                             <label for="ticket" class="form-label">Associated Ticket:</label>
-                            {% if ticket %}
+                            {% if quote.ticket %}
                                 <input type="text" class="form-control"
-                                       value="ITL/TN/{{ ticket.ticket_id }} .. {{ ticket.issue_summary }}"
+                                       value="ITL/TN/{{ quote.ticket.ticket_id }} .. {{ quote.ticket.issue_summary }}"
                                        disabled>
                             {% else %}
-                                <input type="text" class="form-control" value="NO Associated quote"
+                                <input type="text" class="form-control" value="NO Associated ticket"
                                        disabled>
                             {% endif %}
 

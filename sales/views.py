@@ -606,6 +606,7 @@ def convert_quote_to_order(request, quote_id):
         handler = User.objects.get(id=handler_id)
         # Create a new Orders record
         order = Orders(
+            ticket=quote.ticket,
             client=request.POST.get('client'),
             lpo_no=request.POST.get('lpo_no'),
             assignee=handler,  # Set assignee to the current user

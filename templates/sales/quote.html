@@ -4,17 +4,38 @@
 {% load humanize %}
 {% load static %}
 {% block content %}
+    <style>
+        @media print {
+            #footer-container {
+                position: relative; /* Change to relative */
+            }
+
+            #footer-image {
+                position: absolute; /* Change to absolute */
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-width: 100%;
+            }
+
+            body {
+                margin: 0 !important;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
     <div class=" card col-8 mx-auto wrapper px-2">
         <!-- Main content -->
         <section class="card invoice" id="delivery-note">
             <div id="content">
-
                 <div class="page-header">
                     <div class="d-flex justify-content-center ">
                         <img src="{% static 'logo black.png' %}" height="125" width="125">
                     </div>
                 </div>
-
                 <table class="table table-borderless">
                     <thead>
                     <tr>
@@ -69,9 +90,11 @@
                                                 <td>{{ item.part_no }}</td>
                                                 <td>{{ item.description }}</td>
                                                 <td>{{ item.availability }}</td>
-                                                <td style="text-align: center;">{{ item.price|floatformat:2|intcomma }}</td>
+                                                <td style="text-align: center;">
+                                                    {{ item.price|floatformat:2|intcomma }}</td>
                                                 <td style="text-align: center;">{{ item.quantity }}</td>
-                                                <td style="text-align: right;">{{ item.total|floatformat:2|intcomma }}</td>
+                                                <td style="text-align: right;">
+                                                    {{ item.total|floatformat:2|intcomma }}</td>
                                             </tr>
                                         {% endfor %}
                                         <tr>
@@ -86,15 +109,14 @@
                                         </tr>
                                         <tr>
                                             <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
-                                            <td style="text-align: right;">{{ total_amount|floatformat:2|intcomma }}</td>
+                                            <td style="text-align: right;">
+                                                {{ total_amount|floatformat:2|intcomma }}</td>
                                         </tr>
-
                                         </tbody>
                                     </table>
-
                                 {% endif %}
                                 {% if quote.layout == "Classified" %}
-                                     {% for item in items %}
+                                    {% for item in items %}
                                         <table class="table table-bordered">
                                         <thead>
                                         <tr>
@@ -132,12 +154,12 @@
                                         </tr>
                                         <tr>
                                             <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
-                                            <td style="text-align: right;">{{ item.total_amount|floatformat:2|intcomma }}</td>
+                                            <td style="text-align: right;">
+                                                {{ item.total_amount|floatformat:2|intcomma }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                                 </table>
-
                                 {% endif %}
                                 {% if quote.layout == "Separated" %}
                                     {% for item in items %}
@@ -178,22 +200,24 @@
                                         </tr>
                                         <tr>
                                             <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
-                                            <td style="text-align: right;">{{ item.total_amount|floatformat:2|intcomma }}</td>
+                                            <td style="text-align: right;">
+                                                {{ item.total_amount|floatformat:2|intcomma }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                                 </table>
                                 {% endif %}
                                 {{ quote.footer_note|safe }}
-
                             </div> <!-- /. page -->
-
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <img src="{% static 'tr_footer.png' %}" id="footer-image" class="mb-1">
+        <div id="footer-container">
+                <img src="{% static 'tr_footer.png' %}" id="footer-image" class="mb-1">
+        </div>
+
         </section>
     </div>
     <a type="button" class="btn btn-primary waves-effect waves-light  me-1" id="print-button">
@@ -203,23 +227,32 @@
         document.getElementById('print-button').addEventListener('click', function () {
             printDeliveryNote();
         });
+
         function printDeliveryNote() {
-            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+            var printContents = document.getElementById('delivery-note').innerHTML;
             var originalContents = document.body.innerHTML;
 
-            // Create a style tag and append it to the head to define a CSS rule for the footer image and remove margins
             var style = document.createElement('style');
             style.innerHTML = `
             @media print {
+                #footer-container {
+                    position: relative;
+                }
+
                 #footer-image {
                     position: fixed;
                     bottom: 0;
                     left: 0;
                     right: 0;
-                    max-width: 98%;
+                    max-width: 100%;
                 }
+
                 body {
-                    margin: 0 !important; /* Force margin removal */
+                    margin: 0 !important;
+                }
+
+                .page-break {
+                    page-break-before: always;
                 }
             }
         `;
@@ -229,7 +262,6 @@
             window.print();
             document.body.innerHTML = originalContents;
 
-            // Remove the added CSS rule
             document.head.removeChild(style);
         }
     </script>

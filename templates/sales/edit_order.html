@@ -55,7 +55,7 @@
                         <div class="col-lg-6">
                             <label for="ticket" class="form-label">Associated Ticket:</label>
                             {% if order.ticket %}
-                                <input class="form-control" value="{{ order.ticket.ticket_id }}" placeholder="ffff"
+                                <input class="form-control" value="ITL/TN/{{ order.ticket.ticket_id }} .. {{ quote.ticket.issue_summary }}" placeholder="ffff"
                                        disabled>
                             {% else %}
                                 <input class="form-control" value="No ticket associated" disabled>

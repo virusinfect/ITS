@@ -71,7 +71,7 @@
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label for="company" class="form-label"><strong>Company:</strong></label>
-                                            <select id="company" name="company" class="form-select" disabled>
+                                            <select id="company" name="company" class="form-select">
                                                 <option value="">Select a company</option>
                                                 {% for company in companies %}
                                                     <option value="{{ company.id }}"
@@ -88,8 +88,11 @@
                                         <div class="col-lg-6 mb-3">
                                             <label for="client" class="form-label"><strong>Client:</strong></label>
                                             <input id="client" name="client" value="{{ ticket.client }}"
-                                                   class="form-control" disabled/>
-
+                                                   class="form-control"/>
+                                            <label for="client" class="form-label"><strong>Client:</strong></label>
+                                            <select name="client" class="form-control" id="client" required>
+                                                <option value="{{ ticket.client }}" disabled selected>{{ ticket.client }}</option>
+                                            </select>
                                         </div>
                                         <div class="mb-3 col-lg-6">
                                             <label for="tech" class="form-label"><strong>Technician:</strong></label>
@@ -727,6 +730,41 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var clientNo;
+        var clientSelect = document.getElementById('client');
+
+        function attachChangeEventListener() {
+            clientSelect.addEventListener('change', function () {
+                clientNo = clientSelect.value;
+                console.log("Client ID after populating: " + clientNo);
+            });
+        }
+
+        document.getElementById('company').addEventListener('change', function () {
+            var companyId = this.value;
+            var clientSelect = document.getElementById('client');
+            var clientNo = clientSelect.value;
+            // Clear existing options and add the "Select a client" option
+            clientSelect.innerHTML = '<option value="" disabled selected>Select a client</option>';
+            if (companyId) {
+                // Make an AJAX request to fetch clients based on the selected company.
+                // Replace the URL with your Django view or API endpoint.
+                fetch('/get_clients/?company_id=' + companyId)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.clients.forEach(function (client) {
+                            var option = document.createElement('option');
+                            option.value = client.id;
+                            option.textContent = client.f_name;
+                            clientSelect.appendChild(option);
+                        });
+                        // Now that options are populated, attach the event listener
+                        attachChangeEventListener();
+                    });
+            }
+        });
+    </script>
     <script>
         document.getElementById('add-row-button').addEventListener('click', function () {
             var tableBody = document.getElementById('table-body');

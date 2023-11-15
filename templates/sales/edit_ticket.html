@@ -34,7 +34,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'sales_tickets' %}">Tickets</a></li>
-                    <li class="breadcrumb-item active">Edit Ticket</li>
+                    <li class="breadcrumb-item active">Edit Ticket #{{ ticket.ticket_id }}</li>
                 </ol>
             </div>
         </div> <!-- end col -->
@@ -42,12 +42,10 @@
     <div class="mx-auto">
         <div class="card">
             <div class="card-body">
-                <h4 class="mb-3 header-title">Edit Sales Ticket</h4>
+                <h4 class="mb-3 header-title">Edit Sales Ticket No. #{{ ticket.ticket_id }}</h4>
 
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="header-title mb-4">Tabs Justified</h4>
-
                         <ul class="nav nav-pills navtab-bg nav-justified">
                             <li class="nav-item">
                                 <a href="#Enquiry" data-bs-toggle="tab" aria-expanded="false"
@@ -66,13 +64,13 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#Order" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
-                                    Order
+                                <a href="#Invoice" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                    Pro-Forma Invoice
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#Invoice" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
-                                    Pro-Forma Invoice
+                                <a href="#Order" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                    Order
                                 </a>
                             </li>
                         </ul>
