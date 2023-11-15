@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load helpdesk_tags %}
 {% load static %}
+{% load humanize %}
 {% block title %}Report{% endblock %}
 {% block content %}
     <div class="mx-auto col-9">
@@ -117,9 +118,9 @@
                                     <tr>
                                         <td>{{ requisition.part.code }}</td>
                                         <td>{{ requisition.part.description }}</td>
-                                        <td>{{ requisition.price|floatformat:2 }}</td>
+                                        <td>{{ requisition.price|floatformat:2|intcomma }}</td>
                                         <td>{{ requisition.quantity }}</td>
-                                        <td>{{ requisition.total|floatformat:2 }}</td>
+                                        <td>{{ requisition.total|floatformat:2|intcomma }}</td>
                                     </tr>
                                 {% endfor %}
                             {% endif %}
@@ -128,28 +129,28 @@
                                     <tr data-entry-id="{{ item.id }}">
                                         <td>{{ item.part_no }}</td>
                                         <td>{{ item.description }}</td>
-                                        <td>{{ item.price|floatformat:2 }}</td>
-                                        <td>{{ item.quantity|floatformat:0 }}</td>
-                                        <td>{{ item.total|floatformat:2 }}</td>
+                                        <td>{{ item.price|floatformat:2|intcomma }}</td>
+                                        <td>{{ item.quantity|floatformat:2|intcomma }}</td>
+                                        <td>{{ item.total|floatformat:2|intcomma }}</td>
                                         <!-- Add more cells for other fields -->
                                     </tr>
                                 {% endfor %}
                             {% endif %}
                             <tr>
                                 <td colspan="4" class="text-end">LABOUR</td>
-                                <td colspan="4" class="text-end">{{ ticket.labour|floatformat:2 }}</td>
+                                <td colspan="4" class="text-end">{{ ticket.labour|floatformat:2|intcomma }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end">SUBTOTALS</td>
-                                <td colspan="4" class="text-end">{{ subtotals|floatformat:2 }}</td>
+                                <td colspan="4" class="text-end">{{ subtotals|floatformat:2|intcomma }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end text-danger">VAT</td>
-                                <td colspan="4" class="text-danger text-end">{{ vat|floatformat:2 }}</td>
+                                <td colspan="4" class="text-danger text-end">{{ vat|floatformat:2|intcomma }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end">TOTAL AMOUNT</td>
-                                <td colspan="4  " class="text-end">{{ total_amount|floatformat:2 }}</td>
+                                <td colspan="4  " class="text-end">{{ total_amount|floatformat:2|intcomma }}</td>
                             </tr>
                             </tbody>
                         </table>
