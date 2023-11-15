@@ -392,6 +392,7 @@ def edit_ticket(request, ticket_id):
             saved_technician = ticket.tech
             # Update the ticket fields based on the POST data
             ticket.type = request.POST.get('type')
+            ticket.client_id = request.POST.get('client')
             ticket.recommendation = request.POST.get('recommendation')
             ticket.equipment = request.POST.get('equipment')
             ticket.serial_no = request.POST.get('serial_no')

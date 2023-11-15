@@ -71,7 +71,7 @@
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label for="company" class="form-label"><strong>Company:</strong></label>
-                                            <select id="company" name="company" class="form-select">
+                                            <select id="company" name="company" class="form-select" required>
                                                 <option value="">Select a company</option>
                                                 {% for company in companies %}
                                                     <option value="{{ company.id }}"
@@ -81,17 +81,14 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
-
-
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-lg-6 mb-3">
                                             <label for="client" class="form-label"><strong>Client:</strong></label>
-                                            <input id="client" name="client" value="{{ ticket.client }}"
-                                                   class="form-control"/>
-                                            <label for="client" class="form-label"><strong>Client:</strong></label>
                                             <select name="client" class="form-control" id="client" required>
-                                                <option value="{{ ticket.client }}" disabled selected>{{ ticket.client }}</option>
+                                                <option value="{{ ticket.client }}"
+                                                        selected>{{ ticket.client }}</option>
+                                                <option value="" disabled>Select a client</option>
                                             </select>
                                         </div>
                                         <div class="mb-3 col-lg-6">

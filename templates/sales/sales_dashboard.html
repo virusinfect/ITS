@@ -108,18 +108,15 @@
         <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
-
                     <h4 class="header-title mb-3">Tickets</h4>
-
                     <div class="inbox-widget">
                         <div class="inbox-item">
-                            <a href="#">
+                            <a href="{% url 'open_tickets_list' %}">
                                 <div class="inbox-item-img"></div>
                                 <h5 class="inbox-item-author">Open Tickets</h5>
-                                <p class="inbox-item-date" style="font-size: 16px;"><strong>{{ open_count }}</strong></p>
+                                <p class="inbox-item-date" style="font-size: 16px;">{{ open_count }}</p>
                             </a>
                         </div>
-
                         <div class="inbox-item">
                             <a href="{% url 'tickets_in_status' 'Sourcing' %}">
                                 <div class="inbox-item-img"></div>
@@ -127,7 +124,6 @@
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ sourcing_count }}</p>
                             </a>
                         </div>
-
                         <div class="inbox-item">
                             <a href="{% url 'tickets_in_status' 'Quote' %}">
                                 <div class="inbox-item-img"></div>
@@ -135,7 +131,6 @@
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ quote_count }}</p>
                             </a>
                         </div>
-
                         <div class="inbox-item">
                             <a href="{% url 'tickets_in_status' 'Closed' %}">
                                 <div class="inbox-item-img"></div>
