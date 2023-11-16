@@ -94,6 +94,10 @@
                                     2012
                                 </option>
                             </optgroup>
+                            <optgroup label="Windows XP">
+                                <option value="Windows XP"
+                                        {% if software.os == 'Windows XP' %}selected{% endif %}>Windows XP</option>
+                            </optgroup>
 
                             <!-- Add more Windows versions and editions as needed -->
                         </select>
