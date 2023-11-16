@@ -86,7 +86,7 @@
                                         </select>
                                     </div>
                                 {% endif %}
-                                {% if user|is_store or user|is_accounts or user|is_helpdesk %}
+                                {% if user|is_helpdesk %}
                                     {% if requisition.req_status == "Approved" %}
                                         <div class="col-md-6 mt-3">
                                             <label for="issue_status" class="form-label">Issue Status:</label>
