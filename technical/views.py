@@ -2,11 +2,12 @@ import base64
 import datetime
 import math
 import uuid
-from django.core.mail import EmailMessage
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.core.files.base import ContentFile
+from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Count
@@ -24,7 +25,7 @@ from its.models import Company, Clients, Parts, PartsCategory, Task, Notificatio
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
     Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport, TSignature, TicketImage, \
-    TechSignature
+    TechSignature, InhouseTickets
 
 
 @login_required
@@ -342,6 +343,19 @@ def ticket_list(request):
 
 
 @login_required
+def inhouse_ticket_list(request):
+    title = "Inhouse Ticket List"
+    if request.user.groups.filter(name='Technician').exists():
+        # If the user belongs to the "Technician" group, show only their assigned tickets
+        tickets = InhouseTickets.objects.filter(tech=request.user, is_active=1).order_by('-created')
+    else:
+        # If the user doesn't belong to the "Technician" group, show all tickets
+        tickets = InhouseTickets.objects.filter(is_active=1).order_by('-created')
+
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
+
+
+@login_required
 def sign(request, delivery_id):
     return render(request, "sign.html", {'delivery_id': delivery_id})
 
@@ -359,8 +373,21 @@ def delivery_list(request):
 @login_required
 def ticket_print(request, ticket_id):
     ticket = get_object_or_404(Tickets, ticket_id=ticket_id)
-    signature = TSignature.objects.get(ticket=ticket)
-    tech_signature = TechSignature.objects.get(tech=ticket.tech)
+
+
+    try:
+        # Try to get the TechSignature for the ticket
+        signature = TSignature.objects.get(ticket=ticket)
+    except TSignature.DoesNotExist:
+        # If TechSignature does not exist, provide a default value or handle it as needed
+        signature = None  # You can set a default value or leave it as None
+
+    try:
+        # Try to get the TechSignature for the ticket
+        tech_signature = TechSignature.objects.get(tech=ticket.tech)
+    except TechSignature.DoesNotExist:
+        # If TechSignature does not exist, provide a default value or handle it as needed
+        tech_signature = None  # You can set a default value or leave it as None
     return render(request, 'technical/ticket_print.html',
                   {'ticket': ticket, 'signature': signature, 'tech_signature': tech_signature})
 
@@ -477,7 +504,7 @@ def edit_ticket(request, ticket_id):
                   {'ticket': ticket, 'users': users, 'product_details': product_details, 'companies': companies,
                    'requisitions': requisitions, 'tsourcing_data': tsourcing_data, 'tquote_data': tquote_data,
                    'parts': parts, 'action_images': action_images, 'diagnosis_images': diagnosis_images,
-                   'recommendation_images': recommendation_images,'sales':sales})
+                   'recommendation_images': recommendation_images, 'sales': sales})
 
 
 def delete_image(request, image_id):
@@ -1416,7 +1443,8 @@ def sourcing_tickets(request, ticket_id):
         table += "</table>"
 
         # Your existing code to create new_sourcing_data objects
-        url = "http://146.190.61.23:8500/technical/edit-ticket/" + str(ticket.ticket_id) + "/"  # Replace with your actual URL
+        url = "http://146.190.61.23:8500/technical/edit-ticket/" + str(
+            ticket.ticket_id) + "/"  # Replace with your actual URL
         clickable_url = f"<a href='{url}'>ITL/TN/" + str(ticket.ticket_id) + "</a>"
         # Use the 'table' string in the email message
         message = (

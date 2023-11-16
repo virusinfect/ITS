@@ -62,6 +62,59 @@ class Tickets(models.Model):
         db_table = 'tickets'
 
 
+class InhouseTickets(models.Model):
+    ticket_id = models.AutoField(primary_key=True, db_comment='PK')
+    priority = models.CharField(max_length=255, default=1)
+    status = models.CharField(max_length=255, default="Open")
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, db_column='company_id')
+    client = models.ForeignKey(Clients, on_delete=models.CASCADE, db_column='client_id')
+    tech = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tech')
+    equipment = models.CharField(max_length=255, null=True)
+    serial_no = models.CharField(max_length=255, null=True)
+    eqpass = models.CharField(max_length=255, blank=True,null=True)
+    machine_yom = models.CharField(max_length=255, blank=True)
+    ram = models.CharField(max_length=255, blank=True)
+    rom = models.CharField(max_length=255, blank=True)
+    processor = models.CharField(max_length=255, blank=True)
+    os = models.CharField(max_length=255, blank=True)
+    office_suite = models.CharField(max_length=255, blank=True)
+    printer_yom = models.CharField(max_length=255, blank=True)
+    printer_type = models.CharField(max_length=255, blank=True)
+    catridge = models.CharField(max_length=255, blank=True)
+    fault = models.CharField(max_length=255, blank=True)
+    accessories = models.CharField(max_length=255, blank=True)
+    notes = models.TextField(blank=True)
+    diagnosis = models.TextField(blank=True)
+    action = models.TextField(blank=True)
+    recommendation = models.TextField(blank=True)
+    labour = models.FloatField(default=0)
+    currency = models.CharField(max_length=50, default="KSH")
+    remark = models.CharField(max_length=50, blank=True)
+    lpo_no = models.CharField(max_length=255, blank=True)
+    bench_status = models.CharField(max_length=25, default="Pending")
+    more = models.CharField(max_length=300, blank=True)
+    type = models.CharField(max_length=25)
+    brought_by = models.CharField(max_length=255, blank=True)
+    reg_sign = models.CharField(max_length=255, blank=True)
+    collected_by = models.CharField(max_length=255, blank=True)
+    dlvr_sign = models.CharField(max_length=255, blank=True)
+    tr_approval = models.CharField(max_length=255, blank=True)
+    is_active = models.IntegerField(default=1)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    agtsc = models.CharField(max_length=255, blank=True)
+    timeline = models.CharField(max_length=255, blank=True)
+    device_diagnosis = models.CharField(max_length=255, blank=True)
+    sourcing_parts = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='handler')
+    device_repair = models.CharField(max_length=255, blank=True)
+    product_currency = models.CharField(max_length=255, blank=True)
+    device = models.TextField()
+    tr_status = models.TextField()
+    sourcing_status = models.TextField()
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=True)
+
+
+
 class ProductDetail(models.Model):
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
     part_number = models.CharField(max_length=100)
@@ -73,8 +126,27 @@ class ProductDetail(models.Model):
     supplier = models.CharField(max_length=100, null=True)
     attachment = models.FileField(upload_to='attachments/', null=True)
 
+class InhouseProductDetail(models.Model):
+    ticket = models.ForeignKey(InhouseTickets, on_delete=models.CASCADE)
+    part_number = models.CharField(max_length=100)
+    description = models.TextField(null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(null=True)
+    currency = models.CharField(max_length=10, null=True)
+    availability = models.CharField(max_length=100, null=True)
+    supplier = models.CharField(max_length=100, null=True)
+    attachment = models.FileField(upload_to='attachments/', null=True)
+
 class TicketImage(models.Model):
     ticket = models.ForeignKey('Tickets', on_delete=models.CASCADE)  # Replace 'YourTicketModel' with your actual ticket model
+    tag = models.CharField(max_length=255)  # A varchar field for tagging the image
+    image = models.ImageField(upload_to='ticket_images/')  # A field for uploading the image
+
+    def __str__(self):
+        return self.tag
+
+class InhouseTicketImage(models.Model):
+    ticket = models.ForeignKey('InhouseTickets', on_delete=models.CASCADE)  # Replace 'YourTicketModel' with your actual ticket model
     tag = models.CharField(max_length=255)  # A varchar field for tagging the image
     image = models.ImageField(upload_to='ticket_images/')  # A field for uploading the image
 

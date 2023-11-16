@@ -334,6 +334,9 @@
                                         <a href="{% url 'ticket-list' %}">Tickets</a>
                                     </li>
                                     <li>
+                                        <a href="{% url 'inhouse-ticket-list' %}">In-house Tickets</a>
+                                    </li>
+                                    <li>
                                         <a href="{% url 'active_call_cards' %}">Call Cards</a>
                                     </li>
                                     {% if user|is_helpdesk or user|is_management %}
