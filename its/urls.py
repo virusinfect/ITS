@@ -17,6 +17,7 @@ urlpatterns = [
     path('delete-part/<int:part_id>/', views.delete_part, name='delete-part'),
     path('companies/', views.company_list, name='company-list'),
     path('companies_create/', views.create_company, name='create-company'),
+    path('create_company/', views.modal_create_company, name='modal_create_company'),
     path('companies_edit/<int:company_id>/', views.edit_company, name='edit-company'),
     path('companies_delete/<int:company_id>/', views.delete_company, name='delete-company'),
     path('companies/<int:company_id>/clients/', views.client_list, name='client-list'),

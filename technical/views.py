@@ -25,7 +25,8 @@ from its.models import Company, Clients, Parts, PartsCategory, Task, Notificatio
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
     Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport, TSignature, TicketImage, \
-    TechSignature, InhouseTickets, InhouseTSignature
+    TechSignature, InhouseTickets, InhouseTSignature, InhouseTicketImage, InhouseTsourcing, inhousetQuote, \
+    InhouseProductDetail
 
 
 @login_required
@@ -352,7 +353,7 @@ def inhouse_ticket_list(request):
         # If the user doesn't belong to the "Technician" group, show all tickets
         tickets = InhouseTickets.objects.filter(is_active=1).order_by('-created')
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
+    return render(request, 'technical/inhouse_ticket_list.html', {'tickets': tickets, 'title': title})
 
 
 @login_required
@@ -391,6 +392,25 @@ def ticket_print(request, ticket_id):
     return render(request, 'technical/ticket_print.html',
                   {'ticket': ticket, 'signature': signature, 'tech_signature': tech_signature})
 
+@login_required
+def inhouse_ticket_print(request, ticket_id):
+    ticket = get_object_or_404(InhouseTickets, ticket_id=ticket_id)
+
+    try:
+        # Try to get the TechSignature for the ticket
+        signature = InhouseTSignature.objects.get(ticket=ticket)
+    except TSignature.DoesNotExist:
+        # If TechSignature does not exist, provide a default value or handle it as needed
+        signature = None  # You can set a default value or leave it as None
+
+    try:
+        # Try to get the TechSignature for the ticket
+        tech_signature = TechSignature.objects.get(tech=ticket.tech)
+    except TechSignature.DoesNotExist:
+        # If TechSignature does not exist, provide a default value or handle it as needed
+        tech_signature = None  # You can set a default value or leave it as None
+    return render(request, 'technical/inhouse_ticket_print.html',
+                  {'ticket': ticket, 'signature': signature, 'tech_signature': tech_signature})
 
 @login_required
 def edit_ticket(request, ticket_id):
@@ -513,6 +533,122 @@ def edit_ticket(request, ticket_id):
                    'recommendation_images': recommendation_images, 'sales': sales})
 
 
+
+@login_required
+def edit_inhouse_ticket(request, ticket_id):
+    technician_group = Group.objects.get(name='Technician')
+    users = technician_group.user_set.filter(is_active=True)
+    sales_group = Group.objects.get(name='Sales')
+    sales = sales_group.user_set.all()
+    companies = Company.objects.all().order_by("name")
+    ticket = get_object_or_404(InhouseTickets, ticket_id=ticket_id)
+    product_details = InhouseProductDetail.objects.filter(ticket=ticket.ticket_id)
+    tsourcing_data = InhouseTsourcing.objects.filter(ticket=ticket)
+    tquote_data = inhousetQuote.objects.filter(ticket=ticket)
+    action_images = InhouseTicketImage.objects.filter(ticket=ticket, tag="action")
+    diagnosis_images = InhouseTicketImage.objects.filter(ticket=ticket, tag="diagnosis")
+    recommendation_images = InhouseTicketImage.objects.filter(ticket=ticket, tag="recommendation")
+
+    # try:
+    #     requisitions = Requisition.objects.filter(ticket=ticket, is_active=True)
+    # except Requisition.DoesNotExist:
+    requisitions = None
+    #
+    # try:
+    #     parts = Requisition.objects.filter(ticket=ticket, is_active=True, issue_status="Issue")
+    # except Requisition.DoesNotExist:
+    parts = None
+
+    if request.method == 'POST':
+        # Handle form submission and update ticket details here
+        # Example:
+        form_type = request.POST.get('form_type')
+        if form_type == 'form1':
+            selected_technician_id = request.POST.get('tech')
+            selected_technician = User.objects.get(pk=selected_technician_id)
+            saved_technician = ticket.tech
+            # Update the ticket fields based on the POST data
+            ticket.company = request.POST.get('company')
+            ticket.email = request.POST.get('email')
+            ticket.recommendation = request.POST.get('recommendation')
+            ticket.equipment = request.POST.get('equipment')
+            ticket.serial_no = request.POST.get('serial_no')
+            ticket.fault = request.POST.get('fault')
+            ticket.diagnosis = request.POST.get('diagnosis')
+            ticket.action = request.POST.get('action')
+            ticket.accessories = request.POST.get('accessories')
+            ticket.tech = selected_technician
+            ticket.updated = timezone.now()
+            ticket.accessories = request.POST.get('accessories')
+            ticket.updated = timezone.now()
+
+
+
+            # Save the changes
+            ticket.save()
+            image1 = request.FILES.get('action_image')
+            image2 = request.FILES.get('diagnosis_image')
+            image3 = request.FILES.get('recommendation_image')
+
+            if image1:  # Check if image1 is not empty
+                InhouseTicketImage.objects.create(ticket=ticket, tag="action", image=image1)
+
+            if image2:  # Check if image2 is not empty
+                InhouseTicketImage.objects.create(ticket=ticket, tag="diagnosis", image=image2)
+
+            if image3:  # Check if image3 is not empty
+                InhouseTicketImage.objects.create(ticket=ticket, tag="recommendation", image=image3)
+
+            if selected_technician != saved_technician:
+                if ticket.task:  # Check if a task exists for the ticket
+                    ticket.task.user = selected_technician
+                    ticket.task.save()
+
+            messages.success(request, 'Ticket Edited successfully')
+            return redirect('edit_inhouse_ticket', ticket_id=ticket_id)
+
+        elif form_type == 'form2':
+            status = request.POST.get('status')
+            status1 = ticket.status
+            ticket.status = status
+            ticket.bench_status = request.POST.get('bench_status')
+            ticket.remark = request.POST.get('remark')
+            ticket.tr_status = request.POST.get('tr_status')
+            ticket.more = request.POST.get('more')
+            ticket.lpo_no = request.POST.get('lpo_no')
+            ticket.tr_approval = request.POST.get('tr_approval')
+            ticket.updated = timezone.now()
+            ticket.save()
+
+            messages.success(request, 'Ticket Edited successfully')
+            if status1 == 'Open' and status == 'Closed':
+                ticket.task.status = 'Completed'
+                ticket.task.save()
+                subject = "TICKET ITL/IHTN/" + str(ticket.ticket_id) + " CLOSED - ITS"
+                message = "Dear {0},\n\nWe are pleased to inform you that your ticket ITL/IHTN/{1} has been successfully closed. Our team has reviewed the details and has taken the necessary actions to ensure a prompt and effective resolution.\n\nIf you have any further questions or concerns, please don't hesitate to reach out to us at support@intellitech.co.ke. We are here to assist you.\n\nThank you for your patience and understanding throughout this process. We value your business and look forward to serving you in the future.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.".format(
+                    ticket.company, ticket.ticket_id)
+                recipient_list = [ticket.email]
+                from_email = 'its-noreply@intellitech.co.ke'
+                send_mail(subject, message, from_email, recipient_list)
+
+            # Redirect back to the edit view
+            return redirect('edit_inhouse_ticket', ticket_id=ticket_id)
+
+        elif form_type == 'form3':
+            form = TsourcingForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('edit_inhouse_ticket', ticket_id=ticket_id)  # Redirect after saving
+            else:
+                form = TsourcingForm()
+
+        # Render the edit form
+    return render(request, 'technical/edit_inhouse_ticket.html',
+                  {'ticket': ticket, 'users': users, 'product_details': product_details, 'companies': companies,
+                   'requisitions': requisitions, 'tsourcing_data': tsourcing_data, 'tquote_data': tquote_data,
+                   'parts': parts, 'action_images': action_images, 'diagnosis_images': diagnosis_images,
+                   'recommendation_images': recommendation_images, 'sales': sales})
+
 def delete_image(request, image_id):
     if request.method == 'POST':
         try:
@@ -598,6 +734,60 @@ def create_delivery(request, ticket_id):
 
     return render(request, 'create_delivery.html', {'ticket': ticket})
 
+@login_required
+def create_inhouse_delivery(request, ticket_id):
+    ticket_id = ticket_id
+    try:
+        ticket = InhouseTickets.objects.get(pk=ticket_id)
+    except InhouseTickets.DoesNotExist:
+        return HttpResponseNotFound("Ticket not found")
+
+        # Check if a delivery already exists for this ticket
+    # existing_delivery = Delivery.objects.filter(ticket=ticket, is_active=True).first()
+
+
+    if request.method == 'POST':
+        # Process the form data and create a new delivery
+        client = ticket.company
+        delivery_type = 'Returns'
+        lpo = request.POST.get('lpo')
+        collected_by = request.POST.get('collected_by')
+        currency = request.POST.get('currency')
+        vat_status = request.POST.get('vat_status') == 'on'  # Convert the checkbox value to a boolean
+        status = request.POST.get('status')
+        remarks = request.POST.get('remarks')
+        department = request.POST.get('department')
+        # Create the new delivery and associate it with the ticket
+        new_delivery = Delivery(
+            ticket=ticket,
+            client=client,
+            type=delivery_type,
+            lpo=lpo,
+            collected_by=collected_by,
+            currency=currency,
+            vat_status=vat_status,
+            status=status,
+            remarks=remarks,
+            department=department,
+            created_by=request.user,
+        )
+        new_delivery.save()
+
+        quantity_list = request.POST.getlist('quantity_[]')
+        serial_no_list = request.POST.getlist('serial_no_[]')
+        particulars_list = request.POST.getlist('particulars_[]')
+
+        # Assuming you have a Ticket model
+        for quantity, serial_no, particulars in zip(quantity_list, serial_no_list, particulars_list):
+            if particulars:
+                Items.objects.create(delivery=new_delivery, quantity=quantity, serial_no=serial_no,
+                                     particulars=particulars)
+
+        messages.success(request, 'Delivery Created successfully')
+        # Redirect to the ticket details page or a success page
+        return redirect('view_delivery', ticket_id=ticket_id)
+
+    return render(request, 'create_delivery.html', {'ticket': ticket})
 
 @login_required
 def create_delivery_normal(request):
@@ -1317,6 +1507,17 @@ def delete_ticket(request, ticket_id):
 
     return redirect('ticket-list')  # Redirect to the list of tickets after deletion
 
+@login_required
+def delete_inhouse_ticket(request, ticket_id):
+    ticket = get_object_or_404(InhouseTickets, ticket_id=ticket_id)
+
+    # Set is_active to 0 to mark the ticket as deleted
+    ticket.is_active = 0
+    messages.warning(request, 'Ticket Deleted successfully')
+    ticket.save()
+
+    return redirect('inhouse-ticket-list')  # Redirect to the list of tickets after deletion
+
 
 @login_required
 def delete_delivery(request, delivery_id):
@@ -2012,6 +2213,8 @@ def save_signature_view_inhouse_ticket(request):
         signature_data = request.POST.get('signature_data')
         type = request.POST.get('type')
         company = request.POST.get('company')
+        email = request.POST.get('email')
+        telephone = request.POST.get('telephone')
         equipment = request.POST.get('equipment')
         serial_no = request.POST.get('serial_no')
         fault = request.POST.get('fault')
@@ -2022,14 +2225,16 @@ def save_signature_view_inhouse_ticket(request):
         brought_by = request.POST.get('brought_by')
         # Create the ticket
         ticket = InhouseTickets.objects.create(
+            type="White",
             company=company,
             equipment=equipment,
+            email=email,
+            telephone=telephone,
             serial_no=serial_no,
             fault=fault,
             accessories=accessories,
             notes="notes",
             tech_id=tech_id,
-            type=type,
             eqpass=eqpass,
             brought_by=brought_by,
         )
@@ -2055,3 +2260,68 @@ def save_signature_view_inhouse_ticket(request):
             return JsonResponse({'success': False, 'message': 'Format Approval not found'}, status=400)
 
     return JsonResponse({'message': 'Invalid request method'}, status=400)
+
+
+def create_Inhouse_ticket(request):
+    if request.method == 'POST':
+        # Handle form submission
+        type = request.POST.get('type')
+        company = request.POST.get('company')
+        email = request.POST.get('email')
+        telephone = request.POST.get('telephone')
+        equipment = request.POST.get('equipment')
+        serial_no = request.POST.get('serial_no')
+        fault = request.POST.get('fault')
+        accessories = request.POST.get('accessories')
+        notes = request.POST.get('notes')
+        brought_by = request.POST.get('brought_by')
+        tech_id = request.POST.get('tech')
+
+        # Create the ticket
+        ticket = Tickets.objects.create(
+            company=company,
+            email=email,
+            telephone=telephone,
+            equipment=equipment,
+            serial_no=serial_no,
+            fault=fault,
+            accessories=accessories,
+            notes=notes,
+            tech_id=tech_id,
+            type=type,
+            brought_by=brought_by,
+        )
+
+
+        messages.success(request, 'Ticket Created successfully')
+
+            # Assuming you are in a view function, you can access the current user through the request object
+        user = request.user
+        # Create a new Task instance without saving it
+        new_task = Task(
+            title="Ticket for " + str(company) + ", Ticket NO : ITL/TN/" + str(ticket.ticket_id),
+            description="You have been allocated Ticket for " + str(company) + " with fault " + str(fault),
+            is_active=True,
+            status="In Progress",
+            user=get_object_or_404(User, id=tech_id),
+            created_by=user,
+
+        )
+
+        # Save the new_task instance
+        new_task.save()
+
+        ticket.task = new_task
+        ticket.save()
+
+        return redirect('edit-ticket', ticket.ticket_id)  # Replace 'success_page' with the actual success page URL
+
+    else:
+        # Handle GET request, render the form
+        companies = Company.objects.all().order_by('name')
+        clients = Clients.objects.all()
+        technician_group = Group.objects.get(name='Technician')
+        users = technician_group.user_set.all()
+
+        return render(request, 'technical/create_inhouse_ticket.html',
+                      {'companies': companies, 'clients': clients, 'users': users})

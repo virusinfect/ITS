@@ -146,7 +146,7 @@ class TicketImage(models.Model):
         return self.tag
 
 class InhouseTicketImage(models.Model):
-    ticket = models.ForeignKey('InhouseTickets', on_delete=models.CASCADE)  # Replace 'YourTicketModel' with your actual ticket model
+    ticket = models.ForeignKey(InhouseTickets, on_delete=models.CASCADE)  # Replace 'YourTicketModel' with your actual ticket model
     tag = models.CharField(max_length=255)  # A varchar field for tagging the image
     image = models.ImageField(upload_to='ticket_images/')  # A field for uploading the image
 
@@ -309,6 +309,36 @@ class tQuote(models.Model):
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
     availability = models.CharField(max_length=255, null=True)
 
+class InhouseTsourcing(models.Model):
+    ticket = models.ForeignKey(InhouseTickets, on_delete=models.CASCADE)
+    desc = models.CharField(max_length=255)
+    part_no = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    qty = models.PositiveIntegerField(default=0.0, null=True)
+    currency = models.CharField(max_length=50)
+    availability = models.CharField(max_length=255)
+    supplier = models.CharField(max_length=255)
+    assignee = models.CharField(max_length=255)
+    attachment = models.CharField(max_length=1000, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.desc
+
+
+class inhousetQuote(models.Model):
+    part_no = models.CharField(max_length=255)
+    description = models.CharField(max_length=2000)
+    price = models.FloatField()
+    quantity = models.FloatField()
+    attachment = models.CharField(max_length=1000, null=True)
+    currency = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    ticket = models.ForeignKey(InhouseTickets, on_delete=models.CASCADE)
+    availability = models.CharField(max_length=255, null=True)
 
 class FormatApproval(models.Model):
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)

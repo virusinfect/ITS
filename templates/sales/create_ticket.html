@@ -49,8 +49,9 @@
 
                     <div class="col-md-6">
 
-                        <label for="company_id" class="form-label">Company   :   <a type="button" class="text-danger" data-bs-toggle="modal"
-                                                                               data-bs-target="#signup-modal">
+                        <label for="company_id" class="form-label">Company : <a type="button" class="text-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#signup-modal">
                             <i class="mdi mdi-domain"> add new </i>
                         </a></label>
                         <select name="company_id" class="form-select">
@@ -69,21 +70,23 @@
                 </div>
                 <div class="row mx-auto mb-3">
                     <label for="issue_summary" class="form-label">Issue Summary:</label>
-                    <textarea name="issue_summary"
-                              class="form-control" placeholder="Issues Summary"></textarea>
-
+                    <div id="editor-container">
+                        <textarea name="issue_summary" id="issue_summary" class="form-control"
+                                  placeholder="Issues Summary"></textarea>
+                    </div>
                 </div>
+
                 <div class="row mb-3 table-responsive mx-auto">
                     <table class="table mb-3">
                         <thead class="table-dark">
                         <tr>
                             <th>Part Number</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Currency</th>
+                            <th width="30%">Description</th>
+                            <th width="10%">Price</th>
+                            <th width="6%">Quantity</th>
+                            <th width="8%">Currency</th>
                             <th>Availability</th>
-                            <th>Supplier</th>
+                            <th width="8%">Supplier</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -93,10 +96,15 @@
                                        value="{{ product.part_no }}"
                                        class="form-control">
                             </td>
-                            <td><input type="text" name="description[]"
-                                       value="{{ product.description }}"
-                                       class="form-control">
+                            <td>
+                                <div id="editor-container-{{ product.id }}">
+                                    <textarea name="description[]" id="description"
+                                              class="form-control">
+                                        {{ product.description }}
+                                    </textarea>
+                                </div>
                             </td>
+
                             <td>
                                 <input type="number" name="price[]" value="0" placeholder="0" id="price"
                                        class="form-control" step="any" min="0">
@@ -334,6 +342,10 @@
             for (let input of inputs) {
                 input.value = '';
             }
+            const textareas = newRow.getElementsByTagName('textarea');
+            for (let textarea of textareas) {
+                textarea.value = '';
+            }
 
             // Clear select options in the new row (optional)
             const selects = newRow.getElementsByTagName('select');
@@ -356,6 +368,7 @@
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
             integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -398,5 +411,86 @@
             });
         });
     </script>
+
+    <!-- Include CKEditor library -->
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            ClassicEditor
+                .create(document.querySelector('#description'), {
+                    toolbar: {
+                        items: [
+                            'bold',
+                            'italic',
+                            'bulletedList',
+                            'numberedList',
+                            'blockQuote',
+                            'undo',
+                            'redo'
+                        ]
+                    },
+                    language: 'en',
+                    image: {
+                        toolbar: [
+                            'imageTextAlternative',
+                            'imageStyle:full',
+                            'imageStyle:side'
+                        ]
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        ClassicEditor
+            .create(document.querySelector('#issue_summary'), {
+                toolbar: {
+                    items: [
+                        'bold',
+                        'italic',
+                        'bulletedList',
+                        'numberedList',
+                        'blockQuote',
+                        'undo',
+                        'redo'
+                    ],
+                    shouldNotGroupWhenFull: true,
+                    items: [
+                        'bold',
+                        'italic',
+                        '|',
+                        'bulletedList',
+                        'numberedList',
+                        '|',
+                        'blockQuote',
+                        '|',
+                        'undo',
+                        'redo'
+                    ],
+                    icon: {
+                        bold: 'mdi mdi-format-bold',
+                        italic: 'mdi mdi-format-italic',
+                        bulletedList: 'mdi mdi-format-list-bulleted',
+                        numberedList: 'mdi mdi-format-list-numbered',
+                        blockQuote: 'mdi mdi-format-quote-open',
+                        undo: 'mdi mdi-undo',
+                        redo: 'mdi mdi-redo'
+                    }
+                },
+                language: 'en',
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>
+
+
+
 
 {% endblock %}

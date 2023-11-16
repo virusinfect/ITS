@@ -1,0 +1,953 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Edit In-house Ticket{% endblock %}
+{% block header %}Edit In-house Ticket{% endblock %}
+{% load helpdesk_tags %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'inhouse-ticket-list' %}">In-house Tickets</a></li>
+                    <li class="breadcrumb-item active">Edit In-house Ticket</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-12 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-4">Edit In-house Ticket</h4>
+
+                <ul class="nav nav-pills navtab-bg nav-justified">
+                    <li class="nav-item">
+                        <a href="#ticket" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                            Ticket Details
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#req" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                            Requisitions
+                        </a>
+                    </li>
+                    {% if user|is_helpdesk or user|is_management %}
+                        <li class="nav-item">
+                            <a href="#sourcing" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                Sourcing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#quote" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                Quotation
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a href="#misc" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                            Misc
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane show active" id="ticket">
+                        <div class="row">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="col-11 mx-auto mt-3">
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-3">
+                                            <label for="company" class="form-label"><strong>Company:</strong></label>
+                                            <input type="text" class="form-control" name="company" value="{{ ticket.company }}">
+                                        </div>
+                                        <div class="col-lg-6 mb-3">
+                                            <label for="email" class="form-label"><strong>Email:</strong></label>
+                                            <input type="email" class="form-control" name="email" value="{{ ticket.email }}">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-lg-6 mb-3">
+                                            <label for="client" class="form-label"><strong>Telephone:</strong></label>
+                                            <input type="number" name="telephone" class="form-control" value="{{ ticket.telephone }}">
+                                        </div>
+                                        <div class="mb-3 col-lg-6">
+                                            <label for="tech" class="form-label"><strong>Technician:</strong></label>
+                                            <select id="tech" name="tech" class="form-select">
+                                                {% for tech_option in users %}
+                                                    <option value="{{ tech_option.id }}"
+                                                            {% if tech_option.id == ticket.tech.id %}selected{% endif %}>
+                                                        {{ tech_option.username }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+
+                                        <div class="col-lg-6 mb-3">
+                                            <label for="equipment"
+                                                   class="form-label"><strong>Equipment:</strong></label>
+                                            <input type="text" class="form-control" id="equipment"
+                                                   name="equipment" value="{{ ticket.equipment }}">
+                                        </div>
+                                        <div class="col-lg-6 mb-3">
+                                            <label for="serial_no" class="form-label"><strong>Serial
+                                                No:</strong></label>
+                                            <input type="text" class="form-control" id="serial_no"
+                                                   name="serial_no" value="{{ ticket.serial_no }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="mb-3 col-lg-6">
+                                            <label for="fault" class="form-label"><strong>Fault:</strong></label>
+                                            <textarea class="form-control" id="fault"
+                                                      name="fault" rows="5">{{ ticket.fault|safe }}</textarea>
+                                            <input type="file" name="file" class="form-control form-control-sm mt-1">
+                                        </div>
+                                        <div class="mb-3 col-lg-6">
+                                            <label for="diagnosis"
+                                                   class="form-label"><strong>Diagnosis:</strong></label>
+                                            <textarea class="form-control" id="diagnosis"
+                                                      name="diagnosis" rows="5">{{ ticket.diagnosis|safe }}</textarea>
+                                            {% for image in diagnosis_images %}
+                                                <div class="card w-25 h-25">
+                                                    <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+                                                    <a href="#" onclick="deleteImage({{ image.id }})"
+                                                       class="btn btn-primary">Delete</a>
+                                                </div>
+                                                {% empty %}
+                                                <input id="file-upload" type="file" name="diagnosis_image"
+                                                       class="form-control form-control-sm mt-1">
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="mb-3 col-lg-6">
+                                            <label for="action" class="form-label"><strong>Action:</strong></label>
+                                            <textarea class="form-control" id="action"
+                                                      name="action" rows="5">{{ ticket.action|safe }}</textarea>
+                                            {% for image in action_images %}
+                                                <div class="card w-25 h-25">
+                                                    <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+                                                    <a href="#" onclick="deleteImage({{ image.id }})"
+                                                       class="btn btn-primary">Delete</a>
+                                                </div>
+                                                {% empty %}
+                                                <input id="file-upload" type="file" name="action_image"
+                                                       class="form-control form-control-sm mt-1">{% endfor %}
+                                        </div>
+                                        <div class="mb-3 col-lg-6">
+                                            <label for="recommendation"
+                                                   class="form-label"><strong>Recommendation:</strong></label>
+                                            <textarea class="form-control" id="recommendation"
+                                                      name="recommendation"
+                                                      rows="5">{{ ticket.recommendation|safe }}</textarea>
+                                            {% for image in recommendation_images %}
+                                                <div class="card w-25 h-25">
+                                                    <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+                                                    <a href="#" onclick="deleteImage({{ image.id }})"
+                                                       class="btn btn-primary">Delete</a>
+                                                </div>
+                                                {% empty %}
+                                                <input type="file" name="recommendation_image"
+                                                       class="form-control form-control-sm mt-1">{% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+
+                                        <div class="mb-3 col-lg-6">
+                                            <label for="accessories"
+                                                   class="form-label"><strong>Accessories:</strong></label>
+                                            <textarea class="form-control" id="accessories"
+                                                      name="accessories"
+                                                      rows="5">{{ ticket.accessories|safe }}</textarea>
+                                        </div>
+                                        <div class="mb-3 col-lg-6">
+                                            <label for="notes"
+                                                   class="form-label"><strong>Notes:</strong></label>
+                                            <textarea class="form-control" id="notes"
+                                                      name="notes" rows="5"
+                                                      placeholder="Other Details">{{ ticket.notes }}</textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <button class="btn btn-primary" type="submit" name="form_type" value="form1">Update
+                                    Ticket
+                                </button>
+                            </form><!-- end col -->
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="req">
+                        <div class="row mb-3 mt-3 table-responsive mx-auto">
+                            {% if requisitions %}
+                                <table class="table">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th>NO.</th>
+                                        <th>Created Date</th>
+                                        <th>Requisition Item</th>
+                                        <th>Requisition Status</th>
+                                        <th>Approved By</th>
+                                        <th>Issue Status</th>
+                                        <th>Return Status</th>
+                                        <th>Return Approved By</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for requisition in requisitions %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ requisition.created }}</td>
+                                            <td>{{ requisition.part.code }}</td>
+                                            <td>
+                                                {% if requisition.req_status == "Approved" %}
+                                                    <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i>
+                                                    Approved
+                                                {% elif requisition.req_status == "Pending" %}
+                                                    <i class=" mdi mdi-alert-circle-outline mdi-18px btn-outline-warning"></i>
+                                                    Pending
+                                                {% else %}
+                                                    <span class="badge">{{ requisition.req_status }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ requisition.approved_by }}</td>
+                                            <td>
+                                                {% if requisition.issue_status == "Issue" %}
+                                                    <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i>
+                                                    Issued
+                                                {% elif requisition.issue_status == "Pending" %}
+                                                    <i class=" mdi mdi-alert-circle-outline mdi-18px btn-outline-warning"></i>
+                                                    Pending
+                                                {% elif requisition.issue_status == "Returned" %}
+                                                    <i class=" mdi mdi-alert-circle-check mdi-18px btn-outline-danger"></i>
+                                                    Returned
+                                                {% else %}
+                                                    <span class="badge">{{ requisition.issue_status }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if requisition.return_status == "Approved" %}
+                                                    <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i>
+                                                    Approved
+                                                {% elif requisition.return_status == "Pending" %}
+                                                    <i class=" mdi mdi-alert-circle-outline mdi-18px btn-outline-warning"></i>
+                                                    Pending
+                                                {% else %}
+                                                    <span class="badge">{{ requisition.return_status }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ requisition.return_approved_by }}</td>
+
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="text-center">
+                                    <h2 class="mt-0">
+                                        <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                                    </h2>
+                                    <h3 class="mt-0 mb-3">No Requisition Available </h3>
+
+                                </div>
+                            {% endif %}
+                            <h2><a href="{% url "add_requisition" %}" class="btn btn-primary"><span class="btn-label"><i
+                                    class="mdi mdi-plus"></i></span> Create
+                                A requisition</a></h2>
+                        </div>
+                    </div>
+                    {% if user|is_helpdesk or user|is_sales %}
+                        <div class="tab-pane " id="sourcing">
+                            <div class="row mb-3 mt-3">
+                                <div class="mx-auto">
+                                    <div class="table-responsive">
+                                        <form method="POST" action="{% url 'sourcing_ticket' ticket.ticket_id %}">
+                                            {% csrf_token %}
+                                            <table class="table">
+                                                <thead class="table-dark">
+                                                <tr>
+
+                                                    <th>Description</th>
+                                                    <th>Part Number</th>
+                                                    <th>Price</th>
+                                                    <th>Qty</th>
+                                                    <th>Currency</th>
+                                                    <th>Availability</th>
+                                                    <th>Supplier</th>
+                                                    <th>Attachment</th>
+                                                    <th>Action</th>
+
+                                                    <!-- Add more headers for other fields -->
+                                                </tr>
+                                                </thead>
+                                                <tbody id="table-body">
+                                                {% for item in tsourcing_data %}
+                                                    <tr data-entry-id="{{ item.id }}">
+
+                                                        <td><input type="text" name="desc[]" class="form-control"
+                                                                   value="{{ item.desc }}">
+                                                        </td>
+                                                        <td><input name="part_no[]" type="text" class="form-control"
+                                                                   value="{{ item.part_no }}"></td>
+                                                        <td><input name="price[]" type="text" class="form-control"
+                                                                   value="{{ item.price }}"></td>
+                                                        <td><input name="qty[]" type="text" class="form-control"
+                                                                   value="{{ item.qty }}">
+                                                        </td>
+                                                        <td><select name="currency[]" class="form-select">
+                                                            <option value="">Select currency</option>
+                                                            <option value="KES"
+                                                                    {% if item.currency == "KES" %}selected{% endif %}>
+                                                                KES
+                                                            </option>
+                                                            <option value="USD"
+                                                                    {% if item.currency == "USD" %}selected{% endif %}>
+                                                                USD
+                                                            </option>
+                                                            <option value="EUR"
+                                                                    {% if item.currency == "EUR" %}selected{% endif %}>
+                                                                EUR
+                                                            </option>
+                                                        </select></td>
+                                                        <td><input name="availability[]" type="text"
+                                                                   class="form-control"
+                                                                   value="{{ item.availability }}"></td>
+                                                        <td><input name="supplier[]" type="text" class="form-control"
+                                                                   value="{{ item.supplier }}"></td>
+                                                        <td><input type="file" class="form-control" name="att[]"></td>
+                                                        <td><a href="#" class="delete-entry" title="delete" tabindex="0"
+                                                               data-plugin="tippy" data-tippy-interactive="true">
+                                                            <i class="  mdi mdi-delete-outline mdi-18px"></i>
+                                                        </a>
+                                                            <a href="#" class="quote-entry" title="quote" tabindex="0"
+                                                               data-plugin="tippy" data-tippy-interactive="true">
+                                                                <i class="mdi mdi-comment-quote-outline mdi-18px"></i>
+                                                            </a></td>
+
+                                                        <!-- Add more cells for other fields -->
+                                                    </tr>
+                                                {% endfor %}
+                                                <tr>
+
+                                                    <td><input type="text" name="desc[]" class="form-control"></td>
+                                                    <td><input name="part_no[]" type="text" class="form-control">
+                                                    </td>
+                                                    <td><input name="price[]" type="text" class="form-control"
+                                                               value="0.0">
+                                                    </td>
+                                                    <td><input name="qty[]" type="text" class="form-control" value="0">
+                                                    </td>
+                                                    <td><select name="currency[]" class="form-select">
+                                                        <option value="">Select currency</option>
+                                                        <option value="KES">KES
+                                                        </option>
+                                                        <option value="USD">USD
+                                                        </option>
+                                                        <option value="EUR">EUR
+                                                        </option>
+                                                    </select></td>
+                                                    <td><input name="availability[]" type="text" class="form-control">
+                                                    </td>
+                                                    <td><input name="supplier[]" type="text" class="form-control"></td>
+                                                    <td><input type="file" class="form-control" name="att[]"></td>
+
+                                                    <!-- Add more cells for other fields -->
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label class="form-label" for="handler"> Asignee:</label>
+                                                    <select name="handler" class="form-select" required>
+                                                        <option value="">Select Assignee</option>
+                                                        {% for user in sales %}
+                                                            <option value="{{ user.id }}"
+                                                                    {% if user.id == ticket.sourcing_parts.id %}selected{% endif %}>{{ user.username }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <button type="button" id="add-row-button"
+                                                        class="btn btn-primary waves-effect waves-light">Add Row
+                                                </button>
+
+                                                <button type="submit" name="form_type" value="form3"
+                                                        class="btn btn-primary waves-effect waves-light">Save
+                                                </button>
+
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div> <!-- end col -->
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="quote">
+                            <form method="POST" action="{% url 'quote_ticket' ticket.ticket_id %}">
+                                {% csrf_token %}
+                                <div class="row mb-3 mt-1">
+                                    <div class="card-header">
+                                        <p>Quotes Products</p>
+                                    </div>
+                                    <div class="mx-auto mt-1">
+                                        <div class="table-responsive">
+
+                                            <table class="table">
+                                                <thead class="table-dark">
+                                                <tr>
+
+                                                    <th>Description</th>
+                                                    <th>Part Number</th>
+                                                    <th>Price</th>
+                                                    <th>Qty</th>
+                                                    <th>Currency</th>
+                                                    <th>Action</th>
+
+                                                    <!-- Add more headers for other fields -->
+                                                </tr>
+                                                </thead>
+                                                <tbody id="table-body-quote">
+                                                {% for item in tquote_data %}
+                                                    <tr data-entry-id="{{ item.id }}">
+
+                                                        <td><input type="text" name="description[]" class="form-control"
+                                                                   value="{{ item.description }}">
+                                                        </td>
+                                                        <td><input name="part_no[]" type="text" class="form-control"
+                                                                   value="{{ item.part_no }}"></td>
+                                                        <td><input name="price[]" type="text" class="form-control"
+                                                                   value="{{ item.price }}"></td>
+                                                        <td><input name="quantity[]" type="text" class="form-control"
+                                                                   value="{{ item.quantity }}">
+                                                        </td>
+                                                        <td><select name="currency[]" class="form-select" required>
+                                                            <option value="">Select currency</option>
+                                                            <option value="KES"
+                                                                    {% if item.currency == "KES" %}selected{% endif %}>
+                                                                KES
+                                                            </option>
+                                                            <option value="USD"
+                                                                    {% if item.currency == "USD" %}selected{% endif %}>
+                                                                USD
+                                                            </option>
+                                                            <option value="EUR"
+                                                                    {% if item.currency == "EUR" %}selected{% endif %}>
+                                                                EUR
+                                                            </option>
+                                                        </select></td>
+
+                                                        <td><a href="#" class="delete-entry-quote" title="delete"
+                                                               tabindex="0"
+                                                               data-plugin="tippy" data-tippy-interactive="true">
+                                                            <i class="  mdi mdi-delete-outline mdi-18px"></i>
+                                                        </a></td>
+                                                        <!-- Add more cells for other fields -->
+                                                    </tr>
+                                                {% endfor %}
+                                                <tr>
+
+                                                    <td><input type="text" name="description[]" class="form-control">
+                                                    </td>
+                                                    <td><input name="part_no[]" type="text" class="form-control"></td>
+                                                    <td><input name="price[]" type="text" class="form-control"
+                                                               value="0.00"></td>
+                                                    <td><input name="quantity[]" type="text" class="form-control"
+                                                               value="0"></td>
+                                                    <td><select name="currency[]" class="form-select">
+                                                        <option value="">Select currency</option>
+                                                        <option value="KES">KES
+                                                        </option>
+                                                        <option value="USD">USD
+                                                        </option>
+                                                        <option value="EUR">EUR
+                                                        </option>
+                                                    </select></td>
+
+                                                    <!-- Add more cells for other fields -->
+                                                </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <div class="mt-3">
+                                                <button type="button" id="add-row-quote"
+                                                        class="btn btn-primary waves-effect waves-light">Add Row
+                                                </button>
+
+
+                                            </div>
+
+
+                                        </div>
+                                    </div> <!-- end col -->
+                                </div>
+                                <div class="row ">
+                                    <div class="card border border-0 border-top-2">
+                                        <div class="card-header">
+                                            <p>Parts Used</p>
+                                        </div>
+                                        <div class="row mb-3 mt-3 table-responsive">
+                                            {% if parts %}
+                                                <table class="table">
+                                                    <thead class="table-light">
+                                                    <tr>
+                                                        <th>NO.</th>
+                                                        <th>Requisition Item</th>
+                                                        <th>Issue Status</th>
+                                                        <th>Quantity</th>
+                                                        <th>Price</th>
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody>
+
+                                                    {% for requisition in parts %}
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ requisition.part.code }}</td>
+                                                            <td>
+                                                                {% if requisition.issue_status == "Issue" %}
+                                                                    <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i>
+                                                                    Issued
+                                                                {% elif requisition.issue_status == "Pending" %}
+                                                                    <i class=" mdi mdi-alert-circle-outline mdi-18px btn-outline-warning"></i>
+                                                                    Pending
+                                                                {% elif requisition.issue_status == "Returned" %}
+                                                                    <i class=" mdi mdi-alert-circle-check mdi-18px btn-outline-danger"></i>
+                                                                    Returned
+                                                                {% else %}
+                                                                    <span class="badge">{{ requisition.issue_status }}</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>{{ requisition.quantity }}</td>
+                                                            <td><input type="number"
+                                                                       name="req_price_{{ requisition.req_id }}"
+                                                                       class="form-control"
+                                                                       value="{{ requisition.price }}">
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            {% else %}
+                                                <div class="text-center">
+                                                    <h2 class="mt-0">
+                                                        <i class="mdi mdi-information-outline btn-outline-warning mdi-48px"></i>
+                                                    </h2>
+                                                    <h3 class="mt-0 mb-3">No Parts Used </h3>
+
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="form-label" for="labour">Labour Charge:</label>
+                                            <input class="form-control" name="labour" value="{{ ticket.labour }}"
+                                                   type="number">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="row">
+
+                                    </div>
+                                </div>
+
+                                <button type="submit" name="form_type" value="form3"
+                                        class="btn btn-primary waves-effect waves-light">Update
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    <div class="tab-pane" id="misc">
+                        <div class="col-10 mx-auto mt-3">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row mb-3">
+                                    <div class="mb-2 col-lg-6">
+                                        <label for="type" class="form-label"><strong>Ticket
+                                            Status:</strong></label>
+                                        <select id="type" class="form-select" name="status">
+                                            <option value="Open"
+                                                    {% if ticket.status == 'Open' %}selected{% endif %}>Open
+                                            </option>
+                                            <option value="Closed"
+                                                    {% if ticket.status == 'Closed' %}selected{% endif %}>Closed
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2 col-lg-6">
+                                        <label for="type" class="form-label"><strong>Bench Status:</strong></label>
+                                        <select id="type" class="form-select" name="bench_status">
+                                            <option value="Done"
+                                                    {% if ticket.bench_status == 'Done' %}selected{% endif %}>Done
+                                            </option>
+                                            <option value="Pending"
+                                                    {% if ticket.bench_status == 'Pending' %}selected{% endif %}>Pending
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="mb-2 col-lg-6">
+                                        <label for="type" class="form-label"><strong>Remark:</strong></label>
+                                        <select id="type" class="form-select" name="remark">
+                                            <option value=""
+                                                    {% if ticket.remark == '' %}selected{% endif %}>
+
+                                            </option>
+                                            <option value="Awaiting feedback"
+                                                    {% if ticket.remark == 'Awaiting feedback' %}selected{% endif %}>
+                                                Awaiting feedback
+                                            </option>
+                                            <option value="Awaiting parts"
+                                                    {% if ticket.remark == 'Awaiting parts' %}selected{% endif %}>
+                                                Awaiting parts
+                                            </option>
+                                            <option value="Repairs"
+                                                    {% if ticket.remark == 'Repairs' %}selected{% endif %}>Repairs
+                                            </option>
+                                            <option value="LPO follow up"
+                                                    {% if ticket.remark == 'LPO follow up' %}selected{% endif %}>LPO
+                                                follow up
+                                            </option>
+                                            <option value="MD LPO follow up"
+                                                    {% if ticket.remark == 'MD LPO follow up' %}selected{% endif %}>MD
+                                                LPO follow up
+                                            </option>
+                                            <option value="To be collected"
+                                                    {% if ticket.remark == 'To be collected' %}selected{% endif %}>To be
+                                                collected
+                                            </option>
+                                            <option value="To be delivered"
+                                                    {% if ticket.remark == 'To be delivered' %}selected{% endif %}>To be
+                                                delivered
+                                            </option>
+                                            <option value="Warranty"
+                                                    {% if ticket.remark == 'Warranty' %}selected{% endif %}>
+                                                Warranty/Claims
+                                            </option>
+                                            <option value="Collected"
+                                                    {% if ticket.remark == 'Collected' %}selected{% endif %}>Collected
+                                            </option>
+                                            <option value="Delivered"
+                                                    {% if ticket.remark == 'Delivered' %}selected{% endif %}>Delivered
+                                            </option>
+
+                                        </select>
+                                    </div>
+                                    <div class="mb-2 col-lg-6">
+                                        <label for="tr_status" class="form-label"><strong>Technical Report
+                                            Status:</strong></label>
+                                        <select id="tr_status" class="form-select" name="tr_status">
+                                            <option value=""
+                                                    {% if ticket.tr_status == '' %}selected{% endif %}>
+                                            </option>
+                                            <option value="Follow up"
+                                                    {% if ticket.tr_status == 'Follow up' %}selected{% endif %}>
+                                                Follow up
+                                            </option>
+                                            <option value="Awaiting LPO"
+                                                    {% if ticket.tr_status == 'Awaiting LPO' %}selected{% endif %}>
+                                                Awaiting LPO
+                                            </option>
+                                            <option value="On hold"
+                                                    {% if ticket.tr_status == 'On hold' %}selected{% endif %}>On hold
+                                            </option>
+                                            <option value="Not interested"
+                                                    {% if ticket.tr_status == 'Not interested' %}selected{% endif %}>
+                                                Not
+                                                interested
+                                            </option>
+                                            <option value="Done"
+                                                    {% if ticket.tr_status == 'Done' %}selected{% endif %}>Done
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-lg-6">
+                                        <label for="more" class="form-label">More:</label>
+                                        <input type="text" class="form-control" name="more" value="{{ ticket.more }}">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label for="lpo_no" class="form-label"> LPO No:</label>
+                                        <input class="form-control" type="text" name="lpo_no"
+                                               value="{{ ticket.lpo_no }}">
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary" type="submit" name="form_type" value="form2">Update
+                                    Ticket
+                                </button>
+                                <a href="{% url 'create_format_approval' ticket.ticket_id %}" class="btn btn-secondary"><span
+                                        class="btn-label"><i class="mdi mdi-file-document"></i></span> Format Approval
+                                </a>
+                                {% if user|is_helpdesk or user|is_management %}
+                                    <a href="{% url 'generate_report' ticket.ticket_id %}" class="btn btn-primary"><span
+                                            class="btn-label"><i class="mdi mdi-file-document"></i></span>Technical
+                                        Report
+                                    </a>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var clientNo;
+        var clientSelect = document.getElementById('client');
+
+        function attachChangeEventListener() {
+            clientSelect.addEventListener('change', function () {
+                clientNo = clientSelect.value;
+                console.log("Client ID after populating: " + clientNo);
+            });
+        }
+
+        document.getElementById('company').addEventListener('change', function () {
+            var companyId = this.value;
+            var clientSelect = document.getElementById('client');
+            var clientNo = clientSelect.value;
+            // Clear existing options and add the "Select a client" option
+            clientSelect.innerHTML = '<option value="" disabled selected>Select a client</option>';
+            if (companyId) {
+                // Make an AJAX request to fetch clients based on the selected company.
+                // Replace the URL with your Django view or API endpoint.
+                fetch('/get_clients/?company_id=' + companyId)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.clients.forEach(function (client) {
+                            var option = document.createElement('option');
+                            option.value = client.id;
+                            option.textContent = client.f_name;
+                            clientSelect.appendChild(option);
+                        });
+                        // Now that options are populated, attach the event listener
+                        attachChangeEventListener();
+                    });
+            }
+        });
+    </script>
+    <script>
+        document.getElementById('add-row-quote').addEventListener('click', function () {
+            var tableBody = document.getElementById('table-body-quote');
+            var newRow = document.createElement('tr');
+
+            // Create new input fields for each column
+            var columns = ['description', 'part_no', 'price', 'quantity', 'currency'];
+            for (var i = 0; i < columns.length; i++) {
+                var cell = document.createElement('td');
+                var input;
+
+                if (columns[i] === 'currency') {
+                    // For the 'currency' column, create a select element instead of an input
+                    input = document.createElement('select');
+                    input.name = columns[i] + '[]';
+                    input.className = 'form-select';
+
+                    // Add options to the select element
+                    var currencies = ['Select currency', 'KES', 'USD', 'EUR'];
+                    for (var j = 0; j < currencies.length; j++) {
+                        var option = document.createElement('option');
+                        option.value = currencies[j];
+                        option.text = currencies[j];
+                        input.appendChild(option);
+                    }
+                } else {
+                    // For other columns, create a regular text input
+                    input = document.createElement('input');
+                    input.type = 'text';
+                    input.name = columns[i] + '[]';
+                    input.className = 'form-control';
+
+                    // Set default values for 'price' and 'quantity' inputs
+                    if (columns[i] === 'price') {
+                        input.value = '0.00';
+                    } else if (columns[i] === 'quantity') {
+                        input.value = '0';
+                    }
+                }
+
+                cell.appendChild(input);
+                newRow.appendChild(cell);
+            }
+
+            // Append the new row to the table
+            tableBody.appendChild(newRow);
+        });
+    </script>
+
+    <script>
+        document.getElementById('add-row-button').addEventListener('click', function () {
+            var tableBody = document.getElementById('table-body');
+            var newRow = document.createElement('tr');
+
+            // Create new input fields for each column
+            var columns = ['desc', 'part_no', 'price', 'qty', 'currency', 'availability', 'supplier', 'att'];
+            for (var i = 0; i < columns.length; i++) {
+                var cell = document.createElement('td');
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.name = columns[i] + '[]'; // Ensure the name matches the POST data
+                input.className = 'form-control';
+
+                // Set a default value for the "price" input
+                if (columns[i] === 'price') {
+                    input.value = '0.00'; // You can set your desired default price here
+                }
+                if (columns[i] === 'qty') {
+                    input.value = '0'; // You can set your desired default price here
+                }
+
+                cell.appendChild(input);
+                newRow.appendChild(cell);
+            }
+
+            // Append the new row to the table
+            tableBody.appendChild(newRow);
+        });
+    </script>
+    <script>
+        document.querySelectorAll('.delete-entry-quote').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var row = this.closest('tr');
+                var entryId = row.getAttribute('data-entry-id');
+
+                // Send an AJAX request to delete the entry
+                fetch('/technical/delete-entry-quote/' + entryId + '/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+                    },
+                }).then(function (response) {
+                    if (response.ok) {
+
+                        row.remove();
+                    } else {
+                        // Handle any errors here
+                    }
+                });
+            });
+        });
+
+        // Function to get the CSRF token from cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <script>
+        document.querySelectorAll('.delete-entry').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var row = this.closest('tr');
+                var entryId = row.getAttribute('data-entry-id');
+
+                // Send an AJAX request to delete the entry
+                fetch('/technical/delete-entry/' + entryId + '/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+                    },
+                }).then(function (response) {
+                    if (response.ok) {
+
+                        row.remove();
+                    } else {
+                        // Handle any errors here
+                    }
+                });
+            });
+        });
+
+        // Function to get the CSRF token from cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <script>
+        document.querySelectorAll('.quote-entry').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var row = this.closest('tr');
+                var entryId = row.getAttribute('data-entry-id');
+
+                // Send an AJAX request to copy the product to tQuote
+                fetch('/technical/copy-to-quote/' + entryId + '/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+                    },
+                }).then(function (response) {
+                    if (response.ok) {
+                        // Product copied successfully
+                        // Optionally, you can reload or update the tQuote section of your page here
+                    } else {
+                        // Handle any errors here
+                    }
+                });
+            });
+        });
+
+    </script>
+    <script>
+        function deleteImage(imageId) {
+            if (confirm('Are you sure you want to delete this image?')) {
+                fetch(`/technical/delete_image/${imageId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),  // Ensure you include the CSRF token
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message === 'Image deleted successfully.') {
+                            // Optionally, remove the deleted image element from the page
+                            document.getElementById(`image-${imageId}`).remove();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        location.reload();
+                    });
+            }
+        }
+    </script>
+
+
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}In-house Ticket Print{% endblock %}
+{% block header %}In-house Ticket Print{% endblock %}
+{% load static %}
+{% block content %}
+    <div class=" card col-9 mx-auto wrapper">
+        <!-- Main content -->
+        <section class="invoice" id="delivery-note">
+            <!-- title row -->
+            <div class="row">
+                <div class="col-12">
+                    <!-- Main content -->
+                    <div class="invoice p-3 mb-3">
+                        <!-- title row -->
+                        <div class="row p-4">
+                            <div class="col-md">
+                                <div class="d-flex justify-content-center mb-2">
+                                    <img src="{% static 'logo black.png' %}" height="125px" width="125px">
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <h2>INTELLITECH LTD.</h2>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <h4>TICKET - ITL/IHTN/{{ ticket.ticket_id }}</h4>
+                                </div>
+                            </div><!-- ./col -->
+
+                        </div><!-- ./row -->
+
+                        <div class="row">
+                            <div class="col-md-10 offset-1">
+                                <table id="" class="table table-bordered">
+                                    <tbody>
+                                    <tr>
+                                        <th colspan="1" class="text-lg">Ticket No.:</th>
+                                        <td colspan="1" class="text-lg">
+                                            ITL/IHTN/{{ ticket.ticket_id }}</td>
+                                        <th colspan="1" class="text-lg">Date/Time:</th>
+                                        <td colspan="1" class="text-lg">{{ ticket.created|date:"d/m/Y"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="1" class="text-lg">Client:</th>
+                                        <td colspan=""
+                                            class="text-lg">{{ ticket.company }}</td>
+                                        <th colspan="1" class="text-lg">User:</th>
+                                        <td colspan=""
+                                            class="text-lg">{{ ticket.company }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-lg">Email:</th>
+                                        <td class="text-lg">{{ ticket.email }}</td>
+                                        <th class="text-lg">Telephone:</th>
+                                        <td class="text-lg">{{ ticket.telephone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-lg">Equipment:</th>
+                                        <td class="text-lg">{{ ticket.equipment }}</td>
+                                        <th class="text-lg">Serial No.:</th>
+                                        <td class="text-lg">{{ ticket.serial_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="1" class="text-lg">Reported Fault:</th>
+                                        <td colspan="3" class="text-lg">{{ ticket.fault }}</td>
+                                    </tr>
+                                    <?php if (!empty($row['accessories'])): ?>
+                                    <tr>
+                                        <th colspan="1" class="text-lg">Accessories</th>
+                                        <td colspan="3"
+                                            class="text-lg">{{ ticket.accessories }}</td>
+                                    </tr>
+                                    <?php endif ?>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- ./col -->
+                        </div>
+                        <!-- ./row -->
+
+                        <div class="row">
+                            <!-- accepted payments column -->
+                            <div class="col-md-10 offset-1">
+                                <p class="text-justify text-md">Please be advised that <strong><i>Intellitech
+                                    Ltd. </i></strong><i>accepts all equipment on a best-effort basis. Please note that
+                                    there may be delays in resolving problems if certain spares and/or workshop manuals
+                                    are
+                                    not available. Furthermore, we cannot guarantee to solve any specific problem and
+                                    reserve the right to charge for parts and labor even if the issue remains
+                                    unresolved. By
+                                    signing below, you acknowledge and agree to these terms and conditions.</i></p>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+
+                        <div class="row">
+                            <div class="col-md-10 offset-1">
+                                <table id="" class="table table-bordered mb-3">
+                                    <tbody>
+                                    <tr>
+                                        <th>Customer:</th>
+                                        <td>{{ticket.brought_by}}</td>
+                                        <th>Technician:</th>
+                                        <td>{{ ticket.tech.first_name }} {{ ticket.tech.last_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-md">Customer's Signature:</th>
+                                        <td><img src="{{ signature.signature_image.url }}"
+                                                 oncontextmenu="return false;" width="200px" height="100px"></td>
+                                        <th class="text-md">Technician's Signature:</th>
+                                        <td><img src="{{ tech_signature.signature_image.url }}"
+                                                 oncontextmenu="return false;" width="200px" height="100px"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- ./col -->
+                        </div>
+                        <div class="row">
+                            <!-- accepted payments column -->
+                            <div class="col-md-10 offset-1">
+                                <p class="text-sm">ITL/IHTN/{{ ticket.ticket_id }}</p>
+                                <?php
+
+								$hid=$_SESSION['helpdesk'];
+								$query=mysqli_query($conn,"SELECT name FROM helpdesk WHERE id='$hid'");
+								while($fetch=mysqli_fetch_array($query)) {
+									?>
+                                <p class="text-sm">Served by <i><?php echo htmlentities($fetch['name']); ?></i> | ITS
+                                    &#8482;</p>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.col -->
+
+            </div><!-- /.row -->
+            <img class="mb-3 mx-4 mx-auto" src="{% static 'tr_footer.png' %}" id="footer-image">
+        </section>
+        <!-- /.content -->
+    </div>
+    <a id="print-button" class="btn btn-primary">Print</a>
+    <!-- ./wrapper -->
+    <!-- Page specific script -->
+
+    <script>
+        document.getElementById('print-button').addEventListener('click', function () {
+            printDeliveryNote();
+        });
+
+        function printDeliveryNote() {
+            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+            var originalContents = document.body.innerHTML;
+
+            // Create a style tag and append it to the head to define a CSS rule for the footer image and remove margins
+            var style = document.createElement('style');
+            style.innerHTML = `
+            @media print {
+                #footer-image {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    max-width: 100%;
+                }
+                body {
+                    margin: 0 !important; /* Force margin removal */
+                }
+            }
+        `;
+            document.head.appendChild(style);
+
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+
+            // Remove the added CSS rule
+            document.head.removeChild(style);
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Create Inhouse-Ticket{% endblock %}
+{% block header %}Create Inhouse-Ticket{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'inhouse-ticket-list' %}">Inhouse-Tickets</a></li>
+                    <li class="breadcrumb-item active">Inhouse-Ticket</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Create Inhouse-Ticket</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="col-11 mx-auto mt-3">
+                        <div class="row mb-3">
+                            <div class="col-lg-6 mb-3">
+                                <label for="company" class="form-label">Name :</label>
+                                <input type="text" class="form-control" name="company" id="company">
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <label for="email" class="form-label"><strong>Email:</strong></label>
+                                <input type="email" class="form-control" name="email" id="email">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-6 mb-3">
+                                <label for="telephone" class="form-label">Telephone :</label>
+                                <input type="number" name="telephone" id="telephone" class="form-control">
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <label for="tech" class="form-label"><strong>Technician:</strong></label>
+                                <select id="tech" name="tech" class="form-select" required>
+                                    {% for tech_option in users %}
+                                        <option value="{{ tech_option.id }}"
+                                                {% if tech_option.id == ticket.tech.id %}selected{% endif %}>
+                                            {{ tech_option.username }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-6 mb-3">
+                                <label for="equipment"
+                                       class="form-label"><strong>Equipment:</strong></label>
+                                <input type="text" class="form-control" id="equipment"
+                                       name="equipment" placeholder="Equipment" required>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label for="serial_no" class="form-label"><strong>Serial
+                                    No:</strong></label>
+                                <input type="text" class="form-control" id="serial_no"
+                                       name="serial_no" placeholder="Serial No" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="mb-3 col-lg-6">
+                                <label for="fault" class="form-label"><strong>Fault:</strong></label>
+                                <textarea class="form-control" id="fault"
+                                          name="fault" rows="5" placeholder="Fault" required></textarea>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <label for="accessories"
+                                       class="form-label"><strong>Accessories:</strong></label>
+                                <textarea class="form-control" id="accessories"
+                                          name="accessories"
+                                          rows="5" placeholder="Accessories"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-6">
+                                <label for="eqpass"
+                                       class="form-label"><strong>Password:</strong></label>
+                                <textarea class="form-control" id="notes"
+                                          name="eqpass" rows="5" placeholder="Password"></textarea>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="notes"
+                                       class="form-label"><strong>Notes:</strong></label>
+                                <textarea class="form-control" id="notes"
+                                          name="notes" rows="5" placeholder="Other Details"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="row mb-3 mx-auto">
+                            <label for="brought_by" class="form-label"><strong>Brought by:</strong></label>
+                            <input type="text" class="form-control" id="brought_by"
+                                   name="brought_by" placeholder="brought_by" required>
+                        </div>
+                    </div>
+
+                </form>
+                <div class="row">
+                    <div class="card ">
+                        <label for="signature-pad" class="ms-4">Signature:</label>
+                        <canvas id="signature-pad" width="400" height="200"
+                                class="card border border-primary mt-1 mx-auto"></canvas>
+                    </div>
+                </div>
+                <a id="clear-signature" class="btn btn-secondary waves-effect waves-light me-1 "><span
+                        class="btn-label"><i
+                        class="mdi mdi-eraser-variant"></i></span>Clear Signature
+                </a>
+                <button id="save-signature"
+                        class="btn btn-primary waves-effect waves-light me-1 ">Create Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            var canvas = document.getElementById('signature-pad');
+            var signaturePad = new SignaturePad(canvas);
+
+            // Function to clear the signature
+            function clearSignature() {
+                signaturePad.clear();
+            }
+
+            $('#save-signature').click(function () {
+
+                var serialNo = $('#serial_no').val();
+                var broughtNo = $('#brought_by').val();
+                var companyNo = $('#company').val();
+                var emailNo = $('#email').val();
+                var techNo = $('#tech').val();
+                var faultNo = $('#fault').val();
+                var telephoneNo = $('#telephone').val();
+                var equipmentNo = $('#equipment').val();
+                var accessoriesNo = $('#accessories').val();
+                if (equipmentNo && serialNo) {
+                    var signatureData = signaturePad.toDataURL();
+                    $.ajax({
+                        url: '/technical/save-signature-view-inhouse-ticket/',  // Replace with the actual URL
+                        method: 'POST',
+                        data: {
+                            signature_data: signatureData,
+                            serial_no: serialNo,
+                            accessories: accessoriesNo,
+                            equipment: equipmentNo,
+                            fault: faultNo,
+                            tech: techNo,
+                            company: companyNo,
+                            email: emailNo,
+                            telephone: telephoneNo,
+                            brought_by: broughtNo,
+                        },
+                        success: function (response) {
+                            // Check if the response indicates success (you can define this)
+                            if (response.success) {
+                                window.location.href = '{% url "inhouse-ticket-list" %}';
+                            } else {
+                                // Handle failure if needed
+                            }
+                        }
+                    });
+                } else {
+                    // Handle the case where one or more variables are empty
+                    toastr.error("One or more fields are empty", "Validation Error");
+                }
+            });
+            // Attach the clearSignature function to the "Clear Signature" button
+            $('#clear-signature').click(clearSignature);
+        });
+    </script>
+{% endblock %}

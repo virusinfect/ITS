@@ -289,6 +289,37 @@ def create_company(request):
 
     return render(request, 'create_company.html')
 
+@login_required
+def modal_create_company(request):
+    if request.method == 'POST':
+        # Retrieve data from the form
+        name = request.POST.get('name')
+        address = request.POST.get('address')
+        email = request.POST.get('email')
+        telephone = request.POST.get('telephone')
+        other_telephone = request.POST.get('other_telephone')
+        type = request.POST.get('type')
+        description = request.POST.get('description')
+
+        # Create a new company instance
+        new_company = Company(
+            name=name,
+            address=address,
+            email=email,
+            telephone=telephone,
+            other_telephone=other_telephone,
+            type=type,
+            description=description
+        )
+
+        # Save the new company
+        new_company.save()
+
+        # Return a JSON response indicating success
+        return JsonResponse({'status': 'success', 'message': 'Company created successfully'})
+
+    # Handle non-POST requests (e.g., GET requests)
+    return render(request, 'create_company.html')
 
 @login_required
 def edit_company(request, company_id):

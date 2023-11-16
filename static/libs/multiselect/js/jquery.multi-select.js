@@ -234,7 +234,7 @@
           e.preventDefault();
           e.stopPropagation();
           that.selectHighlighted($list);
-          return;
+
         }
       });
     },
@@ -329,7 +329,7 @@
       });
 
       this.$container.on('mouseleave', that.elemsSelector, function () {
-        $(this).parents('.ms-container').find(that.elemsSelector).removeClass('ms-hover');;
+        $(this).parents('.ms-container').find(that.elemsSelector).removeClass('ms-hover');
       });
     },
 

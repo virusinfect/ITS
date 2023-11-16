@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block header %}{{ title }}{% endblock %}
+{% block content %}
+    <style>
+        .static-action {
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            background-color: white;
+        }
+
+    </style>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'ticket-list' %}">Tickets</a></li>
+
+
+                </ol>
+            </div>
+
+        </div> <!-- end col -->
+
+    </div>
+
+    <div class="card">
+        <div class="card-body table-responsive">
+            <h4 class="mt-0 header-title">{{ title }}</h4>
+            <table id="responsive-datatable" class="table table-bordered  dt-responsive wrap">
+                <thead class="table-dark text-sm">
+                <tr>
+                    <th width="2%">No.</th>
+                    <th>Date</th>
+                    <th>Company</th>
+                    <th>Equipment</th>
+                    <th>Serial No</th>
+                    <th>Fault</th>
+                    <th>Ticket NO</th>
+                    <th>Status</th>
+                    <th>Tech</th>
+                    <th>Type</th>
+                    <th>Bench Status</th>
+                    <th>More</th>
+                    <th>Remark</th>
+                    <th class="d-show d-md-table-cell">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ticket in tickets %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ ticket.created|date:'d/m/Y' }}</td>
+                        <td>{{ ticket.company }}</td>
+                        <td>{{ ticket.equipment }}</td>
+                        <td>{{ ticket.serial_no }}</td>
+                        <td>{{ ticket.fault }}</td>
+                        <td>ITL/IHTN/{{ ticket.ticket_id }}</td>
+                        <td>
+                            {% if ticket.status == "Open" %}
+                                <span class="badge badge-outline-success">{{ ticket.status }}</span>
+                            {% elif ticket.status == "Closed" %}
+                                <span class="badge badge-outline-danger">{{ ticket.status }}</span>
+                            {% else %}
+                                <span class="badge">{{ ticket.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ ticket.tech }}</td>
+                        <td>{{ ticket.type }}</td>
+                        <td>{{ ticket.bench_status }}</td>
+                        <td>{{ ticket.more }}</td>
+                        <td>{{ ticket.remark }}</td>
+                        <td class="d-show d-md-table-cell">
+                            <a href="{% url 'edit_inhouse_ticket' ticket.ticket_id %}" title="edit" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="mdi mdi-square-edit-outline"></i>
+                            </a>
+                            <a href="{% url 'create_inhouse_delivery' ticket.ticket_id %}" title="delivery" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="mdi mdi-truck-delivery-outline"></i>
+                            </a>
+                            <a href="{% url 'inhouse_ticket_print' ticket.ticket_id %}" title="job card print" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="mdi mdi-printer"></i>
+                            </a>
+                            <a href="{% url 'delete_inhouse_ticket' ticket.ticket_id %}" title="delete" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="s mdi mdi-delete-outline"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    {#    <link href="{% static 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />#}
+    <link href="{% static 'libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'libs/datatables.net-select-bs5/css/select.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <!-- third party js -->
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.css"
+          rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.js"></script>
+    <script>
+        jQuery(document).ready(function ($) {
+            $('#responsive-datatable').DataTable({
+                responsive: true,
+                scrollX: true,
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        text: 'Add Part', // Custom button text
+                        text: '<i class="fas fa-plus"> </i>',
+                        action: function () {
+                            window.location.href = '{% url "create_inhouse_ticket" %}';
+                        },
+                        className: 'btn btn-danger mb-1 waves-effect waves-light'
+                    },
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        className: 'btn btn-danger btn-bg-light mb-1'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>',
+                        className: 'btn btn-danger mb-1',
+                        title: 'Ticket List',
+                        customize: function (doc) {
+                            doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'];
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+
+                ]
+            }).buttons().container().appendTo('#responsive-datatable_wrapper .col-md-6:eq(0)');
+        });
+
+
+        jQuery(document).ready(function ($) {
+            var table = $('#responsive-datatable').DataTable();
+
+            $('#print-table').on('click', function () {
+                var win = window.open('', 'Print', 'width=800,height=600');
+                win.document.write('<html><head><title>Print</title></head><body>');
+                win.document.write('<h1>Ticket List</h1>');
+                win.document.write('<table style="border-collapse: collapse; width: 100%;">');
+
+                // Add table headers
+                win.document.write('<tr>');
+                table.columns().header().each(function (th) {
+                    win.document.write('<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">' + $(th).html() + '</th>');
+                });
+                win.document.write('</tr>');
+
+                // Loop through the DataTable rows and copy them to the new window
+                table.rows().every(function () {
+                    var row = this.data();
+                    win.document.write('<tr>');
+                    for (var i = 0; i < row.length; i++) {
+                        win.document.write('<td style="border: 1px solid #ddd; padding: 8px; text-align: left;">' + row[i] + '</td>');
+                    }
+                    win.document.write('</tr>');
+                });
+
+                win.document.write('</table>');
+                win.document.write('</body></html>');
+                win.document.close();
+                win.print();
+                win.close();
+            });
+        });
+
+
+    </script>
+
+
+{% endblock %}
+
