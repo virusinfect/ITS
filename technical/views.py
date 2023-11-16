@@ -1374,7 +1374,7 @@ def edit_call_card(request, cc_id):
     if request.method == 'POST':
         # Handle form submission and update the call card
         call_card.time_in = request.POST.get('time_in')
-        call_card.tech_id = request.POST.get('tech_id')
+        call_card.tech_id_id = request.POST.get('tech_id')
         call_card.time_out = request.POST.get('time_out')
         call_card.equipment = request.POST.get('equipment')
         call_card.fault = request.POST.get('fault')
