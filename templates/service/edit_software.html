@@ -96,7 +96,8 @@
                             </optgroup>
                             <optgroup label="Windows XP">
                                 <option value="Windows XP"
-                                        {% if software.os == 'Windows XP' %}selected{% endif %}>Windows XP</option>
+                                        {% if software.os == 'Windows XP' %}selected{% endif %}>Windows XP
+                                </option>
                             </optgroup>
 
                             <!-- Add more Windows versions and editions as needed -->
@@ -126,6 +127,10 @@
                                         {% if software.mo == 'Microsoft Office 2021 Professional' %}selected{% endif %}>
                                     Professional
                                 </option>
+                                <option value="Microsoft Office 2021 Professional Plus"
+                                        {% if software.mo == 'Microsoft Office 2021 Professional Plus' %}selected{% endif %}>
+                                    Professional Plus
+                                </option>
                             </optgroup>
                             <optgroup label="Microsoft Office 2019">
                                 <option value="Microsoft Office 2019 Home and Student"
@@ -139,6 +144,10 @@
                                 <option value="Microsoft Office 2019 Professional"
                                         {% if software.mo == 'Microsoft Office 2019 Professional' %}selected{% endif %}>
                                     Professional
+                                </option>
+                                <option value="Microsoft Office 2019 Professional Plus"
+                                        {% if software.mo == 'Microsoft Office 2019 Professional Plus' %}selected{% endif %}>
+                                    Professional Plus
                                 </option>
                             </optgroup>
                             <optgroup label="Microsoft Office 2016">
@@ -154,6 +163,10 @@
                                         {% if software.mo == 'Microsoft Office 2016 Professional' %}selected{% endif %}>
                                     Professional
                                 </option>
+                                <option value="Microsoft Office 2016 Professional Plus"
+                                        {% if software.mo == 'Microsoft Office 2016 Professional Plus' %}selected{% endif %}>
+                                    Professional Plus
+                                </option>
                             </optgroup>
                             <optgroup label="Microsoft Office 2013">
                                 <option value="Microsoft Office 2013 Home and Student"
@@ -167,6 +180,10 @@
                                 <option value="Microsoft Office 2013 Professional"
                                         {% if software.mo == 'Microsoft Office 2013 Professional' %}selected{% endif %}>
                                     Professional
+                                </option>
+                                <option value="Microsoft Office 2013 Professional Plus"
+                                        {% if software.mo == 'Microsoft Office 2013 Professional Plus' %}selected{% endif %}>
+                                    Professional Plus
                                 </option>
                             </optgroup>
                             <optgroup label="Microsoft Office 2010">
@@ -182,6 +199,10 @@
                                         {% if software.mo == 'Microsoft Office 2010 Professional' %}selected{% endif %}>
                                     Professional
                                 </option>
+                                <option value="Microsoft Office 2010 Professional Plus"
+                                        {% if software.mo == 'Microsoft Office 2010 Professional Plus' %}selected{% endif %}>
+                                    Professional Plus
+                                </option>
                             </optgroup>
                             <optgroup label="Microsoft Office 2007">
                                 <option value="Microsoft Office 2007 Home and Student"
@@ -196,9 +217,14 @@
                                         {% if software.mo == 'Microsoft Office 2007 Professional' %}selected{% endif %}>
                                     Professional
                                 </option>
+                                <option value="Microsoft Office 2007 Professional Plus"
+                                        {% if software.mo == 'Microsoft Office 2007 Professional Plus' %}selected{% endif %}>
+                                    Professional Plus
+                                </option>
                             </optgroup>
                             <!-- Add more Microsoft Office versions and editions as needed -->
                         </select>
+
                     </div>
 
                     <div class="mb-3">
