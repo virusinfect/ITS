@@ -36,9 +36,13 @@
                             <option value="Monitor" {% if equipment.type == 'Monitor' %}selected{% endif %}>Monitor
                             </option>
                             <option value="UPS" {% if equipment.type == 'UPS' %}selected{% endif %}>UPS</option>
+                            <option value="Scanner" {% if equipment.type == 'Scanner' %}selected{% endif %}>Scanner</option>
+                            <option value="Docking Station" {% if equipment.type == 'Docking Station' %}selected{% endif %}>Docking Station</option>
+                            <option value="AIO's" {% if equipment.type == "AIO's" %}selected{% endif %}>AIO's</option>
                             <option value="CPU" {% if equipment.type == 'CPU' %}selected{% endif %}>CPU</option>
                             <option value="Server" {% if equipment.type == 'Server' %}selected{% endif %}>Server
-                            </option><option value="Printer" {% if equipment.type == 'Printer' %}selected{% endif %}>Printer
+                            </option>
+                            <option value="Printer" {% if equipment.type == 'Printer' %}selected{% endif %}>Printer
                             </option>
 
                             <!-- Add more options as needed -->
