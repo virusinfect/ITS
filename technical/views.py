@@ -1374,6 +1374,7 @@ def edit_call_card(request, cc_id):
     if request.method == 'POST':
         # Handle form submission and update the call card
         call_card.time_in = request.POST.get('time_in')
+        call_card.tech_id = request.POST.get('tech_id')
         call_card.time_out = request.POST.get('time_out')
         call_card.equipment = request.POST.get('equipment')
         call_card.fault = request.POST.get('fault')
@@ -2211,7 +2212,6 @@ def save_signature_view_ticket(request):
 def save_signature_view_inhouse_ticket(request):
     if request.method == 'POST':
         signature_data = request.POST.get('signature_data')
-        type = request.POST.get('type')
         company = request.POST.get('company')
         email = request.POST.get('email')
         telephone = request.POST.get('telephone')
