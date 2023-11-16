@@ -72,7 +72,7 @@
                     <label for="issue_summary" class="form-label">Issue Summary:</label>
                     <div id="editor-container">
                         <textarea name="issue_summary" id="issue_summary" class="form-control"
-                                  placeholder="Issues Summary"></textarea>
+                                  placeholder="Issues Summary" rows="5"></textarea>
                     </div>
                 </div>
 
@@ -97,12 +97,7 @@
                                        class="form-control">
                             </td>
                             <td>
-                                <div id="editor-container-{{ product.id }}">
-                                    <textarea name="description[]" id="description"
-                                              class="form-control">
-                                        {{ product.description }}
-                                    </textarea>
-                                </div>
+                                <textarea name="description[]" id="description" class="form-control">{{ product.description }}</textarea>
                             </td>
 
                             <td>
@@ -412,14 +407,10 @@
         });
     </script>
 
-    <!-- Include CKEditor library -->
-
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             ClassicEditor
-                .create(document.querySelector('#description'), {
+                .create(document.querySelector('#issue_summary'), {
                     toolbar: {
                         items: [
                             'bold',
@@ -429,66 +420,37 @@
                             'blockQuote',
                             'undo',
                             'redo'
-                        ]
+                        ],
+                        shouldNotGroupWhenFull: true,
+                        items: [
+                            'bold',
+                            'italic',
+                            '|',
+                            'bulletedList',
+                            'numberedList',
+                            '|',
+                            'blockQuote',
+                            '|',
+                            'undo',
+                            'redo'
+                        ],
+                        icon: {
+                            bold: 'mdi mdi-format-bold',
+                            italic: 'mdi mdi-format-italic',
+                            bulletedList: 'mdi mdi-format-list-bulleted',
+                            numberedList: 'mdi mdi-format-list-numbered',
+                            blockQuote: 'mdi mdi-format-quote-open',
+                            undo: 'mdi mdi-undo',
+                            redo: 'mdi mdi-redo'
+                        }
                     },
                     language: 'en',
-                    image: {
-                        toolbar: [
-                            'imageTextAlternative',
-                            'imageStyle:full',
-                            'imageStyle:side'
-                        ]
-                    }
                 })
                 .catch(error => {
                     console.error(error);
                 });
         });
     </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        ClassicEditor
-            .create(document.querySelector('#issue_summary'), {
-                toolbar: {
-                    items: [
-                        'bold',
-                        'italic',
-                        'bulletedList',
-                        'numberedList',
-                        'blockQuote',
-                        'undo',
-                        'redo'
-                    ],
-                    shouldNotGroupWhenFull: true,
-                    items: [
-                        'bold',
-                        'italic',
-                        '|',
-                        'bulletedList',
-                        'numberedList',
-                        '|',
-                        'blockQuote',
-                        '|',
-                        'undo',
-                        'redo'
-                    ],
-                    icon: {
-                        bold: 'mdi mdi-format-bold',
-                        italic: 'mdi mdi-format-italic',
-                        bulletedList: 'mdi mdi-format-list-bulleted',
-                        numberedList: 'mdi mdi-format-list-numbered',
-                        blockQuote: 'mdi mdi-format-quote-open',
-                        undo: 'mdi mdi-undo',
-                        redo: 'mdi mdi-redo'
-                    }
-                },
-                language: 'en',
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    });
-</script>
 
 
 

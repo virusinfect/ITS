@@ -128,12 +128,10 @@
                                                                        class="form-control">
                                                             </td>
                                                             <td>
-                                                                <div id="editor-container-{{ product.id }}">
-                                                                    <textarea name="description[]" id="description"
+                                                                <textarea name="description[]" id="description"
                                                                               class="form-control">
                                                                         {{ product.description }}
                                                                     </textarea>
-                                                                </div>
                                                             </td>
 
                                                             <td><input type="text" name="price[]"
@@ -535,10 +533,7 @@
             for (let select of selects) {
                 select.selectedIndex = 0;
             }
-            const descInputs = newRow.querySelectorAll('textarea[name="description[]"]');
-            for (let descInput of descInputs) {
-                descInput.value = ''; // Set the value to an empty string
-            }
+
             // Find input elements with id "price" and "qty" and set their values to zero
             const priceInput = newRow.querySelector('input#price');
             if (priceInput) {
@@ -588,15 +583,12 @@
             // Find input elements with id "price" and "qty" and set their values to 0
             const priceInput = newRow.querySelector('input#price');
             const qtyInput = newRow.querySelector('input#qty');
-            const descInput = newRow.querySelector('textarea#description');
+
             if (priceInput) {
                 priceInput.value = '0';
             }
             if (qtyInput) {
                 qtyInput.value = '0';
-            }
-            if (descInput) {
-                descInput.value = '0';
             }
 
             // Hide all existing delete links in the new row
@@ -623,35 +615,6 @@
             // Append the new row to the end of the table
             tableBody.appendChild(newRow);
         }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            ClassicEditor
-                .create(document.querySelector('#description'), {
-                    toolbar: {
-                        items: [
-                            'bold',
-                            'italic',
-                            'bulletedList',
-                            'numberedList',
-                            'blockQuote',
-                            'undo',
-                            'redo'
-                        ]
-                    },
-                    language: 'en',
-                    image: {
-                        toolbar: [
-                            'imageTextAlternative',
-                            'imageStyle:full',
-                            'imageStyle:side'
-                        ]
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

@@ -60,7 +60,7 @@
                                     data-quote-id="{{ ticket.ticket_id }}">More
                             </button>
                         </td>
-                        <td>{{ ticket.issue_summary }}</td>
+                        <td>{{ ticket.issue_summary|safe }}</td>
                         <td>{{ ticket.via }}</td>
                         <td>
                             {% if ticket.status == "Sourcing" %}
