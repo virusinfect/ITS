@@ -24,6 +24,12 @@ def sales_tickets_list(request):
     return render(request, 'sales/sales_tickets.html', {'active_sales_tickets': active_sales_tickets})
 
 @login_required
+def filtered_sales_tickets_list(request):
+    # Filter sales tickets that are active and get the 50 latest ones
+    active_sales_tickets = SalesTickets.objects.filter(is_active=1).order_by("-ticket_id")[:50]
+    return render(request, 'sales/sales_tickets.html', {'active_sales_tickets': active_sales_tickets})
+
+@login_required
 def open_tickets_list(request):
     # Filter sales tickets that are active (assuming "is_active" is a boolean field)
     active_sales_tickets = SalesTickets.objects.filter(is_active=1, status__in=["Quote", "Sourcing"]).order_by("-ticket_id")

@@ -66,8 +66,8 @@ class InhouseTickets(models.Model):
     ticket_id = models.AutoField(primary_key=True, db_comment='PK')
     priority = models.CharField(max_length=255, default=1)
     status = models.CharField(max_length=255, default="Open")
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, db_column='company_id')
-    client = models.ForeignKey(Clients, on_delete=models.CASCADE, db_column='client_id')
+    company = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
     tech = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tech')
     equipment = models.CharField(max_length=255, null=True)
     serial_no = models.CharField(max_length=255, null=True)
@@ -90,7 +90,7 @@ class InhouseTickets(models.Model):
     labour = models.FloatField(default=0)
     currency = models.CharField(max_length=50, default="KSH")
     remark = models.CharField(max_length=50, blank=True)
-    lpo_no = models.CharField(max_length=255, blank=True)
+    telephone = models.CharField(max_length=255, blank=True)
     bench_status = models.CharField(max_length=25, default="Pending")
     more = models.CharField(max_length=300, blank=True)
     type = models.CharField(max_length=25)
@@ -333,6 +333,12 @@ class TSignature(models.Model):
     signature_image = models.ImageField(upload_to='signatures/')
     approved = models.CharField(max_length=255)
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
+
+
+class InhouseTSignature(models.Model):
+    signature_image = models.ImageField(upload_to='signatures/')
+    approved = models.CharField(max_length=255)
+    ticket = models.ForeignKey(InhouseTickets, on_delete=models.CASCADE)
 
 class TechSignature(models.Model):
     signature_image = models.ImageField(upload_to='signatures/')

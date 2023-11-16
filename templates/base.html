@@ -350,7 +350,7 @@
                     {% endif %}
                     {% if user|can_access_view_sales_tickets or user|is_sales %}
                         <li>
-                            <a href="{% url 'sales_tickets' %}">
+                            <a href="{% url 'filtered_sales_tickets' %}">
                                 <i class="mdi mdi-ticket"></i>
                                 <span> Sales Tickets </span>
                             </a>

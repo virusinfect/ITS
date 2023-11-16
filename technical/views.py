@@ -25,7 +25,7 @@ from its.models import Company, Clients, Parts, PartsCategory, Task, Notificatio
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
     Deliverys, Tsourcing, tQuote, FormatApproval, UniqueToken, FSignature, TechnicalReport, TSignature, TicketImage, \
-    TechSignature, InhouseTickets
+    TechSignature, InhouseTickets, InhouseTSignature
 
 
 @login_required
@@ -1994,6 +1994,57 @@ def save_signature_view_ticket(request):
 
         # Create a Signature object and save it to the database
         signature = TSignature()
+
+        # Update the corresponding Delivery object with the signature
+        try:
+            signature.ticket = ticket  # Associate the delivery with the signature
+            signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
+            return JsonResponse({'success': True})
+        except Tickets.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Format Approval not found'}, status=400)
+
+    return JsonResponse({'message': 'Invalid request method'}, status=400)
+
+
+@csrf_exempt
+def save_signature_view_inhouse_ticket(request):
+    if request.method == 'POST':
+        signature_data = request.POST.get('signature_data')
+        type = request.POST.get('type')
+        company = request.POST.get('company')
+        equipment = request.POST.get('equipment')
+        serial_no = request.POST.get('serial_no')
+        fault = request.POST.get('fault')
+        accessories = request.POST.get('accessories')
+        notes = request.POST.get('notes')
+        tech_id = request.POST.get('tech')
+        eqpass = request.POST.get('eqpass')
+        brought_by = request.POST.get('brought_by')
+        # Create the ticket
+        ticket = InhouseTickets.objects.create(
+            company=company,
+            equipment=equipment,
+            serial_no=serial_no,
+            fault=fault,
+            accessories=accessories,
+            notes="notes",
+            tech_id=tech_id,
+            type=type,
+            eqpass=eqpass,
+            brought_by=brought_by,
+        )
+
+        messages.success(request, 'Ticket Created successfully')
+
+
+        # Extract the Base64 data after the comma
+        base64_data = signature_data.split(',')[1]
+
+        # Decode the Base64 data
+        signature_binary = base64.b64decode(base64_data)
+
+        # Create a Signature object and save it to the database
+        signature = InhouseTSignature()
 
         # Update the corresponding Delivery object with the signature
         try:

@@ -41,12 +41,18 @@
     </div>
     <div class="card">
         <div class=" card-body col-11 mx-auto">
-            <h3 class="header-title mb-4">Create Ticket</h3>
+            <h3 class="header-title mb-4">Create Ticket </h3>
             <form method="post">
                 {% csrf_token %}
+
                 <div class="row mb-3">
+
                     <div class="col-md-6">
-                        <label for="company_id" class="form-label">Company:</label>
+
+                        <label for="company_id" class="form-label">Company   :   <a type="button" class="text-danger" data-bs-toggle="modal"
+                                                                               data-bs-target="#signup-modal">
+                            <i class="mdi mdi-domain"> add new </i>
+                        </a></label>
                         <select name="company_id" class="form-select">
                             {% for company in companies %}
                                 <option value="{{ company.id }}">
@@ -211,6 +217,68 @@
             </form>
         </div>
     </div> <!-- end col -->
+    <div id="signup-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="mb-3 header-title text-center">Add Company</h4>
+                    <form method="post" id="company-form">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp"
+                                   placeholder="Enter Company Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address:</label>
+                            <input type="text" name="address" class="form-control" id="address"
+                                   aria-describedby="emailHelp"
+                                   placeholder="Enter Company Address" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" name="email" class="form-control" id="email"
+                                   aria-describedby="emailHelp"
+                                   placeholder="Enter Company Email" required>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <label for="telephone" class="form-label">Telephone:</label>
+                                <input type="text" name="telephone" class="form-control" id="telephone"
+                                       aria-describedby="emailHelp"
+                                       placeholder="Enter Company Telephone" required>
+                            </div>
+                            <div class="mb-3 col-lg-6   ">
+                                <label for="other_telephone" class="form-label">Alternative Telephone:</label>
+                                <input type="text" name="other_telephone" class="form-control" id="other_telephone"
+                                       aria-describedby="emailHelp"
+                                       placeholder="Enter Company Telephone" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-4 col-lg-4">
+                            <label for="type" class="form-label">Type:</label>
+                            <select id="type" class="form-select" name="type" required>
+                                <option>Choose</option>
+                                <option>Contract</option>
+                                <option>CSR</option>
+                                <option>Subjective</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <textarea type="text" name="description" class="form-control" id="description"
+                                      aria-describedby="emailHelp"
+                                      placeholder="Enter Description"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Add New</button>
+                    </form>
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <script>
         function addBlankRow(button) {
             // Create a new row by cloning the current row
@@ -294,4 +362,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"
             integrity="sha512-t3zV/oAkSZUrvb/7p1q1+uh/i56JinQ+bmiulnHhbHZc7dq09CxJ1BByyi7A4+lF76+CcJtSVFtb7na7Oe7Cgg=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Assuming your form has an id of 'company-form'
+            var form = document.getElementById('company-form');
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Fetch the form data
+                var formData = new FormData(form);
+
+                // Send a POST request to your backend (Django view) to create a new company
+                fetch('/create_company/', {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); // assuming your backend returns JSON
+                    })
+                    .then(data => {
+                        // If the creation is successful, you can handle it here
+                        console.log('Company created successfully:', data);
+                        toastr.success("Company created successfully", "Company");
+                        // Refresh the page after successful submission
+                        location.reload();
+                    })
+                    .catch(error => {
+                        // Handle errors here
+                        console.error('Error during company creation:', error);
+                    });
+            });
+        });
+    </script>
+
 {% endblock %}
