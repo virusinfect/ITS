@@ -86,7 +86,7 @@
                                         <div class="col-lg-6 mb-3">
                                             <label for="client" class="form-label"><strong>Client:</strong></label>
                                             <select name="client" class="form-control" id="client" required>
-                                                <option value="{{ ticket.client }}"
+                                                <option value="{{ ticket.client.id }}"
                                                         selected>{{ ticket.client }}</option>
                                                 <option value="" disabled>Select a client</option>
                                             </select>

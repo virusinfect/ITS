@@ -427,7 +427,7 @@ def edit_ticket(request, ticket_id):
             saved_technician = ticket.tech
             # Update the ticket fields based on the POST data
             ticket.type = request.POST.get('type')
-            ticket.client_id = request.POST.get('client')
+            client = request.POST.get('client')
             ticket.recommendation = request.POST.get('recommendation')
             ticket.equipment = request.POST.get('equipment')
             ticket.serial_no = request.POST.get('serial_no')
@@ -439,7 +439,13 @@ def edit_ticket(request, ticket_id):
             ticket.updated = timezone.now()
             ticket.accessories = request.POST.get('accessories')
             ticket.updated = timezone.now()
+            print("test")
+            print(ticket.client)
+            print(client)
             # Update other fields similarly
+            if ticket.client != client:
+                ticket.client_id = client
+
 
             # Save the changes
             ticket.save()
