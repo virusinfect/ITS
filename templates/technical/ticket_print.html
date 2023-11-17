@@ -94,12 +94,12 @@
                         <!-- /.row -->
 
                         <div class="row">
-                            <div >
+                            <div>
                                 <table id="" class="table table-bordered mb-2">
                                     <tbody>
                                     <tr>
                                         <th>Customer:</th>
-                                        <td>{{ticket.brought_by}}</td>
+                                        <td>{{ ticket.brought_by }}</td>
                                         <th>Technician:</th>
                                         <td>{{ ticket.tech.first_name }} {{ ticket.tech.last_name }}</td>
                                     </tr>
@@ -135,54 +135,32 @@
                 </div><!-- /.col -->
 
             </div><!-- /.row -->
-            <img  src="{% static 'tr_footer.png' %}" id="footer-image">
+            <img src="{% static 'tr_footer.png' %}" id="footer-image">
         </section>
         <!-- /.content -->
     </div>
     <a id="print-button" class="btn btn-primary">Print</a>
     <!-- ./wrapper -->
     <!-- Page specific script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.0/html2pdf.bundle.js" integrity="sha512-VqCeCECsaE2fYTxvPQk+OJ7+SQxzI1xZ6IqxuWd0GPKaJoeSFqeakVqNpMbx1AArieciBF71poL0dYTMiNgVxA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<script>
+
+    <script>
         document.getElementById('print-button').addEventListener('click', function () {
             printDeliveryNote();
         });
 
         function printDeliveryNote() {
-            var printContents = document.getElementById('delivery-note').innerHTML;
-            var originalContents = document.body.innerHTML;
+            var printContents = document.getElementById('delivery-note');
 
-            var style = document.createElement('style');
-            style.innerHTML = `
-            @media print {
-                #footer-container {
-                    position: relative;
-                }
-
-                #footer-image {
-                    position: fixed;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    max-width: 100%;
-                }
-
-                body {
-                    margin: 0 !important;
-                }
-
-                .page-break {
-                    page-break-before: always;
-                }
-            }
-        `;
-            document.head.appendChild(style);
-
-            document.body.innerHTML = printContents;
-            window.print();
-            document.body.innerHTML = originalContents;
-
-            document.head.removeChild(style);
+            html2pdf(printContents, {
+                margin: 10,
+                filename: 'delivery-note.pdf',
+                image: {type: 'jpeg', quality: 0.98},
+                html2canvas: {scale: 2},
+                jsPDF: {unit: 'mm', format: 'a4', orientation: 'portrait'}
+            });
         }
     </script>
+
 {% endblock %}

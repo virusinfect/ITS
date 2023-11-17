@@ -45,6 +45,8 @@
                     <th width="10%">No.</th>
                     <th>Ticket ID</th>
                     <th>Requisition Status</th>
+                    <th>Quantity</th>
+                    <th>Serial No.</th>
                     <th>Requisition Item</th>
                     <th>Approved By</th>
                     <th>Issue Status</th>
@@ -73,6 +75,8 @@
                                 <span class="badge">{{ requisition.req_status }}</span>
                             {% endif %}
                         </td>
+                        <td>{{ requisition.quantity }}</td>
+                        <td>{{ requisition.serial_no }}</td>
                         <td>{{ requisition.part.code }}</td>
                         <td>{{ requisition.approved_by }}</td>
                         <td>
