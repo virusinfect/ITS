@@ -36,6 +36,7 @@
                     <th width="12%">Products</th>
                     <th>Asset</th>
                     <th>Via</th>
+                    <th>Created by</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -62,6 +63,7 @@
                         </td>
                         <td>{{ ticket.issue_summary|safe }}</td>
                         <td>{{ ticket.via }}</td>
+                        <td>{{ ticket.created_by }}</td>
                         <td>
                             {% if ticket.status == "Sourcing" %}
                                 <span class="badge badge-outline-warning">{{ ticket.status }}</span>

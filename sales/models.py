@@ -17,7 +17,7 @@ class SalesTickets(models.Model):
     updated = models.DateTimeField(auto_now=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, db_column='company_id')
     task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=True)
-
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='created_by')
 
     class Meta:
         managed = False

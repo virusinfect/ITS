@@ -827,6 +827,7 @@ def create_ticket(request):
             company=company,
             more=more,
             via=via,
+            created_by=request.user,
 
         )
         ticket.save()

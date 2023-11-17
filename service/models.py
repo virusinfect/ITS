@@ -1,7 +1,7 @@
 from django.db import models
 from technical.models import ServiceTickets
 from its.models import Company, Clients
-
+from django.contrib.auth.models import User
 
 class Service(models.Model):
     ticket = models.ForeignKey(ServiceTickets, on_delete=models.CASCADE)
@@ -72,6 +72,7 @@ class MonitorChecklist(models.Model):
     status = models.TextField(default="Pending")
     observations = models.TextField()
     recommendation = models.TextField()
+
 
 
 class PrinterChecklist(models.Model):

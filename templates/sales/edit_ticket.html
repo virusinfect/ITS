@@ -42,7 +42,8 @@
     <div class="mx-auto">
         <div class="card">
             <div class="card-body">
-                <h4 class="mb-3 header-title">Edit Sales Ticket No. #{{ ticket.ticket_id }}</h4>
+                <h4 class="mb-3 header-title">Edit Sales Ticket No. #{{ ticket.ticket_id }} </h4>
+                <h5>Created by {{ ticket.created_by }}</h5>
 
                 <div class="card">
                     <div class="card-body">
@@ -127,8 +128,9 @@
                                                                        value="{{ product.part_no }}"
                                                                        class="form-control">
                                                             </td>
-                                                            <td>                                                                    <input name="description[]" id="description"
-                                                                              class="form-control" value="{{ product.description }}">
+                                                            <td><input name="description[]" id="description"
+                                                                       class="form-control"
+                                                                       value="{{ product.description }}">
 
                                                             </td>
 
