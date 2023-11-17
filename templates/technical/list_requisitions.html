@@ -78,7 +78,7 @@
                         <td>{{ requisition.quantity }}</td>
                         <td>{{ requisition.serial_no }}</td>
                         <td>{{ requisition.part.code }}</td>
-                        <td width="7%">{{ requisition.approved_by }}</td>
+                        <td width="5%">{{ requisition.approved_by }}</td>
                         <td>
                             {% if requisition.issue_status == "Issue" %}
                                 <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i> Issued
@@ -99,7 +99,7 @@
                                 <span class="badge">{{ requisition.return_status }}</span>
                             {% endif %}
                         </td>
-                        <td width="7%">{{ requisition.return_approved_by }}</td>
+                        <td width="5%">{{ requisition.return_approved_by }}</td>
                         <td width="10%">{{ requisition.remarks }}</td>
                         <td>{% if user|is_helpdesk or user|is_management %}
                             {% if requisition.issue_status == "Pending" %}
