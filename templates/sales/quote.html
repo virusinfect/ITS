@@ -103,15 +103,18 @@
                                                     {{ item.total|floatformat:2|intcomma }}</td>
                                             </tr>
                                         {% endfor %}
-
-                                        <tr>
-                                            <th colspan="5" style="text-align: right;">SUB TOTALS</th>
-                                            <td style="text-align: right;">{{ subtotals|floatformat:2|intcomma }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th colspan="5" style="text-align: right;">SUB TOTALS</th>
-                                            <td style="text-align: right;">{{ subtotals|floatformat:2|intcomma }}</td>
-                                        </tr>
+                                        {% if quote.sq_id == 868 %}
+                                            <tr>
+                                                <th colspan="5" style="text-align: right;">SUB TOTALS</th>
+                                                <td style="text-align: right;">
+                                                    {{ subtotals|floatformat:2|intcomma }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="5" style="text-align: right;">SUB TOTALS</th>
+                                                <td style="text-align: right;">
+                                                    {{ subtotals|floatformat:2|intcomma }}</td>
+                                            </tr>
+                                        {% endif %}
                                         <tr>
                                             <th colspan="5" style="text-align: right;">SUB TOTALS</th>
                                             <td style="text-align: right;">{{ subtotals|floatformat:2|intcomma }}</td>
