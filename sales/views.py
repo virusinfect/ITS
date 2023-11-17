@@ -346,7 +346,7 @@ def delete_order(request, order_id):
 
 @login_required
 def active_quotes(request):
-    quotes = SalesQuotes.objects.filter(is_active=True).prefetch_related('salesquoteproducts_set').order_by('-sq_id')
+    quotes = SalesQuotes.objects.filter(is_active=True).prefetch_related('salesquoteproducts_set').order_by('-sq_id')[:60]
     return render(request, 'sales/active_quotes.html', {'quotes': quotes})
 
 
@@ -844,17 +844,28 @@ def create_ticket(request):
         new_sourcing_data = []
 
         for i in range(len(part_no_list)):
+            if price_list_strings[i] == "":
+                price = 0;
+            else:
+                price = price_list_strings[i]
+
+            if qty_list[i] == "":
+                qty = 0;
+            else:
+                qty = qty_list[i]
+
             if (part_no_list[i]):
                 products = SalesTicketProducts(
                     part_no=part_no_list[i],
                     description=desc_list[i],
-                    quantity=qty_list[i],
-                    price=price_list_strings[i],
+                    quantity=qty,
+                    price=price,
                     availability=availability_list[i],
                     supplier=supplier_list[i],
                     currency=currency_list[i],
                     ticket=ticket,
                 )
+
                 new_sourcing_data.append(products)
 
         # Delete old Tsourcing data

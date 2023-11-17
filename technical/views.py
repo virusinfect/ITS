@@ -206,6 +206,10 @@ def tech_dash(request):
 
 @login_required
 def store_dash(request):
+    returned_requisitions_count = Requisition.objects.filter(issue_status="returned",
+                                                             return_status__isnull=True).count()
+    pending_approved_requisitions_count = Requisition.objects.filter(req_status="Approved",
+                                                                     issue_status="Pending").count()
     # Define the list of statuses you want to count
     statuses_to_count = [
         "Open",
@@ -281,7 +285,92 @@ def store_dash(request):
 
     return render(request, "technical/store_dashboard.html",
                   {'remark_counts': remark_counts, 'bench_status_counts': bench_status_counts,
-                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts})
+                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts,'returned_requisitions_count':returned_requisitions_count,'pending_approved_requisitions_count':pending_approved_requisitions_count})
+
+
+
+@login_required
+def acc_dash(request):
+    returned_requisitions_count = Requisition.objects.filter(issue_status="returned",
+                                                             return_status__isnull=True).count()
+    pending_approved_requisitions_count = Requisition.objects.filter(req_status="Approved",
+                                                                     issue_status="Pending").count()
+    # Define the list of statuses you want to count
+    statuses_to_count = [
+        "Open",
+    ]
+
+    # Initialize a dictionary to store the counts for each status
+    status_counts = {}
+
+    # Loop through each status and count the tickets with that status
+    for status in statuses_to_count:
+        count = Tickets.objects.filter(status=status, is_active=1).count()
+        status_counts[status] = count
+    # Define the list of remarks you want to count
+    remarks_to_count = [
+        "Awaiting feedback",
+        "Awaiting parts",
+        "Repairs",
+        "LPO follow up",
+        "MD LPO follow up",
+        "To be collected",
+        "To be delivered",
+        "Warranty",
+    ]
+
+    # Initialize a dictionary to store the counts for each remark
+    remark_counts = {}
+
+    # Loop through each remark and count the tickets with that remark
+    for remark in remarks_to_count:
+        count = Tickets.objects.filter(remark=remark, is_active=1).count()
+        remark_counts[remark] = count
+
+    bench_statuses_to_count = [
+        "Pending"
+    ]
+
+    # Initialize a dictionary to store the counts for each bench status
+    bench_status_counts = {}
+
+    # Loop through each bench status and count the tickets with that status
+    for bench_status in bench_statuses_to_count:
+        count = Tickets.objects.filter(bench_status=bench_status, type="Bench", is_active=1, tech=request.user).count()
+        bench_status_counts[bench_status] = count
+
+    site_statuses_to_count = [
+        "Pending"
+    ]
+
+    # Initialize a dictionary to store the counts for each bench status
+    site_status_counts = {}
+
+    # Loop through each bench status and count the tickets with that status
+    for site_status in site_statuses_to_count:
+        count = Tickets.objects.filter(bench_status=site_status, type="On-site", is_active=1, tech=request.user).count()
+        site_status_counts[site_status] = count
+
+        # Define the list of tr_statuses you want to count
+    tr_statuses_to_count = [
+        "Follow up",
+        "Awaiting LPO",
+        "On hold",
+        "Not interested",
+        "Done",
+    ]
+
+    # Initialize a dictionary to store the counts for each tr_status
+    tr_status_counts = {}
+
+    # Loop through each tr_status and count the tickets with that tr_status
+    for tr_status in tr_statuses_to_count:
+        count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
+        tr_status_counts[tr_status] = count
+
+    return render(request, "technical/store_dashboard.html",
+                  {'remark_counts': remark_counts, 'bench_status_counts': bench_status_counts,
+                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts,'returned_requisitions_count':returned_requisitions_count,'pending_approved_requisitions_count':pending_approved_requisitions_count})
 
 
 @login_required
@@ -2099,6 +2188,44 @@ def requisitions_created_monthly_tech(request):
         created__year=current_year,
         is_active=True,
         collected_by=request.user  # Filter by active requisitions if needed
+    ).annotate(
+        month=ExtractMonth('created')
+    ).values(
+        'month'
+    ).annotate(
+        count=Count('req_id')
+    ).order_by('month')
+
+    data = list(monthly_requisition_counts)
+
+    return JsonResponse(data, safe=False)
+
+def requisitions_returned(request):
+    current_year = timezone.now().year
+
+    monthly_requisition_counts = Requisition.objects.filter(
+        created__year=current_year,
+        is_active=True,
+        return_approved_by__isnull=False,  # Filter by active requisitions if needed
+    ).annotate(
+        month=ExtractMonth('created')
+    ).values(
+        'month'
+    ).annotate(
+        count=Count('req_id')
+    ).order_by('month')
+
+    data = list(monthly_requisition_counts)
+
+    return JsonResponse(data, safe=False)
+
+def requisitions_rejected(request):
+    current_year = timezone.now().year
+
+    monthly_requisition_counts = Requisition.objects.filter(
+        created__year=current_year,
+        is_active=True,
+        return_approved_by__isnull=False,  # Filter by active requisitions if needed
     ).annotate(
         month=ExtractMonth('created')
     ).values(

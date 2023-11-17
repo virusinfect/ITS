@@ -315,6 +315,14 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if user|is_accounts %}
+                        <li>
+                            <a href="{% url 'acc_dashboard' %}">
+                                <i class="mdi mdi-view-dashboard"></i>
+                                <span>Accounts Dashboard</span>
+                            </a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="{% url 'personal_task' %}">
                             <i class="mdi mdi-calendar-account-outline"></i>
@@ -323,30 +331,32 @@
                     </li>
                     {% if user|can_access_view_tech_tickets or user|is_tech or user|is_helpdesk %}
                         <li>
-                            <a href="#Tickets" data-bs-toggle="collapse">
-                                <i class="mdi mdi-ticket-confirmation-outline"></i>
-                                <span>Tickets </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="Tickets">
-                                <ul class="nav-second-level">
-                                    <li>
-                                        <a href="{% url 'ticket-list' %}">Tickets</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'inhouse-ticket-list' %}">In-house Tickets</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'active_call_cards' %}">Call Cards</a>
-                                    </li>
-                                    {% if user|is_helpdesk or user|is_management %}
-                                        <li>
-                                            <a href="{% url 'technical_report_list' %}">Technical Reports</a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </div>
+                        <a href="#Tickets" data-bs-toggle="collapse">
+                            <i class="mdi mdi-ticket-confirmation-outline"></i>
+                            <span>Tickets </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="Tickets">
+                        <ul class="nav-second-level">
+                        <li>
+                            <a href="{% url 'ticket-list' %}">Tickets</a>
                         </li>
+                        <li>
+                            <a href="{% url 'inhouse-ticket-list' %}">In-house Tickets</a>
+                        </li>
+                        {% if user|is_tech or user|is_helpdesk or user|is_management %}
+                        <li>
+                            <a href="{% url 'active_call_cards' %}">Call Cards</a>
+                        </li>
+                        {% endif %}
+                        {% if user|is_helpdesk or user|is_management or user|is_accounts %}
+                        <li>
+                            <a href="{% url 'technical_report_list' %}">Technical Reports</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    </div>
+                    </li>
                     {% endif %}
                     {% if user|can_access_view_sales_tickets or user|is_sales %}
                         <li>
