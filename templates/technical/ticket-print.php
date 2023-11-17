@@ -1,5 +1,24 @@
+<?php 
+session_start();
+include('../assets/config.php');
+error_reporting(0);
+if (strlen($_SESSION['helpdesk']) == 0) {
+	header('location:index.php');
+}
+
+// fetch ticket data from DB
+$tid = intval($_GET['id']);
+
+$query=mysqli_query($conn, "SELECT company.id AS company_id, company.name AS company_name, clients.id AS client_id, clients.f_name AS client_f_name, clients.l_name AS client_l_name, clients.email AS client_email, clients.telephone AS client_telephone, technicians.tech_id AS tech_id, technicians.first_name AS tech_first_name, technicians.last_name AS tech_last_name, technicians.signature AS tech_sign, tickets.equipment AS equipment, tickets.serial_no AS serial_no, tickets.fault AS fault, tickets.accessories AS accessories, tickets.notes AS notes, tickets.bench_status AS bench_status, tickets.created AS created, tickets.updated AS updated, tickets.brought_by AS brought_by, tickets.reg_sign AS reg_sign, tickets.ticket_id AS ticket_id FROM tickets LEFT JOIN company on tickets.company_id=company.id LEFT JOIN clients ON tickets.client_id=clients.id LEFT JOIN technicians ON tickets.tech_id=technicians.tech_id WHERE tickets.is_active = 1 AND ticket_id='$tid'");
+$row=mysqli_fetch_array($query);
+
+$createdTimestamp = $row['created'];
+$updatedTimestamp = $row['updated'];
+// convert the timestamp to a user-friendly format
+$dateCreated = date("d/m/Y H:m", strtotime($createdTimestamp)); // This will display the date in the format "MM/DD/YYYY"
+?>
+
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -13,7 +32,7 @@
 	<!-- Font Awesome Icons -->
 	<link rel="stylesheet" href="../plugins/fontawesome-free-6.1.2-web/css/all.min.css">
 	<!-- Theme style -->
-	<link rel="stylesheet" href="{% static 'style.css' %}">
+	<link rel="stylesheet" href="../dist/css/style.css">
 </head>
 <body class="layout-fixed">
 	<div class="wrapper">
@@ -28,13 +47,13 @@
 						<div class="row p-4">
 							<div class="col-md">
 								<div class="d-flex justify-content-center mb-2">
-									<img  src="{% static 'logo black.png' %}" height="125px" width="125px">
+									<img  src="../dist/img/itl_logo.png" height="125px" width="125px">
 								</div>
 								<div class="d-flex justify-content-center">
 									<h2>INTELLITECH LTD.</h2>
 								</div>
 								<div class="d-flex justify-content-center">
-									<h4>TICKET - ITL/TN/<span class="text-danger">{{ ticket.ticket_id }}</span></h4>
+									<h4>TICKET - ITL/TN/<span class="text-danger"><?php echo htmlentities($row['ticket_id']); ?></span></h4>
 								</div>
 							</div><!-- ./col -->
 
@@ -46,36 +65,36 @@
 									<tbody>
 										<tr>
 											<th colspan="1" class="text-lg">Ticket No.:</th>
-											<td colspan="1" class="text-lg">ITL/TN/{{ ticket.ticket_id }}</td>
+											<td colspan="1" class="text-lg">ITL/TN/<?php echo htmlentities($row['ticket_id']); ?></td>
 											<th colspan="1" class="text-lg">Date/Time:</th>
-											<td colspan="1" class="text-lg">{{ ticket.created|date:"d/m/Y"}}</td>
+											<td colspan="1" class="text-lg"><?php echo htmlentities($dateCreated); ?></td>
 										</tr>
 										<tr>
 											<th colspan="1" class="text-lg">Client:</th>
-											<td colspan="" class="text-lg">{{ ticket.company }}</td>
+											<td colspan="" class="text-lg"><?php echo htmlentities($row['company_name']); ?></td>
 											<th colspan="1" class="text-lg">User:</th>
-											<td colspan="" class="text-lg">{{ ticket.client.f_name }}</td>
+											<td colspan="" class="text-lg"><?php echo htmlentities($row['client_f_name'].' '.$row['client_l_name']); ?></td>
 										</tr>
 										<tr>
 											<th class="text-lg">Email:</th>
-											<td class="text-lg">{{ ticket.client.email }}</td>
+											<td class="text-lg"><?php echo htmlentities($row['client_email']); ?></td>
 											<th class="text-lg">Telephone:</th>
-											<td class="text-lg">{{ ticket.client.telephone }}</td>
+											<td class="text-lg"><?php echo htmlentities($row['client_telephone']); ?></td>
 										</tr>
 										<tr>
 											<th class="text-lg">Equipment:</th>
-											<td class="text-lg">{{ ticket.equipment }}</td>
+											<td class="text-lg"><?php echo htmlentities($row['equipment']); ?></td>
 											<th class="text-lg">Serial No.:</th>
-											<td class="text-lg">{{ ticket.serial_no }}</td>
+											<td class="text-lg"><?php echo htmlentities($row['serial_no']); ?></td>
 										</tr>
 										<tr>
 											<th colspan="1" class="text-lg">Reported Fault:</th>
-											<td colspan="3" class="text-lg">{{ ticket.fault }}</td>
+											<td colspan="3" class="text-lg"><?php echo htmlentities($row['fault']); ?></td>
 										</tr>
 										<?php if (!empty($row['accessories'])): ?>
 											<tr>
 												<th colspan="1" class="text-lg">Accessories</th>
-												<td colspan="3" class="text-lg">{{ ticket.accessories }}</td>
+												<td colspan="3" class="text-lg"><?php echo htmlentities($row['accessories']); ?></td>
 											</tr>
 										<?php endif ?>
 
@@ -101,15 +120,15 @@
 									<tbody>
 										<tr>
 											<th>Customer:</th>
-											<td>{{ ticket.brought_by }}</td>
+											<td><?php echo htmlentities($row['brought_by']); ?></td>
 											<th>Technician:</th>
-											<td>{{ ticket.tech.first_name }} {{ ticket.tech.last_name }}</td>
+											<td><?php echo htmlentities($row['tech_first_name'] . ' ' . $row['tech_last_name']); ?></td>
 										</tr>
 										<tr>
 											<th class="text-md">Customer's Signature:</th>
-											<td><img src="{{ signature.signature_image.url }}" oncontextmenu="return false;" width="200px" height="100px"></td>
+											<td><img src="<?php echo htmlentities($row['reg_sign']); ?>" oncontextmenu="return false;" width="200px" height="100px"></td>
 											<th class="text-md">Technician's Signature:</th>
-											<td><img src="{{ tech_signature.signature_image.url }}" oncontextmenu="return false;" width="200px" height="100px"></td>
+											<td><img src="<?php echo htmlentities($row['tech_sign']); ?>" oncontextmenu="return false;" width="200px" height="100px"></td>
 										</tr>
 									</tbody>
 								</table>
@@ -138,7 +157,7 @@
 
 						<!-- letter-footer -->
 						<div class="d-flex justify-content-center fixed-bottom">
-							<img  src="{% static 'tr_footer.png' %}" width="100%" height="100%">
+							<img  src="../dist/img/tr_footer.png" width="100%" height="100%">
 						</div>
 						<!-- /.letter-footer -->
 
