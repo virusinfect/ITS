@@ -44,13 +44,13 @@
                 <tr>
                     <th width="4%">No.</th>
                     <th>Ticket ID</th>
-                    <th>Requisition Status</th>
+                    <th width="7%">Requisition Status</th>
                     <th>Quantity</th>
                     <th>Serial No.</th>
                     <th>Requisition Item</th>
                     <th>Approved By</th>
-                    <th>Issue Status</th>
-                    <th>Return Status</th>
+                    <th width="7%">Issue Status</th>
+                    <th width="7%">Return Status</th>
                     <th>Return Approved By</th>
                     <th width="10%">Remarks</th>
                     <th>Action</th>
@@ -79,7 +79,7 @@
                         <td>{{ requisition.serial_no }}</td>
                         <td>{{ requisition.part.code }}</td>
                         <td width="5%">{{ requisition.approved_by }}</td>
-                        <td>
+                        <td width="7%">
                             {% if requisition.issue_status == "Issue" %}
                                 <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i> Issued
                             {% elif requisition.issue_status == "Pending" %}
@@ -90,7 +90,7 @@
                                 <span class="badge">{{ requisition.issue_status }}</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td width="7%">
                             {% if requisition.return_status == "Approved" %}
                                 <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i> Approved
                             {% elif requisition.return_status == "Pending" %}
