@@ -27,6 +27,18 @@ class Equipment(models.Model):
     def __str__(self):
         return f"{self.name} - {self.client}"
 
+class ServiceQuote(models.Model):
+    part_no = models.CharField(max_length=255)
+    description = models.CharField(max_length=2000)
+    price = models.FloatField()
+    quantity = models.FloatField()
+    attachment = models.CharField(max_length=1000, null=True)
+    currency = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    ticket = models.ForeignKey(ServiceTickets, on_delete=models.CASCADE)
+    availability = models.CharField(max_length=255, null=True)
 
 class Software(models.Model):
     client = models.ForeignKey(Clients, on_delete=models.CASCADE)

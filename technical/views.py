@@ -1163,6 +1163,8 @@ def edit_requisition(request, requisition_id):
         # Process the form submission and update the requisition fields
         if 'serial_no' in request.POST and request.POST['serial_no']:
             requisition.serial_no = request.POST.get('serial_no')
+        if 'invoice' in request.POST and request.POST['invoice']:
+            requisition.invoice = request.POST.get('invoice')
         if 'remarks' in request.POST and request.POST['remarks']:
             requisition.remarks = request.POST.get('remarks')
         if 'req_status' in request.POST and request.POST['req_status']:

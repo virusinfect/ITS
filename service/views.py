@@ -6,7 +6,8 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 from technical.models import ServiceTickets, ServiceSchedules
 from its.models import Company, Clients
-from .models import Equipment, Software, EquipmentSpecs, Service, MonitorChecklist, PrinterChecklist, UpsChecklist
+from .models import Equipment, Software, EquipmentSpecs, Service, MonitorChecklist, PrinterChecklist, UpsChecklist, \
+    ServiceQuote
 
 
 @login_required
@@ -371,3 +372,39 @@ def service_report(request, schedule_id):
     return render(request, 'service/service_report.html',
                   {'checklists': checklists, 'ticket': ticket, 'service_schedule': service_schedule,
                    'service_tickets': service_tickets})
+
+@login_required
+def quote_tickets(request, ticket_id):
+    if request.method == 'POST':
+        ticket = ServiceTickets.objects.get(ticket_id=ticket_id)
+
+        part_no_list = request.POST.getlist('part_no[]')
+        description_list = request.POST.getlist('description[]')
+        quantity_list = request.POST.getlist('quantity[]')
+        currency_list = request.POST.getlist('currency[]')
+        price_list = request.POST.getlist('price[]')
+
+        # Create a list to hold the new tQuote objects
+        new_quote_data = []
+
+        for i in range(len(part_no_list)):
+            if (part_no_list[i] and description_list[i]):
+                quote = ServiceQuote(
+                    part_no=part_no_list[i],
+                    description=description_list[i],
+                    quantity=quantity_list[i],
+                    currency=currency_list[i],
+                    price=price_list[i],
+                    ticket=ticket,
+                )
+                new_quote_data.append(quote)
+
+        # Delete old tQuote data
+        ServiceQuote.objects.filter(ticket=ticket).delete()
+
+        # Insert the new data
+        ServiceQuote.objects.bulk_create(new_quote_data)
+
+        messages.success(request, 'Quotation Products Updated.')
+
+    return redirect('edit-ticket', ticket_id=ticket_id)

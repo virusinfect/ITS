@@ -186,6 +186,8 @@ class Requisition(models.Model):
     req_id = models.AutoField(primary_key=True)
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
     part = models.ForeignKey(Parts, on_delete=models.CASCADE)
+    company = models.CharField(max_length=100,null=True)
+    invoice = models.CharField(max_length=100,null=True)
     serial_no = models.CharField(max_length=200, null=True)
     collected_by = models.ForeignKey(User, on_delete=models.CASCADE, db_column='collected_by',
                                      related_name='collected_requisitions')
