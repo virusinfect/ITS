@@ -6,28 +6,37 @@
 {% block content %}
     <style>
         @media print {
-            #footer-container {
-                position: fixed; /* Change to absolute */
-                bottom: 0;
-                left: 0;
-                right: 0;
-                max-width: 100%;
-            }
-
-            #footer-image {
-                position: fixed; /* Change to absolute */
-                bottom: 0;
-                left: 0;
-                right: 0;
-                max-width: 100%;
-            }
-
             body {
                 margin: 0 !important;
             }
 
+            .page {
+                margin-bottom: 100px !important;
+            }
+
             .page-break {
                 page-break-before: always;
+            }
+            .table{
+                margin-bottom: 100px !important;
+            }
+
+            #content {
+                margin-bottom: 100px !important;
+            }
+
+            #footer-container {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-width: 100%;
+                z-index: 1;
+
+            }
+
+            #footer-image {
+                max-width: 100%;
             }
         }
     </style>
@@ -218,9 +227,9 @@
                     </tbody>
                 </table>
             </div>
-        <div id="footer-container">
+            <div id="footer-container">
                 <img src="{% static 'tr_footer.png' %}" id="footer-image" class="mb-1">
-        </div>
+            </div>
 
         </section>
     </div>
@@ -239,34 +248,62 @@
             var style = document.createElement('style');
             style.innerHTML = `
             @media print {
-                #footer-container {
-                    position: relative;
-                }
-
-                #footer-image {
-                    position: static;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    max-width: 100%;
-                }
-
                 body {
                     margin: 0 !important;
+                }
+
+                .page {
+                    margin-bottom: 100px !important;
                 }
 
                 .page-break {
                     page-break-before: always;
                 }
+
+                #content {
+                    margin-bottom: 100px !important;
+                }
+
+                #footer-container {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    max-width: 100%;
+                    z-index: 1;
+
+                }
+                .table{
+                margin-bottom: 100px !important;
             }
-            `;
+
+                #footer-image {
+                    max-width: 100%;
+                }
+            }
+        `;
             document.head.appendChild(style);
+
+            // Create a new div for the footer
+            var footerContainer = document.createElement('div');
+            footerContainer.id = 'footer-container';
+            document.body.appendChild(footerContainer);
+
+            // Add the image to the footer
+            var footerImage = document.createElement('img');
+            footerImage.id = 'footer-image';
+            footerImage.src = 'path/to/your/image.png';  // Update with the correct path
+            footerContainer.appendChild(footerImage);
 
             document.body.innerHTML = printContents;
             window.print();
             document.body.innerHTML = originalContents;
 
             document.head.removeChild(style);
+
+            // Remove the footer after printing
+            document.body.removeChild(footerContainer);
         }
     </script>
+
 {% endblock %}
