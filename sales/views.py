@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,date
 from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -1260,6 +1260,14 @@ def invoice(request, invoice_id):
 
 @login_required
 def sales_dashboard(request):
+    user = request.user
+
+    # Get the counts for each status
+    status_counts = Task.objects.filter(user=user, is_active=True).values('status').annotate(count=Count('status'))
+
+    # For "Completed" tasks, count only those updated on the same day
+    completed_count_today = Task.objects.filter(user=user, is_active=True, status='Completed',
+                                                updated__date=date.today()).count()
     # Count tickets in 'Sourcing' status that are also 'is_active'
     sourcing_count = SalesTickets.objects.filter(status='Sourcing', is_active=1).count()
     # Count tickets in 'Quote' status that are also 'is_active'
@@ -1331,7 +1339,9 @@ def sales_dashboard(request):
         'ordered_count': ordered_count,
         'completed_count': completed_count,
         'cancelled_count': cancelled_count,
-        'monthly_ticket_counts': monthly_ticket_counts,
+        'monthly_ticket_counts': monthly_ticket_counts,'status_counts': status_counts,
+        'completed_count_today': completed_count_today,
+
 
     })
 
