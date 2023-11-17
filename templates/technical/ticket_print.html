@@ -143,19 +143,22 @@
     <!-- ./wrapper -->
     <!-- Page specific script -->
 
-    <script>
+<script>
         document.getElementById('print-button').addEventListener('click', function () {
             printDeliveryNote();
         });
 
         function printDeliveryNote() {
-            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+            var printContents = document.getElementById('delivery-note').innerHTML;
             var originalContents = document.body.innerHTML;
 
-            // Create a style tag and append it to the head to define a CSS rule for the footer image and remove margins
             var style = document.createElement('style');
             style.innerHTML = `
             @media print {
+                #footer-container {
+                    position: relative;
+                }
+
                 #footer-image {
                     position: fixed;
                     bottom: 0;
@@ -163,8 +166,13 @@
                     right: 0;
                     max-width: 100%;
                 }
+
                 body {
-                    margin: 0 !important; /* Force margin removal */
+                    margin: 0 !important;
+                }
+
+                .page-break {
+                    page-break-before: always;
                 }
             }
         `;
@@ -174,7 +182,6 @@
             window.print();
             document.body.innerHTML = originalContents;
 
-            // Remove the added CSS rule
             document.head.removeChild(style);
         }
     </script>
