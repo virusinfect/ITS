@@ -127,13 +127,9 @@
                                                                        value="{{ product.part_no }}"
                                                                        class="form-control">
                                                             </td>
-                                                            <td>
-                                                                <div id="editor-container-{{ product.id }}">
-                                                                    <textarea name="description[]" id="description"
-                                                                              class="form-control">
-                                                                        {{ product.description }}
-                                                                    </textarea>
-                                                                </div>
+                                                            <td>                                                                    <input name="description[]" id="description"
+                                                                              class="form-control" value="{{ product.description }}">
+
                                                             </td>
 
                                                             <td><input type="text" name="price[]"
@@ -647,35 +643,7 @@
                 });
         });
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            ClassicEditor
-                .create(document.querySelector('#description'), {
-                    toolbar: {
-                        items: [
-                            'bold',
-                            'italic',
-                            'bulletedList',
-                            'numberedList',
-                            'blockQuote',
-                            'undo',
-                            'redo'
-                        ]
-                    },
-                    language: 'en',
-                    image: {
-                        toolbar: [
-                            'imageTextAlternative',
-                            'imageStyle:full',
-                            'imageStyle:side'
-                        ]
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        });
-    </script>
+
 {% endblock %}
 
 
