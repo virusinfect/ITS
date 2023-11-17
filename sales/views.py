@@ -110,7 +110,6 @@ def edit_sales_ticket(request, ticket_id):
         # Insert the new data
         SalesTicketProducts.objects.bulk_create(new_sourcing_data)
         if handler1.id != handler.id:
-            print("changed")
             table = (
                 "<table style='border-collapse: collapse; width: 100%;'>"
                 "<tr style='border-bottom: 3px solid #ddd;'>"
@@ -146,6 +145,9 @@ def edit_sales_ticket(request, ticket_id):
             elif ticket.status == "Quote":
                 status = "Quote"
                 status2 = "quoting"
+            elif ticket.status == "Closed":
+                status = "Close"
+                status2 = "Closed"
 
             # Your existing code to create new_sourcing_data objects
             url = "http://146.190.61.23:8500/sales/edit/" + str(ticket.ticket_id) + "/"  # Replace with your actual URL
