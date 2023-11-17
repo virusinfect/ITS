@@ -18,11 +18,6 @@
                 page-break-before: always;
             }
 
-
-            #content {
-                margin-bottom: 100px !important;
-            }
-
             #footer-container {
                 position: fixed;
                 bottom: 0;
@@ -47,7 +42,7 @@
                         <img src="{% static 'logo black.png' %}" height="125" width="125">
                     </div>
                 </div>
-                <table class="table table-borderless">
+                <table class="table table-borderless mt-1">
                     <thead>
                     <tr>
                         <td>
@@ -108,7 +103,7 @@
                                                     {{ item.total|floatformat:2|intcomma }}</td>
                                             </tr>
                                         {% endfor %}
-                                        
+
                                         <tr>
                                             <th colspan="5" style="text-align: right;">SUB TOTALS</th>
                                             <td style="text-align: right;">{{ subtotals|floatformat:2|intcomma }}</td>
@@ -262,11 +257,6 @@
                 .page-break {
                     page-break-before: always;
                 }
-
-                #content {
-                    margin-bottom: 100px !important;
-                }
-
                 #footer-container {
                     position: fixed;
                     bottom: 0;
