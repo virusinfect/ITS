@@ -42,7 +42,7 @@
                     </button>{% endcomment %}
                 <thead class="table-dark">
                 <tr>
-                    <th width="10%">No.</th>
+                    <th width="4%">No.</th>
                     <th>Ticket ID</th>
                     <th>Requisition Status</th>
                     <th>Quantity</th>
@@ -100,7 +100,7 @@
                             {% endif %}
                         </td>
                         <td>{{ requisition.return_approved_by }}</td>
-                        <td>{{ requisition.remarks }}</td>
+                        <td width="10%">{{ requisition.remarks }}</td>
                         <td>{% if user|is_helpdesk or user|is_management %}
                             {% if requisition.issue_status == "Pending" %}
                                 <a href="{% url 'change_requisition_status' requisition.req_id %}" title="Status"
