@@ -8,33 +8,33 @@
         <div class="col-3">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title mb-3">Tickets</h4>
+                    <h4 class="header-title">Tickets</h4>
                     <div class="inbox-widget">
                         <div class="inbox-item">
                             <a href="{% url 'open_tickets_list' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author">Open Tickets</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Open Tickets</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ open_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'tickets_in_status' 'Sourcing' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author">Sourcing Tickets</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Sourcing Tickets</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ sourcing_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'tickets_in_status' 'Quote' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author">Quote Tickets</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Quote Tickets</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ quote_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'tickets_in_status' 'Closed' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author">Closed Tickets</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Closed Tickets</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ closed_count }}</p>
                             </a>
                         </div>
@@ -45,40 +45,40 @@
         <div class="col-3">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title mb-3">Quotes</h4>
+                    <h4 class="header-title">Quotes</h4>
                     <div class="inbox-widget">
                         <div class="inbox-item">
                             <a href="{% url 'quotes_in_status' 'Follow up' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Follow up</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Follow up</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ follow_up_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'quotes_in_status' 'Awaiting LPO' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Awaiting LPO</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Awaiting LPO</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ awaiting_lpo_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'quotes_in_status' 'On hold' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">On hold</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">On hold</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ on_hold_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'quotes_in_status' 'Not interested' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Not interested</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Not interested</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ not_interested_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'quotes_in_status' 'Done' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Done</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Done</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ done_count }}</p>
                             </a>
                         </div>
@@ -89,40 +89,40 @@
         <div class="col-3">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title mb-3">Orders</h4>
+                    <h4 class="header-title">Orders</h4>
                     <div class="inbox-widget">
                         <div class="inbox-item">
                             <a href="{% url 'orders_in_status' 'Pending' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Pending</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Pending</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ pending_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'orders_in_status' 'Awaiting LPO' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Awaiting LPO</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Awaiting LPO</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ order_awaiting_lpo_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'orders_in_status' 'Expected' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Expected</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Expected</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ expected_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'orders_in_status' 'Ordered' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Ordered</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Ordered</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ ordered_count }}</p>
                             </a>
                         </div>
                         <div class="inbox-item">
                             <a href="{% url 'orders_in_status' 'Completed' %}">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Completed</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Completed</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ completed_count }}</p>
                             </a>
                         </div>
@@ -133,13 +133,13 @@
         <div class="col-3">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title mb-3">Tasks</h4>
+                    <h4 class="header-title ">Tasks</h4>
                     <div class="inbox-widget">
                         {% for status_count in status_counts %}
                             <div class="inbox-item">
                                 <a href="#">
                                     <div class="inbox-item-img"></div>
-                                    <h5 class="inbox-item-author mt-0 mb-1">{{ status_count.status }}</h5>
+                                    <h5 class="inbox-item-author mt-0 mb-0">{{ status_count.status }}</h5>
                                     <p class="inbox-item-date" style="font-size: 16px;">{{ status_count.count }}</p>
                                 </a>
                             </div>
@@ -147,7 +147,7 @@
                         <div class="inbox-item">
                             <a href="#">
                                 <div class="inbox-item-img"></div>
-                                <h5 class="inbox-item-author mt-0 mb-1">Completed Today</h5>
+                                <h5 class="inbox-item-author mt-0 mb-0">Completed Today</h5>
                                 <p class="inbox-item-date" style="font-size: 16px;">{{ completed_count_today }}</p>
                             </a>
                         </div>
