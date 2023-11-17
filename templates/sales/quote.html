@@ -17,9 +17,7 @@
             .page-break {
                 page-break-before: always;
             }
-            .table{
-                margin-bottom: 100px !important;
-            }
+
 
             #content {
                 margin-bottom: 100px !important;
@@ -110,10 +108,7 @@
                                                     {{ item.total|floatformat:2|intcomma }}</td>
                                             </tr>
                                         {% endfor %}
-                                        <tr>
-                                            <th colspan="5" style="text-align: right;">SUB TOTALS</th>
-                                            <td style="text-align: right;">{{ subtotals|floatformat:2|intcomma }}</td>
-                                        </tr>
+                                        
                                         <tr>
                                             <th colspan="5" style="text-align: right;">SUB TOTALS</th>
                                             <td style="text-align: right;">{{ subtotals|floatformat:2|intcomma }}</td>
@@ -281,9 +276,6 @@
                     z-index: 1;
 
                 }
-                .table{
-                margin-bottom: 100px !important;
-            }
 
                 #footer-image {
                     max-width: 100%;
