@@ -45,6 +45,7 @@ class EquipmentSpecs(models.Model):
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
     antivirus = models.CharField(max_length=100)
     psu = models.CharField(max_length=100)
+    domain = models.CharField(max_length=100,blank=True)
     comp_name = models.CharField(max_length=100)
     ip_address = models.CharField(max_length=100)
     ram = models.CharField(max_length=100)

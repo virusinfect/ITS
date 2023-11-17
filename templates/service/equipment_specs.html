@@ -41,8 +41,8 @@
                                    value="{{ equipment_specs.antivirus }}">
                         </div>
                         <div class="col-6 mb-3">
-                            <label for="psu" class="form-label">Power Supply Unit (PSU)</label>
-                            <input type="text" name="psu" class="form-control" value="{{ equipment_specs.psu }}">
+                            <label for="domain" class="form-label">Domain Nmae</label>
+                            <input type="text" name="domain" class="form-control" value="{{ equipment_specs.domain }}">
                         </div>
                     </div>
                     <div class="row">
@@ -102,6 +102,10 @@
                             <label for="mainboard" class="form-label">Mainboard</label>
                             <input type="text" name="mainboard" class="form-control"
                                    value="{{ equipment_specs.mainboard }}">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="psu" class="form-label">Power Supply Unit (PSU)</label>
+                            <input type="text" name="psu" class="form-control" value="{{ equipment_specs.psu }}">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>

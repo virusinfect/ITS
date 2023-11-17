@@ -135,6 +135,7 @@ def create_or_edit_equipment_specs(request, equipment_id):
         # Process the form data (POST request)
         equipment_specs.antivirus = request.POST['antivirus']
         equipment_specs.psu = request.POST['psu']
+        equipment_specs.domain = request.POST['domain']
         equipment_specs.comp_name = request.POST['comp_name']
         equipment_specs.ip_address = request.POST['ip_address']
         equipment_specs.ram = request.POST['ram']
