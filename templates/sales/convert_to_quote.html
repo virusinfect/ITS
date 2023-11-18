@@ -197,21 +197,21 @@
                             <label for="status" class="form-label">Status:</label>
                             <select name="status" class="form-select">
                                 <option value="">Select status</option>
-                                <option value="Follow up" {% if quote.status == "Follow up" %}selected{% endif %}>Follow
+                                <option value="Follow up" selected>Follow
                                     up
                                 </option>
-                                <option value="Awaiting LPO" {% if quote.status == "Awaiting LPO" %}selected{% endif %}>
+                                <option value="Awaiting LPO" >
                                     Awaiting
                                     LPO
                                 </option>
-                                <option value="On hold" {% if quote.status == "On hold" %}selected{% endif %}>On hold
+                                <option value="On hold" >On hold
                                 </option>
                                 <option value="Not interested"
-                                        {% if quote.status == "Not interested" %}selected{% endif %}>
+                                        >
                                     Not
                                     interested
                                 </option>
-                                <option value="Done" {% if quote.status == "Done" %}selected{% endif %}>Done</option>
+                                <option value="Done" >Done</option>
                             </select>
                         </div>
                         <div class="col-lg-6 mb-3">
