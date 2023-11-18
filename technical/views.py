@@ -432,7 +432,7 @@ def inhouse_bench_status_tickets(request, bench_status, title):
         # If the user doesn't belong to the "Technician" group, show all tickets
         tickets = InhouseTickets.objects.filter(is_active=1, bench_status=bench_status).order_by('-created')
 
-    return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
+    return render(request, 'technical/inhouse_ticket_list.html', {'tickets': tickets, 'title': title})
 
 @login_required
 def tr_status_tickets(request, tr_status):
