@@ -29,6 +29,19 @@
     </div>
     <div class="row">
         <h5>Status</h5>
+        {% for bench_status, count in inhouse_bench_status_counts.items %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="{% url 'inhouse_bench_status_tickets'  "Pending Inhouse" bench_status %}">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                <h5>{{ bench_status }} Inhouse</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
         {% for bench_status, count in bench_status_counts.items %}
             <div class="col">
                 <div class="card">

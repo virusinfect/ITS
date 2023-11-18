@@ -88,6 +88,18 @@ def helpdesk_dash(request):
         count = Tickets.objects.filter(bench_status=bench_status, type="Bench", is_active=1).count()
         bench_status_counts[bench_status] = count
 
+    inhouse_bench_statuses_to_count = [
+        "Pending"
+    ]
+
+    # Initialize a dictionary to store the counts for each bench status
+    inhouse_bench_status_counts = {}
+
+    # Loop through each bench status and count the tickets with that status
+    for bench_status in inhouse_bench_statuses_to_count:
+        count = InhouseTickets.objects.filter(bench_status=bench_status, is_active=1).count()
+        inhouse_bench_status_counts[bench_status] = count
+
     site_statuses_to_count = [
         "Pending"
     ]
@@ -121,7 +133,7 @@ def helpdesk_dash(request):
                   {'remark_counts': remark_counts, 'site_status_counts': site_status_counts,
                    'bench_status_counts': bench_status_counts,
                    'status_counts': status_counts, 'req_status_counts': req_status_counts,
-                   'tr_status_counts': tr_status_counts})
+                   'tr_status_counts': tr_status_counts,'inhouse_bench_status_counts':inhouse_bench_status_counts})
 
 
 @login_required
@@ -410,6 +422,17 @@ def bench_status_tickets(request, type, bench_status, title):
 
     return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
 
+def inhouse_bench_status_tickets(request, bench_status, title):
+    title = title
+    if request.user.groups.filter(name='Technician').exists():
+        # If the user belongs to the "Technician" group, show only their assigned tickets
+        tickets = InhouseTickets.objects.filter(tech=request.user, is_active=1, bench_status=bench_status).order_by(
+            '-created')
+    else:
+        # If the user doesn't belong to the "Technician" group, show all tickets
+        tickets = InhouseTickets.objects.filter(is_active=1, bench_status=bench_status).order_by('-created')
+
+    return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
 
 @login_required
 def tr_status_tickets(request, tr_status):
@@ -1750,7 +1773,7 @@ def sourcing_tickets(request, ticket_id):
         clickable_url = f"<a href='{url}'>ITL/TN/" + str(ticket.ticket_id) + "</a>"
         # Use the 'table' string in the email message
         message = (
-            f"Dear {handler},<br><br>"
+            f"Dear {handler_id},<br><br>"
             f"Our Technical team has made a sourcing request, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
             f"Company: {ticket.company};<br><br>"
             f"Client :{ticket.client};<br><br>"

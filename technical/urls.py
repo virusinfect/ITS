@@ -59,6 +59,8 @@ urlpatterns = [
     path('pending_requisitions/<str:status>/', views.pending_requisitions, name='pending_requisitions'),
     path('bench_status/<str:type>/<str:title>/<str:bench_status>/', views.bench_status_tickets,
          name='bench_status_tickets'),
+    path('inhouse_bench_status_tickets/<str:title>/<str:bench_status>/', views.inhouse_bench_status_tickets,
+         name='inhouse_bench_status_tickets'),
     path('status/<str:status>/<str:title>/', views.status_tickets, name='status_tickets'),
     path('remark/<str:remark>/<str:title>/', views.remark_tickets, name='remark_tickets'),
     path('tickets-created-monthly/', views.tickets_created_monthly_this_year, name='tickets_created_monthly_this_year'),
