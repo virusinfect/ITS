@@ -80,10 +80,6 @@
                                data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="mdi mdi-square-edit-outline mdi-18px"></i>
                             </a>
-                            <a href="{% url 'create_delivery' ticket.ticket_id %}" title="delivery" tabindex="0"
-                               data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="s mdi mdi-truck-delivery-outline mdi-18px"></i>
-                            </a>
                             <a href="{% url 'duplicate_sales_ticket' ticket.ticket_id %}" title="duplicate" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="s mdi mdi-content-duplicate mdi-18px"></i>
@@ -139,7 +135,7 @@
                 buttons: [
                     {
                         text: 'Add Part', // Custom button text
-                        text: '<i class="fas fa-plus"> </i>',
+                        text: '<i class="fas fa-plus"> Add</i>',
                         action: function () {
                             window.location.href = '{% url "create_ticket_sales" %}';
                         },
@@ -147,22 +143,22 @@
                     },
                     {
                         extend: 'copy',
-                        text: '<i class="fas fa-copy"></i>',
+                        text: '<i class="fas fa-copy"> copy</i>',
                         className: 'btn btn-danger mb-1'
                     },
                     {
                         extend: 'csv',
-                        text: '<i class="fas fa-file-csv"></i>',
+                        text: '<i class="fas fa-file-csv"> csv</i>',
                         className: 'btn btn-danger btn-bg-light mb-1'
                     },
                     {
                         extend: 'excel',
-                        text: '<i class="fas fa-file-excel"></i>',
+                        text: '<i class="fas fa-file-excel"> excel</i>',
                         className: 'btn btn-danger mb-1'
                     },
                     {
                         extend: 'pdfHtml5',
-                        text: '<i class="fas fa-file-pdf"></i>',
+                        text: '<i class="fas fa-file-pdf"> pdf</i>',
                         className: 'btn btn-danger mb-1',
                         title: 'Ticket List',
                         customize: function (doc) {
@@ -171,7 +167,7 @@
                     },
                     {
                         extend: 'print',
-                        text: '<i class="fas fa-print"></i>',
+                        text: '<i class="fas fa-print">print</i>',
                         className: 'btn btn-danger mb-1'
                     },
 
