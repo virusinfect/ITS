@@ -1158,6 +1158,7 @@ def change_requisition_status(request, requisition_id):
 @login_required
 def edit_requisition(request, requisition_id):
     requisition = get_object_or_404(Requisition, pk=requisition_id)
+    active_categories = PartsCategory.objects.all()
 
     if request.method == 'POST':
         # Process the form submission and update the requisition fields
@@ -1165,6 +1166,8 @@ def edit_requisition(request, requisition_id):
             requisition.serial_no = request.POST.get('serial_no')
         if 'invoice' in request.POST and request.POST['invoice']:
             requisition.invoice = request.POST.get('invoice')
+        if 'selected_product' in request.POST and request.POST['selected_product']:
+            requisition.part_id  = request.POST.get('selected_product')
         if 'remarks' in request.POST and request.POST['remarks']:
             requisition.remarks = request.POST.get('remarks')
         if 'req_status' in request.POST and request.POST['req_status']:
@@ -1180,7 +1183,7 @@ def edit_requisition(request, requisition_id):
         messages.success(request, 'Requisition Edited successfully')
         return redirect('list_requisitions')
 
-    return render(request, 'technical/edit_requisition.html', {'requisition': requisition})
+    return render(request, 'technical/edit_requisition.html', {'requisition': requisition,'active_categories':active_categories})
 
 
 @login_required
