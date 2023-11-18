@@ -36,7 +36,7 @@
                                            disabled>
                                 {% endif %}
                             </div>
-                            {#<div class="row mb-3">
+                            <div class="row mb-3">
                                 <div class="col-lg-6">
                                     <label for="exampleFormControlInput1" class="form-label">Category</label>
                                     <input class="form-control" disabled value="{{ requisition.part.category }}">
@@ -44,25 +44,6 @@
                                 <div class="col-lg-6">
                                     <label for="exampleFormControlInput1" class="form-label">Item </label>
                                     <input class="form-control" disabled value="{{ requisition.part }}">
-                                </div>
-                            </div>#}
-                            <div class="row">
-                                <div class="mb-3 col-lg-6">
-                                    <label for="selected_category" class="form-label">Select a Category:</label>
-                                    <select name="selected_category" id="selected_category" class="form-select mb-3"
-                                            required>
-                                        <option value="" disabled selected>Select a Category</option>
-                                        {% for category in active_categories %}
-                                            <option value="{{ category.id }}">{{ category.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="mb-3 col-lg-6">
-                                    <label for="selected_product" class="form-label">Select a Product:</label>
-                                    <select name="selected_product" id="selected_product" class="form-select mb-3"
-                                            required>
-                                        <option value="" disabled selected>Select a Product</option>
-                                    </select>
                                 </div>
                             </div>
                             <div class="row">
