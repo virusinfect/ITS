@@ -268,91 +268,29 @@ def search_laptops(request):
 
     # Retrieve all equipment for the dropdown
     all_equipment = Equipment.objects.all()
+
     for item in laptops:
-        if item.equipment == "Laptop" or item.equipment == "DESKTOP":
-            if 1 <= item.price <= 350:
-                item.price_min = (item.price + item.price * Decimal('0.08')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-                item.price_max = (item.price + item.price * Decimal('0.10')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-            elif 351 <= item.price <= 500:
-                item.price_min = (item.price + item.price * Decimal('0.10')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-                item.price_max = (item.price + item.price * Decimal('0.12')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-            elif 501 <= item.price <= 800:
-                item.price_min = (item.price + item.price * Decimal('0.08')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-                item.price_max = (item.price + item.price * Decimal('0.10')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-            elif item.price > 800:
-                item.price_min = (item.price + item.price * Decimal('0.06')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-                item.price_max = (item.price + item.price * Decimal('0.08')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-        elif item.equipment == "WORKSTATION":
-            for item in laptops:
-                item.price_min = (item.price + item.price * Decimal('0.08')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-                item.price_max = (item.price + item.price * Decimal('0.10')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-        elif item.equipment == "SERVERS":
-            for item in laptops:
-                if 1 <= item.price <= 1000:
-                    item.price_min = (item.price + item.price * Decimal('0.25')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-                    item.price_max = (item.price + item.price * Decimal('0.30')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-                elif 1001 <= item.price <= 5000:
-                    item.price_min = (item.price + item.price * Decimal('0.15')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-                    item.price_max = (item.price + item.price * Decimal('0.20')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-                elif item.price > 5000:
-                    item.price_min = (item.price + item.price * Decimal('0.13')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-                    item.price_max = (item.price + item.price * Decimal('0.15')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-        elif item.equipment == "SERVER PARTS & ACCESSORIES":
-            for item in laptops:
-                if 1 <= item.price <= 200:
-                    item.price_min = (item.price + item.price * Decimal('0.30')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-                    item.price_max = (item.price + item.price * Decimal('0.35')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-                elif item.price > 201:
-                    item.price_min = (item.price + item.price * Decimal('0.25')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-                    item.price_max = (item.price + item.price * Decimal('0.30')).quantize(Decimal('0.00'),
-                                                                                          rounding=ROUND_DOWN)
-
-        elif item.equipment == "PRINTERS & SCANNERS":
-            if 1 <= item.price <= 50:
-                item.price_min = (item.price + item.price * Decimal('0.25')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-                item.price_max = (item.price + item.price * Decimal('0.30')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-            elif 51 <= item.price <= 100:
-                item.price_min = (item.price + item.price * Decimal('0.20')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-                item.price_max = (item.price + item.price * Decimal('0.25')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-            elif 101 <= item.price <= 250:
-                item.price_min = (item.price + item.price * Decimal('0.12')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-                item.price_max = (item.price + item.price * Decimal('0.15')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-            elif item.price > 251:
-                item.price_min = (item.price + item.price * Decimal('0.10')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-                item.price_max = (item.price + item.price * Decimal('0.12')).quantize(Decimal('0.00'),
-                                                                                      rounding=ROUND_DOWN)
-
-        elif item.equipment == "PROJECTORS":
+        if 1 <= item.price <= 350:
+            item.price_min = (item.price + item.price * Decimal('0.08')).quantize(Decimal('0.00'),
+                                                                                  rounding=ROUND_DOWN)
+            item.price_max = (item.price + item.price * Decimal('0.10')).quantize(Decimal('0.00'),
+                                                                                  rounding=ROUND_DOWN)
+        elif 351 <= item.price <= 500:
             item.price_min = (item.price + item.price * Decimal('0.10')).quantize(Decimal('0.00'),
                                                                                   rounding=ROUND_DOWN)
-            item.price_max = (item.price + item.price * Decimal('0.15')).quantize(Decimal('0.00'),
+            item.price_max = (item.price + item.price * Decimal('0.12')).quantize(Decimal('0.00'),
                                                                                   rounding=ROUND_DOWN)
+        elif 501 <= item.price <= 800:
+            item.price_min = (item.price + item.price * Decimal('0.08')).quantize(Decimal('0.00'),
+                                                                                  rounding=ROUND_DOWN)
+            item.price_max = (item.price + item.price * Decimal('0.10')).quantize(Decimal('0.00'),
+                                                                                  rounding=ROUND_DOWN)
+        elif item.price > 800:
+            item.price_min = (item.price + item.price * Decimal('0.06')).quantize(Decimal('0.00'),
+                                                                                  rounding=ROUND_DOWN)
+            item.price_max = (item.price + item.price * Decimal('0.08')).quantize(Decimal('0.00'),
+                                                                                  rounding=ROUND_DOWN)
+
 
     context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
                'all_equipment': all_equipment, }
