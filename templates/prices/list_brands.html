@@ -1,15 +1,80 @@
-{% extends "base.html" %}
-{% block title %}Add Parts Category{% endblock %}
-{% block header %}Add Parts Category{% endblock %}
-{% block content %}
-<!-- list_suppliers.html -->
-<h2>List of Brands</h2>
-    <a href="{% url 'create_brand' %}"> add new</a>
-<ul>
-    {% for brand in brands %}
-        <li>{{ brand.name }}</li>
-    {% endfor %}
-</ul>
 
+{% extends "base.html" %}
+{% block title %}Brands{% endblock %}
+{% block header %}Brands{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Brands</a></li>
+                    {#                                                                <li class="breadcrumb-item active">Data</li>#}
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="card">
+        <div class="card-body table-responsive">
+            <h4 class="mt-0 header-title">Brand List</h4>
+            <table id="responsive-datatable" class="table table-bordered table-bordered dt-responsive nowrap">
+
+                <a type="button" class="btn btn-primary waves-effect waves-light mb-1"
+                   href="{% url 'create_brand' %}">
+                    <span class="btn-label"><i class="mdi mdi-plus"></i></span>Add New
+                </a>
+                <thead class="table-dark">
+                <tr>
+                    <th width="10%">No.</th>
+                    <th>Brand</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for brand in brands %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ brand.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    {#    <link href="{% static 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />#}
+    <link href="{% static 'libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'libs/datatables.net-select-bs5/css/select.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <!-- third party js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+    <!-- third party js ends -->
+
+    <!-- Datatables init -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+    <script>
+        jQuery(document).ready(function ($) {
+            $('#responsive-datatable').DataTable();
+        });
+    </script>
 
 {% endblock %}
