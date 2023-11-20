@@ -564,6 +564,7 @@ def edit_ticket(request, ticket_id):
             ticket.equipment = request.POST.get('equipment')
             ticket.serial_no = request.POST.get('serial_no')
             ticket.fault = request.POST.get('fault')
+            ticket.notes = request.POST.get('notes')
             ticket.diagnosis = request.POST.get('diagnosis')
             ticket.action = request.POST.get('action')
             ticket.accessories = request.POST.get('accessories')
@@ -571,9 +572,6 @@ def edit_ticket(request, ticket_id):
             ticket.updated = timezone.now()
             ticket.accessories = request.POST.get('accessories')
             ticket.updated = timezone.now()
-            print("test")
-            print(ticket.client)
-            print(client)
             # Update other fields similarly
             if ticket.client != client:
                 ticket.client_id = client
