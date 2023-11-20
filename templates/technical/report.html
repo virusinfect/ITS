@@ -27,17 +27,17 @@
             }
         }
     </style>
-    <div class="col-9 mx-auto wrapper px-2">
+    <div class="col-9 mx-auto wrapper px-2 mx-auto">
         <div class="card" id="delivery-note">
             <div class="content">
                 <div class="mx-auto text-center tex-sm">
                     <h3 style="font-size: 15px;">Technical Report</h3>
                 </div>
-                <div class="row mb-1">
+                <div class="row mb-1 mx-auto">
                     <div class="col-6">
                         <img src="{% static 'logo black.png' %}" alt="Company Logo" width="150">
                     </div>
-                    <div class="col-6 text-end mt-1" style="font-size: 9px;">
+                    <div class="col-6 text-end mt-1 mx-auto" style="font-size: 9px;">
                         <small style="font-size:10px">Ground Floor, Corporate Insurance Building </small><br>
                         <small style="font-size:10px">Yusuf A. Karim Rd, East End, Treasury Square </small><br>
                         <small style="font-size:10px"> P.O. Box 42716 - 80100,</small><br>
@@ -49,7 +49,7 @@
                         <small style="font-size:10px">Website: www.intellitech.co.ke</small>
                     </div>
                 </div>
-                <div class="text-end">
+                <div class="row text-end mx-auto">
                     <p style="font-size:10px">Date: {{ ticket.created|date:"d/m/Y" }}</p>
                 </div>
                 <div class="row mt-1 mx-auto">
@@ -65,7 +65,7 @@
                         <small style="font-size:10px">Ticket No: : ITL/TN/{{ ticket.ticket_id }}</small><br>
                     </div>
                 </div>
-                <div class="row mt-1 ">
+                <div class="row mt-1 mx-auto">
                     <div class="col-6">
                         <h5 style="font-size:10px">Equipment Information</h5>
                         <small style="font-size:10px">Equipment : {{ ticket.equipment }}</small><br>
@@ -179,7 +179,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mx-auto">
                     <div class="">
                         <p>Add 16% VAT ON ALL PRODUCTS</p>
                         <p>Stock position changes daily. Kindly confirm availability before placing your order.</p>
@@ -274,6 +274,9 @@
 
                 .page-break {
                     page-break-before: always;
+                }
+                .page{
+                    margin-bottom:100px;
                 }
             }
         `;

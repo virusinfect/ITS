@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Add Equippment{% endblock %}
+{% block header %}Add Equippment{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'list-equipment' %}">Equipments</a></li>
+                    <li class="breadcrumb-item active">Add Equippment</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Add Equippment</h4>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp"
+                               placeholder="Enter Name">
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="suppliers" class="form-label">Suppliers:</label>
+                        {% for supplier in suppliers %}
+                            <input type="checkbox" name="suppliers" class="form-check" value="{{ supplier.id }}">
+                            {{ supplier.name }}
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Add New</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+# urls.py
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path('view/', views.view_laptop_price_list, name='view_price_list'),
+    path('upload/', views.upload_price_list, name='upload_price_list'),
+    path('create_supplier/', views.create_supplier, name='create-supplier'),
+    path('create_brand/', views.create_brand, name='create_brand'),
+    path('create_equipment/', views.create_equipment, name='create-equipment'),
+    path('list_suppliers/', views.list_suppliers, name='list-suppliers'),
+    path('list_brands/', views.list_brands, name='list_brands'),
+    path('list_equipment/', views.list_equipment, name='list-equipment'),
+    path('search/', views.search_laptops, name='search_laptops'),
+    # Add other URLs as needed
+]

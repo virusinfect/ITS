@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Add Parts Category{% endblock %}
+{% block header %}Add Parts Category{% endblock %}
+{% block content %}
+<!-- list_suppliers.html -->
+<h2>List of Brands</h2>
+    <a href="{% url 'create_brand' %}"> add new</a>
+<ul>
+    {% for brand in brands %}
+        <li>{{ brand.name }}</li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

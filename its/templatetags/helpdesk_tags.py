@@ -151,6 +151,14 @@ def is_sales(user):
         return helpdesk_group in user.groups.all()
     except Group.DoesNotExist:
         return False
+
+@register.filter
+def is_admin(user):
+    try:
+        helpdesk_group = Group.objects.get(name='Admin')
+        return helpdesk_group in user.groups.all()
+    except Group.DoesNotExist:
+        return False
 @register.filter
 def is_tech(user):
     try:

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Add Parts Category{% endblock %}
+{% block header %}Add Parts Category{% endblock %}
+{% block content %}
+    <a href="{% url 'search_laptops' %}">Search</a>
+    <h1>Price List</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>min</th>
+            <th>max</th>
+            <th>Currency</th>
+            <th>equipment</th>
+            <th>brand</th>
+            <th>supplier</th>
+            <th>series</th>
+            <th>ProductLink</th>
+            <th>description</th>
+            <th>processor</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in price_list_items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.price_min }}</td>
+                <td>{{ item.price_max }}</td>
+                <td>{{ item.currency }}</td>
+                <td>{{ item.equipment }}</td>
+                <td>{{ item.brand }}</td>
+                <td>{{ item.supplier }}</td>
+                <td>{{ item.series }}</td>
+                <td><a href="{{ item.ProductLink }}">{{ item.ProductLink }}</a></td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.processor }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

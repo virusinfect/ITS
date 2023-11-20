@@ -40,7 +40,7 @@
         </div> <!-- end col -->
     </div>
     <div class="mx-auto">
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" action="{% url 'edit-quote' quote.sq_id %}" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="card">
                 <div class="card-body">
@@ -61,8 +61,6 @@
                             <h5> {{ quote.company }}</h5>
                         </td>
                     </tr>
-
-
                     <div class="row mt-3">
                         <div class="col-lg-10 mx-auto ">
                             <textarea id="editor" name="mail_text"
@@ -148,9 +146,7 @@
                                                 LIMITED
                                             </option>
                                         </select></td>
-                                        <td><input type="text" name="image[]"
-                                                   class="form-control" required></td>
-                                        <td><input type="file" class="form-control"></td>
+                                        <td><input type="file" name="image[]" class="form-control"></td>
                                         <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
                                                tabindex="0"
                                                data-plugin="tippy" data-tippy-interactive="true"><i

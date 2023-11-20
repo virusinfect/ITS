@@ -291,11 +291,11 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% if user|can_access_sales_dashboard or user|is_sales %}
+                    {% if user|is_tech %}
                         <li>
-                            <a href="{% url 'sales_dashboard' %}">
+                            <a href="{% url 'tech_dashboard' %}">
                                 <i class="mdi mdi-view-dashboard"></i>
-                                <span>Sales Dashboard</span>
+                                <span>Technician Dashboard</span>
                             </a>
                         </li>
                     {% endif %}
@@ -307,14 +307,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% if user|is_tech %}
-                        <li>
-                            <a href="{% url 'tech_dashboard' %}">
-                                <i class="mdi mdi-view-dashboard"></i>
-                                <span>Technician Dashboard</span>
-                            </a>
-                        </li>
-                    {% endif %}
+
                     {% if user|is_accounts %}
                         <li>
                             <a href="{% url 'acc_dashboard' %}">
@@ -323,12 +316,6 @@
                             </a>
                         </li>
                     {% endif %}
-                    <li>
-                        <a href="{% url 'personal_task' %}">
-                            <i class="mdi mdi-calendar-account-outline"></i>
-                            <span> Pesonal Schedule </span>
-                        </a>
-                    </li>
                     {% if user|can_access_view_tech_tickets or user|is_tech or user|is_helpdesk %}
                         <li>
                             <a href="#Tickets" data-bs-toggle="collapse">
@@ -358,14 +345,12 @@
                             </div>
                         </li>
                     {% endif %}
-                    {% if user|can_access_view_sales_tickets or user|is_sales %}
-                        <li>
-                            <a href="{% url 'filtered_sales_tickets' %}">
-                                <i class="mdi mdi-ticket"></i>
-                                <span> Sales Tickets </span>
-                            </a>
-                        </li>
-                    {% endif %}
+                    <li>
+                        <a href="{% url 'list_requisitions' %}">
+                            <i class="mdi mdi-receipt"></i>
+                            <span> Requisition </span>
+                        </a>
+                    </li>
                     {% if user|can_access_view_service or user|is_tech or user|is_helpdesk %}
                         <li>
                             <a href="#service" data-bs-toggle="collapse">
@@ -385,6 +370,29 @@
                             </div>
                         </li>
                     {% endif %}
+                    {% if user|can_access_sales_dashboard or user|is_sales %}
+                        <li>
+                            <a href="{% url 'sales_dashboard' %}">
+                                <i class="mdi mdi-view-dashboard"></i>
+                                <span>Sales Dashboard</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a href="{% url 'personal_task' %}">
+                            <i class="mdi mdi-calendar-account-outline"></i>
+                            <span> Pesonal Schedule </span>
+                        </a>
+                    </li>
+                    {% if user|can_access_view_sales_tickets or user|is_sales %}
+                        <li>
+                            <a href="{% url 'filtered_sales_tickets' %}">
+                                <i class="mdi mdi-ticket"></i>
+                                <span> Sales Tickets </span>
+                            </a>
+                        </li>
+                    {% endif %}
+
                     {% if user|can_access_view_quotes or user|is_sales %}
                         <li>
                             <a href="{% url 'active-quotes' %}">
@@ -417,12 +425,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    <li>
-                        <a href="{% url 'list_requisitions' %}">
-                            <i class="mdi mdi-receipt"></i>
-                            <span> Requisition </span>
-                        </a>
-                    </li>
+
                     {% if user|can_access_view_deliveries or user|is_sales or user|is_helpdesk %}
                         <li>
                             <a href="{% url 'list_deliveries' %}">
@@ -470,6 +473,34 @@
                                 <i class="mdi mdi-account-multiple"></i>
                                 <span> Users </span>
                             </a>
+                        </li>
+                    {% endif %}
+                    {% if user|is_admin %}
+                        <li>
+                            <a href="#email" data-bs-toggle="collapse">
+                                <i class="mdi mdi-wrench"></i>
+                                <span> Price Lists </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="email">
+                                <ul class="nav-second-level">
+                                    <li>
+                                        <a href="{% url 'upload_price_list' %}">Upload</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'view_price_list' %}">View</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'list-suppliers' %}">Suppliers</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'list-equipment' %}">Equipments</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'list_brands' %}">Brands</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                     {% endif %}
 
