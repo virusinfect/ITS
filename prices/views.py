@@ -230,7 +230,7 @@ def search_laptops(request):
         'description': 'icontains',  # Use icontains for case-insensitive search
         # Add other fields as needed
     }
-
+    equipment_id = request.GET.get('equipment')
     # Build the Q objects for the selected fields
     q_objects = Q()
     for field in selected_fields:
@@ -242,23 +242,29 @@ def search_laptops(request):
     if not query and not selected_fields:
         # Return an empty queryset or default products if needed
         laptops = LaptopPriceList.objects.none()
-    else:
-        # Query the model using the constructed Q objects
-        laptops = LaptopPriceList.objects.filter(q_objects)
-
-        # Additional filter for the description field
-        if 'description' in selected_fields and query:
+    # Additional filter for the description field
+    elif 'description' in selected_fields and query:
             # Split the query into keywords using both semicolons and spaces
             keywords = [kw.strip().lower() for kw in re.split(r'[;\s]+', query)]
 
             # Construct a list of Q objects for each keyword
             keyword_queries = [Q(description__icontains=keyword) for keyword in keywords]
-
+            laptops = LaptopPriceList.objects.all()
             # Combine the Q objects using the | operator
             laptops = laptops.filter(*keyword_queries)
+            if equipment_id:
+                laptops = laptops.filter(equipment=equipment_id)
+
+    else:
+        # Query the model using the constructed Q objects
+        laptops = LaptopPriceList.objects.filter(q_objects)
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+
+
 
         # Filter by equipment if selected
-        equipment_id = request.GET.get('equipment')
+
         if equipment_id:
             laptops = laptops.filter(equipment=equipment_id)
 
