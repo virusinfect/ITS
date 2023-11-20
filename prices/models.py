@@ -40,7 +40,7 @@ class LaptopPriceList(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
-    product_name = models.CharField(max_length=255)
+    product_name = models.CharField(max_length=100, unique=True)
     availability = models.CharField(max_length=255,null=True)
 
     def __str__(self):

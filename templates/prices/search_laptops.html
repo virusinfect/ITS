@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Search Laptops{% endblock %}
-{% block header %}Search Laptops{% endblock %}
+{% block title %}Products{% endblock %}
+{% block header %}Products{% endblock %}
 {% load static %}
 {% block content %}
     <div class="row">
@@ -9,7 +9,7 @@
 
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
-                    <li class="breadcrumb-item active">Search Laptops</li>
+                    <li class="breadcrumb-item active">Products</li>
                 </ol>
             </div>
         </div> <!-- end col -->
@@ -17,7 +17,7 @@
     <div class="mx-auto">
         <div class="card">
             <div class="card-body">
-                <h4 class="mb-3 header-title text-center">Search Laptops</h4>
+                <h4 class="mb-3 header-title text-center">Search Products</h4>
                 <form method="get" action="{% url 'search_laptops' %}" class="my-4">
                     <div class="row">
                         <div class="mb-3 col-6">
