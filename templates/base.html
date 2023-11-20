@@ -423,7 +423,7 @@
                             <span> Requisition </span>
                         </a>
                     </li>
-                    {% if user|can_access_view_deliveries %}
+                    {% if user|can_access_view_deliveries or user|is_sales or user|is_helpdesk %}
                         <li>
                             <a href="{% url 'list_deliveries' %}">
                                 <i class="mdi mdi-truck-delivery-outline"></i>
