@@ -13,5 +13,6 @@ urlpatterns = [
     path('list_brands/', views.list_brands, name='list_brands'),
     path('list_equipment/', views.list_equipment, name='list-equipment'),
     path('search/', views.search_laptops, name='search_laptops'),
+    path('exchange/', views.edit_exchange, name='edit_exchange'),
     # Add other URLs as needed
 ]

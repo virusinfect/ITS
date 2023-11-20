@@ -1,23 +1,28 @@
 # views.py
+import re
 from decimal import Decimal, ROUND_DOWN
-from django.contrib import messages
+
 import openpyxl
 import pandas as pd
+from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
+
 from .forms import PriceListForm
-from .models import Brand
+from .models import Brand, Exchange
 from .models import LaptopPriceList
 from .models import Supplier, Equipment
+
+
 def upload_price_list(request):
     suppliers = Supplier.objects.all()
     brands = Brand.objects.all()
     equipment = Equipment.objects.all()
 
     if request.method == 'POST':
-
+        equipment_index = request.POST.get('equipment')
         excel_file = request.FILES['file']
 
         wb = openpyxl.load_workbook(excel_file, read_only=True)
@@ -27,24 +32,44 @@ def upload_price_list(request):
         headers = [cell.value for cell in ws[1]]
 
         # Check if 'product_name' and 'price' are present in the headers
-        required_columns = ['product_name', 'price']
+        required_columns = ['part no', 'price']
         for column in required_columns:
             if column not in headers:
                 raise ValueError(f"Column '{column}' not found in the Excel file.")
 
-        # Retrieve the index of each column
-        product_name_index = headers.index('product_name')
-        price_index = headers.index('price')
         supplier_index = request.POST.get('supplier')
-        series_index = headers.index('series') if 'series' in headers else None
-        product_link_index = headers.index('productlink') if 'productlink' in headers else None
-        equipment_index = request.POST.get('equipment')
         brand_index = request.POST.get('brand')
-        description_index = headers.index('description') if 'description' in headers else None
-        processor_index = headers.index('processor') if 'processor' in headers else None
-        os_index = headers.index('os') if 'os' in headers else None
-        stock_index = headers.index('stock') if 'stock' in headers else None
-        currency_index = headers.index('stock') if 'stock' in headers else None
+
+        # Assume headers is a list containing the column headers
+        headers_lower = [header.lower() for header in headers]
+
+        # Function to get index if header is present, otherwise None
+        def get_index(header_name):
+            return headers_lower.index(header_name) if header_name in headers_lower else None
+
+        # Mapping headers to their indices
+        index_mapping = {
+            'product_name': get_index('part no'),
+            'availability': get_index('availability'),
+            'price': get_index('price'),
+            'series': get_index('series'),
+            'product_link': get_index('productlink'),
+            'description': get_index('description'),
+            'processor': get_index('processor'),
+            'os': get_index('os'),
+            'stock': get_index('stock'),
+        }
+
+        # Now you can access the indices using the keys
+        product_name_index = index_mapping['product_name']
+        price_index = index_mapping['price']
+        series_index = index_mapping['series']
+        product_link_index = index_mapping['product_link']
+        description_index = index_mapping['description']
+        processor_index = index_mapping['processor']
+        os_index = index_mapping['os']
+        stock_index = index_mapping['stock']
+        availability_index = index_mapping['availability']
 
         for row in ws.iter_rows(min_row=2, values_only=True):
             # Create instances of Supplier, Brand, and Equipment if they don't exist
@@ -55,8 +80,9 @@ def upload_price_list(request):
             # Create an instance of PriceList
             price_list_obj = LaptopPriceList(
                 product_name=row[product_name_index],
-                price=row[price_index],
+                price=row[price_index] if price_index is not None else '0',
                 description=row[description_index] if description_index is not None else '',
+                availability=row[availability_index] if availability_index is not None else '',
                 processor=row[processor_index] if processor_index is not None else '',
                 os=row[os_index] if os_index is not None else '',
                 stock=row[stock_index] if stock_index is not None else '',
@@ -189,11 +215,11 @@ def list_brands(request):
 
 
 def search_laptops(request):
-    query = request.GET.get('q', '')
+    query = request.GET.get('q', '').lower().strip()
     selected_fields = request.GET.getlist('fields', [])
 
     # Define the fields you want to allow searching
-    allowed_fields = ['processor', 'brand__name', 'series', 'equipment__name']
+    allowed_fields = ['processor', 'brand__name', 'series', 'equipment__name', 'description']
 
     # Create a dictionary to map the field names to their corresponding lookup
     field_lookup = {
@@ -201,6 +227,7 @@ def search_laptops(request):
         'brand__name': 'icontains',
         'series': 'icontains',
         'equipment__name': 'icontains',
+        'description': 'icontains',  # Use icontains for case-insensitive search
         # Add other fields as needed
     }
 
@@ -219,6 +246,24 @@ def search_laptops(request):
         # Query the model using the constructed Q objects
         laptops = LaptopPriceList.objects.filter(q_objects)
 
+        # Additional filter for the description field
+        if 'description' in selected_fields and query:
+            # Split the query into keywords using both semicolons and spaces
+            keywords = [kw.strip().lower() for kw in re.split(r'[;\s]+', query)]
+
+            # Construct a list of Q objects for each keyword
+            keyword_queries = [Q(description__icontains=keyword) for keyword in keywords]
+
+            # Combine the Q objects using the | operator
+            laptops = laptops.filter(*keyword_queries)
+
+        # Filter by equipment if selected
+        equipment_id = request.GET.get('equipment')
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+
+    # Retrieve all equipment for the dropdown
+    all_equipment = Equipment.objects.all()
     for item in laptops:
         if 1 <= item.price <= 350:
             item.price_min = (item.price + item.price * Decimal('0.08')).quantize(Decimal('0.00'),
@@ -241,5 +286,22 @@ def search_laptops(request):
             item.price_max = (item.price + item.price * Decimal('0.08')).quantize(Decimal('0.00'),
                                                                                   rounding=ROUND_DOWN)
 
-    context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields}
+    context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,'all_equipment': all_equipment,}
     return render(request, 'prices/search_laptops.html', context)
+
+
+def edit_exchange(request):
+    exchange, created = Exchange.objects.get_or_create(pk=1)  # Adjust the condition based on your requirements
+
+    if request.method == 'POST':
+        rate = request.POST.get('rate')
+        try:
+            rate = Decimal(rate)
+            exchange.rate = rate
+            exchange.save()
+        except ValueError:
+            # Handle invalid input (non-numeric)
+            pass
+
+
+    return render(request, 'prices/edit_exchange.html', {'exchange': exchange})

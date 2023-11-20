@@ -3,84 +3,97 @@
 {% block header %}Search Laptops{% endblock %}
 {% load static %}
 {% block content %}
-<div class="row">
-    <div class="col-md-6">
-        <div class="mb-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
 
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
-                <li class="breadcrumb-item active">Search Laptops</li>
-            </ol>
-        </div>
-    </div> <!-- end col -->
-</div>
-<div class="mx-auto">
-    <div class="card">
-        <div class="card-body">
-            <h4 class="mb-3 header-title text-center">Search Laptops</h4>
-            <form method="get" action="{% url 'search_laptops' %}" class="my-4">
-                <div class="row">
-                    <div class="mb-3 col-6">
-                        <label for="search" class="form-label">Search:</label>
-                        <input type="text" class="form-control" id="search" name="q" value="{{ query }}">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item active">Search Laptops</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Search Laptops</h4>
+                <form method="get" action="{% url 'search_laptops' %}" class="my-4">
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="search" class="form-label">Search:</label>
+                            <input type="text" class="form-control" id="search" name="q" value="{{ query }}">
+                        </div>
+                        <div class="mb-3 col-3">
+                            <label for="equipment" class="form-label">Equipment:</label>
+                            <select id="equipment" name="equipment" class="form-select">
+                                <option value="" selected>All Equipment</option>
+                                {% for equip in all_equipment %}
+                                    <option value="{{ equip.id }}"
+                                            {% if equip.id == request.GET.equipment %}selected{% endif %}>{{ equip.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3 col-3">
+                            <label for="fields" class="form-label">Select Fields:</label>
+                            <select class="form-select" id="fields" name="fields">
+                                {% for field in allowed_fields %}
+                                    <option value="{{ field }}"
+                                            {% if field in selected_fields %}selected{% endif %}>{{ field }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3 col-6">
-                        <label for="fields" class="form-label">Select Fields:</label>
-                        <select class="form-select" id="fields" name="fields">
-                            {% for field in allowed_fields %}
-                                <option value="{{ field }}"
-                                        {% if field in selected_fields %}selected{% endif %}>{{ field }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-<div class="card">
-    <div class="card-body table-responsive">
+    <div class="card">
+        <div class="card-body table-responsive">
             <h4 class="mt-0 header-title">Laptop List</h4>
             <table id="responsive-datatable" class="table table-bordered dt-responsive">
                 <thead class="table-dark">
-            <tr>
-                <th width="3%">No.</th>
-                <th>Part No</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Min</th>
-                <th>Max</th>
-                <th>Currency</th>
-                <th>Processor</th>
-                <th>Brand</th>
-                <th>Supplier</th>
-                <th>Series</th>
-                <th>Product Link</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in laptops %}
                 <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ item.product_name }}</td>
-                    <td>{{ item.description }}</td>
-                    <td>{{ item.price }}</td>
-                    <td>{{ item.price_min }}</td>
-                    <td>{{ item.price_max }}</td>
-                    <td>{{ item.currency }}</td>
-                    <td>{{ item.processor }}</td>
-                    <td>{{ item.brand }}</td>
-                    <td>{{ item.supplier }}</td>
-                    <td>{{ item.series }}</td>
-                    <td><a href="{{ item.ProductLink }}" target="_blank">{{ item.ProductLink }}</a></td>
+                    <th width="3%">No.</th>
+                    <th>Part No</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Min</th>
+                    <th>Max</th>
+                    <th>Currency</th>
+                    <th>Processor</th>
+                    <th>Brand</th>
+                    <th>Supplier</th>
+                    <th>Series</th>
+                    <th>Stock</th>
+                    <th>Product Link</th>
+
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for item in laptops %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.product_name }}</td>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.price_min }}</td>
+                        <td>{{ item.price_max }}</td>
+                        <td>{{ item.currency }}</td>
+                        <td>{{ item.processor }}</td>
+                        <td>{{ item.brand }}</td>
+                        <td>{{ item.supplier }}</td>
+                        <td>{{ item.series }}</td>
+                        <td>{{ item.stock }}</td>
+                        <td><a href="{{ item.ProductLink }}" target="_blank">{{ item.ProductLink }}</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
           type="text/css"/>
     {#    <link href="{% static 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />#}
@@ -134,7 +147,6 @@
                 ]
             });
         });
-
 
         jQuery(document).ready(function ($) {
             var table = $('#responsive-datatable').DataTable();
