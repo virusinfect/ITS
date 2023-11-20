@@ -4,9 +4,32 @@
 {% load humanize %}
 {% block title %}Report{% endblock %}
 {% block content %}
-    <div class="mx-auto col-9">
-        <div class="card p-2" id="delivery-note">
-            <div class="container">
+    <style>
+        @media print {
+            #footer-container {
+                position: relative; /* Change to relative */
+            }
+
+            #footer-image {
+                position: absolute; /* Change to absolute */
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-width: 100%;
+            }
+
+            body {
+                margin: 0 !important;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+    <div class="col-9 mx-auto wrapper px-2">
+        <div class="card" id="delivery-note">
+            <div class="content">
                 <div class="mx-auto text-center tex-sm">
                     <h3 style="font-size: 15px;">Technical Report</h3>
                 </div>
@@ -227,38 +250,39 @@
             printDeliveryNote();
         });
         function printDeliveryNote() {
-            var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
+            var printContents = document.getElementById('delivery-note').innerHTML;
             var originalContents = document.body.innerHTML;
 
-            // Create a style tag and append it to the head to define a CSS rule for the footer image and remove margins
             var style = document.createElement('style');
             style.innerHTML = `
-        @media print {
-            #footer-image {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                max-width: 100%;
-            }
-            body {
-                margin: 0 !important; /* Force margin removal */
-            }
-            .new-page {
-                page-break-before: always;
-            }
-        }
-    `;
-            document.head.appendChild(style);
+            @media print {
+                #footer-container {
+                    position: relative;
+                }
 
-            // Wrap the content after the footer in a div with a class 'new-page' to force a page break
-            printContents = printContents.replace(/<div id="footer-image">/g, '<div class="new-page"></div><div id="footer-image">');
+                #footer-image {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    max-width: 100%;
+                }
+
+                body {
+                    margin: 0 !important;
+                }
+
+                .page-break {
+                    page-break-before: always;
+                }
+            }
+        `;
+            document.head.appendChild(style);
 
             document.body.innerHTML = printContents;
             window.print();
             document.body.innerHTML = originalContents;
 
-            // Remove the added CSS rule
             document.head.removeChild(style);
         }
     </script>

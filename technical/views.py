@@ -1076,7 +1076,7 @@ def delete_item(request, delivery_id, item_id):
 @login_required
 def list_deliveries(request):
     user = request.user
-    deliveries = Delivery.objects.filter(is_active=1, created_by=user).order_by('-id')
+    deliveries = Delivery.objects.filter(is_active=1).order_by('-id')
     return render(request, 'list_deliveries.html', {'deliveries': deliveries})
 
 
