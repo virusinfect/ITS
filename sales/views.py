@@ -1,10 +1,9 @@
-from datetime import datetime,date
+from datetime import datetime, date
 from decimal import Decimal
+from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
 from django.core.mail import EmailMessage
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
@@ -12,10 +11,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from its.models import Company, Task
-
 from .models import SalesTickets, SalesQuotes, Orders, ProformaInvoice, OurBanks, SalesQuoteProducts, OrderProducts, \
     SalesTicketProducts, ProformaInvoiceProducts
-
 
 @login_required
 def sales_tickets_list(request):
@@ -23,16 +20,19 @@ def sales_tickets_list(request):
     active_sales_tickets = SalesTickets.objects.filter(is_active=1).order_by("-ticket_id")
     return render(request, 'sales/sales_tickets.html', {'active_sales_tickets': active_sales_tickets})
 
+
 @login_required
 def filtered_sales_tickets_list(request):
     # Filter sales tickets that are active and get the 50 latest ones
     active_sales_tickets = SalesTickets.objects.filter(is_active=1).order_by("-ticket_id")[:50]
     return render(request, 'sales/sales_tickets.html', {'active_sales_tickets': active_sales_tickets})
 
+
 @login_required
 def open_tickets_list(request):
     # Filter sales tickets that are active (assuming "is_active" is a boolean field)
-    active_sales_tickets = SalesTickets.objects.filter(is_active=1, status__in=["Quote", "Sourcing"]).order_by("-ticket_id")
+    active_sales_tickets = SalesTickets.objects.filter(is_active=1, status__in=["Quote", "Sourcing"]).order_by(
+        "-ticket_id")
     return render(request, 'sales/sales_tickets.html', {'active_sales_tickets': active_sales_tickets})
 
 
@@ -104,11 +104,13 @@ def edit_sales_ticket(request, ticket_id):
                 )
                 new_sourcing_data.append(products)
 
-        # Delete old Tsourcing data
-        SalesTicketProducts.objects.filter(ticket=ticket).delete()
+        with transaction.atomic():
+            # Delete old SalesTicketProducts data
+            SalesTicketProducts.objects.filter(ticket=ticket).delete()
 
-        # Insert the new data
-        SalesTicketProducts.objects.bulk_create(new_sourcing_data)
+            # Insert the new data
+            SalesTicketProducts.objects.bulk_create(new_sourcing_data)
+
         if handler1.id != handler.id:
             table = (
                 "<table style='border-collapse: collapse; width: 100%;'>"
@@ -346,7 +348,8 @@ def delete_order(request, order_id):
 
 @login_required
 def active_quotes(request):
-    quotes = SalesQuotes.objects.filter(is_active=True).prefetch_related('salesquoteproducts_set').order_by('-sq_id')[:60]
+    quotes = SalesQuotes.objects.filter(is_active=True).prefetch_related('salesquoteproducts_set').order_by('-sq_id')[
+             :60]
     return render(request, 'sales/active_quotes.html', {'quotes': quotes})
 
 
@@ -392,11 +395,16 @@ def edit_quote(request, quote_id):
         availability_list = request.POST.getlist('availability[]')
         price_list = request.POST.getlist('price[]')
         uploaded_images = request.FILES.getlist('image[]')
+        print(uploaded_images)
+        print(desc_list)
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
 
         for i in range(len(part_no_list)):
             if (desc_list[i]):
+                att = uploaded_images[i] if i < len(uploaded_images) else None
+                print("test")
+                print(att)
                 products = SalesQuoteProducts(
                     part_no=part_no_list[i],
                     description=desc_list[i],
@@ -404,31 +412,14 @@ def edit_quote(request, quote_id):
                     price=price_list[i],
                     availability=availability_list[i],
                     quote=quote,
+                    attachment=att,
                 )
-                # Check if there is an uploaded image for the current index
-                if i < len(uploaded_images):
-                    image_file = uploaded_images[i]
-
-                    # Handle file upload for each product
-                    if image_file:
-                        # Generate a unique file name or use the original name
-                        file_name = f"sales_image_{part_no_list[i]}_{image_file.name}"
-
-                        # Save the image file to your desired storage location
-                        file_path = default_storage.save(file_name, ContentFile(image_file.read()))
-                        print("image")
-                        print(file_path)
-                        # Update your model instance with the file path
-                        products.attachment = file_path
-
                 new_sourcing_data.append(products)
 
         # Delete old quote data
         SalesQuoteProducts.objects.filter(quote=quote).delete()
-
         # Insert the new data
         SalesQuoteProducts.objects.bulk_create(new_sourcing_data)
-
         messages.success(request, 'Quotation Edited successfully')
 
         return redirect('edit-quote', quote_id)  # Redirect to the list of active quotes
@@ -840,7 +831,6 @@ def create_ticket(request):
         currency_list = request.POST.getlist('currency[]')
         price_list_strings = request.POST.getlist('price[]')
 
-
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
 
@@ -874,8 +864,6 @@ def create_ticket(request):
 
         # Insert the new data
         SalesTicketProducts.objects.bulk_create(new_sourcing_data)
-
-
 
         table = (
             "<table style='border-collapse: collapse; width: 100%;'>"
@@ -1136,9 +1124,7 @@ def delete_row_order(request, product_id, order_id):
 @login_required
 def delete_row_invoice(request, product_id, invoice_id):
     # Fetch the product from the database using the product_id
-
     product = ProformaInvoiceProducts.objects.get(product_id=product_id)
-
     product.delete()
     messages.warning(request, 'Product Deleted Succesfully.')
     # Redirect back to the original page
@@ -1148,9 +1134,7 @@ def delete_row_invoice(request, product_id, invoice_id):
 @login_required
 def quote(request, quote_id):
     quote = get_object_or_404(SalesQuotes, sq_id=quote_id)
-
     items = SalesQuoteProducts.objects.filter(quote=quote)
-
     subtotals = Decimal(0)
     vat = Decimal(0)
     total_amount = Decimal(0)
@@ -1161,7 +1145,8 @@ def quote(request, quote_id):
             item.total = Decimal(item.price) * Decimal(item.quantity)  # Ensure price is a Decimal
 
             if quote.vat_stats == "Inclusive":
-                item.price -= Decimal(round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
+                item.price -= Decimal(
+                    round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
                 item.total -= Decimal(round((Decimal(item.total) / Decimal(1.16)) * Decimal(0.16)))
                 subtotals += Decimal(item.total)
                 vat = Decimal(round(subtotals * Decimal(0.16)))
@@ -1182,7 +1167,8 @@ def quote(request, quote_id):
             item.total = Decimal(item.price) * Decimal(item.quantity)  # Ensure price is a Decimal
 
             if quote.vat_stats == "Inclusive":
-                item.price -= Decimal(round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
+                item.price -= Decimal(
+                    round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
                 item.total -= Decimal(round((Decimal(item.total) / Decimal(1.16)) * Decimal(0.16)))
                 item.subtotals = Decimal(item.total)
                 item.vat = Decimal(round(item.total * Decimal(0.16)))
@@ -1203,7 +1189,8 @@ def quote(request, quote_id):
             item.total = Decimal(item.price) * Decimal(item.quantity)  # Ensure price is a Decimal
 
             if quote.vat_stats == "Inclusive":
-                item.price -= Decimal(round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
+                item.price -= Decimal(
+                    round((Decimal(item.price) / Decimal(1.16)) * Decimal(0.16)))  # Deduct VAT from item.amount
                 item.total -= Decimal(round((Decimal(item.total) / Decimal(1.16)) * Decimal(0.16)))
                 item.subtotals = Decimal(item.total)
                 item.vat = Decimal(round(item.total * Decimal(0.16)))
@@ -1223,13 +1210,10 @@ def quote(request, quote_id):
                                                 'total_amount': total_amount})
 
 
-
 @login_required
 def invoice(request, invoice_id):
     invoice = get_object_or_404(ProformaInvoice, pfq_id=invoice_id)
-
     items = ProformaInvoiceProducts.objects.filter(pfi=invoice)
-
     subtotals = 0
     vat = 0
 
@@ -1262,7 +1246,6 @@ def invoice(request, invoice_id):
 @login_required
 def sales_dashboard(request):
     user = request.user
-
     # Get the counts for each status
     status_counts = Task.objects.filter(user=user, is_active=True).values('status').annotate(count=Count('status'))
 
@@ -1340,9 +1323,8 @@ def sales_dashboard(request):
         'ordered_count': ordered_count,
         'completed_count': completed_count,
         'cancelled_count': cancelled_count,
-        'monthly_ticket_counts': monthly_ticket_counts,'status_counts': status_counts,
+        'monthly_ticket_counts': monthly_ticket_counts, 'status_counts': status_counts,
         'completed_count_today': completed_count_today,
-
 
     })
 
