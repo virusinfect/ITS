@@ -271,11 +271,11 @@ def edit_order(request, order_id):
                     order_product.date_ordered = date_ordered_list[i]
                 new_sourcing_data.append(order_product)
 
-            # Delete old order data
-        OrderProducts.objects.filter(orders=order).delete()
+        with transaction.atomic():
+            OrderProducts.objects.filter(orders=order).delete()
 
-        # Insert the new data
-        OrderProducts.objects.bulk_create(new_sourcing_data)
+            # Insert the new data
+            OrderProducts.objects.bulk_create(new_sourcing_data)
 
         messages.success(request, 'Order Edited successfully')
 
@@ -415,11 +415,11 @@ def edit_quote(request, quote_id):
                     attachment=att,
                 )
                 new_sourcing_data.append(products)
-
-        # Delete old quote data
-        SalesQuoteProducts.objects.filter(quote=quote).delete()
-        # Insert the new data
-        SalesQuoteProducts.objects.bulk_create(new_sourcing_data)
+        with transaction.atomic():
+            # Delete old quote data
+            SalesQuoteProducts.objects.filter(quote=quote).delete()
+            # Insert the new data
+            SalesQuoteProducts.objects.bulk_create(new_sourcing_data)
         messages.success(request, 'Quotation Edited successfully')
 
         return redirect('edit-quote', quote_id)  # Redirect to the list of active quotes
