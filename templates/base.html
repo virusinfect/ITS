@@ -477,18 +477,18 @@
                     {% endif %}
                     {% if user|is_admin %}
                         <li>
-                            <a href="#email" data-bs-toggle="collapse">
-                                <i class="mdi mdi-wrench"></i>
+                            <a href="#price" data-bs-toggle="collapse">
+                                <i class="mdi mdi-tag-text"></i>
                                 <span> Price Lists </span>
                                 <span class="menu-arrow"></span>
                             </a>
-                            <div class="collapse" id="email">
+                            <div class="collapse" id="price">
                                 <ul class="nav-second-level">
                                     <li>
                                         <a href="{% url 'upload_price_list' %}">Upload</a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'view_price_list' %}">View</a>
+                                        <a href="{% url 'search_laptops' %}">Search</a>
                                     </li>
                                     <li>
                                         <a href="{% url 'list-suppliers' %}">Suppliers</a>
