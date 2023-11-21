@@ -46,3 +46,21 @@ class LaptopPriceList(models.Model):
     def __str__(self):
         return self.product_name
     # Add other fields as needed
+
+class ColoursoftPriceList(models.Model):
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
+    code = models.CharField(max_length=255, null=True)
+    yield_no = models.CharField(max_length=255, null=True)
+    cost = models.CharField(max_length=255, null=True)
+    level_1 = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    level_2 = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, null=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    level_3 = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    end_user = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    currency = models.CharField(max_length=255, null=True)
+
+    def __str__(self):
+        return self.code
+    # Add other fields as needed

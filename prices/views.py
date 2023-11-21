@@ -6,11 +6,12 @@ import pandas as pd
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.shortcuts import render
 from .forms import PriceListForm
-from .models import Supplier, Equipment,Brand, Exchange,LaptopPriceList
+from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList
+
 
 @login_required
 def upload_price_list(request):
@@ -21,9 +22,13 @@ def upload_price_list(request):
     if request.method == 'POST':
         equipment_index = request.POST.get('equipment')
         excel_file = request.FILES['file']
+        selected_sheet = request.POST.get('selected_sheet')
 
-        wb = openpyxl.load_workbook(excel_file, read_only=True)
-        ws = wb.active
+        try:
+            wb = openpyxl.load_workbook(excel_file, read_only=True)
+            ws = wb[selected_sheet]
+        except Exception as e:
+            return HttpResponseBadRequest(f"Error loading Excel file or sheet: {str(e)}")
 
         # Assuming headers are in the first row
         headers = [cell.value for cell in ws[1]]
@@ -96,6 +101,86 @@ def upload_price_list(request):
         return redirect('search_laptops')  # Redirect to a success page
 
     return render(request, 'prices/upload_price_list.html',
+                  {'suppliers': suppliers, 'brands': brands, 'equipment': equipment})
+@login_required
+def upload_coloursoft_price_list(request):
+    suppliers = Supplier.objects.all()
+    brands = Brand.objects.all()
+    equipment = Equipment.objects.all()
+
+    if request.method == 'POST':
+        excel_file = request.FILES['file']
+        selected_sheet = request.POST.get('selected_sheet')
+
+        try:
+            wb = openpyxl.load_workbook(excel_file, read_only=True)
+            ws = wb[selected_sheet]
+        except Exception as e:
+            return HttpResponseBadRequest(f"Error loading Excel file or sheet: {str(e)}")
+
+        # Assuming headers are in the first row
+        headers = [cell.value for cell in ws[1]]
+
+        # Check if 'product_name' and 'price' are present in the headers
+        required_columns = ['code', 'price']
+        for column in required_columns:
+            if column not in headers:
+                raise ValueError(f"Column '{column}' not found in the Excel file.")
+
+        brand_index = request.POST.get('brand')
+
+        # Assume headers is a list containing the column headers
+        headers_lower = [header.lower() if header is not None else None for header in headers]
+
+        # Function to get index if header is present, otherwise None
+        def get_index(header_name):
+            return headers_lower.index(header_name) if header_name in headers_lower else None
+
+        # Mapping headers to their indices
+        index_mapping = {
+            'code': get_index('code'),
+            'yield_no': get_index('yield_no'),
+            'price': get_index('price'),
+            'level1': get_index('level1'),
+            'level_2': get_index('level_2'),
+            'level_3': get_index('level_3'),
+            'end_user': get_index('end_user'),
+        }
+
+        # Now you can access the indices using the keys
+        code_index = index_mapping['code']
+        price_index = index_mapping['price']
+        yield_no_index = index_mapping['yield_no']
+        level1_index = index_mapping['level1']
+        level_2_index = index_mapping['level_2']
+        level_3_index = index_mapping['level_3']
+        end_user_index = index_mapping['end_user']
+
+        for row in ws.iter_rows(min_row=2, values_only=True):
+
+            brand = Brand.objects.get(id=brand_index)
+            print("test data")
+            print(row[code_index])
+            print(row[yield_no_index])
+
+            # Create an instance of PriceList
+            price_list_obj = ColoursoftPriceList(
+                code=row[code_index],
+                price=row[price_index] if price_index is not None else '0',
+                yield_no=row[yield_no_index] if yield_no_index is not None else '',
+                level_1=row[level1_index] if level1_index is not None else '',
+                level_2=row[level_2_index] if level_2_index is not None else '',
+                level_3=row[level_3_index] if level_3_index is not None else '',
+                end_user=row[end_user_index] if end_user_index is not None else '',
+                currency=request.POST.get('currency'),
+                brand=brand
+            )
+
+            price_list_obj.save()
+        messages.success(request, 'Products Uploaded successfully')
+        return redirect('search_coloursoft')  # Redirect to a success page
+
+    return render(request, 'prices/upload_coloursoft_price_list.html',
                   {'suppliers': suppliers, 'brands': brands, 'equipment': equipment})
 
 @login_required
@@ -558,6 +643,64 @@ def search_laptops(request):
     context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
                'all_equipment': all_equipment, }
     return render(request, 'prices/search_laptops.html', context)
+
+
+@login_required
+def search_coloursoft(request):
+    query = request.GET.get('q', '').lower().strip()
+    selected_fields = request.GET.getlist('fields', [])
+
+    # Define the fields you want to allow searching
+    allowed_fields = ['brand__name',  'code','yield_no']
+
+    # Create a dictionary to map the field names to their corresponding lookup
+    field_lookup = {
+        'code': 'icontains',
+        'brand__name': 'icontains',
+        'yield_no': 'icontains',
+    }
+    equipment_id = request.GET.get('equipment')
+    # Build the Q objects for the selected fields
+    q_objects = Q()
+    for field in selected_fields:
+        if field in allowed_fields:
+            lookup = field_lookup[field]
+            q_objects |= Q(**{f'{field}__{lookup}': query})
+
+    # Check if both query and selected_fields are empty
+    if not query and not selected_fields:
+        # Return an empty queryset or default products if needed
+        laptops = ColoursoftPriceList.objects.none()
+    # Additional filter for the description field
+    elif 'code' in selected_fields and query:
+        # Split the query into keywords using both semicolons and spaces
+        keywords = [kw.strip().lower() for kw in re.split(r'[;\s]+', query)]
+
+        # Construct a list of Q objects for each keyword
+        keyword_queries = [Q(code__icontains=keyword) for keyword in keywords]
+        laptops = ColoursoftPriceList.objects.all()
+        # Combine the Q objects using the | operator
+        laptops = laptops.filter(*keyword_queries)
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+
+    else:
+        # Query the model using the constructed Q objects
+        laptops = ColoursoftPriceList.objects.filter(q_objects)
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+
+        # Filter by equipment if selected
+
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+
+    # Retrieve all equipment for the dropdown
+    all_equipment = Equipment.objects.all()
+
+    context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
+               'all_equipment': all_equipment, }
+    return render(request, 'prices/search_coloursoft.html', context)
 
 @login_required
 def edit_exchange(request):
