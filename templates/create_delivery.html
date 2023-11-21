@@ -39,13 +39,29 @@
                                 <tbody>
                                 <tr>
                                     <th>1</th>
-                                    <td width="10%"><input value="1" class="form-control" id="qty" name="quantity_[]"/></td>
-                                    <td width="30%"><input value="{{ ticket.serial_no }}" class="form-control" name="serial_no_[]"/></td>
-                                    <td><input class="form-control" value="{{ ticket.equipment }}" name="particulars_[]"/></td>
+                                    <td width="10%"><input value="1" class="form-control" id="qty" name="quantity_[]"/>
+                                    </td>
+                                    <td width="30%"><input value="{{ ticket.serial_no }}" class="form-control"
+                                                           name="serial_no_[]"/></td>
+                                    <td><input class="form-control" value="{{ ticket.equipment }}"
+                                               name="particulars_[]"/></td>
                                 </tr>
+                                {% if accessories_list %}
+                                    {% for item in accessories_list %}
+                                        <tr>
+                                            <th>1</th>
+                                            <td width="10%"><input value="1" class="form-control" id="qty"
+                                                                   name="quantity_[]"/></td>
+                                            <td width="30%"><input value="N/A" class="form-control"
+                                                                   name="serial_no_[]"/></td>
+                                            <td><input class="form-control" value="{{ item }}"
+                                                       name="particulars_[]"/></td>
+                                        </tr>{% endfor %}
+                                {% endif %}
                                 <tr>
                                     <th>1</th>
-                                    <td width="10%"><input class="form-control" id="qty" name="quantity_[]" value="1"/></td>
+                                    <td width="10%"><input class="form-control" id="qty" name="quantity_[]" value="1"/>
+                                    </td>
                                     <td width="30%"><input class="form-control" name="serial_no_[]"/></td>
                                     <td><input class="form-control" name="particulars_[]"/></td>
                                 </tr>
@@ -80,9 +96,9 @@
                 qtyInput.value = '1';
             }
             newRow.querySelector('th').textContent = rowCount;
-            newRow.querySelector('input[name="quantity_[]"]').name = `quantity_${rowCount}`;
-            newRow.querySelector('input[name="serial_no_[]"]').name = `serial_no_${rowCount}`;
-            newRow.querySelector('input[name="particulars_[]"]').name = `particulars_${rowCount}`;
+            newRow.querySelector('input[name="quantity_[]"]').name = `quantity_[]`;
+            newRow.querySelector('input[name="serial_no_[]"]').name = `serial_no_[]`;
+            newRow.querySelector('input[name="particulars_[]"]').name = `particulars_[]`;
             // Append the new row to the table
             document.querySelector('#items-table tbody').appendChild(newRow);
         });

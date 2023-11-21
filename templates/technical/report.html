@@ -10,6 +10,10 @@
                 position: relative; /* Change to relative */
             }
 
+            #delivery-note {
+                margin-bottom: 5;
+            }
+
             #footer-image {
                 position: absolute; /* Change to absolute */
                 bottom: 0;
@@ -22,9 +26,11 @@
                 margin: 0 !important;
             }
 
-            .page-break {
+            .page #delivery-note {
                 page-break-before: always;
+                margin-top: 50px; /* Adjust the margin-top value as needed */
             }
+
         }
     </style>
     <div class="col-9 mx-auto wrapper px-2 mx-auto">
@@ -161,11 +167,11 @@
                             {% endif %}
                             <tr>
                                 <td colspan="4" class="text-end">LABOUR</td>
-                                <td colspan="4" >{{ ticket.labour|floatformat:2|intcomma }}</td>
+                                <td colspan="4">{{ ticket.labour|floatformat:2|intcomma }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end">SUBTOTALS</td>
-                                <td colspan="4" >{{ subtotals|floatformat:2|intcomma }}</td>
+                                <td colspan="4">{{ subtotals|floatformat:2|intcomma }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class=" text-danger text-end">VAT</td>
@@ -173,7 +179,7 @@
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end">TOTAL AMOUNT</td>
-                                <td colspan="4  " >{{ total_amount|floatformat:2|intcomma }}</td>
+                                <td colspan="4  ">{{ total_amount|floatformat:2|intcomma }}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -249,6 +255,7 @@
         document.getElementById('print-button').addEventListener('click', function () {
             printDeliveryNote();
         });
+
         function printDeliveryNote() {
             var printContents = document.getElementById('delivery-note').innerHTML;
             var originalContents = document.body.innerHTML;
@@ -271,13 +278,11 @@
                 body {
                     margin: 0 !important;
                 }
-
-                .page-break {
+                .page #delivery-note {
                     page-break-before: always;
+                    margin-top: 5; /* Adjust the margin-top value as needed */
                 }
-                .page{
-                    margin-bottom:100px;
-                }
+
             }
         `;
             document.head.appendChild(style);

@@ -537,6 +537,20 @@ def search_laptops(request):
     all_equipment = Equipment.objects.all()
 
     for item in laptops:
+
+        if item.currency == "KES":
+            exchange_rate = Exchange.objects.first().rate
+            # Convert the amount to USD
+            amount_in_usd = item.price / exchange_rate
+            # Round the result to two decimal places
+            amount_in_usd = round(amount_in_usd, 2)
+            item.price = amount_in_usd
+            item.currency = "USD"
+        else:
+            item.price = item.price
+            item.currency = item.currency
+
+
         item.price_min = min_price(item.price, item.equipment)
         item.price_max = max_price(item.price, item.equipment)
 

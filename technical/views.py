@@ -794,6 +794,7 @@ def create_delivery(request, ticket_id):
     except Tickets.DoesNotExist:
         return HttpResponseNotFound("Ticket not found")
 
+    accessories_list = [item.strip() for item in ticket.accessories.split(',')]
         # Check if a delivery already exists for this ticket
     existing_delivery = Delivery.objects.filter(ticket=ticket, is_active=True).first()
 
@@ -832,17 +833,24 @@ def create_delivery(request, ticket_id):
         serial_no_list = request.POST.getlist('serial_no_[]')
         particulars_list = request.POST.getlist('particulars_[]')
 
-        # Assuming you have a Ticket model
-        for quantity, serial_no, particulars in zip(quantity_list, serial_no_list, particulars_list):
-            if particulars:
-                Items.objects.create(delivery=new_delivery, quantity=quantity, serial_no=serial_no,
-                                     particulars=particulars)
+        for i in range(len(particulars_list)):
+            if (particulars_list[i]):
+                items = Items(
+                    delivery=new_delivery,
+                    quantity=quantity_list[i],
+                    serial_no=serial_no_list[i],
+                    particulars=particulars_list[i],
+
+                )
+                items.save()
+
+
 
         messages.success(request, 'Delivery Created successfully')
         # Redirect to the ticket details page or a success page
         return redirect('view_delivery', ticket_id=ticket_id)
 
-    return render(request, 'create_delivery.html', {'ticket': ticket})
+    return render(request, 'create_delivery.html', {'ticket': ticket,'accessories_list': accessories_list,})
 
 @login_required
 def create_inhouse_delivery(request, ticket_id):
@@ -1698,7 +1706,6 @@ def quote_tickets(request, ticket_id):
 def sourcing_tickets(request, ticket_id):
     if request.method == 'POST':
         ticket = Tickets.objects.get(ticket_id=ticket_id)
-
         part_no_list = request.POST.getlist('part_no[]')
         desc_list = request.POST.getlist('desc[]')
         qty_list = request.POST.getlist('qty[]')
@@ -1706,17 +1713,28 @@ def sourcing_tickets(request, ticket_id):
         supplier_list = request.POST.getlist('supplier[]')
         currency_list = request.POST.getlist('currency[]')
         price_list = request.POST.getlist('price[]')
+        attach_list = request.POST.get('attach[]')
         handler = request.POST.get('handler')
+        attachment_list = request.FILES.getlist('att[]')
         handler_id = User.objects.get(pk=handler)
-        first_handler = ticket.sourcing_parts
         ticket.sourcing_parts = handler_id
         ticket.save()
         created_by = request.user
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
 
+
         for i in range(len(part_no_list)):
             if (part_no_list[i] and desc_list[i]):
+                z=i+1
+                attachment_list = request.FILES.getlist(f'att_{z}')
+                if attachment_list:
+                    attachment = attachment_list[0]
+                else:
+                    attachment = None
+
+                print("testing i")
+                print(attach_list)
                 sourcing = Tsourcing(
                     part_no=part_no_list[i],
                     desc=desc_list[i],
@@ -1726,6 +1744,7 @@ def sourcing_tickets(request, ticket_id):
                     currency=currency_list[i],
                     price=price_list[i],
                     ticket=ticket,
+                    attachment=attachment,
                 )
                 new_sourcing_data.append(sourcing)
 

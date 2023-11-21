@@ -4,6 +4,28 @@
 {% block header %}Edit Ticket{% endblock %}
 {% load helpdesk_tags %}
 {% block content %}
+    <style>
+        .modal-dialog {
+            max-width: 80%;
+            margin: 1.75rem auto;
+        }
+
+        .modal-content {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        .modal-body {
+            text-align: center;
+        }
+
+        .modal-img {
+            max-width: 100%;
+            max-height: 80vh; /* Adjust the maximum height as needed */
+            margin: auto;
+        }
+    </style>
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
@@ -285,12 +307,12 @@
                             <div class="row mb-3 mt-3">
                                 <div class="mx-auto">
                                     <div class="table-responsive">
-                                        <form method="POST" action="{% url 'sourcing_ticket' ticket.ticket_id %}">
+                                        <form method="POST" action="{% url 'sourcing_ticket' ticket.ticket_id %}"
+                                              enctype="multipart/form-data">
                                             {% csrf_token %}
                                             <table class="table">
                                                 <thead class="table-dark">
                                                 <tr>
-
                                                     <th>Description</th>
                                                     <th>Part Number</th>
                                                     <th>Price</th>
@@ -300,7 +322,6 @@
                                                     <th>Supplier</th>
                                                     <th>Attachment</th>
                                                     <th>Action</th>
-
                                                     <!-- Add more headers for other fields -->
                                                 </tr>
                                                 </thead>
@@ -338,7 +359,19 @@
                                                                    value="{{ item.availability }}"></td>
                                                         <td><input name="supplier[]" type="text" class="form-control"
                                                                    value="{{ item.supplier }}"></td>
-                                                        <td><input type="file" class="form-control" name="att[]"></td>
+                                                        <td>
+                                                            {% if item.attachment %}
+                                                                <a class="btn btn-primary"
+                                                                   onclick="openModal('{{ item.attachment.url }}')">View
+                                                                    Attachment</a>
+                                                                <input type="text" class="form-control" name="att[]"
+                                                                        value="{{ item.attachment }}" hidden="hidden">
+                                                            {% else %}
+                                                                <input type="file" class="form-control" name="att_{{ forloop.counter }}"
+                                                                       accept="image/*">
+                                                                <input type="hidden" name="att[]" value="">
+                                                            {% endif %}
+                                                        </td>
                                                         <td><a href="#" class="delete-entry" title="delete" tabindex="0"
                                                                data-plugin="tippy" data-tippy-interactive="true">
                                                             <i class="  mdi mdi-delete-outline mdi-18px"></i>
@@ -352,7 +385,6 @@
                                                     </tr>
                                                 {% endfor %}
                                                 <tr>
-
                                                     <td><input type="text" name="desc[]" class="form-control"></td>
                                                     <td><input name="part_no[]" type="text" class="form-control">
                                                     </td>
@@ -373,7 +405,7 @@
                                                     <td><input name="availability[]" type="text" class="form-control">
                                                     </td>
                                                     <td><input name="supplier[]" type="text" class="form-control"></td>
-                                                    <td><input type="file" class="form-control" name="att[]"></td>
+                                                    <td><input type="file" class="form-control" name="att_{{ forloop.counter }}"></td>
 
                                                     <!-- Add more cells for other fields -->
                                                 </tr>
@@ -406,6 +438,27 @@
 
                                     </div>
                                 </div> <!-- end col -->
+                            </div>
+                        </div>
+                        <div class="modal fade" id="myModal{{ item.id }}" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="myModalLabel">Attachment Preview</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="" class="img-fluid modal-img" alt="Attachment">
+                                        <!-- Empty src, will be filled by jQuery -->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -476,8 +529,10 @@
                                                     <td><input type="text" name="description[]" class="form-control">
                                                     </td>
                                                     <td><input name="part_no[]" type="text" class="form-control"></td>
-                                                    <td><input name="price[]" type="text" class="form-control" value="0.00"></td>
-                                                    <td><input name="quantity[]" type="text" class="form-control" value="0"></td>
+                                                    <td><input name="price[]" type="text" class="form-control"
+                                                               value="0.00"></td>
+                                                    <td><input name="quantity[]" type="text" class="form-control"
+                                                               value="0"></td>
                                                     <td><select name="currency[]" class="form-select">
                                                         <option value="">Select currency</option>
                                                         <option value="KES">KES
@@ -727,6 +782,15 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Add this script to open the modal using jQuery -->
+    <script>
+        function openModal(imageUrl) {
+            $('#myModal img').attr('src', imageUrl);  // Set the image source
+            $('#myModal').modal('show');  // Show the modal
+        }
+    </script>
+
+
     <script>
         var clientNo;
         var clientSelect = document.getElementById('client');
@@ -762,54 +826,54 @@
             }
         });
     </script>
-<script>
-    document.getElementById('add-row-quote').addEventListener('click', function () {
-        var tableBody = document.getElementById('table-body-quote');
-        var newRow = document.createElement('tr');
+    <script>
+        document.getElementById('add-row-quote').addEventListener('click', function () {
+            var tableBody = document.getElementById('table-body-quote');
+            var newRow = document.createElement('tr');
 
-        // Create new input fields for each column
-        var columns = ['description', 'part_no', 'price', 'quantity', 'currency'];
-        for (var i = 0; i < columns.length; i++) {
-            var cell = document.createElement('td');
-            var input;
+            // Create new input fields for each column
+            var columns = ['description', 'part_no', 'price', 'quantity', 'currency'];
+            for (var i = 0; i < columns.length; i++) {
+                var cell = document.createElement('td');
+                var input;
 
-            if (columns[i] === 'currency') {
-                // For the 'currency' column, create a select element instead of an input
-                input = document.createElement('select');
-                input.name = columns[i] + '[]';
-                input.className = 'form-select';
+                if (columns[i] === 'currency') {
+                    // For the 'currency' column, create a select element instead of an input
+                    input = document.createElement('select');
+                    input.name = columns[i] + '[]';
+                    input.className = 'form-select';
 
-                // Add options to the select element
-                var currencies = ['Select currency', 'KES', 'USD', 'EUR'];
-                for (var j = 0; j < currencies.length; j++) {
-                    var option = document.createElement('option');
-                    option.value = currencies[j];
-                    option.text = currencies[j];
-                    input.appendChild(option);
+                    // Add options to the select element
+                    var currencies = ['Select currency', 'KES', 'USD', 'EUR'];
+                    for (var j = 0; j < currencies.length; j++) {
+                        var option = document.createElement('option');
+                        option.value = currencies[j];
+                        option.text = currencies[j];
+                        input.appendChild(option);
+                    }
+                } else {
+                    // For other columns, create a regular text input
+                    input = document.createElement('input');
+                    input.type = 'text';
+                    input.name = columns[i] + '[]';
+                    input.className = 'form-control';
+
+                    // Set default values for 'price' and 'quantity' inputs
+                    if (columns[i] === 'price') {
+                        input.value = '0.00';
+                    } else if (columns[i] === 'quantity') {
+                        input.value = '0';
+                    }
                 }
-            } else {
-                // For other columns, create a regular text input
-                input = document.createElement('input');
-                input.type = 'text';
-                input.name = columns[i] + '[]';
-                input.className = 'form-control';
 
-                // Set default values for 'price' and 'quantity' inputs
-                if (columns[i] === 'price') {
-                    input.value = '0.00';
-                } else if (columns[i] === 'quantity') {
-                    input.value = '0';
-                }
+                cell.appendChild(input);
+                newRow.appendChild(cell);
             }
 
-            cell.appendChild(input);
-            newRow.appendChild(cell);
-        }
-
-        // Append the new row to the table
-        tableBody.appendChild(newRow);
-    });
-</script>
+            // Append the new row to the table
+            tableBody.appendChild(newRow);
+        });
+    </script>
 
     <script>
         document.getElementById('add-row-button').addEventListener('click', function () {
