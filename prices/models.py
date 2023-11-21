@@ -2,6 +2,7 @@ from django.db import models
 
 class Exchange(models.Model):
     rate = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    rate2 = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.rate
@@ -63,13 +64,6 @@ class ColoursoftPriceList(models.Model):
 
     def __str__(self):
         return self.code
-    # Add other fields as needed
-    def save(self, *args, **kwargs):
-        ColoursoftPriceList.objects.filter(code=self.code).delete()
-
-        # Call the original save method to save the current entry
-        super(ColoursoftPriceList, self).save(*args, **kwargs)
-
 
 class FellowesPriceList(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
