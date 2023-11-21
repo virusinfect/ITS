@@ -450,7 +450,7 @@ def ticket_list(request):
         tickets = Tickets.objects.filter(tech=request.user, is_active=1).order_by('-created')[:50]
     else:
         # If the user doesn't belong to the "Technician" group, show all tickets
-        tickets = Tickets.objects.filter(is_active=1).order_by('-created')[:50]
+        tickets = Tickets.objects.filter(is_active=1).order_by('-created')
 
     return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
 
