@@ -65,12 +65,7 @@ class ColoursoftPriceList(models.Model):
         return self.code
     # Add other fields as needed
     def save(self, *args, **kwargs):
-        # Check if there is an existing entry with the same code
-        existing_entry = ColoursoftPriceList.objects.filter(code=self.code).first()
-
-        # If an existing entry is found, delete it
-        if existing_entry:
-            existing_entry.delete()
+        ColoursoftPriceList.objects.filter(code=self.code).delete()
 
         # Call the original save method to save the current entry
         super(ColoursoftPriceList, self).save(*args, **kwargs)
