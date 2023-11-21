@@ -49,7 +49,7 @@ class LaptopPriceList(models.Model):
 
 class ColoursoftPriceList(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
-    code = models.CharField(max_length=255, null=True)
+    code = models.CharField(max_length=255, null=True,unique=True)
     yield_no = models.CharField(max_length=255, null=True)
     cost = models.CharField(max_length=255, null=True)
     level_1 = models.DecimalField(max_digits=10, decimal_places=2, null=True)
@@ -64,3 +64,13 @@ class ColoursoftPriceList(models.Model):
     def __str__(self):
         return self.code
     # Add other fields as needed
+    def save(self, *args, **kwargs):
+        # Check if there is an existing entry with the same code
+        existing_entry = ColoursoftPriceList.objects.filter(code=self.code).first()
+
+        # If an existing entry is found, delete it
+        if existing_entry:
+            existing_entry.delete()
+
+        # Call the original save method to save the current entry
+        super(ColoursoftPriceList, self).save(*args, **kwargs)
