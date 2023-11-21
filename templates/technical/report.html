@@ -125,66 +125,67 @@
                         </table>
                     </div>
                 </div>
-                <div class="row mx-auto">
-                    <div class="row mb-1 mt-1 table-responsive mx-auto">
-                        <table class="table table-bordered">
-                            <thead class="table-light">
-                            <tr>
-                                <th colspan="5" class="text-center">QUOTATION</th>
-                            </tr>
-                            <tr>
-                                <th>Part Number</th>
-                                <th>Description</th>
-                                <th>Price</th>
-                                <th>Qty</th>
-                                <th>Amount</th>
+                {% if parts or tquote_data %}
+                    <div class="row mx-auto">
+                        <div class="row mb-1 mt-1 table-responsive mx-auto">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                <tr>
+                                    <th colspan="5" class="text-center">QUOTATION</th>
+                                </tr>
+                                <tr>
+                                    <th>Part Number</th>
+                                    <th>Description</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                    <th>Amount</th>
 
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if parts %}
-                                {% for requisition in parts %}
-                                    <tr>
-                                        <td>{{ requisition.part.code }}</td>
-                                        <td>{{ requisition.part.description }}</td>
-                                        <td>{{ requisition.price|floatformat:2|intcomma }}</td>
-                                        <td>{{ requisition.quantity }}</td>
-                                        <td>{{ requisition.total|floatformat:2|intcomma }}</td>
-                                    </tr>
-                                {% endfor %}
-                            {% endif %}
-                            {% if tquote_data %}
-                                {% for item in tquote_data %}
-                                    <tr data-entry-id="{{ item.id }}">
-                                        <td>{{ item.part_no }}</td>
-                                        <td>{{ item.description }}</td>
-                                        <td>{{ item.price|floatformat:2|intcomma }}</td>
-                                        <td>{{ item.quantity|floatformat:0 }}</td>
-                                        <td>{{ item.total|floatformat:2|intcomma }}</td>
-                                        <!-- Add more cells for other fields -->
-                                    </tr>
-                                {% endfor %}
-                            {% endif %}
-                            <tr>
-                                <td colspan="4" class="text-end">LABOUR</td>
-                                <td colspan="4">{{ ticket.labour|floatformat:2|intcomma }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="text-end">SUBTOTALS</td>
-                                <td colspan="4">{{ subtotals|floatformat:2|intcomma }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class=" text-danger text-end">VAT</td>
-                                <td colspan="4" class="text-danger">{{ vat|floatformat:2|intcomma }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="text-end">TOTAL AMOUNT</td>
-                                <td colspan="4  ">{{ total_amount|floatformat:2|intcomma }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if parts %}
+                                    {% for requisition in parts %}
+                                        <tr>
+                                            <td>{{ requisition.part.code }}</td>
+                                            <td>{{ requisition.part.description }}</td>
+                                            <td>{{ requisition.price|floatformat:2|intcomma }}</td>
+                                            <td>{{ requisition.quantity }}</td>
+                                            <td>{{ requisition.total|floatformat:2|intcomma }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if tquote_data %}
+                                    {% for item in tquote_data %}
+                                        <tr data-entry-id="{{ item.id }}">
+                                            <td>{{ item.part_no }}</td>
+                                            <td>{{ item.description }}</td>
+                                            <td>{{ item.price|floatformat:2|intcomma }}</td>
+                                            <td>{{ item.quantity|floatformat:0 }}</td>
+                                            <td class="text-end">{{ item.total|floatformat:2|intcomma }}</td>
+                                            <!-- Add more cells for other fields -->
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                <tr>
+                                    <td colspan="4" class="text-end">LABOUR</td>
+                                    <td colspan="4" class="text-end" >{{ ticket.labour|floatformat:2|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end">SUBTOTALS</td>
+                                    <td colspan="4" class="text-end">{{ subtotals|floatformat:2|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class=" text-danger text-end">VAT</td>
+                                    <td colspan="4" class="text-danger text-end">{{ vat|floatformat:2|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end">TOTAL AMOUNT</td>
+                                    <td colspan="4  " class="text-end">{{ total_amount|floatformat:2|intcomma }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>{% endif %}
                 <div class="row mx-auto">
                     <div class="">
                         <p>Add 16% VAT ON ALL PRODUCTS</p>

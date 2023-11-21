@@ -20,21 +20,12 @@
                 <h4 class="mb-3 header-title text-center">Search ColourSoft</h4>
                 <form method="get" action="{% url 'search_coloursoft' %}" class="my-4">
                     <div class="row">
-                        <div class="mb-3 col-6">
+                        <div class="mb-3 col-8">
                             <label for="search" class="form-label">Search:</label>
                             <input type="text" class="form-control" id="search" name="q" value="{{ query }}">
                         </div>
-                        <div class="mb-3 col-3">
-                            <label for="equipment" class="form-label">Equipment:</label>
-                            <select id="equipment" name="equipment" class="form-select">
-                                <option value="" selected>All Equipment</option>
-                                {% for equip in all_equipment %}
-                                    <option value="{{ equip.id }}"
-                                            {% if equip.id == request.GET.equipment %}selected{% endif %}>{{ equip.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3 col-3">
+
+                        <div class="mb-3 col-4">
                             <label for="fields" class="form-label">Select Fields:</label>
                             <select class="form-select" id="fields" name="fields">
                                 {% for field in allowed_fields %}
