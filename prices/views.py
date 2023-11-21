@@ -141,7 +141,7 @@ def upload_coloursoft_price_list(request):
             'code': get_index('code'),
             'yield_no': get_index('yield_no'),
             'price': get_index('price'),
-            'level1': get_index('level1'),
+            'level_1': get_index('level_1'),
             'level_2': get_index('level_2'),
             'level_3': get_index('level_3'),
             'end_user': get_index('end_user'),
@@ -151,32 +151,33 @@ def upload_coloursoft_price_list(request):
         code_index = index_mapping['code']
         price_index = index_mapping['price']
         yield_no_index = index_mapping['yield_no']
-        level1_index = index_mapping['level1']
+        level_1_index = index_mapping['level_1']
         level_2_index = index_mapping['level_2']
         level_3_index = index_mapping['level_3']
         end_user_index = index_mapping['end_user']
 
         for row in ws.iter_rows(min_row=2, values_only=True):
 
-            brand = Brand.objects.get(id=brand_index)
-            print("test data")
-            print(row[code_index])
-            print(row[yield_no_index])
+            code_value = row[code_index]
+            if code_value is not None:
+                # Create instances of Brand if it doesn't exist
+                brand = Brand.objects.get(id=brand_index)  # Assuming brand_index is already defined
 
-            # Create an instance of PriceList
-            price_list_obj = ColoursoftPriceList(
-                code=row[code_index],
-                price=row[price_index] if price_index is not None else '0',
-                yield_no=row[yield_no_index] if yield_no_index is not None else '',
-                level_1=row[level1_index] if level1_index is not None else '',
-                level_2=row[level_2_index] if level_2_index is not None else '',
-                level_3=row[level_3_index] if level_3_index is not None else '',
-                end_user=row[end_user_index] if end_user_index is not None else '',
-                currency=request.POST.get('currency'),
-                brand=brand
-            )
+                # Create an instance of ColoursoftPriceList
+                price_list_obj = ColoursoftPriceList(
+                    code=code_value,
+                    price=row[price_index] if price_index is not None else '0',
+                    yield_no=row[yield_no_index] if yield_no_index is not None else '0',
+                    level_1=row[level_1_index] if level_1_index is not None else '0',
+                    level_2=row[level_2_index] if level_2_index is not None else '0',
+                    level_3=row[level_3_index] if level_3_index is not None else '0',
+                    end_user=row[end_user_index] if end_user_index is not None else '0',
+                    currency=request.POST.get('currency'),
+                    brand=brand
+                )
 
-            price_list_obj.save()
+                price_list_obj.save()
+
         messages.success(request, 'Products Uploaded successfully')
         return redirect('search_coloursoft')  # Redirect to a success page
 
