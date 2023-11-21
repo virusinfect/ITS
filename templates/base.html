@@ -485,16 +485,34 @@
                             <div class="collapse" id="price">
                                 <ul class="nav-second-level">
                                     <li>
-                                        <a href="{% url 'upload_price_list' %}">Upload</a>
+                                        <a href="#upload" data-bs-toggle="collapse">
+                                            Upload <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="upload">
+                                            <ul class="nav-second-level">
+                                                <li>
+                                                    <a href="{% url 'upload_price_list' %}">Pricelist</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'upload_coloursoft_price_list' %}">Coloursoft</a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
                                     <li>
-                                        <a href="{% url 'upload_coloursoft_price_list' %}">Upload Coloursoft</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'search_laptops' %}">Search</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'search_coloursoft' %}">Search Coloursoft</a>
+                                        <a href="#search" data-bs-toggle="collapse">
+                                            Search <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="search">
+                                            <ul class="nav-second-level">
+                                                <li>
+                                                    <a href="{% url 'search_laptops' %}">Pricelist</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'search_coloursoft' %}">Coloursoft</a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
                                     <li>
                                         <a href="{% url 'list-suppliers' %}">Suppliers</a>
@@ -506,7 +524,7 @@
                                         <a href="{% url 'list_brands' %}">Brands</a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'edit_exchange'  %}">Exchange </a>
+                                        <a href="{% url 'edit_exchange' %}">Exchange </a>
                                     </li>
                                 </ul>
                             </div>
