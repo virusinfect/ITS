@@ -165,7 +165,7 @@ def edit_sales_ticket(request, ticket_id):
             )
 
             subject = f"{status} : {ticket.company.name} : {ticket.issue_summary} : #{ticket.ticket_id}"
-            recipient_list = [handler.email, ticket.company]
+            recipient_list = [handler.email]
             from_email = 'its-noreply@intellitech.co.ke'
 
             # Create an EmailMessage instance for HTML content
