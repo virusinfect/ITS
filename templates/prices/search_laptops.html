@@ -51,48 +51,56 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-body table-responsive">
-            <h4 class="mt-0 header-title">Product List</h4>
-            <table id="responsive-datatable" class="table table-bordered dt-responsive">
-                <thead class="table-dark">
-                <tr>
-                    <th width="3%">No.</th>
-                    <th>Part No</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th width="5%">Min</th>
-                    <th width="5%">Max</th>
-                    <th>Currency</th>
-                    <th>Processor</th>
-                    <th>Brand</th>
-                    <th>Supplier</th>
-                    <th>Series</th>
-                    <th>Stock</th>
-                    <th>Product Link</th>
+        <div class="responsive-table-plugin">
+            <div class="table-rep-plugin">
+                <div class="card-body table-responsive" data-pattern="priority-columns">
+                    <h4 class="mt-0 header-title">Product List</h4>
+                    <table id="responsive-datatable" class="table table-bordered dt-responsive">
+                        <thead class="table-dark">
+                        <tr>
+                            <th width="3%">No.</th>
+                            <th>Part No</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th width="5%">Min</th>
+                            <th width="5%">Max</th>
+                            <th>Currency</th>
+                            <th>Processor</th>
+                            <th>Brand</th>
+                            <th>Supplier</th>
+                            <th>Series</th>
+                            <th>Stock</th>
+                            <th>Product Link</th>
 
-                </tr>
-                </thead>
-                <tbody>
-                {% for item in laptops %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ item.product_name }}</td>
-                        <td>{{ item.description }}</td>
-                        <td>{{ item.price|floatformat:2|intcomma }}</td>
-                        <td><i class="mdi mdi-arrow-up btn-outline-success">{{ item.price_min|floatformat:2|intcomma }}</i></td>
-                        <td> <span class="row"><i class="mdi mdi-arrow-down btn-outline-danger">{{ item.price_max|floatformat:2|intcomma }}</i> </span></td>
-                        <td>{{ item.currency }}</td>
-                        <td>{{ item.processor }}</td>
-                        <td>{{ item.brand }}</td>
-                        <td>{{ item.supplier }}</td>
-                        <td>{{ item.series }}</td>
-                        <td>{{ item.stock }}</td>
-                        <td><a href="{{ item.ProductLink }}" target="_blank">{{ item.ProductLink }}</a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in laptops %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ item.product_name }}</td>
+                                <td>{{ item.description }}</td>
+                                <td>{{ item.price|floatformat:2|intcomma }}</td>
+                                <td><i class="mdi mdi-arrow-up btn-outline-success">
+                                    {{ item.price_min|floatformat:2|intcomma }}</i></td>
+                                <td><span class="row"><i
+                                        class="mdi mdi-arrow-down btn-outline-danger">{{ item.price_max|floatformat:2|intcomma }}</i> </span>
+                                </td>
+                                <td>{{ item.currency }}</td>
+                                <td>{{ item.processor }}</td>
+                                <td>{{ item.brand }}</td>
+                                <td>{{ item.supplier }}</td>
+                                <td>{{ item.series }}</td>
+                                <td>{{ item.stock }}</td>
+                                <td><a href="{{ item.ProductLink }}" target="_blank">{{ item.ProductLink }}</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
+    </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
@@ -103,6 +111,7 @@
     <link href="{% static 'libs/datatables.net-select-bs5/css/select.bootstrap5.min.css' %}" rel="stylesheet"
           type="text/css"/>
     <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'libs/admin-resources/rwd-table/rwd-table.min.js' %}"></script>
     <!-- third party js -->
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.css"
           rel="stylesheet">
@@ -180,6 +189,17 @@
                 win.document.close();
                 win.print();
                 win.close();
+            });
+        });
+        document.querySelectorAll('a.toggle-vis').forEach((el) => {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                let columnIdx = e.target.getAttribute('data-column');
+                let column = table.column(columnIdx);
+
+                // Toggle the visibility
+                column.visible(!column.visible());
             });
         });
 
