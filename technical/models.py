@@ -98,7 +98,7 @@ class InhouseTickets(models.Model):
     reg_sign = models.CharField(max_length=255, blank=True)
     collected_by = models.CharField(max_length=255, blank=True)
     dlvr_sign = models.CharField(max_length=255, blank=True)
-    tr_approval = models.CharField(max_length=255, blank=True)
+    tr_approval = models.CharField(max_length=255)
     is_active = models.IntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

@@ -689,7 +689,7 @@ def edit_inhouse_ticket(request, ticket_id):
             ticket.accessories = request.POST.get('accessories')
             ticket.tech = selected_technician
             ticket.updated = timezone.now()
-            ticket.tr_approval = ""
+            ticket.tr_approval = 2
             ticket.accessories = request.POST.get('accessories')
             ticket.updated = timezone.now()
 
