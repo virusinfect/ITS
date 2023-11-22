@@ -1,12 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Delivery{% endblock %}
-
 {% block content %}
-
-    <div class="card col-8 mx-auto" id="delivery-note">
-
-
+    <div class="card col-lg-8 mx-auto" id="delivery-note">
         <div class="container">
             <div class=text-center mx-auto
             ">
@@ -16,10 +12,8 @@
         <div class="row mb-3">
             <div class="col-6 mt-4">
                 <img src="{% static 'logo black.png' %}" alt="Company Logo" height="110px" width="110px">
-
             </div>
             <div class="col-6 text-end mt-4">
-
                 <small style="font-size:10px">Ground Floor, Corporate Insurance Building </small><br>
                 <small style="font-size:10px">Yusuf A. Karim Rd, East End, Treasury Square </small><br>
                 <small style="font-size:10px"> P.O. Box 42716 - 80100,</small><br>
@@ -36,12 +30,10 @@
         </div>
         <div class="row mt-2">
             <div class="col-6 ">
-
                 <h4 style="font-size:12px">Client Information</h4>
                 <small style="font-size:10px">TO : {{ delivery.client }}</small><br>
                 <small style="font-size:10px"> ADDRESS : {{ delivery.address }}</small><br><br>
                 <p>Type : {{ delivery.type }}</p>
-
             </div>
             <div class="col-6 text-end">
                 <h4>Delivery Note</h4>
@@ -49,14 +41,11 @@
                 <small style="font-size:10px">VAT No. 0107676V</small><br>
                 <small style="font-size:10px">PIN No. P051118610N</small><br>
                 <small style="font-size:10px">LPO No. LPO:{{ delivery.lpo }}</small>
-
             </div>
         </div>
-
         <div class="row mt-2 ">
             <h4>Items</h4>
             <div class="col-12 table-responsive">
-
                 {% if items %}
                     <table class="table table-bordered ">
                         <thead>
@@ -91,10 +80,8 @@
                     {% if signature %}
                         <img src="{{ signature.signature_image.url }}" class="card-img-top justify-content-end me-0"
                              alt="Signature">
-
                     {% else %}
                         <p class="card-text" style="font-size:10px"></p>
-
                     {% endif %}
                 </div>
             </div>
@@ -107,12 +94,10 @@
                 class="btn-label"><i class="mdi mdi-square-edit-outline"></i></span>Edit</a>
         <a id="print-button" class="btn btn-primary">Print</a>
     </div>
-
     <script>
         document.getElementById('print-button').addEventListener('click', function () {
             printDeliveryNote();
         });
-
         function printDeliveryNote() {
             var printContents = document.getElementById('delivery-note').innerHTML; // 'delivery-note' is the ID of the content to print
             var originalContents = document.body.innerHTML;
@@ -143,8 +128,6 @@
             document.head.removeChild(style);
         }
     </script>
-
-
 {% endblock %}
 
 
