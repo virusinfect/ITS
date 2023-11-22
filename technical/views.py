@@ -622,7 +622,7 @@ def edit_ticket(request, ticket_id):
                     ticket.company, ticket.ticket_id)
                 recipient_list = [ticket.company.email]
                 from_email = 'its-noreply@intellitech.co.ke'
-                send_mail(subject, message, from_email, recipient_list)
+                #send_mail(subject, message, from_email, recipient_list)
 
             # Redirect back to the edit view
             return redirect('edit-ticket', ticket_id=ticket_id)
@@ -740,7 +740,7 @@ def edit_inhouse_ticket(request, ticket_id):
                     ticket.company, ticket.ticket_id)
                 recipient_list = [ticket.email]
                 from_email = 'its-noreply@intellitech.co.ke'
-                send_mail(subject, message, from_email, recipient_list)
+                #send_mail(subject, message, from_email, recipient_list)
 
             # Redirect back to the edit view
             return redirect('edit_inhouse_ticket', ticket_id=ticket_id)
@@ -1606,7 +1606,7 @@ def create_ticket(request):
             company_id, ticket.ticket_id)
         recipient_list = [company_id.email]
         from_email = 'its-noreply@intellitech.co.ke'
-        send_mail(subject, message, from_email, recipient_list)
+       # send_mail(subject, message, from_email, recipient_list)
         # Redirect to a success page or any other desired action
         return redirect('edit-ticket', ticket.ticket_id)  # Replace 'success_page' with the actual success page URL
 
@@ -2358,7 +2358,7 @@ def save_signature_view_ticket(request):
             client_id.company, ticket.ticket_id)
         recipient_list = [client_id.company.email]
         from_email = 'its-noreply@intellitech.co.ke'
-        send_mail(subject, message, from_email, recipient_list)
+        #send_mail(subject, message, from_email, recipient_list)
         # Redirect to a success page or any other desired action
 
         # Extract the Base64 data after the comma
