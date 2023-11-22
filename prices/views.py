@@ -687,7 +687,7 @@ def search_laptops(request):
             item.price_max = max_price(item.price, item.equipment, item.currency)
             item.currency = "USD"
 
-            item.price = item.price * exchange_rate
+            item.price = item.price / exchange_rate
             item.price_max = item.price_max / exchange_rate
             item.price_min = item.price_min / exchange_rate
 
