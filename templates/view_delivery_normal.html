@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Delivery{% endblock %}
-
+{% load humanize %}
 {% block content %}
 
     <div class="card col-lg-8 mx-auto" id="delivery-note">
@@ -73,22 +73,22 @@
                                 <td>{{ item.serial_no }}</td>
                                 <td>{{ item.quantity }}</td>
                                 <td>{{ item.particulars }}</td>
-                                <td>{{ item.amount }}</td>
-                                <td class="text-end">{{ item.total }}</td>
+                                <td>{{ item.amount|floatformat:2|intcomma }}</td>
+                                <td class="text-end">{{ item.total|floatformat:2|intcomma }}</td>
 
                             </tr>
                         {% endfor %}
                         <tr>
                             <td colspan="4" class="text-end">SUBTOTALS</td>
-                            <td class="text-end">{{ subtotals }}</td>
+                            <td class="text-end">{{ subtotals|floatformat:2|intcomma }}</td>
                         </tr>
                         <tr>
                             <td colspan="4" class="text-end  text-danger">ADD VAT 16%</td>
-                            <td class=" text-danger text-end">{{ vat }}</td>
+                            <td class=" text-danger text-end">{{ vat|floatformat:2|intcomma }}</td>
                         </tr>
                         <tr>
                             <td colspan="4" class="text-end">TOTAL AMOUNT</td>
-                            <td class="text-end">{{ total_amount }}</td>
+                            <td class="text-end">{{ total_amount|floatformat:2|intcomma }}</td>
                         </tr>
 
                         </tbody>
