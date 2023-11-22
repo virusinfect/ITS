@@ -9,7 +9,7 @@
             <div id="content">
 
                 <div class="page-header">
-                    <div class="d-flex justify-content-center mb-1 mt-1">
+                    <div class="d-flex justify-content-center mb-1">
                         <img src="{% static 'logo black.png' %}" height="125" width="125">
                     </div>
                 </div>
@@ -192,11 +192,11 @@
                     </tr>
                     </tbody>
                 </table>
-                <div class="row  col-10 ms-2 mt-2">
+                <div class="row  col-10 ms-2">
                     <h6><strong><u>TERMS OF PAYMENT</u></strong></h6>
                     <h6>100% ON ORDER</h6>
                 </div>
-                <div class="row col-10 ms-2 mt-2">
+                <div class="row col-10 ms-2 ">
                     <h5>OUR BANK DETAILS</h5>
                     <h6><strong>Currency: {{ invoice.bank.currency }}</strong></h6>
                     <h6><strong>Bank: {{ invoice.bank.bank }}</strong></h6>
@@ -212,7 +212,9 @@
                     <h6><strong>PIN: P051118610N</strong></h6>
                 </div>
             </div>
-            <img src="{% static 'tr_footer.png' %}" id="footer-image" class="mb-1">
+            <div id="footer-container">
+                <img src="{% static 'tr_footer.png' %}" id="footer-image" class="mb-1">
+            </div>
         </section>
 
     </div>
@@ -239,15 +241,29 @@
             var style = document.createElement('style');
             style.innerHTML = `
             @media print {
-                #footer-image {
+                body {
+                    margin: 0 !important;
+                }
+
+                .page {
+
+                }
+
+                .page-break {
+                    page-break-before: always;
+                }
+                #footer-container {
                     position: fixed;
                     bottom: 0;
                     left: 0;
                     right: 0;
-                    max-width: 98%;
+                    max-width: 100%;
+                    z-index: 1;
+
                 }
-                body {
-                    margin: 0 !important; /* Force margin removal */
+
+                #footer-image {
+                    max-width: 100%;
                 }
             }
         `;

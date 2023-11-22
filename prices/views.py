@@ -1,6 +1,7 @@
 # views.py
 import re
 from decimal import Decimal, ROUND_DOWN
+
 import openpyxl
 import pandas as pd
 from django.contrib import messages
@@ -9,6 +10,7 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.shortcuts import render
+
 from .forms import PriceListForm
 from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList
 
@@ -79,7 +81,7 @@ def upload_price_list(request):
             brand = Brand.objects.get(id=brand_index)
             equipment = Equipment.objects.get(id=equipment_index)
 
-            product_name= row[product_name_index]
+            product_name = row[product_name_index]
             if product_name is not None:
                 # Create an instance of PriceList
                 price_list_obj = LaptopPriceList(
@@ -104,6 +106,8 @@ def upload_price_list(request):
 
     return render(request, 'prices/upload_price_list.html',
                   {'suppliers': suppliers, 'brands': brands, 'equipment': equipment})
+
+
 @login_required
 def upload_coloursoft_price_list(request):
     suppliers = Supplier.objects.all()
@@ -186,6 +190,7 @@ def upload_coloursoft_price_list(request):
     return render(request, 'prices/upload_coloursoft_price_list.html',
                   {'suppliers': suppliers, 'brands': brands, 'equipment': equipment})
 
+
 @login_required
 def dupload_price_list(request):
     if request.method == 'POST':
@@ -211,6 +216,7 @@ def dupload_price_list(request):
     else:
         form = PriceListForm()
     return render(request, 'prices/upload_price_list.html', {'form': form})
+
 
 @login_required
 def view_laptop_price_list(request):
@@ -253,6 +259,7 @@ def create_supplier(request):
 
     return render(request, 'prices/create_supplier.html')
 
+
 @login_required
 def create_brand(request):
     if request.method == 'POST':
@@ -265,13 +272,14 @@ def create_brand(request):
 
     return render(request, 'prices/create_brand.html')
 
-def min_price(price, equipment_type ,item_currency):
+
+def min_price(price, equipment_type, item_currency):
     type = str(equipment_type)
     currency = str(item_currency)
     exchange_rate = Exchange.objects.first().rate
 
     if currency == "KES":
-        price2 = price/exchange_rate
+        price2 = price / exchange_rate
     else:
         price2 = price
 
@@ -334,10 +342,10 @@ def min_price(price, equipment_type ,item_currency):
         elif price2 > 238.11:
             return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
-    elif type in ["UPS","SOFTWARE"]:
+    elif type in ["UPS", "SOFTWARE"]:
         return (price + price * Decimal('0.12')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
-    elif type in ["CARTRIDGES & RIBBONS","TONNERS"]:
+    elif type in ["CARTRIDGES & RIBBONS", "TONNERS"]:
         return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["ACCESSORIES"]:
@@ -415,12 +423,13 @@ def min_price(price, equipment_type ,item_currency):
     else:
         return 0.00  # No modification for other equipment types
 
-def max_price(price, equipment_type,item_currency):
+
+def max_price(price, equipment_type, item_currency):
     type = str(equipment_type)
     currency = str(item_currency)
     exchange_rate = Exchange.objects.first().rate
     if currency == "KES":
-        price2 = price/exchange_rate
+        price2 = price / exchange_rate
     else:
         price2 = price
 
@@ -452,7 +461,7 @@ def max_price(price, equipment_type,item_currency):
     elif type in ["MEMORIES"]:
         return (price + price * Decimal('0.50')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
-    elif type in ["CARTRIDGES & RIBBONS","TONNERS"]:
+    elif type in ["CARTRIDGES & RIBBONS", "TONNERS"]:
         return (price + price * Decimal('0.18')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["HARD DRIVES"]:
@@ -461,7 +470,7 @@ def max_price(price, equipment_type,item_currency):
     elif type in ["APPLE ACCESSORIES"]:
         return (price + price * Decimal('0.40')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
-    elif type in ["UPS","SOFTWARE"]:
+    elif type in ["UPS", "SOFTWARE"]:
         return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["WORKSTATION"]:
@@ -560,6 +569,7 @@ def max_price(price, equipment_type,item_currency):
     else:
         return 0.00  # No modification for other equipment types
 
+
 @login_required
 def create_equipment(request):
     if request.method == 'POST':
@@ -579,20 +589,24 @@ def create_equipment(request):
     suppliers = Supplier.objects.all()
     return render(request, 'prices/create_equipment.html', {'suppliers': suppliers})
 
+
 @login_required
 def list_suppliers(request):
     suppliers = Supplier.objects.all().order_by('name')
     return render(request, 'prices/list_suppliers.html', {'suppliers': suppliers})
+
 
 @login_required
 def list_equipment(request):
     equipment = Equipment.objects.all().order_by('name')
     return render(request, 'prices/list_equipment.html', {'equipment': equipment})
 
+
 @login_required
 def list_brands(request):
     brands = Brand.objects.all().order_by('name')
     return render(request, 'prices/list_brands.html', {'brands': brands})
+
 
 @login_required
 def search_laptops(request):
@@ -600,7 +614,7 @@ def search_laptops(request):
     selected_fields = request.GET.getlist('fields', [])
 
     # Define the fields you want to allow searching
-    allowed_fields = ['processor', 'brand__name', 'series',  'description','product_name']
+    allowed_fields = ['processor', 'brand__name', 'series', 'description', 'product_name']
 
     # Create a dictionary to map the field names to their corresponding lookup
     field_lookup = {
@@ -612,6 +626,7 @@ def search_laptops(request):
         # Add other fields as needed
     }
     equipment_id = request.GET.get('equipment')
+    currency = request.GET.get('currency')
     # Build the Q objects for the selected fields
     q_objects = Q()
     for field in selected_fields:
@@ -651,9 +666,38 @@ def search_laptops(request):
     all_equipment = Equipment.objects.all()
 
     for item in laptops:
-        item.price_min = min_price(item.price, item.equipment ,item.currency)
-        item.price_max = max_price(item.price, item.equipment,item.currency)
+        exchange_rate = Exchange.objects.first().rate
+        exchange_rate2 = Exchange.objects.first().rate2
 
+        if currency == "KES" and item.currency == "USD":
+            item.price_min = min_price(item.price, item.equipment, item.currency)
+            item.price_max = max_price(item.price, item.equipment, item.currency)
+
+            item.price = item.price / exchange_rate2
+            item.price_max = item.price_max / exchange_rate2
+            item.price_min = item.price_min / exchange_rate2
+            item.currency = "USD"
+
+        elif currency == "KES" and item.currency == "KES":
+            item.price_min = min_price(item.price, item.equipment, item.currency)
+            item.price_max = max_price(item.price, item.equipment, item.currency)
+
+        elif currency == "USD" and item.currency == "KES":
+            item.price_min = min_price(item.price, item.equipment, item.currency)
+            item.price_max = max_price(item.price, item.equipment, item.currency)
+            item.currency = "KES"
+
+            item.price = item.price * exchange_rate
+            item.price_max = item.price_max * exchange_rate
+            item.price_min = item.price_min * exchange_rate
+
+        elif currency == "USD" and item.currency == "USD":
+            item.price_min = min_price(item.price, item.equipment, item.currency)
+            item.price_max = max_price(item.price, item.equipment, item.currency)
+
+        else:
+            item.price_min = min_price(item.price, item.equipment, item.currency)
+            item.price_max = max_price(item.price, item.equipment, item.currency)
 
     context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
                'all_equipment': all_equipment, }
@@ -666,7 +710,7 @@ def search_coloursoft(request):
     selected_fields = request.GET.getlist('fields', [])
 
     # Define the fields you want to allow searching
-    allowed_fields = ['brand__name',  'code','yield_no']
+    allowed_fields = ['brand__name', 'code', 'yield_no']
 
     # Create a dictionary to map the field names to their corresponding lookup
     field_lookup = {
@@ -674,6 +718,7 @@ def search_coloursoft(request):
         'brand__name': 'icontains',
         'yield_no': 'icontains',
     }
+
     equipment_id = request.GET.get('equipment')
     # Build the Q objects for the selected fields
     q_objects = Q()
@@ -717,6 +762,7 @@ def search_coloursoft(request):
                'all_equipment': all_equipment, }
     return render(request, 'prices/search_coloursoft.html', context)
 
+
 @login_required
 def edit_exchange(request):
     exchange, created = Exchange.objects.get_or_create(pk=1)  # Adjust the condition based on your requirements
@@ -735,5 +781,3 @@ def edit_exchange(request):
             pass
 
     return render(request, 'prices/edit_exchange.html', {'exchange': exchange})
-
-
