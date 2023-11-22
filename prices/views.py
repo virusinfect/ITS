@@ -82,11 +82,12 @@ def upload_price_list(request):
             equipment = Equipment.objects.get(id=equipment_index)
 
             product_name = row[product_name_index]
-            if product_name is not None:
+            price_name = row[price_index]
+            if product_name is not None and price_name is not None:
                 # Create an instance of PriceList
                 price_list_obj = LaptopPriceList(
                     product_name=product_name,
-                    price=row[price_index] if price_index is not None else '0',
+                    price=price_name,
                     description=row[description_index] if description_index is not None else '',
                     availability=row[availability_index] if availability_index is not None else '',
                     processor=row[processor_index] if processor_index is not None else '',
