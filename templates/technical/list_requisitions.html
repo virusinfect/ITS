@@ -39,10 +39,10 @@
                     <th width="4%">No.</th>
                     <th width="5%">Ticket ID</th>
                     <th>Company</th>
-                    <th width="7%">Status</th>
                     <th width="2%">Qty</th>
                     <th>Serial No.</th>
                     <th>Requisition Item</th>
+                    <th width="7%">Status</th>
                     <th>Approved By</th>
                     <th width="7%">Issue Status</th>
                     <th width="7%">Return Status</th>
@@ -67,6 +67,9 @@
                         {% else %}
                             <td>{{ requisition.company }}</td>
                         {% endif %}
+                        <td width="2%">{{ requisition.quantity }}</td>
+                        <td>{{ requisition.serial_no }}</td>
+                        <td>{{ requisition.part.code }}</td>
                         <td>
                             {% if requisition.req_status == "Approved" %}
                                 <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i> Approved
@@ -76,9 +79,6 @@
                                 <span class="badge">{{ requisition.req_status }}</span>
                             {% endif %}
                         </td>
-                        <td width="2%">{{ requisition.quantity }}</td>
-                        <td>{{ requisition.serial_no }}</td>
-                        <td>{{ requisition.part.code }}</td>
                         <td width="5%">{{ requisition.approved_by }}</td>
                         <td width="7%">
                             {% if requisition.issue_status == "Issue" %}
