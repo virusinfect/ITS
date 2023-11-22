@@ -286,7 +286,7 @@ def min_price(price, equipment_type, item_currency):
 
     if type in ["Laptop", "DESKTOP"]:
         if 1 <= price2 <= 350:
-            return (price + price * Decimal('0.08')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
+            return (price + price * Decimal('0.12')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
         elif 351 <= price <= 500:
             return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
         elif 501 <= price2 <= 800:
@@ -436,7 +436,7 @@ def max_price(price, equipment_type, item_currency):
 
     if type in ["Laptop", "DESKTOP"]:
         if 1 <= price2 <= 350:
-            return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
+            return (price + price * Decimal('0.14')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
         elif 351 <= price2 <= 500:
             return (price + price * Decimal('0.12')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
         elif 501 <= price2 <= 800:
