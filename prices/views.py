@@ -892,17 +892,16 @@ def search_fellowes(request):
         # Return an empty queryset or default products if needed
         laptops = FellowesPricelist.objects.none()
     # Additional filter for the description field
-    elif 'code' in selected_fields and query:
+    elif 'description' in selected_fields and query:
         # Split the query into keywords using both semicolons and spaces
         keywords = [kw.strip().lower() for kw in re.split(r'[;\s]+', query)]
 
         # Construct a list of Q objects for each keyword
-        keyword_queries = [Q(code__icontains=keyword) for keyword in keywords]
-        laptops = ColoursoftPriceList.objects.all()
+        keyword_queries = [Q(description__icontains=keyword) for keyword in keywords]
+        laptops = FellowesPricelist.objects.all()
         # Combine the Q objects using the | operator
         laptops = laptops.filter(*keyword_queries)
-        if equipment_id:
-            laptops = laptops.filter(equipment=equipment_id)
+
 
     else:
         # Query the model using the constructed Q objects
@@ -910,10 +909,7 @@ def search_fellowes(request):
         if equipment_id:
             laptops = laptops.filter(equipment=equipment_id)
 
-        # Filter by equipment if selected
 
-        if equipment_id:
-            laptops = laptops.filter(equipment=equipment_id)
 
     # Retrieve all equipment for the dropdown
     all_equipment = Equipment.objects.all()
