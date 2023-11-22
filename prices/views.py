@@ -723,8 +723,11 @@ def edit_exchange(request):
 
     if request.method == 'POST':
         rate = request.POST.get('rate')
+        rate2 = request.POST.get('rate2')
         try:
+            rate2 = Decimal(rate2)
             rate = Decimal(rate)
+            exchange.rate2 = rate2
             exchange.rate = rate
             exchange.save()
         except ValueError:
