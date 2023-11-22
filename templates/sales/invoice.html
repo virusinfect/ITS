@@ -2,7 +2,9 @@
 {% block title %}Invoice{% endblock %}
 {% block header %}Invoice{% endblock %}
 {% load static %}
+{% load humanize %}
 {% block content %}
+
     <div class=" card col-8 mx-auto wrapper ">
         <!-- Main content -->
         <section class="card invoice px-4" id="delivery-note">
@@ -68,24 +70,24 @@
                                                 <td>{{ item.part_no }}</td>
                                                 <td>{{ item.description }}</td>
                                                 <td>{{ item.availability }}</td>
-                                                <td style="text-align: center;">{{ item.price }}</td>
+                                                <td style="text-align: center;">{{ item.price|floatformat:2|intcomma }}</td>
                                                 <td style="text-align: center;">{{ item.quantity }}</td>
-                                                <td style="text-align: right;">{{ item.total }}</td>
+                                                <td style="text-align: right;">{{ item.total|floatformat:2|intcomma }}</td>
                                             </tr>
                                         {% endfor %}
                                         <tr>
                                             <th colspan="5" style="text-align: right;">SUB TOTALS</th>
-                                            <td style="text-align: right;">{{ subtotals }}</td>
+                                            <td style="text-align: right;">{{ subtotals|floatformat:2|intcomma }}</td>
                                         </tr>
                                         <tr>
                                             <th class="text-danger" colspan="5" style="text-align: right;">ADD VAT 16%
                                             </th>
                                             <td class="text-danger"
-                                                style="text-align: right;">{{ vat }}</td>
+                                                style="text-align: right;">{{ vat|floatformat:2|intcomma }}</td>
                                         </tr>
                                         <tr>
                                             <th class="" colspan="5" style="text-align: right;">TOTAL AMOUNT</th>
-                                            <td style="text-align: right;">{{ total_amount }}</td>
+                                            <td style="text-align: right;">{{ total_amount|floatformat:2|intcomma }}</td>
                                         </tr>
 
                                         </tbody>
