@@ -175,7 +175,7 @@ class Items(models.Model):
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, related_name='items')
     quantity = models.IntegerField(default=1)
     amount = models.IntegerField(default=0)
-    serial_no = models.CharField(max_length=30, null=True)
+    serial_no = models.TextField( null=True)
     particulars = models.TextField()
 
     def __str__(self):
