@@ -673,10 +673,10 @@ def search_laptops(request):
             item.price_min = min_price(item.price, item.equipment, item.currency)
             item.price_max = max_price(item.price, item.equipment, item.currency)
 
-            item.price = item.price / exchange_rate2
-            item.price_max = item.price_max / exchange_rate2
-            item.price_min = item.price_min / exchange_rate2
-            item.currency = "USD"
+            item.price = item.price * exchange_rate2
+            item.price_max = item.price_max  *exchange_rate2
+            item.price_min = item.price_min * exchange_rate2
+            item.currency = "KES"
 
         elif currency == "KES" and item.currency == "KES":
             item.price_min = min_price(item.price, item.equipment, item.currency)
@@ -685,11 +685,11 @@ def search_laptops(request):
         elif currency == "USD" and item.currency == "KES":
             item.price_min = min_price(item.price, item.equipment, item.currency)
             item.price_max = max_price(item.price, item.equipment, item.currency)
-            item.currency = "KES"
+            item.currency = "USD"
 
             item.price = item.price * exchange_rate
-            item.price_max = item.price_max * exchange_rate
-            item.price_min = item.price_min * exchange_rate
+            item.price_max = item.price_max / exchange_rate
+            item.price_min = item.price_min / exchange_rate
 
         elif currency == "USD" and item.currency == "USD":
             item.price_min = min_price(item.price, item.equipment, item.currency)
