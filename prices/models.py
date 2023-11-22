@@ -64,26 +64,3 @@ class ColoursoftPriceList(models.Model):
 
     def __str__(self):
         return self.code
-
-class FellowesPriceList(models.Model):
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
-    code = models.CharField(max_length=255, null=True,unique=True)
-    specs = models.CharField(max_length=255, null=True)
-    stock = models.CharField(max_length=255, null=True)
-    level_1 = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    level_2 = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, null=True)
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    level_3 = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    end_user = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    currency = models.CharField(max_length=255, null=True)
-
-    def __str__(self):
-        return self.code
-    # Add other fields as needed
-    def save(self, *args, **kwargs):
-        ColoursoftPriceList.objects.filter(code=self.code).delete()
-
-        # Call the original save method to save the current entry
-        super(ColoursoftPriceList, self).save(*args, **kwargs)

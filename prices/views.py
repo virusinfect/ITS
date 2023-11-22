@@ -263,16 +263,23 @@ def create_brand(request):
 
     return render(request, 'prices/create_brand.html')
 
-def min_price(price, equipment_type):
+def min_price(price, equipment_type ,item_currency):
     type = str(equipment_type)
+    currency = str(item_currency)
+    exchange_rate = Exchange.objects.first().rate
+    if currency == "KES":
+        price2 = price/exchange_rate
+    else:
+        price2 = price
+
     if type in ["Laptop", "DESKTOP"]:
-        if 1 <= price <= 350:
+        if 1 <= price2 <= 350:
             return (price + price * Decimal('0.08')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
         elif 351 <= price <= 500:
             return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 501 <= price <= 800:
+        elif 501 <= price2 <= 800:
             return (price + price * Decimal('0.08')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 800:
+        elif price2 > 800:
             return (price + price * Decimal('0.06')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["PROJECTORS"]:
@@ -280,20 +287,20 @@ def min_price(price, equipment_type):
 
     elif type in ["PRINTERS & SCANNERS"]:
 
-        if 1 <= price <= 50:
+        if 1 <= price2 <= 50:
             return (price + price * Decimal('0.25')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 51 <= price <= 100:
+        elif 51 <= price2 <= 100:
             return (price + price * Decimal('0.20')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 101 <= price <= 250:
+        elif 101 <= price2 <= 250:
             return (price + price * Decimal('0.12')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 251:
+        elif price2 > 251:
             return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["SERVER PARTS & ACCESSORIES"]:
 
-        if 1 <= price <= 200:
+        if 1 <= price2 <= 200:
             return (price + price * Decimal('0.30')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 201:
+        elif price2 > 201:
             return (price + price * Decimal('0.25')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["APPLE iPad/ MacBook"]:
@@ -304,13 +311,16 @@ def min_price(price, equipment_type):
             return (price + price * Decimal('0.12')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["NETWORK ITEMS /DLINK/ TPLINK"]:
-        exchange_rate = Exchange.objects.first().rate
-        # Convert the amount to USD
-        amount_in_usd = 2000 / exchange_rate
-        # Round the result to two decimal places
-        amount_in_usd = round(amount_in_usd, 2)
+
         if 1 <= price <= 100:
-            return (price + amount_in_usd)
+            if currency == "USD":
+                # Convert the amount to USD
+                amount_in_usd = 2000 / exchange_rate
+                # Round the result to two decimal places
+                amount_in_usd = round(amount_in_usd, 2)
+                return (price + amount_in_usd)
+            else:
+                return (price + 2000)
         elif price > 101:
             return (price + price * Decimal('0.30')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
@@ -328,14 +338,16 @@ def min_price(price, equipment_type):
         return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["ACCESSORIES"]:
-        exchange_rate = Exchange.objects.first().rate
-        # Convert the amount to USD
-        amount_in_usd = 2000 / exchange_rate
-        # Round the result to two decimal places
-        amount_in_usd = round(amount_in_usd, 2)
 
         if 1 <= price <= 100:
-            return (price + amount_in_usd)
+            if currency == "USD":
+
+                amount_in_usd = 2000 / exchange_rate
+                # Round the result to two decimal places
+                amount_in_usd = round(amount_in_usd, 2)
+                return (price + amount_in_usd)
+            else:
+                return (price + 2000)
         elif price > 101:
             return (price + price * Decimal('0.30')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
@@ -347,13 +359,16 @@ def min_price(price, equipment_type):
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["CCTV PRODUCTS"]:
-        exchange_rate = Exchange.objects.first().rate
-        # Convert the amount to USD
-        amount_in_usd = 2000 / exchange_rate
-        # Round the result to two decimal places
-        amount_in_usd = round(amount_in_usd, 2)
+
         if 1 <= price <= 100:
-            return (price + amount_in_usd)
+            if currency == "USD":
+
+                amount_in_usd = 2000 / exchange_rate
+                # Round the result to two decimal places
+                amount_in_usd = round(amount_in_usd, 2)
+                return (price + amount_in_usd)
+            else:
+                return (price + 2000)
         elif 101 <= price <= 150:
             return (price + price * Decimal('0.20')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
         elif 151 <= price <= 250:
@@ -398,17 +413,23 @@ def min_price(price, equipment_type):
     else:
         return 0.00  # No modification for other equipment types
 
-def max_price(price, equipment_type):
+def max_price(price, equipment_type,item_currency):
     type = str(equipment_type)
+    currency = str(item_currency)
+    exchange_rate = Exchange.objects.first().rate
+    if currency == "KES":
+        price2 = price/exchange_rate
+    else:
+        price2 = price
 
     if type in ["Laptop", "DESKTOP"]:
-        if 1 <= price <= 350:
+        if 1 <= price2 <= 350:
             return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 351 <= price <= 500:
+        elif 351 <= price2 <= 500:
             return (price + price * Decimal('0.12')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 501 <= price <= 800:
+        elif 501 <= price2 <= 800:
             return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 800:
+        elif price2 > 800:
             return (price + price * Decimal('0.08')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["PROJECTORS"]:
@@ -446,89 +467,93 @@ def max_price(price, equipment_type):
 
     elif type in ["PROJECTOR SCREENS"]:
 
-        if 1 <= price <= 190.48:
+        if 1 <= price2 <= 190.48:
             return (price + price * Decimal('0.40')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 190.49:
+        elif price2 > 190.49:
             return (price + price * Decimal('0.20')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["UBIQUITY/ MIKROTIK"]:
 
-        if 1 <= price <= 238.10:
+        if 1 <= price2 <= 238.10:
             return (price + price * Decimal('0.20')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 238.11:
+        elif price2 > 238.11:
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["NETWORK ITEMS /DLINK/ TPLINK"]:
-        exchange_rate = Exchange.objects.first().rate
-        # Convert the amount to USD
-        amount_in_usd = 2000 / exchange_rate
-        # Round the result to two decimal places
-        amount_in_usd = round(amount_in_usd, 2)
-        if 1 <= price <= 100:
-            return (price + amount_in_usd)
-        elif price > 101:
+
+        if 1 <= price2 <= 100:
+            if currency == "USD":
+                amount_in_usd = 2000 / exchange_rate
+                # Round the result to two decimal places
+                amount_in_usd = round(amount_in_usd, 2)
+                return (price + amount_in_usd)
+            else:
+                return (price + 2000)
+        elif price2 > 101:
             return (price + price * Decimal('0.40')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["APPLE iPad/ MacBook"]:
 
-        if 1 <= price <= 600:
+        if 1 <= price2 <= 600:
             return (price + price * Decimal('0.20')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 601:
+        elif price2 > 601:
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["PRINTERS & SCANNERS"]:
 
-        if 1 <= price <= 50:
+        if 1 <= price2 <= 50:
             return (price + price * Decimal('0.30')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 51 <= price <= 100:
+        elif 51 <= price2 <= 100:
             return (price + price * Decimal('0.25')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 101 <= price <= 250:
+        elif 101 <= price2 <= 250:
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 251:
+        elif price2 > 251:
             return (price + price * Decimal('0.12')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["SERVER PARTS & ACCESSORIES"]:
 
-        if 1 <= price <= 200:
+        if 1 <= price2 <= 200:
             return (price + price * Decimal('0.35')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 201:
+        elif price2 > 201:
             return (price + price * Decimal('0.30')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["CCTV PRODUCTS"]:
-        exchange_rate = Exchange.objects.first().rate
-        # Convert the amount to USD
-        amount_in_usd = 2000 / exchange_rate
-        # Round the result to two decimal places
-        amount_in_usd = round(amount_in_usd, 2)
-        if 1 <= price <= 100:
-            return (price + amount_in_usd)
-        elif 101 <= price <= 150:
+
+        if 1 <= price2 <= 100:
+            if currency == "USD":
+                amount_in_usd = 2000 / exchange_rate
+                # Round the result to two decimal places
+                amount_in_usd = round(amount_in_usd, 2)
+                return (price + amount_in_usd)
+            else:
+                return (price + 2000)
+        elif 101 <= price2 <= 150:
             return (price + price * Decimal('0.25')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 151 <= price <= 250:
+        elif 151 <= price2 <= 250:
             return (price + price * Decimal('0.20')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 251 <= price <= 500:
+        elif 251 <= price2 <= 500:
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 501:
+        elif price2 > 501:
             return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
     elif type in ["ACCESSORIES"]:
-        exchange_rate = Exchange.objects.first().rate
-        # Convert the amount to USD
-        amount_in_usd = 2000 / exchange_rate
-        # Round the result to two decimal places
-        amount_in_usd = round(amount_in_usd, 2)
-
-        if 1 <= price <= 100:
-            return (price + amount_in_usd)
-        elif price > 101:
+        if 1 <= price2 <= 100:
+            if currency == "USD":
+                amount_in_usd = 2000 / exchange_rate
+                # Round the result to two decimal places
+                amount_in_usd = round(amount_in_usd, 2)
+                return (price + amount_in_usd)
+            else:
+                return (price + 2000)
+        elif price2 > 101:
             return (price + price * Decimal('0.40')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["SERVERS"]:
 
-        if 1 <= price <= 1000:
+        if 1 <= price2 <= 1000:
             return (price + price * Decimal('0.30')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 1001 <= price <= 5000:
+        elif 1001 <= price2 <= 5000:
             return (price + price * Decimal('0.20')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 5001:
+        elif price2 > 5001:
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
     else:
         return 0.00  # No modification for other equipment types
@@ -573,10 +598,11 @@ def search_laptops(request):
     selected_fields = request.GET.getlist('fields', [])
 
     # Define the fields you want to allow searching
-    allowed_fields = ['processor', 'brand__name', 'series',  'description']
+    allowed_fields = ['processor', 'brand__name', 'series',  'description','product_name']
 
     # Create a dictionary to map the field names to their corresponding lookup
     field_lookup = {
+        'product_name': 'icontains',
         'processor': 'icontains',
         'brand__name': 'icontains',
         'series': 'icontains',
@@ -623,8 +649,8 @@ def search_laptops(request):
     all_equipment = Equipment.objects.all()
 
     for item in laptops:
-        item.price_min = min_price(item.price, item.equipment)
-        item.price_max = max_price(item.price, item.equipment)
+        item.price_min = min_price(item.price, item.equipment ,item.currency)
+        item.price_max = max_price(item.price, item.equipment,item.currency)
 
 
     context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,

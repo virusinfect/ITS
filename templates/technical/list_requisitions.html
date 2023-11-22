@@ -35,18 +35,18 @@
                         <span class="btn-label"><i class="mdi mdi-printer"></i></span>Print
                     </button>{% endcomment %}
                 <thead class="table-dark">
-                <tr>
+                <tr >
                     <th width="4%">No.</th>
-                    <th width="5%">Ticket ID</th>
+                    <th width="5%">Ticket</th>
                     <th>Company</th>
                     <th width="2%">Qty</th>
                     <th>Serial No.</th>
-                    <th>Requisition Item</th>
+                    <th>Item</th>
                     <th width="7%">Status</th>
-                    <th>Approved By</th>
+                    <th>Appvd By</th>
                     <th width="7%">Issue Status</th>
-                    <th width="7%">Return Status</th>
-                    <th>Return Approved By</th>
+                    <th width="7%">Rtn Status</th>
+                    <th>Rtn Appvd By</th>
                     <th width="10%">Remarks</th>
                     <th>Invoice</th>
                     <th>Action</th>
@@ -190,7 +190,6 @@
                 ]
             });
         });
-
         jQuery(document).ready(function ($) {
             var table = $('#responsive-datatable').DataTable();
 
