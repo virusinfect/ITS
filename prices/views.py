@@ -7,12 +7,12 @@ import pandas as pd
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 
 from .forms import PriceListForm
-from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList
+from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList, FellowesPricelist
 
 
 @login_required
@@ -30,7 +30,8 @@ def upload_price_list(request):
             wb = openpyxl.load_workbook(excel_file, read_only=True)
             ws = wb[selected_sheet]
         except Exception as e:
-            return HttpResponseBadRequest(f"Error loading Excel file or sheet: {str(e)}")
+            messages.error(request, f"Error loading Excel file or sheet: {str(e)}")
+            return redirect('upload_price_list')
 
         # Assuming headers are in the first row
         headers = [cell.value for cell in ws[1]]
@@ -39,7 +40,8 @@ def upload_price_list(request):
         required_columns = ['part no', 'price']
         for column in required_columns:
             if column not in headers:
-                raise ValueError(f"Column '{column}' not found in the Excel file.")
+                messages.error(request, f"Column '{column}' not found in the Excel file.")
+                return redirect('upload_price_list')
 
         supplier_index = request.POST.get('supplier')
         brand_index = request.POST.get('brand')
@@ -100,8 +102,11 @@ def upload_price_list(request):
                     equipment=equipment,
                     brand=brand
                 )
-
-                price_list_obj.save()
+                try:
+                    price_list_obj.save()
+                except Exception as e:
+                    messages.error(request, f"Error Processing Data: {str(e)}")
+                    return redirect('upload_price_list')
         messages.success(request, 'Products Uploaded successfully')
         return redirect('search_laptops')  # Redirect to a success page
 
@@ -123,7 +128,8 @@ def upload_coloursoft_price_list(request):
             wb = openpyxl.load_workbook(excel_file, read_only=True)
             ws = wb[selected_sheet]
         except Exception as e:
-            return HttpResponseBadRequest(f"Error loading Excel file or sheet: {str(e)}")
+            messages.error(request, f"Error loading Excel file or sheet: {str(e)}")
+            return redirect('upload_coloursoft_price_list')
 
         # Assuming headers are in the first row
         headers = [cell.value for cell in ws[1]]
@@ -132,7 +138,8 @@ def upload_coloursoft_price_list(request):
         required_columns = ['code', 'price']
         for column in required_columns:
             if column not in headers:
-                raise ValueError(f"Column '{column}' not found in the Excel file.")
+                messages.error(request, f"Column '{column}' not found in the Excel file.")
+                return redirect('upload_coloursoft_price_list')
 
         brand_index = request.POST.get('brand')
 
@@ -182,13 +189,106 @@ def upload_coloursoft_price_list(request):
                     currency=request.POST.get('currency'),
                     brand=brand
                 )
-
-                price_list_obj.save()
+                try:
+                    price_list_obj.save()
+                except Exception as e:
+                    messages.error(request, f"Error Processing Data: {str(e)}")
+                    return redirect('upload_coloursoft_price_list')
 
         messages.success(request, 'Products Uploaded successfully')
         return redirect('search_coloursoft')  # Redirect to a success page
 
     return render(request, 'prices/upload_coloursoft_price_list.html',
+                  {'suppliers': suppliers, 'brands': brands, 'equipment': equipment})
+
+
+@login_required
+def upload_fellowes_price_list(request):
+    suppliers = Supplier.objects.all()
+    brands = Brand.objects.all()
+    equipment = Equipment.objects.all()
+
+    if request.method == 'POST':
+        equipment_index = request.POST.get('equipment')
+        excel_file = request.FILES['file']
+        selected_sheet = request.POST.get('selected_sheet')
+
+        try:
+            wb = openpyxl.load_workbook(excel_file, read_only=True, data_only=True)
+            ws = wb[selected_sheet]
+        except Exception as e:
+            messages.error(request, f"Error loading Excel file or sheet: {str(e)}")
+            return redirect('upload_fellowes_price_list')
+
+        # Assuming headers are in the first row
+        headers = [cell.value for cell in ws[1]]
+
+        # Check if 'product_name' and 'price' are present in the headers
+        required_columns = ['code', 'price']
+        for column in required_columns:
+            if column not in headers:
+                messages.error(request, f"Column '{column}' not found in the Excel file.")
+                return redirect('upload_fellowes_price_list')
+
+        supplier_index = request.POST.get('supplier')
+        brand_index = request.POST.get('brand')
+
+        brand_index = request.POST.get('brand')
+
+        # Assume headers is a list containing the column headers
+        headers_lower = [header.lower() if header is not None else None for header in headers]
+
+        # Function to get index if header is present, otherwise None
+        def get_index(header_name):
+            return headers_lower.index(header_name) if header_name in headers_lower else None
+
+        # Mapping headers to their indices
+        index_mapping = {
+            'code': get_index('code'),
+            'price': get_index('price'),
+            'price1': get_index('price1'),
+            'price2': get_index('price2'),
+            'specification': get_index('specification'),
+            'description': get_index('description'),
+            'discount': get_index('discount'),
+            'stock': get_index('stock'),
+        }
+
+        # Now you can access the indices using the keys
+        code_index = index_mapping['code']
+        price_index = index_mapping['price']
+        price1_index = index_mapping['price1']
+        price2_index = index_mapping['price2']
+        description_index = index_mapping['description']
+        specification_index = index_mapping['specification']
+        discount_index = index_mapping['discount']
+        stock_index = index_mapping['stock']
+
+        for row in ws.iter_rows(min_row=2, values_only=True):
+
+            code = row[code_index]
+            price_name = row[price_index]
+            if code is not None and price_name is not None:
+                # Create an instance of PriceList
+                price_list_obj = FellowesPricelist(
+                    code=code,
+                    price=price_name,
+                    description=row[description_index] if description_index is not None else '',
+                    price1=row[price1_index] if price1_index is not None else '',
+                    price2=row[price2_index] if price2_index is not None else '',
+                    specification=row[specification_index] if specification_index is not None else '',
+                    stock=row[stock_index] if stock_index is not None else '',
+                    discount=row[discount_index] if discount_index is not None else '',
+                )
+                try:
+                    price_list_obj.save()
+                except Exception as e:
+                    messages.error(request, f"Error Processing Data: {str(e)}")
+                    return redirect('upload_fellowes_price_list')
+        messages.success(request, 'Products Uploaded successfully')
+        return redirect('search_fellowes')  # Redirect to a success page
+
+    return render(request, 'prices/upload_fellowes_price_list.html',
                   {'suppliers': suppliers, 'brands': brands, 'equipment': equipment})
 
 
@@ -675,7 +775,7 @@ def search_laptops(request):
             item.price_max = max_price(item.price, item.equipment, item.currency)
 
             item.price = item.price * exchange_rate2
-            item.price_max = item.price_max  *exchange_rate2
+            item.price_max = item.price_max * exchange_rate2
             item.price_min = item.price_min * exchange_rate2
             item.currency = "KES"
 
@@ -762,6 +862,65 @@ def search_coloursoft(request):
     context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
                'all_equipment': all_equipment, }
     return render(request, 'prices/search_coloursoft.html', context)
+
+
+@login_required
+def search_fellowes(request):
+    query = request.GET.get('q', '').lower().strip()
+    selected_fields = request.GET.getlist('fields', [])
+
+    # Define the fields you want to allow searching
+    allowed_fields = ['description', 'code', 'specification']
+
+    # Create a dictionary to map the field names to their corresponding lookup
+    field_lookup = {
+        'code': 'icontains',
+        'description': 'icontains',
+        'specification': 'icontains',
+    }
+
+    equipment_id = request.GET.get('equipment')
+    # Build the Q objects for the selected fields
+    q_objects = Q()
+    for field in selected_fields:
+        if field in allowed_fields:
+            lookup = field_lookup[field]
+            q_objects |= Q(**{f'{field}__{lookup}': query})
+
+    # Check if both query and selected_fields are empty
+    if not query and not selected_fields:
+        # Return an empty queryset or default products if needed
+        laptops = FellowesPricelist.objects.none()
+    # Additional filter for the description field
+    elif 'code' in selected_fields and query:
+        # Split the query into keywords using both semicolons and spaces
+        keywords = [kw.strip().lower() for kw in re.split(r'[;\s]+', query)]
+
+        # Construct a list of Q objects for each keyword
+        keyword_queries = [Q(code__icontains=keyword) for keyword in keywords]
+        laptops = ColoursoftPriceList.objects.all()
+        # Combine the Q objects using the | operator
+        laptops = laptops.filter(*keyword_queries)
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+
+    else:
+        # Query the model using the constructed Q objects
+        laptops = FellowesPricelist.objects.filter(q_objects)
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+
+        # Filter by equipment if selected
+
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+
+    # Retrieve all equipment for the dropdown
+    all_equipment = Equipment.objects.all()
+
+    context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
+               'all_equipment': all_equipment, }
+    return render(request, 'prices/search_fellowes.html', context)
 
 
 @login_required
