@@ -20,13 +20,13 @@
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label for="name" class="form-label">Rate From USD to KES :</label>
+                        <label for="name" class="form-label">Rate From KES to USD :</label>
                         <input type="number" class="form-control" id="rate" name="rate" value="{{ exchange.rate }}"
                                aria-describedby="emailHelp"
                                placeholder="Enter Supplier Name" step="0.01" required>
                     </div>
                     <div class="mb-3">
-                        <label for="name" class="form-label">Rate From KES to USD :</label>
+                        <label for="name" class="form-label">Rate From USD to KES :</label>
                         <input type="number" class="form-control" id="rate2" name="rate2" value="{{ exchange.rate2 }}"
                                aria-describedby="emailHelp"
                                placeholder="Enter Supplier Name" step="0.01" required>
