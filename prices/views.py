@@ -79,24 +79,26 @@ def upload_price_list(request):
             brand = Brand.objects.get(id=brand_index)
             equipment = Equipment.objects.get(id=equipment_index)
 
-            # Create an instance of PriceList
-            price_list_obj = LaptopPriceList(
-                product_name=row[product_name_index],
-                price=row[price_index] if price_index is not None else '0',
-                description=row[description_index] if description_index is not None else '',
-                availability=row[availability_index] if availability_index is not None else '',
-                processor=row[processor_index] if processor_index is not None else '',
-                os=row[os_index] if os_index is not None else '',
-                stock=row[stock_index] if stock_index is not None else '',
-                currency=request.POST.get('currency'),
-                supplier=supplier,
-                series=row[series_index] if series_index is not None else '',
-                ProductLink=row[product_link_index] if product_link_index is not None else '',
-                equipment=equipment,
-                brand=brand
-            )
+            product_name= row[product_name_index]
+            if product_name is not None:
+                # Create an instance of PriceList
+                price_list_obj = LaptopPriceList(
+                    product_name=product_name,
+                    price=row[price_index] if price_index is not None else '0',
+                    description=row[description_index] if description_index is not None else '',
+                    availability=row[availability_index] if availability_index is not None else '',
+                    processor=row[processor_index] if processor_index is not None else '',
+                    os=row[os_index] if os_index is not None else '',
+                    stock=row[stock_index] if stock_index is not None else '',
+                    currency=request.POST.get('currency'),
+                    supplier=supplier,
+                    series=row[series_index] if series_index is not None else '',
+                    ProductLink=row[product_link_index] if product_link_index is not None else '',
+                    equipment=equipment,
+                    brand=brand
+                )
 
-            price_list_obj.save()
+                price_list_obj.save()
         messages.success(request, 'Products Uploaded successfully')
         return redirect('search_laptops')  # Redirect to a success page
 
