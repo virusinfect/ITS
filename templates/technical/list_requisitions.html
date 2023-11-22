@@ -38,8 +38,9 @@
                 <tr>
                     <th width="4%">No.</th>
                     <th width="5%">Ticket ID</th>
+                    <th>Company</th>
                     <th width="7%">Requisition Status</th>
-                    <th>Quantity</th>
+                    <th width="2%">Quantity</th>
                     <th>Serial No.</th>
                     <th>Requisition Item</th>
                     <th>Approved By</th>
@@ -47,6 +48,7 @@
                     <th width="7%">Return Status</th>
                     <th>Return Approved By</th>
                     <th width="10%">Remarks</th>
+                    <th>Invoice</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -60,6 +62,11 @@
                             <td><i class=" mdi mdi-alpha-x-circle-outline mdi-18px btn-outline-warning"> No Ticket</i>
                             </td>
                         {% endif %}
+                        {% if requisition.ticket %}
+                            <td>{{ requisition.ticket.company }}</td>
+                        {% else %}
+                            <td>{{ requisition.company }}</td>
+                        {% endif %}
                         <td>
                             {% if requisition.req_status == "Approved" %}
                                 <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i> Approved
@@ -69,7 +76,7 @@
                                 <span class="badge">{{ requisition.req_status }}</span>
                             {% endif %}
                         </td>
-                        <td>{{ requisition.quantity }}</td>
+                        <td width="2%">{{ requisition.quantity }}</td>
                         <td>{{ requisition.serial_no }}</td>
                         <td>{{ requisition.part.code }}</td>
                         <td width="5%">{{ requisition.approved_by }}</td>
@@ -95,6 +102,7 @@
                         </td>
                         <td width="5%">{{ requisition.return_approved_by }}</td>
                         <td width="10%">{{ requisition.remarks }}</td>
+                        <td>{{ requisition.invoice }}</td>
                         <td>{% if user|is_helpdesk or user|is_management %}
                             {% if requisition.issue_status == "Pending" %}
                                 <a href="{% url 'change_requisition_status' requisition.req_id %}" title="Status"

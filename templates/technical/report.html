@@ -150,7 +150,7 @@
                                             <td>{{ requisition.part.description }}</td>
                                             <td>{{ requisition.price|floatformat:2|intcomma }}</td>
                                             <td>{{ requisition.quantity }}</td>
-                                            <td>{{ requisition.total|floatformat:2|intcomma }}</td>
+                                            <td class="text-end"> {{ requisition.total|floatformat:2|intcomma }}</td>
                                         </tr>
                                     {% endfor %}
                                 {% endif %}

@@ -554,17 +554,17 @@ def create_equipment(request):
 
 @login_required
 def list_suppliers(request):
-    suppliers = Supplier.objects.all()
+    suppliers = Supplier.objects.all().order_by('name')
     return render(request, 'prices/list_suppliers.html', {'suppliers': suppliers})
 
 @login_required
 def list_equipment(request):
-    equipment = Equipment.objects.all()
+    equipment = Equipment.objects.all().order_by('name')
     return render(request, 'prices/list_equipment.html', {'equipment': equipment})
 
 @login_required
 def list_brands(request):
-    brands = Brand.objects.all()
+    brands = Brand.objects.all().order_by('name')
     return render(request, 'prices/list_brands.html', {'brands': brands})
 
 @login_required
