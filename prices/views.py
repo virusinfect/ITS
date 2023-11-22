@@ -269,6 +269,7 @@ def min_price(price, equipment_type ,item_currency):
     type = str(equipment_type)
     currency = str(item_currency)
     exchange_rate = Exchange.objects.first().rate
+
     if currency == "KES":
         price2 = price/exchange_rate
     else:
@@ -314,7 +315,7 @@ def min_price(price, equipment_type ,item_currency):
 
     elif type in ["NETWORK ITEMS /DLINK/ TPLINK"]:
 
-        if 1 <= price <= 100:
+        if 1 <= price2 <= 100:
             if currency == "USD":
                 # Convert the amount to USD
                 amount_in_usd = 2000 / exchange_rate
@@ -323,14 +324,14 @@ def min_price(price, equipment_type ,item_currency):
                 return (price + amount_in_usd)
             else:
                 return (price + 2000)
-        elif price > 101:
+        elif price2 > 101:
             return (price + price * Decimal('0.30')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["UBIQUITY/ MIKROTIK"]:
 
-        if 1 <= price <= 238.10:
+        if 1 <= price2 <= 238.10:
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 238.11:
+        elif price2 > 238.11:
             return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["UPS","SOFTWARE"]:
@@ -341,7 +342,7 @@ def min_price(price, equipment_type ,item_currency):
 
     elif type in ["ACCESSORIES"]:
 
-        if 1 <= price <= 100:
+        if 1 <= price2 <= 100:
             if currency == "USD":
 
                 amount_in_usd = 2000 / exchange_rate
@@ -350,19 +351,19 @@ def min_price(price, equipment_type ,item_currency):
                 return (price + amount_in_usd)
             else:
                 return (price + 2000)
-        elif price > 101:
+        elif price2 > 101:
             return (price + price * Decimal('0.30')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["PROJECTOR SCREENS"]:
 
-        if 1 <= price <= 190.48:
+        if 1 <= price2 <= 190.48:
             return (price + price * Decimal('0.30')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 190.49:
+        elif price2 > 190.49:
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["CCTV PRODUCTS"]:
 
-        if 1 <= price <= 100:
+        if 1 <= price2 <= 100:
             if currency == "USD":
 
                 amount_in_usd = 2000 / exchange_rate
@@ -371,13 +372,13 @@ def min_price(price, equipment_type ,item_currency):
                 return (price + amount_in_usd)
             else:
                 return (price + 2000)
-        elif 101 <= price <= 150:
+        elif 101 <= price2 <= 150:
             return (price + price * Decimal('0.20')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 151 <= price <= 250:
+        elif 151 <= price2 <= 250:
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 251 <= price <= 500:
+        elif 251 <= price2 <= 500:
             return (price + price * Decimal('0.10')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 501:
+        elif price2 > 501:
             return (price + price * Decimal('0.8')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["WORKSTATION"]:
@@ -405,12 +406,11 @@ def min_price(price, equipment_type ,item_currency):
         return (price + price * Decimal('0.20')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     elif type in ["SERVERS"]:
-
-        if 1 <= price <= 1000:
+        if 1 <= price2 <= 1000:
             return (price + price * Decimal('0.25')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif 1001 <= price <= 5000:
+        elif 1001 <= price2 <= 5000:
             return (price + price * Decimal('0.15')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        elif price > 5001:
+        elif price2 > 5001:
             return (price + price * Decimal('0.13')).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
     else:
         return 0.00  # No modification for other equipment types
