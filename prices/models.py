@@ -41,12 +41,21 @@ class LaptopPriceList(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
-    product_name = models.CharField(max_length=100, unique=True)
+    product_name = models.CharField(max_length=100)
     availability = models.CharField(max_length=255,null=True)
 
     def __str__(self):
         return self.product_name
     # Add other fields as needed
+    class Meta:
+        # Add the unique_together constraint
+        unique_together = ['product_name', 'supplier']
+
+    def save(self, *args, **kwargs):
+        # Delete older entries with the same product_name and supplier
+        LaptopPriceList.objects.filter(product_name=self.product_name, supplier=self.supplier).exclude(
+            pk=self.pk).delete()
+        super().save(*args, **kwargs)
 
 class ColoursoftPriceList(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
