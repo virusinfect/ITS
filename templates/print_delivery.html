@@ -1,0 +1,246 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Delivery Note Print | ITS</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../dist/img/favicon.ico">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="../plugins/fontawesome-free-6.1.2-web/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <style>
+        /* Styles go here */
+
+        .page-header, .page-header-space {
+            height: 200px;
+        }
+
+        .page-footer, .page-footer-space {
+            height: 150px;
+
+        }
+
+        .page-footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            /*border-top: 1px solid black;*/
+            background: #fff;
+        }
+
+        .page-header {
+            position: fixed;
+            top: 0mm;
+            width: 100%;
+            /*border-bottom: 1px solid black;*/
+            background: #fff;
+        }
+
+        .page {
+            page-break-after: always;
+        }
+
+        @page {
+            margin: 10mm
+        }
+
+        @media print {
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+
+            button {
+                display: none;
+            }
+
+            body {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body class="layout-fixed">
+<div class="wrapper">
+    <!-- Main content -->
+    <section class="invoice">
+        <div id="content">
+
+            <div class="page-header">
+                <div class="row p-4">
+                    <div class="col-sm-4">
+                        <div class="d-flex justify-content-left">
+                            <img src="{% static 'logo black.png' %}" height="150" width="150">
+                        </div>
+                    </div><!-- ./col -->
+
+                    <div class="col-sm-4">
+                        <div class="d-flex justify-content-center">
+                            <h2>INTELLITECH LTD.</h2>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <h5>ITL/DN/{{ delivery.id }}</h5>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <h4><u>Delivery Note</u></h4>
+                        </div>
+
+                    </div><!-- ./col -->
+
+                    <div class="col-sm-4 text-right">
+                        <p class=" text-sm">
+                            Ground Floor, Corporate Insurance Building<br>
+                            Yusuf A. Karim Rd,<br>
+                            East End, Treasury Square<br>
+                            P.O. Box 42716 - 80100,<br>
+                            Mombasa - Kenya<br>
+                            Tel: +254 41 2221792/696/932/231500/2311364<br>
+                            Cell: 0728 786014 | 0732 786012 | 0773 963114<br>
+                            www.intellitech.co.ke
+                        </p>
+                    </div><!-- ./col -->
+
+                </div><!-- ./row -->
+            </div>
+
+            <div class="page-footer">
+                <div class="d-flex justify-content-center">
+                    <img src="{% static 'tr_footer.png' %}" style="max-width: 100%; max-height: 100;">
+                </div>
+            </div>
+
+            <table class="table table-borderless">
+                <thead>
+                <tr>
+                    <td>
+                        <!--place holder for the fixed-position header-->
+                        <div class="page-header-space"></div>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <!--*** CONTENT GOES HERE ***-->
+                        <div class="page">
+                            <dl class="row">
+                                <dd class="col-sm-2 ">Date:</dd>
+                                <dt class="col-sm-10 ">{{ delivery.created }}</dt>
+                                <dd class="col-sm-2 ">To:</dd>
+                                <dt class="col-sm-10 ">{{ delivery.client }}</dt>
+                                <dd class="col-sm-2 ">P.O. Box:</dd>
+                                <dt class="col-sm-10 ">{{ delivery.address }}</dt>
+                            </dl>
+
+                            <div class="row">
+                                <div class="form-group col-md-8">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label" for="sales">Sales : {{ delivery.type }}</label>
+                                    </div>
+
+                                </div>
+
+                                {% if delivery.lpo %}
+                                    <p class="col-md-4 text-right"><strong>LPO
+                                        No.: </strong> {{ delivery.lpo }}</p>
+                                {% endif %}
+                            </div>
+
+
+                            <p class="text-left mb-2">
+                                Emails:<br>
+                                For sales: sales@intellitech.co.ke<br>
+                                For support: support@intellitech.co.ke<br><br>
+                                <i>Please receive the following goods in good order and condition</i>
+                            </p>
+
+                            <table id="" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th class="">Qty</th>
+                                    <th class="">Serial No.</th>
+                                    <th class="">Particulars</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for item in items %}
+                                    <tr>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ item.serial_no }}</td>
+                                        <td>{{ item.particulars }}</td>
+                                    </tr>
+                                {% endfor %}
+
+
+                                </tbody>
+                            </table>
+
+                            <dl class="row">
+                                <dd class="col-md-7">
+                                    <p><i>Received the above goods in good order and condition.</i></p>
+                                    <p>DN/{{ delivery.updated|date:"m/Y"}}
+                                        /No. {{ delivery.id }}</p>
+                                    <p>VAT No. 0107676V</p>
+                                    <p>PIN No. P051118610N</p>
+                                </dd>
+
+                                <dd class="col-md-5">
+                                    <dl class="row">
+                                        <dt class="col-sm-4 ">Collected By:</dt>
+                                        <dd class="col-sm-8 ">{{ delivery.collected_by }}</dd>
+                                        <dt class="col-sm-4 ">Signature:</dt>
+                                        <dd class="col-sm-8 ">
+                                            {% if signature %}
+                                                <img src="{{ signature.signature_image.url }}"
+                                                     class="card-img-top justify-content-end me-0"
+                                                     alt="Signature" style="max-width: 100%; max-height: 100%;">
+                                            {% else %}
+
+                                            {% endif %}
+
+                                            <hr>
+                                            <p class="text-center"><i>Use official rubber stamp</i></p></dd>
+                                    </dl>
+                                </dd>
+
+                            </dl>
+
+
+                        </div> <!-- /. page -->
+
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>
+                        <!--place holder for the fixed-position footer-->
+                        <div class="page-footer-space"></div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- ./wrapper -->
+<!-- Page specific script -->
+<script>
+    window.addEventListener("load", window.print());
+</script>
+<script type="text/javascript" src="../assets/includes/erkjs/windedge.js"></script>
+</body>
+</html>

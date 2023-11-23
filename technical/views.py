@@ -973,7 +973,7 @@ def view_delivery(request, ticket_id):
     except (Tickets.DoesNotExist, Delivery.DoesNotExist):
         return HttpResponseNotFound("Ticket or Delivery not found")
 
-    return render(request, 'view_delivery.html',
+    return render(request, 'print_delivery.html',
                   {'ticket': ticket, 'delivery': delivery, 'signature': signature, 'items': items})
 
 
