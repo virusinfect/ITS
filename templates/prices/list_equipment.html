@@ -29,6 +29,7 @@
                     <th width="10%">No.</th>
                     <th>Equipments</th>
                     <th>Suppliers</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -39,6 +40,7 @@
                         <td>{% for supplier in item.suppliers.all %}
                             {{ supplier.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}</td>
+                    <td><a href="{% url 'price_rules_for_equipment' item.id %}">Price Rules</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>

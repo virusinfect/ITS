@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Price Rules{% endblock %}
+{% block header %}Price Rules{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'list-equipment' %}">Equipmments</a></li>
+                    <li class="breadcrumb-item active">Edit Price Rule for {{ equipment }}</li>
+                    {#                                                                <li class="breadcrumb-item active">Data</li>#}
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+
+    <div class="mx-auto">
+        <div class="card">
+            <div class="card-body col-lg-11 mx-auto">
+                <h4 class="mb-3 header-title">Edit Price Rule for {{ equipment }}</h4>
+                <div class="mb-3 row table-responsive mx-auto">
+                    <form method="post" action="{% url 'price_rules_for_equipment' equipment.id %}">
+                        {% csrf_token %}
+                        <table class="table mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Price Range Start</th>
+                                <th>Price Range End</th>
+                                <th>Min</th>
+                                <th>Max</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for price_rule in price_rules %}
+                                <tr>
+                                    <td>
+                                         <input type="text" name="discount_percentage_{{ price_rule.id }}"
+                                               value="{{ price_rule.price_range_start }}" class="form-control">
+                                        </td>
+                                    <td>
+                                    <input type="text" name="discount_percentage_{{ price_rule.id }}"
+                                               value="{{ price_rule.price_range_end }}" class="form-control">
+                                        </td>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="discount_percentage_{{ price_rule.id }}"
+                                               value="{{ price_rule.discount_percentage }}" class="form-control">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="discount_percentage2_{{ price_rule.id }}"
+                                               value="{{ price_rule.discount_percentage2 }}" class="form-control">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <button type="submit" class="btn btn-primary waves-effect waves-light mt-2">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

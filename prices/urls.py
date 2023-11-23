@@ -18,5 +18,6 @@ urlpatterns = [
     path('search_coloursoft/', views.search_coloursoft, name='search_coloursoft'),
     path('search_fellowes/', views.search_fellowes, name='search_fellowes'),
     path('exchange/', views.edit_exchange, name='edit_exchange'),
+    path('equipment/<int:equipment_id>/', views.price_rules_for_equipment, name='price_rules_for_equipment'),
     # Add other URLs as needed
 ]

@@ -9,11 +9,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
 
 from .forms import PriceListForm
-from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList, FellowesPricelist
+from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList, FellowesPricelist, PriceRule
 
 
 @login_required
@@ -939,3 +939,23 @@ def edit_exchange(request):
             pass
 
     return render(request, 'prices/edit_exchange.html', {'exchange': exchange})
+
+@login_required
+def price_rules_for_equipment(request, equipment_id):
+    equipment = get_object_or_404(Equipment, pk=equipment_id)
+    price_rules = PriceRule.objects.filter(product_type=equipment)
+
+    if request.method == 'POST':
+        # Assuming you have form data in the request.POST dictionary
+        # Extract data and update PriceRule objects accordingly
+        for price_rule in price_rules:
+            # Use the appropriate field names based on your form
+            discount_percentage = Decimal(request.POST.get(f"discount_percentage_{price_rule.id}", 0))
+            discount_percentage2 = Decimal(request.POST.get(f"discount_percentage2_{price_rule.id}", 0))
+
+            price_rule.discount_percentage = discount_percentage
+            price_rule.discount_percentage2 = discount_percentage2
+
+            price_rule.save()
+
+    return render(request, 'prices/edit_price_rules.html', {'equipment': equipment, 'price_rules': price_rules})
