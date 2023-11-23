@@ -286,9 +286,7 @@ def edit_order(request, order_id):
                 "<tr style='border-bottom: 3px solid #ddd;'>"
                 "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
                 "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
-                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
-                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
-                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
+                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"                
                 "</tr>"
             )
 
@@ -298,14 +296,17 @@ def edit_order(request, order_id):
                         "<tr>"
                         f"<td style='border: 3px solid #ddd; padding: 8px;'>{product_list[i]}</td>"
                         f"<td style='border: 3px solid #ddd; padding: 8px;'>{quantity_list[i]}</td>"
-                        f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_ordered_list[i]}</td>"
                         f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
-                        f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_received_list[i]}</td>"
                         "</tr>"
                     )
                     table += row
 
             table += "</table>"
+
+            if order.ticket:
+                order_id = order.ticket.ticket_id
+            else:
+                order_id = "No Ticket"
 
             # Your existing code to create new_sourcing_data objects
             url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
@@ -313,7 +314,7 @@ def edit_order(request, order_id):
             # Use the 'table' string in the email message
             message = (
                 f"Dear {assignee2},<br><br>"
-                f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+                f"Our sales team has created an order , {clickable_url} from ticket ID #{order_id} on your behalf. Here are the details and summary of the order:<br><br>"
                 f"Client: {order.client};<br><br>"
                 f"Kindly order for below::<br><br>{table}<br><br>"
                 "This is an auto-generated email | © 2023 ITS. All rights reserved."
@@ -624,14 +625,17 @@ def convert_to_order(request, ticket_id):
                 table += row
 
         table += "</table>"
-
+        if order.ticket:
+            order_id = order.ticket.ticket_id
+        else:
+            order_id = "No Ticket"
         # Your existing code to create new_sourcing_data objects
         url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
         clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
         # Use the 'table' string in the email message
         message = (
             f"Dear {handler},<br><br>"
-            f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+            f"Our sales team has created an order, {clickable_url} from ticket ID #{order_id}  on your behalf. Here are the details and summary of the order:<br><br>"
             f"Client: {order.client};<br><br>"
             f"Kindly order for below::<br><br>{table}<br><br>"
             "This is an auto-generated email | © 2023 ITS. All rights reserved."
