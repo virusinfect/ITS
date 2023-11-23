@@ -125,7 +125,7 @@ def upload_coloursoft_price_list(request):
         selected_sheet = request.POST.get('selected_sheet')
 
         try:
-            wb = openpyxl.load_workbook(excel_file, read_only=True)
+            wb = openpyxl.load_workbook(excel_file, read_only=True, data_only=True)
             ws = wb[selected_sheet]
         except Exception as e:
             messages.error(request, f"Error loading Excel file or sheet: {str(e)}")
