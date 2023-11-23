@@ -36,7 +36,6 @@ def upload_price_list(request):
         # Assuming headers are in the first row
         headers = [cell.value for cell in ws[1]]
 
-        # Check if 'product_name' and 'price' are present in the headers
         required_columns = ['part no', 'price']
         for column in required_columns:
             if column not in headers:
@@ -153,15 +152,19 @@ def upload_coloursoft_price_list(request):
         # Mapping headers to their indices
         index_mapping = {
             'code': get_index('code'),
-            'yield_no': get_index('yield_no'),
+            'hp_code': get_index('hp code'),
+            'yield_no': get_index('yield'),
+            'brand': get_index('brand'),
             'price': get_index('price'),
-            'level_1': get_index('level_1'),
-            'level_2': get_index('level_2'),
-            'level_3': get_index('level_3'),
-            'end_user': get_index('end_user'),
+            'level_1': get_index('level 1'),
+            'level_2': get_index('level 2'),
+            'level_3': get_index('level 3'),
+            'end_user': get_index('end user'),
         }
 
         # Now you can access the indices using the keys
+        brand_index = index_mapping['brand']
+        hp_code_index = index_mapping['hp_code']
         code_index = index_mapping['code']
         price_index = index_mapping['price']
         yield_no_index = index_mapping['yield_no']
@@ -182,12 +185,13 @@ def upload_coloursoft_price_list(request):
                     code=code_value,
                     price=row[price_index] if price_index is not None else '0',
                     yield_no=row[yield_no_index] if yield_no_index is not None else '0',
+                    hp_code=row[hp_code_index] if hp_code_index is not None else '',
                     level_1=row[level_1_index] if level_1_index is not None else '0',
                     level_2=row[level_2_index] if level_2_index is not None else '0',
                     level_3=row[level_3_index] if level_3_index is not None else '0',
                     end_user=row[end_user_index] if end_user_index is not None else '0',
                     currency=request.POST.get('currency'),
-                    brand=brand
+                    brand=row[brand_index] if brand_index is not None else '0',
                 )
                 try:
                     price_list_obj.save()
@@ -811,12 +815,12 @@ def search_coloursoft(request):
     selected_fields = request.GET.getlist('fields', [])
 
     # Define the fields you want to allow searching
-    allowed_fields = ['brand__name', 'code', 'yield_no']
+    allowed_fields = ['brand', 'code', 'yield_no']
 
     # Create a dictionary to map the field names to their corresponding lookup
     field_lookup = {
         'code': 'icontains',
-        'brand__name': 'icontains',
+        'brand': 'icontains',
         'yield_no': 'icontains',
     }
 

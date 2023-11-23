@@ -41,16 +41,6 @@
                             {% endfor %}
                         </select>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="brand" class="form-label">Brand:</label>
-                        <select class="form-select" id="brand" name="brand">
-                            {% for brand in brands %}
-                                <option value="{{ brand.id }}">{{ brand.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
                     <div class="mb-3">
                         <label for="equipment" class="form-label">Equipment:</label>
                         <select class="form-select" id="equipment" name="equipment">
@@ -59,7 +49,6 @@
                             {% endfor %}
                         </select>
                     </div>
-
                     <div class="mb-3">
                         <label for="currency" class="form-label">Currency:</label>
                         <select class="form-select" id="currency" name="currency">
