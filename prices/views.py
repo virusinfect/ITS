@@ -1,6 +1,7 @@
 # views.py
 import re
 from decimal import Decimal, ROUND_DOWN
+from .pricing_logic import calculate_discounted_price,calculate_discounted_price2
 
 import openpyxl
 import pandas as pd
@@ -35,10 +36,11 @@ def upload_price_list(request):
 
         # Assuming headers are in the first row
         headers = [cell.value for cell in ws[1]]
+        headers_lower = [header.lower() if header is not None else None for header in headers]
 
         required_columns = ['part no', 'price']
         for column in required_columns:
-            if column not in headers:
+            if column not in headers_lower:
                 messages.error(request, f"Column '{column}' not found in the Excel file.")
                 return redirect('upload_price_list')
 
@@ -46,7 +48,7 @@ def upload_price_list(request):
         brand_index = request.POST.get('brand')
 
         # Assume headers is a list containing the column headers
-        headers_lower = [header.lower() for header in headers]
+
 
         # Function to get index if header is present, otherwise None
         def get_index(header_name):
@@ -136,7 +138,6 @@ def upload_coloursoft_price_list(request):
         # Check if 'product_name' and 'price' are present in the headers
 
 
-        brand_index = request.POST.get('brand')
 
         # Assume headers is a list containing the column headers
         headers_lower = [header.lower() if header is not None else None for header in headers]
@@ -229,18 +230,15 @@ def upload_fellowes_price_list(request):
 
         # Assuming headers are in the first row
         headers = [cell.value for cell in ws[1]]
+        headers_lower = [header.lower() if header is not None else None for header in headers]
 
         # Check if 'product_name' and 'price' are present in the headers
         required_columns = ['code', 'price']
         for column in required_columns:
-            if column not in headers:
+            if column not in headers_lower:
                 messages.error(request, f"Column '{column}' not found in the Excel file.")
                 return redirect('upload_fellowes_price_list')
 
-        supplier_index = request.POST.get('supplier')
-        brand_index = request.POST.get('brand')
-
-        brand_index = request.POST.get('brand')
 
         # Assume headers is a list containing the column headers
         headers_lower = [header.lower() if header is not None else None for header in headers]
@@ -253,8 +251,8 @@ def upload_fellowes_price_list(request):
         index_mapping = {
             'code': get_index('code'),
             'price': get_index('price'),
-            'price1': get_index('price1'),
-            'price2': get_index('price2'),
+            'price1': get_index('price 1'),
+            'price2': get_index('price 2'),
             'specification': get_index('specification'),
             'description': get_index('description'),
             'discount': get_index('discount'),
@@ -777,35 +775,31 @@ def search_laptops(request):
         exchange_rate = Exchange.objects.first().rate
         exchange_rate2 = Exchange.objects.first().rate2
 
+        if item.currency == "KES":
+            price2 = item.price / exchange_rate
+        else:
+            price2 = item.price
+
+        item.price_min = calculate_discounted_price(item.price, item.equipment, price2)
+        item.price_max = calculate_discounted_price2(item.price, item.equipment, price2)
+
+
         if currency == "KES" and item.currency == "USD":
-            item.price_min = min_price(item.price, item.equipment, item.currency)
-            item.price_max = max_price(item.price, item.equipment, item.currency)
+
 
             item.price = item.price * exchange_rate2
             item.price_max = item.price_max * exchange_rate2
             item.price_min = item.price_min * exchange_rate2
             item.currency = "KES"
 
-        elif currency == "KES" and item.currency == "KES":
-            item.price_min = min_price(item.price, item.equipment, item.currency)
-            item.price_max = max_price(item.price, item.equipment, item.currency)
-
         elif currency == "USD" and item.currency == "KES":
-            item.price_min = min_price(item.price, item.equipment, item.currency)
-            item.price_max = max_price(item.price, item.equipment, item.currency)
+
             item.currency = "USD"
 
             item.price = item.price / exchange_rate
             item.price_max = item.price_max / exchange_rate
             item.price_min = item.price_min / exchange_rate
 
-        elif currency == "USD" and item.currency == "USD":
-            item.price_min = min_price(item.price, item.equipment, item.currency)
-            item.price_max = max_price(item.price, item.equipment, item.currency)
-
-        else:
-            item.price_min = min_price(item.price, item.equipment, item.currency)
-            item.price_max = max_price(item.price, item.equipment, item.currency)
 
     context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
                'all_equipment': all_equipment, }
