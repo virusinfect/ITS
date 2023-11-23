@@ -134,11 +134,7 @@ def upload_coloursoft_price_list(request):
         headers = [cell.value for cell in ws[1]]
 
         # Check if 'product_name' and 'price' are present in the headers
-        required_columns = ['code', 'price']
-        for column in required_columns:
-            if column not in headers:
-                messages.error(request, f"Column '{column}' not found in the Excel file.")
-                return redirect('upload_coloursoft_price_list')
+
 
         brand_index = request.POST.get('brand')
 
@@ -149,10 +145,17 @@ def upload_coloursoft_price_list(request):
         def get_index(header_name):
             return headers_lower.index(header_name) if header_name in headers_lower else None
 
+
+        required_columns = ['code', 'price']
+        for column in required_columns:
+            if column not in headers_lower:
+                messages.error(request, f"Column '{column}' not found in the Excel file.")
+                return redirect('upload_coloursoft_price_list')
+
         # Mapping headers to their indices
         index_mapping = {
             'code': get_index('code'),
-            'hp_code': get_index('hp code'),
+            'hp_code': get_index('code 1'),
             'yield_no': get_index('yield'),
             'brand': get_index('brand'),
             'price': get_index('price'),
@@ -815,13 +818,14 @@ def search_coloursoft(request):
     selected_fields = request.GET.getlist('fields', [])
 
     # Define the fields you want to allow searching
-    allowed_fields = ['brand', 'code', 'yield_no']
+    allowed_fields = ['brand', 'code', 'yield_no','hp_code']
 
     # Create a dictionary to map the field names to their corresponding lookup
     field_lookup = {
         'code': 'icontains',
         'brand': 'icontains',
         'yield_no': 'icontains',
+        'hp_code': 'icontains',
     }
 
     equipment_id = request.GET.get('equipment')

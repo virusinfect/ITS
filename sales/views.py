@@ -238,12 +238,13 @@ def edit_order(request, order_id):
     sales_group = Group.objects.get(name='Sales')
     users = sales_group.user_set.all()
     companies = Company.objects.all().order_by('name')
-
+    assignee1 = order.assignee
     if request.method == 'POST':
         # Update the order fields based on user input
         order.lpo_no = request.POST.get('lpo_no')
         assignee_id = request.POST.get('assignee')
-        order.assignee = User.objects.get(id=assignee_id)
+        assignee2 = User.objects.get(id=assignee_id)
+        order.assignee = assignee2
         order.status = request.POST.get('status')
         order.save()
 
@@ -276,6 +277,55 @@ def edit_order(request, order_id):
 
             # Insert the new data
             OrderProducts.objects.bulk_create(new_sourcing_data)
+        print("test")
+        print(assignee1)
+        print(assignee2)
+        if assignee1.id != assignee2.id:
+            table = (
+                "<table style='border-collapse: collapse; width: 100%;'>"
+                "<tr style='border-bottom: 3px solid #ddd;'>"
+                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
+                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
+                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
+                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
+                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
+                "</tr>"
+            )
+
+            for i in range(len(product_list)):
+                if product_list[i]:
+                    row = (
+                        "<tr>"
+                        f"<td style='border: 3px solid #ddd; padding: 8px;'>{product_list[i]}</td>"
+                        f"<td style='border: 3px solid #ddd; padding: 8px;'>{quantity_list[i]}</td>"
+                        f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_ordered_list[i]}</td>"
+                        f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
+                        f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_received_list[i]}</td>"
+                        "</tr>"
+                    )
+                    table += row
+
+            table += "</table>"
+
+            # Your existing code to create new_sourcing_data objects
+            url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
+            clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
+            # Use the 'table' string in the email message
+            message = (
+                f"Dear {assignee2},<br><br>"
+                f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+                f"Client: {order.client};<br><br>"
+                f"Kindly order for below::<br><br>{table}<br><br>"
+                "This is an auto-generated email | © 2023 ITS. All rights reserved."
+            )
+            subject = f"ORDER: SO-{order.o_id}"
+            recipient_list = [assignee2.email]
+            from_email = 'its-noreply@intellitech.co.ke'
+
+            # Create an EmailMessage instance for HTML content
+            email_message = EmailMessage(subject, message, from_email, recipient_list)
+            email_message.content_subtype = 'html'  # Set content type to HTML
+            email_message.send()
 
         messages.success(request, 'Order Edited successfully')
 
