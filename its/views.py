@@ -12,6 +12,8 @@ from django.http import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.core.mail import EmailMessage
+from django.core.mail import send_mail
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from service.models import Equipment
@@ -504,10 +506,42 @@ def create_task(request):
         creator = request.user
         task = Task(title=title, description=description, status=status, user=user, created_by=creator)
         task.save()
+        # Use the 'table' string in the email message
+        message = (
+            f"Dear {user},<br><br>"
+            f"You have been allocated Task : {task.title} . Created By : {creator} . <br><br>"
+            "This is an auto-generated email | © 2023 ITS. All rights reserved."
+        )
+        subject = f"Allocated Task : {task.title}"
+        recipient_list = [user.email]
+        from_email = 'its-noreply@intellitech.co.ke'
+
+        # Create an EmailMessage instance for HTML content
+        email_message = EmailMessage(subject, message, from_email, recipient_list)
+        email_message.content_subtype = 'html'  # Set content type to HTML
+        email_message.send()
         # Add users to the cc_users many-to-many relationship
         for user_ids in asignees_ids:
             users = User.objects.get(id=user_ids)  # Replace with your actual user lookup logic
             task.cc_users.add(users)
+
+
+            # Use the 'table' string in the email message
+            message = (
+                f"Dear {users},<br><br>"
+                f"You have been added to  Task : {task.title} . Created By : {creator} . <br><br>"
+                "This is an auto-generated email | © 2023 ITS. All rights reserved."
+            )
+            subject = f"Allocated Task : {task.title}"
+            recipient_list = [users.email]
+            from_email = 'its-noreply@intellitech.co.ke'
+
+            # Create an EmailMessage instance for HTML content
+            email_message = EmailMessage(subject, message, from_email, recipient_list)
+            email_message.content_subtype = 'html'  # Set content type to HTML
+            email_message.send()
+
+
         messages.success(request, 'Task Created successfully')
         return redirect('tasks')  # Redirect to a task list view or another appropriate URL
 
