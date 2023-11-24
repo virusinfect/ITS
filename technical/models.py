@@ -218,7 +218,7 @@ class CallCards(models.Model):
                                 related_name='technician')
     equipment = models.CharField(max_length=255)
     fault = models.CharField(max_length=255)
-    remarks = models.CharField(max_length=255, blank=True)
+    remarks = models.TextField(null=True)
     status = models.CharField(max_length=255, default="Pending")
     type = models.CharField(max_length=255)
     is_active = models.IntegerField(default=1)
