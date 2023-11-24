@@ -1880,7 +1880,8 @@ def approve_report(request, report_id):
         # If the report is not already approved, mark it as approved
         report.is_approved = status
         report.approved_by = user
-        report.approval_date = datetime.now()
+        report.approval_date = datetime.datetime.now()
+
         report.save()  # You can pass the currently logged-in user
         messages.success(request, 'Report Approved successfully')
     # Redirect back to the report's detail page (or wherever you prefer)
