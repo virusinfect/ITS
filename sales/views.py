@@ -10,6 +10,8 @@ from django.db.models.functions import ExtractMonth
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.utils.html import escape
+from django.utils.html import strip_tags
 from its.models import Company, Task
 from .models import SalesTickets, SalesQuotes, Orders, ProformaInvoice, OurBanks, SalesQuoteProducts, OrderProducts, \
     SalesTicketProducts, ProformaInvoiceProducts
@@ -985,7 +987,7 @@ def create_ticket(request):
             "This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
 
-        subject = f"{status} : {ticket.company.name} : {ticket.issue_summary} : #{ticket.ticket_id}"
+        subject = f"{status} : {ticket.company.name} : {strip_tags(ticket.issue_summary)} : #{ticket.ticket_id}"
         recipient_list = [handler.email, ticket.company]
         from_email = 'its-noreply@intellitech.co.ke'
 
