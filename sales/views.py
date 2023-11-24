@@ -311,10 +311,17 @@ def edit_order(request, order_id):
             # Your existing code to create new_sourcing_data objects
             url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
             clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
+
+            if order.ticket:
+                url2 = "http://146.190.61.23:8500/sales/edit/" + str(
+                    order.ticket.ticket_id) + "/"  # Replace with your actual URL
+                clickable_url2 = f"<a href='{url2}'>#" + str(order.ticket.ticket_id) + "</a>"
+            else:
+                clickable_url2 = "NO Ticket"
             # Use the 'table' string in the email message
             message = (
                 f"Dear {assignee2},<br><br>"
-                f"Our sales team has created an order , {clickable_url} from ticket ID #{order_id} on your behalf. Here are the details and summary of the order:<br><br>"
+                f"Our sales team has created an order , {clickable_url} from ticket {clickable_url2} on your behalf. Here are the details and summary of the order:<br><br>"
                 f"Client: {order.client};<br><br>"
                 f"Kindly order for below::<br><br>{table}<br><br>"
                 "This is an auto-generated email | © 2023 ITS. All rights reserved."
@@ -630,21 +637,28 @@ def convert_to_order(request, ticket_id):
         else:
             order_id = "No Ticket"
         # Your existing code to create new_sourcing_data objects
+            # Your existing code to create new_sourcing_data objects
         url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
         clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
-        # Use the 'table' string in the email message
+
+        if order.ticket:
+            url2 = "http://146.190.61.23:8500/sales/edit/" + str(order.ticket.ticket_id) + "/"  # Replace with your actual URL
+            clickable_url2 = f"<a href='{url2}'>#" + str(order.ticket.ticket_id) + "</a>"
+        else:
+            clickable_url2 = "NO Ticket"
+            # Use the 'table' string in the email message
         message = (
-            f"Dear {handler},<br><br>"
-            f"Our sales team has created an order, {clickable_url} from ticket ID #{order_id}  on your behalf. Here are the details and summary of the order:<br><br>"
-            f"Client: {order.client};<br><br>"
-            f"Kindly order for below::<br><br>{table}<br><br>"
-            "This is an auto-generated email | © 2023 ITS. All rights reserved."
+                f"Dear {order.assignee},<br><br>"
+                f"Our sales team has created an order , {clickable_url} from ticket {clickable_url2} on your behalf. Here are the details and summary of the order:<br><br>"
+                f"Client: {order.client};<br><br>"
+                f"Kindly order for below::<br><br>{table}<br><br>"
+                "This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
         subject = f"ORDER: SO-{order.o_id}"
-        recipient_list = [handler.email]
+        recipient_list = [order.assignee.email]
         from_email = 'its-noreply@intellitech.co.ke'
 
-        # Create an EmailMessage instance for HTML content
+            # Create an EmailMessage instance for HTML content
         email_message = EmailMessage(subject, message, from_email, recipient_list)
         email_message.content_subtype = 'html'  # Set content type to HTML
         email_message.send()
@@ -725,19 +739,24 @@ def convert_quote_to_order(request, quote_id):
 
         table += "</table>"
 
-        # Your existing code to create new_sourcing_data objects
         url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
         clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
+
+        if order.ticket:
+            url2 = "http://146.190.61.23:8500/sales/edit/" + str(order.ticket.ticket_id) + "/"  # Replace with your actual URL
+            clickable_url2 = f"<a href='{url2}'>#" + str(order.ticket.ticket_id) + "</a>"
+        else:
+            clickable_url2 = "NO Ticket"
         # Use the 'table' string in the email message
         message = (
-            f"Dear {handler},<br><br>"
-            f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+            f"Dear {order.assignee},<br><br>"
+            f"Our sales team has created an order , {clickable_url} from ticket {clickable_url2} on your behalf. Here are the details and summary of the order:<br><br>"
             f"Client: {order.client};<br><br>"
             f"Kindly order for below::<br><br>{table}<br><br>"
             "This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
         subject = f"ORDER: SO-{order.o_id}"
-        recipient_list = [handler.email]
+        recipient_list = [order.assignee.email]
         from_email = 'its-noreply@intellitech.co.ke'
 
         # Create an EmailMessage instance for HTML content
@@ -800,9 +819,7 @@ def create_order(request):
             "<tr style='border-bottom: 3px solid #ddd;'>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
-            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
-            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
             "</tr>"
         )
 
@@ -812,28 +829,30 @@ def create_order(request):
                     "<tr>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{product_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{quantity_list[i]}</td>"
-                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_ordered_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
-                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_received_list[i]}</td>"
                     "</tr>"
                 )
                 table += row
 
         table += "</table>"
 
-        # Your existing code to create new_sourcing_data objects
         url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
         clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
-        # Use the 'table' string in the email message
+        if order.ticket:
+            url2 = "http://146.190.61.23:8500/sales/edit/" + str(order.ticket.ticket_id) + "/"  # Replace with your actual URL
+            clickable_url2 = f"<a href='{url2}'>#" + str(order.ticket.ticket_id) + "</a>"
+        else:
+            clickable_url2 = "NO Ticket"
+            # Use the 'table' string in the email message
         message = (
-            f"Dear {handler},<br><br>"
-            f"Our sales team has created an order, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+            f"Dear {order.assignee},<br><br>"
+            f"Our sales team has created an order , {clickable_url} from ticket {clickable_url2} on your behalf. Here are the details and summary of the order:<br><br>"
             f"Client: {order.client};<br><br>"
             f"Kindly order for below::<br><br>{table}<br><br>"
             "This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
         subject = f"ORDER: SO-{order.o_id}"
-        recipient_list = [handler.email]
+        recipient_list = [order.assignee.email]
         from_email = 'its-noreply@intellitech.co.ke'
 
         # Create an EmailMessage instance for HTML content

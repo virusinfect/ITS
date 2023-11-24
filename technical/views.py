@@ -254,6 +254,8 @@ def store_dash(request):
         count = Tickets.objects.filter(remark=remark, is_active=1).count()
         remark_counts[remark] = count
 
+
+
     bench_statuses_to_count = [
         "Pending"
     ]

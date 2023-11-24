@@ -4,32 +4,59 @@
 {% block header %}Dashboard{% endblock %}
 {% block content %}
     <div class="row">
+        <h5>Remarks</h5>
+        {% for remark, count in remark_counts.items %}
+            {% if count != 0 %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body widget-user">
+                            <div class="text-center">
+                                <a href="{% url 'remark_tickets' remark remark %}">
+                                    <h2 class="fw-normal text-primary" data-plugin="counterup">{{ count }}</h2>
+                                    <h5>{% if remark == "Warranty" %}Warranty/Claims {% elif remark == "Repairs" %}
+                                        Sent
+                                        for
+                                        Repairs {% elif remark == "To be collected" %} Waiting
+                                        Collection {% elif remark == "To be delivered" %} Waiting
+                                        Delivery {% elif remark == "Collected" %} Equipment
+                                        Collected  {% elif remark == "Delivered" %} Equipment Delivered{% else %}
+                                        {{ remark }}{% endif %}</h5></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="row">
         <h5>Status</h5>
 
-            <div class="col">
-                <div class="card">
-                    <div class="card-body widget-user">
-                        <div class="text-center">
-                            <a href="#">
-                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ pending_approved_requisitions_count }}</h2>
-                                <h5>Approved Requisitions</h5></a>
-                        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-body widget-user">
+                    <div class="text-center">
+                        <a href="#">
+                            <h2 class="fw-normal text-primary"
+                                data-plugin="counterup">{{ pending_approved_requisitions_count }}</h2>
+                            <h5>Approved Requisitions</h5></a>
                     </div>
                 </div>
             </div>
+        </div>
 
 
-            <div class="col">
-                <div class="card">
-                    <div class="card-body widget-user">
-                        <div class="text-center">
-                            <a href="#">
-                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ returned_requisitions_count }}</h2>
-                                <h5>Returned Requisitions Pending Approval</h5></a>
-                        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-body widget-user">
+                    <div class="text-center">
+                        <a href="#">
+                            <h2 class="fw-normal text-primary"
+                                data-plugin="counterup">{{ returned_requisitions_count }}</h2>
+                            <h5>Returned Requisitions Pending Approval</h5></a>
                     </div>
                 </div>
             </div>
+        </div>
 
     </div>
     <div class="row">
