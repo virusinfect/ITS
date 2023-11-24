@@ -1957,6 +1957,7 @@ def report(request, report_id):
     subtotals = ticket.labour
     vat = 0
     try:
+
         tquote_data = tQuote.objects.filter(ticket=ticket)
         for item in tquote_data:
             item.total = item.quantity * item.price
