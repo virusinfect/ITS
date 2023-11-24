@@ -354,6 +354,8 @@ class UniqueToken(models.Model):
     token = models.UUIDField(default=uuid.uuid4, unique=True)
     FormatApproval = models.ForeignKey(FormatApproval, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.token)
 
 class FSignature(models.Model):
     signature_image = models.ImageField(upload_to='signatures/')

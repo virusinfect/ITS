@@ -2065,13 +2065,22 @@ def send_format_email(request, format_approval_id):
         # Generate a unique UUID for this email
         token = uuid.uuid4()
 
-        # Create a UniqueToken and associate it with the FormatApproval
-        unique_token = UniqueToken.objects.create(token=token, FormatApproval=format_approval)
+        # Check if there's an existing UniqueToken associated with the FormatApproval
+        existing_token = UniqueToken.objects.filter(FormatApproval=format_approval).first()
+
+        # Check if the existing token is still valid (e.g., not expired)
+        if existing_token:
+            # Use the existing token
+            unique_token = existing_token.token
+        else:
+            # Create a new UniqueToken and associate it with the FormatApproval
+            existing_token = UniqueToken.objects.create(token=token, FormatApproval=format_approval)
+            unique_token = existing_token.token
 
         # Construct the URL using reverse with the UUID as a parameter
         url1 = request.build_absolute_uri(reverse('form_with_uuid', args=[str(token)]))
         # Assuming 'format_approval', 'recipient_email', and 'token' are defined elsewhere in your code
-        url = "http://146.190.61.23:8500/form/" + str(token) + "/"
+        url = "http://146.190.61.23:8500/form/" + str(unique_token) + "/"
         clickable_url = mark_safe(f"<a href='{url}'>URL</a>")
         subject = 'Format Approval Request'
         message = (
