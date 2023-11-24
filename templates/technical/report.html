@@ -119,13 +119,14 @@
                                 </td>
                                 <td style="font-size:10px">
                                     {{ ticket.recommendation|safe }}
-                                    {% for image in recommendation_images %}
+                                    {% if recommendation_images %}
                                         <div class="card w-25 h-25">
-                                            <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+                                            <img class="card-img-top img-fluid"
+                                                 src="{{ recommendation_images.image.url }}">
 
                                         </div>
-                                        {% empty %}
-                                        {% endfor %}
+
+                                    {% endif %}
                                 </td>
                             </tr>
                             </tbody>
