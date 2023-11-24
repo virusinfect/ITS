@@ -25,8 +25,8 @@ def calculate_discounted_price2(price, product_type, price2=None):
         if rule.price_range_end:
             if rule.price_range_start <= price2 <= rule.price_range_end:
                 return rule.apply_discount2(price)
-        else:
-            return rule.apply_discount(price)
+        elif rule.price_range_end is None:
+            return rule.apply_discount2(price)
 
     # Default case if no matching rule is found
     return price
