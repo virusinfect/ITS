@@ -1946,6 +1946,10 @@ def generate_report(request, ticket_id):
 def report(request, report_id):
     # Retrieve the technical report associated with the given report_id
     report = get_object_or_404(TechnicalReport, pk=report_id)
+    ticket = report.ticket
+    action_images = TicketImage.objects.filter(ticket=ticket, tag="action")
+    diagnosis_images = TicketImage.objects.filter(ticket=ticket, tag="diagnosis")
+    recommendation_images = TicketImage.objects.filter(ticket=ticket, tag="recommendation")
 
     # Retrieve the associated ticket
     subtotals = 0
@@ -1978,7 +1982,8 @@ def report(request, report_id):
     total_amount = subtotals + vat
     return render(request, 'technical/report.html',
                   {'ticket': ticket, 'tquote_data': tquote_data, 'parts': parts, 'vat': vat,
-                   'total_amount': total_amount, 'subtotals': subtotals, 'report': report})
+                   'total_amount': total_amount, 'subtotals': subtotals, 'report': report,'diagnosis_images': diagnosis_images,
+                   'recommendation_images': recommendation_images,})
 
 
 class TechnicalReportListView(ListView):

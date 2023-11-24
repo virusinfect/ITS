@@ -103,14 +103,13 @@
                                 </td>
                                 <td style="font-size:10px">
                                     {{ ticket.diagnosis|safe }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="font-size:10px">
-                                    Action:
-                                </td>
-                                <td style="font-size:10px">
-                                    {{ ticket.action|safe }}
+                                    {% for image in diagnosis_images %}
+                                        <div class="card w-25 h-25">
+                                            <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+                                        </div>
+                                        {% empty %}
+
+                                    {% endfor %}
                                 </td>
                             </tr>
                             <tr>
@@ -119,6 +118,13 @@
                                 </td>
                                 <td style="font-size:10px">
                                     {{ ticket.recommendation|safe }}
+                                    {% for image in recommendation_images %}
+                                        <div class="card w-25 h-25">
+                                            <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+
+                                        </div>
+                                        {% empty %}
+                                        {% endfor %}
                                 </td>
                             </tr>
                             </tbody>
@@ -168,7 +174,7 @@
                                 {% endif %}
                                 <tr>
                                     <td colspan="4" class="text-end">LABOUR</td>
-                                    <td colspan="4" class="text-end" >{{ ticket.labour|floatformat:2|intcomma }}</td>
+                                    <td colspan="4" class="text-end">{{ ticket.labour|floatformat:2|intcomma }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4" class="text-end">SUBTOTALS</td>
