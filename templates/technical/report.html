@@ -105,8 +105,8 @@
                                 <td style="font-size:10px">
                                     {{ ticket.diagnosis|safe }}
                                     {% if diagnosis_images %}
-                                        <div class="card w-25 h-25">
-                                            <img class="card-img-top img-fluid mb-1" src="{{ diagnosis_images.image.url }}">
+                                        <div class="card w-25 h-25 mt-2">
+                                            <img class="card-img-top img-fluid " src="{{ diagnosis_images.image.url }}">
                                         </div>
 
                                     {% endif %}
@@ -119,7 +119,7 @@
                                 <td style="font-size:10px">
                                     {{ ticket.recommendation|safe }}
                                     {% if recommendation_images %}
-                                        <div class="card w-25 h-25">
+                                        <div class="card w-25 h-25 mt-2">
                                             <img class="card-img-top img-fluid mb-1"
                                                  src="{{ recommendation_images.image.url }}">
 
