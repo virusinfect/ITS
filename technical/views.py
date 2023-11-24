@@ -2052,7 +2052,7 @@ def format_approval_detail(request, format_approval_id):
         # You can raise an Http404 or render an error page.
         pass
 
-
+from django.utils.safestring import mark_safe
 @login_required
 def send_format_email(request, format_approval_id):
     # Retrieve the FormatApproval object
@@ -2069,19 +2069,36 @@ def send_format_email(request, format_approval_id):
         unique_token = UniqueToken.objects.create(token=token, FormatApproval=format_approval)
 
         # Construct the URL using reverse with the UUID as a parameter
-        url = request.build_absolute_uri(reverse('form_with_uuid', args=[str(token)]))
-
+        url1 = request.build_absolute_uri(reverse('form_with_uuid', args=[str(token)]))
+        # Assuming 'format_approval', 'recipient_email', and 'token' are defined elsewhere in your code
+        url = "http://146.190.61.23:8500/technical/format-approval/" + str(token) + "/"
+        clickable_url = mark_safe(f"<a href='{url}'>URL</a>")
         subject = 'Format Approval Request'
-        message = 'Dear ' + str(
-            format_approval.ticket.company) + '\n\nPlease click the following link to approve the request for :' + str(
-            format_approval.ticket.equipment) + ', Serial Number : ' + str(
-            format_approval.ticket.serial_no) + ' \n\n' + str(
-            url) + '\n\nNote: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.\n\nThank you for your patience and understanding.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.'
+        message = (
+        f"Dear {format_approval.ticket.company},<br><br>"
+        f"We have created a Format Approval request for: {format_approval.ticket.equipment}, Serial Number: {format_approval.ticket.serial_no}.<br><br>"
+        f"Please click this {clickable_url} to preview and sign the document<br><br>"
+        f"Note: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.<br><br>"
+        f"Thank you for your patience and understanding.<br><br>"
+        f"Regards,<br>"
+        f"Intellitech Limited.<br><br>"
+        f"This is an auto-generated email | © 2023 ITS. All rights reserved."
+        )
+
         recipient_list = [recipient_email]  # Use the recipient's email from the form input
         from_email = 'its-noreply@intellitech.co.ke'
 
+        # Creating EmailMessage instance
+        email = EmailMessage(subject, message, from_email, recipient_list)
+
+        # Setting content type to HTML
+        email.content_subtype = 'html'
+
+        # Sending the email
+
+
         try:
-            send_mail(subject, message, from_email, recipient_list)
+            email.send()
 
             signature = FSignature.objects.filter(format=format_approval).last()
             messages.success(request, 'Format Approval Sent Successfully.')
