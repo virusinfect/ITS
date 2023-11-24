@@ -104,13 +104,12 @@
                                 </td>
                                 <td style="font-size:10px">
                                     {{ ticket.diagnosis|safe }}
-                                    {% for image in diagnosis_images %}
+                                    {% if diagnosis_images %}
                                         <div class="card w-25 h-25">
-                                            <img class="card-img-top img-fluid" src="{{ image.image.url }}">
+                                            <img class="card-img-top img-fluid" src="{{ diagnosis_images.image.url }}">
                                         </div>
-                                        {% empty %}
-
-                                    {% endfor %}
+                                        
+                                    {% endif %}
                                 </td>
                             </tr>
                             <tr>
