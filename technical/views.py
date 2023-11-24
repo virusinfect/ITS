@@ -2071,7 +2071,7 @@ def send_format_email(request, format_approval_id):
         # Construct the URL using reverse with the UUID as a parameter
         url1 = request.build_absolute_uri(reverse('form_with_uuid', args=[str(token)]))
         # Assuming 'format_approval', 'recipient_email', and 'token' are defined elsewhere in your code
-        url = "http://146.190.61.23:8500/technical/format-approval/" + str(token) + "/"
+        url = "http://146.190.61.23:8500/form/" + str(token) + "/"
         clickable_url = mark_safe(f"<a href='{url}'>URL</a>")
         subject = 'Format Approval Request'
         message = (
