@@ -47,7 +47,9 @@
                     <th>Type</th>
                     <th>Bench Status</th>
                     <th>More</th>
-                    <th class="d-show d-md-table-cell">Action</th>
+                    {% if user|is_helpdesk or user|is_tech or user|is_management %}
+                        <th class="d-show d-md-table-cell">Action</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -74,24 +76,25 @@
                         <td>{{ ticket.type }}</td>
                         <td>{{ ticket.bench_status }}</td>
                         <td>{{ ticket.more }}</td>
-                        <td class="d-show d-md-table-cell">
-                            <a href="{% url 'edit-ticket' ticket.ticket_id %}" title="edit" tabindex="0"
-                               data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="mdi mdi-square-edit-outline"></i>
-                            </a>
-                            <a href="{% url 'create_delivery' ticket.ticket_id %}" title="delivery" tabindex="0"
-                               data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="mdi mdi-truck-delivery-outline"></i>
-                            </a>
-                            <a href="{% url 'ticket_print' ticket.ticket_id %}" title="job card print" tabindex="0"
-                               data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="mdi mdi-printer"></i>
-                            </a>
-                            <a href="{% url 'delete_ticket' ticket.ticket_id %}" title="delete" tabindex="0"
-                               data-plugin="tippy" data-tippy-interactive="true">
-                                <i class="s mdi mdi-delete-outline"></i>
-                            </a>
-                        </td>
+                        {% if user|is_helpdesk or user|is_tech or user|is_management %}
+                            <td class="d-show d-md-table-cell">
+                                <a href="{% url 'edit-ticket' ticket.ticket_id %}" title="edit" tabindex="0"
+                                   data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="mdi mdi-square-edit-outline"></i>
+                                </a>
+                                <a href="{% url 'create_delivery' ticket.ticket_id %}" title="delivery" tabindex="0"
+                                   data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="mdi mdi-truck-delivery-outline"></i>
+                                </a>
+                                <a href="{% url 'ticket_print' ticket.ticket_id %}" title="job card print" tabindex="0"
+                                   data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="mdi mdi-printer"></i>
+                                </a>
+                                <a href="{% url 'delete_ticket' ticket.ticket_id %}" title="delete" tabindex="0"
+                                   data-plugin="tippy" data-tippy-interactive="true">
+                                    <i class="s mdi mdi-delete-outline"></i>
+                                </a>
+                            </td>{% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>
