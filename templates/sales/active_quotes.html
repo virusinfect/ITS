@@ -76,6 +76,10 @@
                         </td>
                         <td>{{ quote.remark }}</td>
                         <td width="4%">
+                            <a href="{% url 'quote' quote.sq_id %}" title="view" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="mdi mdi-eye-outline mdi-18px"></i>
+                            </a>
                             <a href="{% url 'edit-quote' quote.sq_id %}" title="edit" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="mdi mdi-square-edit-outline mdi-18px"></i>
@@ -108,7 +112,7 @@
             }
         });
     </script>
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
           type="text/css"/>
