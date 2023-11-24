@@ -1948,8 +1948,8 @@ def report(request, report_id):
     report = get_object_or_404(TechnicalReport, pk=report_id)
     ticket = report.ticket
     action_images = TicketImage.objects.filter(ticket=ticket, tag="action")
-    diagnosis_images = TicketImage.objects.filter(ticket=ticket, tag="diagnosis")
-    recommendation_images = TicketImage.objects.filter(ticket=ticket, tag="recommendation")
+    diagnosis_images = TicketImage.objects.filter(ticket=ticket, tag="diagnosis").last()
+    recommendation_images = TicketImage.objects.filter(ticket=ticket, tag="recommendation").last()
 
     # Retrieve the associated ticket
     subtotals = 0
