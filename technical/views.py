@@ -1893,15 +1893,32 @@ def mark_sent_for_approval(request, report_id):
         # If the report is not marked as sent for approval, set it to True
         report.sent_approval = True
         report.save()
-        management_group = Group.objects.get(name='admin')
-        users_in_helpdesk_group = User.objects.filter(groups=management_group)
-        created_by = request.user
-        notification = Notification.create_notification(
-            users=users_in_helpdesk_group,  # Assign it to the user
-            message="Approve Technical Report for " + report.ticket.company.name + ".",
-            icon="mdi-book-alert",
-            created_by=created_by,  # Replace with your MDI icon name
+        # Assuming you have a "management" group
+        management_group = Group.objects.get(name='Management')
+
+        # Get all users in the "management" group
+        management_users = management_group.user_set.all()
+
+        # Extract email addresses
+        management_emails = [user.email for user in management_users]
+
+        # Your existing code to create new_sourcing_data objects
+        url = "http://146.190.61.23:8500/technical/report/" + str(report.id) + "/"  # Replace with your actual URL
+        clickable_url = f"<a href='{url}'>#" + str(report.id) +" "+str(report.ticket.company)+ "</a>"
+        # Use the 'table' string in the email message
+        message = (
+            f"Dear Sir,<br><br>"
+            f"Our technical Team has raised approval request of Technical Report for {clickable_url} from ticket  ITL/TN/{report.ticket.ticket_id} on your behalf. <br><br>"
+            "This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
+        subject = f"Report approval for {report.ticket.company}"
+        recipient_list = management_emails
+        from_email = 'its-noreply@intellitech.co.ke'
+
+        # Create an EmailMessage instance for HTML content
+        email_message = EmailMessage(subject, message, from_email, recipient_list)
+        email_message.content_subtype = 'html'  # Set content type to HTML
+        email_message.send()
 
     # Redirect back to the report's detail page (or wherever you prefer)
     return redirect('report', report_id=report.id)
@@ -1945,7 +1962,11 @@ def report(request, report_id):
     try:
         parts = Requisition.objects.filter(ticket=ticket, is_active=True, issue_status="Issue")
         for requisition in parts:
-            requisition.total = requisition.quantity * requisition.price
+            if requisition.quantity is not None and requisition.price is not None:
+                requisition.total = requisition.quantity * requisition.price
+            else:
+                # Handle the case where either quantity or price is None
+                requisition.total = None  # or set it to some default value or handle it according to your requirements
             subtotals += requisition.total
     except Requisition.DoesNotExist:
         parts = None
