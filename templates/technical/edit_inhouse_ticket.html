@@ -268,7 +268,8 @@
                                 <div class="mx-auto">
                                     <div class="table-responsive">
                                         <form method="POST"
-                                              action="{% url 'sourcing_inhouseticket' ticket.ticket_id %}" enctype="multipart/form-data">
+                                              action="{% url 'sourcing_inhouseticket' ticket.ticket_id %}"
+                                              enctype="multipart/form-data">
                                             {% csrf_token %}
                                             <table class="table">
                                                 <thead class="table-dark">
@@ -400,6 +401,29 @@
                                             </div>
                                         </form>
 
+                                    </div>
+                                    <div class="modal fade" id="myModal{{ item.id }}" tabindex="-1" role="dialog"
+                                         aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myModalLabel">Attachment Preview</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <img src="" class="img-fluid modal-img" alt="Attachment">
+                                                    <!-- Empty src, will be filled by jQuery -->
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div> <!-- end col -->
                             </div>
@@ -725,6 +749,12 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function openModal(imageUrl) {
+            $('#myModal img').attr('src', imageUrl);  // Set the image source
+            $('#myModal').modal('show');  // Show the modal
+        }
+    </script>
     <script>
         var clientNo;
         var clientSelect = document.getElementById('client');
