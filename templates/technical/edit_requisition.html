@@ -46,7 +46,30 @@
                                     <input class="form-control" disabled value="{{ requisition.part }}">
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="mb-3 col-lg-6">
+                                    <label for="selected_category" class="form-label">Select a Category:</label>
+                                    <select name="selected_category" id="selected_category" class="form-select mb-3"
+                                            required>
+                                        <option value="" disabled>Select a Category</option>
+                                        {% for category in active_categories %}
+                                            <option value="{{ category.id }}"
+                                                    {% if category.id == requisition.part.category.id %}selected{% endif %}>
+                                                {{ category.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
 
+                                <div class="mb-3 col-lg-6">
+                                    <label for="selected_product" class="form-label">Select a Product:</label>
+                                    <select name="selected_product" id="selected_product" class="form-select mb-3"
+                                            required>
+                                        <option value="{{ requisition.part }}" disabled
+                                                selected>{{ requisition.part }}</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="mb-3 col-lg-6">
                                     <label for="serial_no" class="form-label">Serial No.</label>
