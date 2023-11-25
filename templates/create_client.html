@@ -23,10 +23,8 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="mb-3 header-title text-center">Add Client for {{ company.name }}</h4>
-
                 <form method="post">
                     {% csrf_token %}
-
                     <div class="mb-3">
                         <label for="f_name" class="form-label">First Name:</label>
                         <input type="text" name="f_name" class="form-control" id="f_name" aria-describedby="emailHelp"
@@ -53,7 +51,6 @@
                                   aria-describedby="emailHelp"
                                   placeholder="Enter Description"></textarea>
                     </div>
-
                     <button type="submit" class="btn btn-primary waves-effect waves-light">Add New</button>
                 </form>
             </div>
