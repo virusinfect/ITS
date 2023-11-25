@@ -48,7 +48,7 @@
                         <td>ITLQ/{{ quote.created|date:"m/Y" }}/{{ quote.sq_id }}</td>
                         <td>{{ quote.company.name }}</td>
                         <td>{{ quote.ticket.contact }}</td>
-                        <td>{{ quote.ticket.issue_summary }}</td>
+                        <td>{{ quote.ticket.issue_summary|safe }}</td>
                         <td>
                             <div class="product-list" data-quote-id="{{ quote.sq_id }}" style="display: none;">
                                 {% for product in quote.salesquoteproducts_set.all %}
