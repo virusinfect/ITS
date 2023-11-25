@@ -46,12 +46,20 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-lg-6 mb-3">
-                                <label for="client" class="form-label">Client :</label>
+                                <label for="client" class="form-label">Client : <a class="text-danger" type="button"
+                                                                                   data-bs-toggle="offcanvas"
+                                                                                   data-bs-target="#offcanvasRight"
+                                                                                   aria-controls="offcanvasRight"><i
+                                        class="mdi mdi-plus-circle"> add new </i>
+                                </a>
+
+                                </label>
                                 <select name="client" class="form-control" id="client" required>
                                     <option value="" disabled selected>Select a client</option>
                                     <option value="" disabled selected>Select a client name</option>
                                 </select>
                             </div>
+
                             <div class="mb-3 col-lg-6">
                                 <label for="tech" class="form-label"><strong>Technician:</strong></label>
                                 <select id="tech" name="tech" class="form-select" required>
@@ -131,9 +139,81 @@
                 </button>
             </div>
         </div>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+                <h5 id="offcanvasRightLabel">Add New Client</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+            </div> <!-- end offcanvas-header-->
+
+            <div class="offcanvas-body">
+                <form method="post" id="clientForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="company" class="form-label">Company :</label>
+                        <select name="company" class="form-select" id="company" required>
+                            <option value="" disabled selected>Select a company</option>
+                            {% for company in companies %}
+                                <option value="{{ company.id }}">{{ company.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="f_name" class="form-label">First Name:</label>
+                        <input type="text" name="f_name" class="form-control" id="f_name" aria-describedby="emailHelp"
+                               placeholder="Enter First Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="l_name" class="form-label">Last Name:</label>
+                        <input type="text" name="l_name" class="form-control" id="l_name" aria-describedby="emailHelp"
+                               placeholder="Enter Last Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp"
+                               placeholder="Enter Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telephone" class="form-label">Telephone:</label>
+                        <input type="number" name="telephone" class="form-control" id="telephone"
+                               aria-describedby="emailHelp"
+                               placeholder="Enter Telephone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description:</label>
+                        <textarea type="text" name="description" class="form-control" id="description"
+                                  aria-describedby="emailHelp"
+                                  placeholder="Enter Description"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Add New</button>
+                </form>
+            </div> <!-- end offcanvas-body-->
+        </div> <!-- end offcanvas-->
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#clientForm').submit(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "add_client" %}',
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            toastr.success(data.message);
+                            $('#offcanvasRight').offcanvas('hide');
+                        } else {
+                            toastr.error('Form submission failed. Please check the errors.');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
     <script>
         var clientNo;
         var clientSelect = document.getElementById('client');
@@ -203,7 +283,7 @@
                             client: clientNo,
                             company: companyNo,
                             type: typeNo,
-                            brought_by : broughtNo,
+                            brought_by: broughtNo,
                         },
                         success: function (response) {
                             // Check if the response indicates success (you can define this)

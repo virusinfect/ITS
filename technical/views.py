@@ -2666,3 +2666,29 @@ def create_Inhouse_ticket(request):
 
         return render(request, 'technical/create_inhouse_ticket.html',
                       {'companies': companies, 'clients': clients, 'users': users})
+
+def add_client(request):
+    if request.method == 'POST':
+        # Extract form data from the request
+        company = request.POST.get('company')
+        f_name = request.POST.get('f_name')
+        l_name = request.POST.get('l_name')
+        email = request.POST.get('email')
+        telephone = request.POST.get('telephone')
+        description = request.POST.get('description')
+
+        # Create a new client instance and save it
+        client = Clients.objects.create(
+            company_id=company,
+            f_name=f_name,
+            l_name=l_name,
+            email=email,
+            telephone=telephone,
+            description=description
+        )
+
+        messages.success(request, 'Client added successfully!')
+
+        return JsonResponse({'success': True, 'message': 'Client added successfully!'})
+    else:
+        return JsonResponse({'warning': True, 'message': 'Error creating client!'})
