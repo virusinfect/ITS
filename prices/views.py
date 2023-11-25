@@ -1,7 +1,6 @@
 # views.py
 import re
 from decimal import Decimal, ROUND_DOWN
-from .pricing_logic import calculate_discounted_price,calculate_discounted_price2
 
 import openpyxl
 import pandas as pd
@@ -13,7 +12,9 @@ from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
 
 from .forms import PriceListForm
-from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList, FellowesPricelist, PriceRule
+from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList, FellowesPricelist, \
+    PriceRule
+from .pricing_logic import calculate_discounted_price, calculate_discounted_price2
 
 
 @login_required
@@ -48,7 +49,6 @@ def upload_price_list(request):
         brand_index = request.POST.get('brand')
 
         # Assume headers is a list containing the column headers
-
 
         # Function to get index if header is present, otherwise None
         def get_index(header_name):
@@ -137,15 +137,12 @@ def upload_coloursoft_price_list(request):
 
         # Check if 'product_name' and 'price' are present in the headers
 
-
-
         # Assume headers is a list containing the column headers
         headers_lower = [header.lower() if header is not None else None for header in headers]
 
         # Function to get index if header is present, otherwise None
         def get_index(header_name):
             return headers_lower.index(header_name) if header_name in headers_lower else None
-
 
         required_columns = ['code', 'price']
         for column in required_columns:
@@ -238,7 +235,6 @@ def upload_fellowes_price_list(request):
             if column not in headers_lower:
                 messages.error(request, f"Column '{column}' not found in the Excel file.")
                 return redirect('upload_fellowes_price_list')
-
 
         # Assume headers is a list containing the column headers
         headers_lower = [header.lower() if header is not None else None for header in headers]
@@ -762,7 +758,6 @@ def search_laptops(request):
         laptops = LaptopPriceList.objects.filter(q_objects)
         if equipment_id:
             laptops = laptops.filter(equipment=equipment_id)
-
         # Filter by equipment if selected
 
         if equipment_id:
@@ -783,9 +778,7 @@ def search_laptops(request):
         item.price_min = calculate_discounted_price(item.price, item.equipment, price2)
         item.price_max = calculate_discounted_price2(item.price, item.equipment, price2)
 
-
         if currency == "KES" and item.currency == "USD":
-
 
             item.price = item.price * exchange_rate2
             item.price_max = item.price_max * exchange_rate2
@@ -800,7 +793,6 @@ def search_laptops(request):
             item.price_max = item.price_max / exchange_rate
             item.price_min = item.price_min / exchange_rate
 
-
     context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
                'all_equipment': all_equipment, }
     return render(request, 'prices/search_laptops.html', context)
@@ -812,7 +804,7 @@ def search_coloursoft(request):
     selected_fields = request.GET.getlist('fields', [])
 
     # Define the fields you want to allow searching
-    allowed_fields = ['brand', 'code', 'yield_no','hp_code']
+    allowed_fields = ['brand', 'code', 'yield_no', 'hp_code']
 
     # Create a dictionary to map the field names to their corresponding lookup
     field_lookup = {
@@ -911,8 +903,6 @@ def search_fellowes(request):
         if equipment_id:
             laptops = laptops.filter(equipment=equipment_id)
 
-
-
     # Retrieve all equipment for the dropdown
     all_equipment = Equipment.objects.all()
 
@@ -939,6 +929,7 @@ def edit_exchange(request):
             pass
 
     return render(request, 'prices/edit_exchange.html', {'exchange': exchange})
+
 
 @login_required
 def price_rules_for_equipment(request, equipment_id):

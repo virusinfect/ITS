@@ -728,40 +728,6 @@ def delete_personal_task(request, task_id):
     return render(request, 'delete_personal_task.html', {'task': task})
 
 
-def get_unread_notifications(request):
-    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        user = request.user
-        unread_notifications = user.notifications.filter(is_read=False)
-        unread_count = unread_notifications.count()
-        notifications_data = [{'message': notification.message, 'icon': notification.icon} for notification in
-                              unread_notifications]
-        return JsonResponse({'notifications': notifications_data, 'unread_count': unread_count})
-    else:
-        return JsonResponse({'error': 'Invalid request'})
-
-
-def clear_all_notifications(request):
-    if request.method == 'POST':
-        user = request.user
-        user.notifications.filter(is_read=False).update(is_read=True)
-
-    return JsonResponse({'message': 'Notifications cleared successfully'})
-
-
-def mark_notification_as_read(request):
-    if request.method == 'POST':
-        notification_id = request.POST.get('notification_id')
-        try:
-            notification = Notification.objects.get(id=notification_id)
-            notification.is_read = True
-            notification.save()
-            return JsonResponse({'message': 'Notification marked as read'})
-        except Notification.DoesNotExist:
-            return JsonResponse({'error': 'Notification not found'}, status=404)
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
 def search(request):
     query = request.GET.get('query', '')
 

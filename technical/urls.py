@@ -47,6 +47,7 @@ urlpatterns = [
     path('dashboard5/', views.acc_dash, name='acc_dashboard'),
     path('delete_delivery/<int:delivery_id>/', views.delete_delivery, name='delete_delivery'),
     path('sourcing_ticket/<int:ticket_id>/delete/', views.sourcing_tickets, name='sourcing_ticket'),
+    path('sourcing_inhouseticket/<int:ticket_id>/delete/', views.sourcing_inhousetickets, name='sourcing_inhouseticket'),
     path('quote_ticket/<int:ticket_id>/delete/', views.quote_tickets, name='quote_ticket'),
     path('delete-entry/<int:entry_id>/', views.delete_entry, name='delete-entry'),
     path('delete-entry-quote/<int:entry_id>/', views.delete_entry_quote, name='delete-entry-quote'),

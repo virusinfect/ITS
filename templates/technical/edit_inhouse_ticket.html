@@ -264,7 +264,7 @@
                             <div class="row mb-3 mt-3">
                                 <div class="mx-auto">
                                     <div class="table-responsive">
-                                        <form method="POST" action="{% url 'sourcing_ticket' ticket.ticket_id %}">
+                                        <form method="POST" action="{% url 'sourcing_inhouseticket' ticket.ticket_id %}">
                                             {% csrf_token %}
                                             <table class="table">
                                                 <thead class="table-dark">

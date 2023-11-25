@@ -20,7 +20,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 from django.views.generic import ListView
-from its.models import Company, Clients, Parts, PartsCategory, Task, Notification
+from its.models import Company, Clients, Parts, PartsCategory, Task
 
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
@@ -1133,12 +1133,7 @@ def add_requisition(request):
         helpdesk_group = Group.objects.get(name='helpdesk')
         users_in_helpdesk_group = User.objects.filter(groups=helpdesk_group)
         created_by = request.user
-        notification = Notification.create_notification(
-            users=users_in_helpdesk_group,  # Assign it to the user
-            message="You have a requisition to approve for " + part_id + ".",
-            icon="mdi-book-alert",
-            created_by=created_by,  # Replace with your MDI icon name
-        )
+
         messages.success(request, 'Requisition Created successfully')
         return redirect('list_requisitions')
 
@@ -1596,12 +1591,7 @@ def create_ticket(request):
         ticket.save()
 
         created_by = request.user
-        notification = Notification.create_notification(
-            users=[tech_id],  # Assign it to the user
-            message="Assigned ITL/TN/" + str(ticket.ticket_id),
-            icon="mdi-book-alert",
-            created_by=created_by,  # Replace with your MDI icon name
-        )
+
 
         subject = "TICKET ITL/TN/" + str(ticket.ticket_id) + " OPENED - ITS"
         message = "Dear {0},\n\nA ticket ITL/TN/{1} has been raised for your work order, and our team is now reviewing the details to ensure a prompt and effective resolution.\n\nNote: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.\n\nThank you for your patience and understanding.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.".format(
@@ -1817,7 +1807,7 @@ def sourcing_tickets(request, ticket_id):
                 description="Help in sourcing for items in Ticket NO : ITL/TN/" + str(ticket.ticket_id),
                 is_active=True,
                 status="In Progress",
-                user_id=handler_id,  # Correctly set the user_id
+                user_id=handler_id.id,  # Correctly set the user_id
                 created_by=user,
             )
             # Save the new_task instance
@@ -1830,6 +1820,132 @@ def sourcing_tickets(request, ticket_id):
 
     return redirect('edit-ticket', ticket_id=ticket_id)
 
+@login_required
+def sourcing_inhousetickets(request, ticket_id):
+    if request.method == 'POST':
+        ticket = InhouseTickets.objects.get(ticket_id=ticket_id)
+        part_no_list = request.POST.getlist('part_no[]')
+        desc_list = request.POST.getlist('desc[]')
+        qty_list = request.POST.getlist('qty[]')
+        availability_list = request.POST.getlist('availability[]')
+        supplier_list = request.POST.getlist('supplier[]')
+        currency_list = request.POST.getlist('currency[]')
+        price_list = request.POST.getlist('price[]')
+        attach_list = request.POST.get('attach[]')
+        handler = request.POST.get('handler')
+        attachment_list = request.FILES.getlist('att[]')
+        handler_id = User.objects.get(pk=handler)
+        print("id")
+        print(handler_id)
+        print(handler_id.id)
+        ticket.sourcing_parts_id = handler_id.id
+        ticket.save()
+        created_by = request.user
+        # Create a list to hold the new sourcing objects
+        new_sourcing_data = []
+
+
+        for i in range(len(part_no_list)):
+            if (part_no_list[i] and desc_list[i]):
+                z=i+1
+                attachment_list = request.FILES.getlist(f'att_{z}')
+                if attachment_list:
+                    attachment = attachment_list[0]
+                else:
+                    attachment = None
+
+                print("testing i")
+                print(attach_list)
+                sourcing = InhouseTsourcing(
+                    part_no=part_no_list[i],
+                    desc=desc_list[i],
+                    qty=qty_list[i],
+                    availability=availability_list[i],
+                    supplier=supplier_list[i],
+                    currency=currency_list[i],
+                    price=price_list[i],
+                    ticket=ticket,
+                    attachment=attachment,
+                )
+                new_sourcing_data.append(sourcing)
+
+        # Delete old Tsourcing data
+        InhouseTsourcing.objects.filter(ticket=ticket).delete()
+
+        # Insert the new data
+        InhouseTsourcing.objects.bulk_create(new_sourcing_data)
+
+        table = (
+            "<table style='border-collapse: collapse; width: 100%;'>"
+            "<tr style='border-bottom: 3px solid #ddd;'>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Part No</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Description</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Availability</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Currency</th>"
+            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Price</th>"
+            "</tr>"
+        )
+
+        for i in range(len(desc_list)):
+            if desc_list[i]:
+                row = (
+                    "<tr>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{part_no_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{desc_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{qty_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{availability_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{currency_list[i]}</td>"
+                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{price_list[i]}</td>"
+                    "</tr>"
+                )
+                table += row
+
+        table += "</table>"
+
+        # Your existing code to create new_sourcing_data objects
+        url = "http://146.190.61.23:8500/technical/edit-inhouse-ticket/" + str(
+            ticket.ticket_id) + "/"  # Replace with your actual URL
+        clickable_url = f"<a href='{url}'>ITL/IHTN/" + str(ticket.ticket_id) + "</a>"
+        # Use the 'table' string in the email message
+        message = (
+            f"Dear {handler_id},<br><br>"
+            f"Our Technical team has made a inhouse sourcing request, {clickable_url} on your behalf. Here are the details and summary of the order:<br><br>"
+            f"Company: {ticket.company};<br><br>"
+            f"Kindly order for below::<br><br>{table}<br><br>"
+            "This is an auto-generated email | © 2023 ITS. All rights reserved."
+        )
+        subject = f"SOURCING FOR INHOUSE TICKET ITL/IHTN/{ticket.ticket_id}"
+        recipient_list = [ticket.sourcing_parts.email]
+        from_email = 'its-noreply@intellitech.co.ke'
+
+        # Create an EmailMessage instance for HTML content
+        email_message = EmailMessage(subject, message, from_email, recipient_list)
+        email_message.content_subtype = 'html'  # Set content type to HTML
+        email_message.send()
+
+        user = request.user
+        # Create a new Task instance without saving it
+        if ticket.task is None:
+            new_task = Task(
+                title="Sourcing Items for " + str(ticket.company) + ", Ticket NO : ITL/TN/" + str(ticket.ticket_id),
+                description="Help in sourcing for items in Ticket NO : ITL/TN/" + str(ticket.ticket_id),
+                is_active=True,
+                status="In Progress",
+                user_id=handler_id.id,  # Correctly set the user_id
+                created_by=user,
+            )
+            # Save the new_task instance
+            new_task.save()
+        elif ticket.task.user_id != handler_id:  # Check if the user_id is different
+            ticket.task.user_id = handler_id  # Correctly set the user_id
+            ticket.task.save()  # Save the task
+
+        messages.success(request, 'Sourcing Products Updated.')
+
+    return redirect('edit_inhouse_ticket', ticket_id=ticket_id)
 
 @login_required
 def delete_entry(request, entry_id):
