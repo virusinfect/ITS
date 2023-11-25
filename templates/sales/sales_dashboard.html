@@ -367,7 +367,7 @@
             .then(response => response.json())
             .then(data => {
                 var labels = ['Follow up', 'Awaiting LPO', 'On hold', 'Not interested', 'Done'];
-                var backgroundColors = ['#f8f9fa', '#fd7e14', '#28a745', '#dc3545', '#ffc107    '];
+                var backgroundColors = ['#f8f9fa', '#fd7e14', '#28a745', '#dc3545', '#ffc107'];
 
                 var ctx = document.getElementById('donut-chart-quotes').getContext('2d');
                 var chart = new Chart(ctx, {

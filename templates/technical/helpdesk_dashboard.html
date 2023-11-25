@@ -217,8 +217,8 @@
                         datasets: [{
                             label: 'Tickets Created',
                             data: ticketCounts,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(220,53,69,0.7)',
+                            borderColor: 'rgba(220,53,69,255)',
                             borderWidth: 1
                         }]
                     },
@@ -236,19 +236,13 @@
         fetch('{% url 'tr_status_pie_chart' %}')
             .then(response => response.json())
             .then(data => {
-                var labels = data.map(item => item.label);
                 var counts = data.map(item => item.count);
-                var backgroundColors = [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(255, 159, 64, 0.7)',
-                    'rgba(255, 205, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(54, 162, 235, 0.7)'
-                ];  // Adjust these colors as needed
+                var labels = ['Follow up', 'Awaiting LPO', 'Not intrested', 'On hold', 'Done'];
+                var backgroundColors = ['#f8f9fa', '#fd7e14', '#dc3545', '#28a745', '#ffc107'];
 
                 var ctx = document.getElementById('tr-status-pie-chart').getContext('2d');
                 var chart = new Chart(ctx, {
-                    type: 'pie',
+                    type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
@@ -277,7 +271,8 @@
                         datasets: [{
                             label: 'Monthly Schedule Counts',
                             data: scheduleCounts,
-                            backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                            backgroundColor: 'rgba(220,53,69,0.7)',
+                            borderColor: 'rgba(220,53,69,255)',
                         }]
                     },
                     options: {
@@ -294,19 +289,13 @@
         fetch('{% url 'remark_pie_chart' %}')
             .then(response => response.json())
             .then(data => {
-                var labels = data.map(item => item.label);
+                var labels = ['Delivered', 'Collected', 'LPO follow up', 'To be collected', 'Warranty','Repairs'];
+                var backgroundColors = ['#f8f9fa', '#fd7e14', '#28a745', '#dc3545', '#ffc107','#d1b78c'];
                 var counts = data.map(item => item.count);
-                var backgroundColors = [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(255, 159, 64, 0.7)',
-                    'rgba(255, 205, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(54, 162, 235, 0.7)'
-                ];  // Adjust these colors as needed
 
                 var ctx = document.getElementById('remark-pie-chart').getContext('2d');
                 var chart = new Chart(ctx, {
-                    type: 'pie',
+                    type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
@@ -324,16 +313,13 @@
                 var labels = data.map(item => item.label);
                 var percentages = data.map(item => item.percentage);
                 var backgroundColors = [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(255, 159, 64, 0.7)',
-                    'rgba(255, 205, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(54, 162, 235, 0.7)'
+                    'rgba(40,167,69,255)',
+                    'rgba(220,53,69,255)',
                 ];  // Adjust these colors as needed
 
                 var ctx = document.getElementById('bench-status-pie-chart').getContext('2d');
                 var chart = new Chart(ctx, {
-                    type: 'pie',
+                    type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
@@ -351,16 +337,13 @@
                 var labels = data.map(item => item.label);
                 var percentages = data.map(item => item.percentage);
                 var backgroundColors = [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(255, 159, 64, 0.7)',
-                    'rgba(255, 205, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(54, 162, 235, 0.7)'
+                    'rgba(40,167,69,255)',
+                    'rgba(220,53,69,255)',
                 ];  // Adjust these colors as needed
 
                 var ctx = document.getElementById('status-pie-chart').getContext('2d');
                 var chart = new Chart(ctx, {
-                    type: 'pie',
+                    type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
@@ -392,8 +375,8 @@
                         datasets: [{
                             label: 'Requisitions Created',
                             data: requisitionCounts,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(220,53,69,0.7)',
+                            borderColor: 'rgba(220,53,69,255)',
                             borderWidth: 1
                         }]
                     },
