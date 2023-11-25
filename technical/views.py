@@ -31,6 +31,8 @@ from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCa
 
 @login_required
 def helpdesk_dash(request):
+    tickets = ServiceSchedules.objects.filter(is_active=1).order_by('-created')
+    ticket_count = tickets.count()
     # Define the list of statuses you want to count
     statuses_to_count = [
         "Open",
@@ -133,7 +135,7 @@ def helpdesk_dash(request):
                   {'remark_counts': remark_counts, 'site_status_counts': site_status_counts,
                    'bench_status_counts': bench_status_counts,
                    'status_counts': status_counts, 'req_status_counts': req_status_counts,
-                   'tr_status_counts': tr_status_counts,'inhouse_bench_status_counts':inhouse_bench_status_counts})
+                   'tr_status_counts': tr_status_counts,'inhouse_bench_status_counts':inhouse_bench_status_counts,'ticket_count':ticket_count})
 
 
 @login_required

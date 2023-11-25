@@ -83,6 +83,20 @@
         {% endfor %}
     </div>
     <div class="row">
+        {% if ticket_count != 0 %}
+            <div class="col">
+                <h5>Service</h5>
+                <div class="card">
+                    <div class="card-body widget-user">
+                        <div class="text-center">
+                            <a href="#">
+                                <h2 class="fw-normal text-primary" data-plugin="counterup">{{ ticket_count }}</h2>
+                                <h5>Service Tickets</h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
         {% for req_status, count in req_status_counts.items %}
             {% if count != 0 %}
                 <div class="col">
@@ -289,8 +303,8 @@
         fetch('{% url 'remark_pie_chart' %}')
             .then(response => response.json())
             .then(data => {
-                var labels = ['Delivered', 'Collected', 'LPO follow up', 'To be collected', 'Warranty','Repairs'];
-                var backgroundColors = ['#f8f9fa', '#fd7e14', '#28a745', '#dc3545', '#ffc107','#d1b78c'];
+                var labels = ['Delivered', 'Collected', 'LPO follow up', 'To be collected', 'Warranty', 'Repairs'];
+                var backgroundColors = ['#f8f9fa', '#fd7e14', '#28a745', '#dc3545', '#ffc107', '#d1b78c'];
                 var counts = data.map(item => item.count);
 
                 var ctx = document.getElementById('remark-pie-chart').getContext('2d');
