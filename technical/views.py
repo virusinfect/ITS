@@ -1725,9 +1725,8 @@ def sourcing_tickets(request, ticket_id):
                     attachment = attachment_list[0]
                 else:
                     attachment = None
-
-                print("testing i")
-                print(attach_list)
+                print("test")
+                print(attachment)
                 sourcing = Tsourcing(
                     part_no=part_no_list[i],
                     desc=desc_list[i],
@@ -1833,11 +1832,7 @@ def sourcing_inhousetickets(request, ticket_id):
         price_list = request.POST.getlist('price[]')
         attach_list = request.POST.get('attach[]')
         handler = request.POST.get('handler')
-        attachment_list = request.FILES.getlist('att[]')
         handler_id = User.objects.get(pk=handler)
-        print("id")
-        print(handler_id)
-        print(handler_id.id)
         ticket.sourcing_parts_id = handler_id.id
         ticket.save()
         created_by = request.user
@@ -1853,9 +1848,8 @@ def sourcing_inhousetickets(request, ticket_id):
                     attachment = attachment_list[0]
                 else:
                     attachment = None
-
-                print("testing i")
-                print(attach_list)
+                print("test")
+                print(attachment)
                 sourcing = InhouseTsourcing(
                     part_no=part_no_list[i],
                     desc=desc_list[i],

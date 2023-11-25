@@ -58,17 +58,20 @@
                                     <div class="row">
                                         <div class="col-lg-6 mb-3">
                                             <label for="company" class="form-label"><strong>Company:</strong></label>
-                                            <input type="text" class="form-control" name="company" value="{{ ticket.company }}">
+                                            <input type="text" class="form-control" name="company"
+                                                   value="{{ ticket.company }}">
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label for="email" class="form-label"><strong>Email:</strong></label>
-                                            <input type="email" class="form-control" name="email" value="{{ ticket.email }}">
+                                            <input type="email" class="form-control" name="email"
+                                                   value="{{ ticket.email }}">
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-lg-6 mb-3">
                                             <label for="client" class="form-label"><strong>Telephone:</strong></label>
-                                            <input type="number" name="telephone" class="form-control" value="{{ ticket.telephone }}">
+                                            <input type="number" name="telephone" class="form-control"
+                                                   value="{{ ticket.telephone }}">
                                         </div>
                                         <div class="mb-3 col-lg-6">
                                             <label for="tech" class="form-label"><strong>Technician:</strong></label>
@@ -264,7 +267,8 @@
                             <div class="row mb-3 mt-3">
                                 <div class="mx-auto">
                                     <div class="table-responsive">
-                                        <form method="POST" action="{% url 'sourcing_inhouseticket' ticket.ticket_id %}">
+                                        <form method="POST"
+                                              action="{% url 'sourcing_inhouseticket' ticket.ticket_id %}" enctype="multipart/form-data">
                                             {% csrf_token %}
                                             <table class="table">
                                                 <thead class="table-dark">
@@ -317,7 +321,20 @@
                                                                    value="{{ item.availability }}"></td>
                                                         <td><input name="supplier[]" type="text" class="form-control"
                                                                    value="{{ item.supplier }}"></td>
-                                                        <td><input type="file" class="form-control" name="att[]"></td>
+                                                        <td>
+                                                            {% if item.attachment %}
+                                                                <a class="btn btn-primary"
+                                                                   onclick="openModal('{{ item.attachment.url }}')">View
+                                                                    Attachment</a>
+                                                                <input type="text" class="form-control" name="att[]"
+                                                                       value="{{ item.attachment }}" hidden="hidden">
+                                                            {% else %}
+                                                                <input type="file" class="form-control"
+                                                                       name="att_{{ forloop.counter }}"
+                                                                       accept="image/*">
+                                                                <input type="hidden" name="att[]" value="">
+                                                            {% endif %}
+                                                        </td>
                                                         <td><a href="#" class="delete-entry" title="delete" tabindex="0"
                                                                data-plugin="tippy" data-tippy-interactive="true">
                                                             <i class="  mdi mdi-delete-outline mdi-18px"></i>

@@ -320,7 +320,7 @@ class InhouseTsourcing(models.Model):
     availability = models.CharField(max_length=255)
     supplier = models.CharField(max_length=255)
     assignee = models.CharField(max_length=255)
-    attachment = models.CharField(max_length=1000, null=True)
+    attachment = models.ImageField(upload_to='att/', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
