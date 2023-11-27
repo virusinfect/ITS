@@ -640,7 +640,6 @@ def edit_ticket(request, ticket_id):
             return redirect('edit-ticket', ticket_id=ticket_id)
 
         elif form_type == 'form3':
-            print("form3 inititiated")
             machine_yom = request.POST.get('machine_yom')
             ram = request.POST.get('ram')
             rom = request.POST.get('rom')
@@ -672,6 +671,7 @@ def edit_ticket(request, ticket_id):
             ticket.save()
             messages.success(request, 'Equipment Specs successfully')
             return redirect('edit-ticket', ticket_id=ticket_id)
+
         # Render the edit form
     return render(request, 'technical/edit_ticket.html',
                   {'ticket': ticket, 'users': users, 'product_details': product_details, 'companies': companies,
