@@ -3,6 +3,30 @@
 {% block title %}Create Ticket{% endblock %}
 {% block header %}Create Ticket{% endblock %}
 {% block content %}
+    <style>
+        /* Apply Bootstrap styling to the Awesomplete dropdown */
+        .awesomplete ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ced4da;
+            border-top: none;
+        }
+
+        .awesomplete li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .awesomplete li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .awesomplete li:focus {
+            outline: none;
+            background-color: #f8f9fa;
+        }
+    </style>
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
@@ -76,8 +100,9 @@
                             <div class="col-lg-6 mb-3">
                                 <label for="equipment"
                                        class="form-label"><strong>Equipment:</strong></label>
-                                <input type="text" class="form-control" id="equipment"
+                                <input type="text" class="awesomplete form-control" id="equipment"
                                        name="equipment" placeholder="Equipment" required>
+
                             </div>
                             <div class="col-lg-6 mb-3">
                                 <label for="serial_no" class="form-label"><strong>Serial
@@ -193,6 +218,12 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
+            integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"
+            integrity="sha512-t3zV/oAkSZUrvb/7p1q1+uh/i56JinQ+bmiulnHhbHZc7dq09CxJ1BByyi7A4+lF76+CcJtSVFtb7na7Oe7Cgg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function () {
             $('#clientForm').submit(function (e) {
@@ -224,6 +255,7 @@
                 console.log("Client ID after populating: " + clientNo);
             });
         }
+
         document.getElementById('company').addEventListener('change', function () {
             var companyId = this.value;
             var clientSelect = document.getElementById('client');
@@ -302,4 +334,66 @@
             $('#clear-signature').click(clearSignature);
         });
     </script>
+
+
+
+<script>
+    $(document).ready(function () {
+        var clientDropdown = $('#client');
+        var equipmentInput = $('#equipment');
+        var serialNoInput = $('#serial_no');
+        var awesomplete;
+
+        clientDropdown.change(function () {
+            var clientId = $(this).val();
+            if (clientId) {
+                $.ajax({
+                    url: '/technical/fetch-equipments/' + clientId + '/',
+                    method: 'GET',
+                    success: function (data) {
+                        var equipmentList = data.map(function (item) {
+                            return item.name;
+                        });
+
+                        // Initialize Awesomplete with minChars set to 0
+                        awesomplete = new Awesomplete(equipmentInput[0], {
+                            minChars: 0,
+                            list: equipmentList
+                        });
+
+                        // Open the Awesomplete dropdown
+                        awesomplete.open();
+
+                        // Listen for the awesomplete-select event
+                        equipmentInput.on('awesomplete-select', function (event) {
+                            console.log('Awesomplete Selected:', event);
+
+                            // Get the selected equipment
+                            var selectedEquipment = event.originalEvent.text;
+
+                            console.log('Selected Equipment:', selectedEquipment);
+
+                            // Find the corresponding equipment object
+                            var equipmentObject = data.find(function (item) {
+                                console.log('Item:', item);
+                                return item.name.trim() === selectedEquipment.trim();
+                            });
+
+                            console.log('Equipment Object:', equipmentObject);
+
+                            // Update the serial number input field
+                            if (equipmentObject) {
+                                console.log('Serial Number:', equipmentObject.serial_no);
+                                serialNoInput.val(equipmentObject.serial_no);
+                            }
+                        });
+                    },
+                    error: function () {
+                        console.error('Error fetching equipment data');
+                    }
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}

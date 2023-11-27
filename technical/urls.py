@@ -17,7 +17,7 @@ urlpatterns = [
     path('create_delivery/<int:ticket_id>/', views.create_delivery, name='create_delivery'),
     path('create_inhouse_delivery/<int:ticket_id>/', views.create_inhouse_delivery, name='create_inhouse_delivery'),
     path('view_delivery/<int:ticket_id>/', views.view_delivery, name='view_delivery'),
-    path('approved_technical_reports/',views. approved_technical_reports,name='approved_technical_reports'),
+    path('approved_technical_reports/', views.approved_technical_reports, name='approved_technical_reports'),
     path('print_delivery/<int:ticket_id>/', views.print_delivery, name='print_delivery'),
     path('list_deliveries/', views.list_deliveries, name='list_deliveries'),
     path('requisitions/', views.list_requisitions, name='list_requisitions'),
@@ -91,6 +91,7 @@ urlpatterns = [
     path('add-client/', views.add_client, name='add_client'),
     path('delete_image/<int:image_id>/', views.delete_image, name='delete_image'),
     path('edit_delivery/<int:delivery_id>/', views.edit_delivery, name='edit_delivery'),
+    path('fetch-equipments/<int:client_id>/', views.fetch_equipments, name='fetch_equipments'),
     path('delete_item/<int:delivery_id>/<int:item_id>/', views.delete_item, name='delete_item'), ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

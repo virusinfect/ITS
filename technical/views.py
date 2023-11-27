@@ -21,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 from django.views.generic import ListView
 from its.models import Company, Clients, Parts, PartsCategory, Task
+from service.models import Equipment
 
 from .forms import TsourcingForm
 from .models import Tickets, ProductDetail, Delivery, Items, Requisition, CallCards, ServiceSchedules, ServiceTickets, \
@@ -2740,3 +2741,8 @@ def add_client(request):
         return JsonResponse({'success': True, 'message': 'Client added successfully!'})
     else:
         return JsonResponse({'warning': True, 'message': 'Error creating client!'})
+
+def fetch_equipments(request, client_id):
+    client = get_object_or_404(Clients, pk=client_id)
+    equipments = Equipment.objects.filter(client=client).values('id', 'name', 'serial_no')
+    return JsonResponse(list(equipments), safe=False)
