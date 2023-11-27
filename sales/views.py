@@ -166,7 +166,7 @@ def edit_sales_ticket(request, ticket_id):
                 "This is an auto-generated email | © 2023 ITS. All rights reserved."
             )
 
-            subject = f"{status} : {ticket.company.name} : {ticket.issue_summary} : #{ticket.ticket_id}"
+            subject = f"{status} : {ticket.company.name} : {strip_tags(ticket.issue_summary)} : #{ticket.ticket_id}"
             recipient_list = [handler.email]
             from_email = 'its-noreply@intellitech.co.ke'
 
