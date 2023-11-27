@@ -640,13 +640,38 @@ def edit_ticket(request, ticket_id):
             return redirect('edit-ticket', ticket_id=ticket_id)
 
         elif form_type == 'form3':
-            form = TsourcingForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('edit-ticket', ticket_id=ticket_id)  # Redirect after saving
-            else:
-                form = TsourcingForm()
+            print("form3 inititiated")
+            machine_yom = request.POST.get('machine_yom')
+            ram = request.POST.get('ram')
+            rom = request.POST.get('rom')
+            processor = request.POST.get('processor')
+            os = request.POST.get('os')
+            office_suite = request.POST.get('office_suite')
+            printer_yom = request.POST.get('printer_yom')
+            printer_type = request.POST.get('printer_type')
+            catridge = request.POST.get('catridge')
 
+            if machine_yom:
+                ticket.machine_yom = machine_yom
+            if ram:
+                ticket.ram = ram
+            if rom:
+                ticket.rom = rom
+            if processor:
+                ticket.processor = processor
+            if os:
+                ticket.os = os
+            if office_suite:
+                ticket.office_suite = office_suite
+            if printer_yom:
+                ticket.printer_yom = printer_yom
+            if printer_type:
+                ticket.printer_type = printer_type
+            if catridge:
+                ticket.catridge = catridge
+            ticket.save()
+            messages.success(request, 'Equipment Specs successfully')
+            return redirect('edit-ticket', ticket_id=ticket_id)
         # Render the edit form
     return render(request, 'technical/edit_ticket.html',
                   {'ticket': ticket, 'users': users, 'product_details': product_details, 'companies': companies,
