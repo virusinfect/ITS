@@ -12,15 +12,14 @@ from .models import Equipment, Software, EquipmentSpecs, Service, MonitorCheckli
 
 @login_required
 def ticket_list(request):
-    tickets = ServiceSchedules.objects.filter(is_active=1).order_by('-created')
+    tickets = ServiceSchedules.objects.all().order_by('-created')
     return render(request, 'service/tickets.html', {'tickets': tickets})
 
 
 @login_required
 def delete_service_ticket(request, schedule_id):
     service_schedule = get_object_or_404(ServiceSchedules, pk=schedule_id)
-    service_schedule.is_active = False
-    service_schedule.save()
+    service_schedule.delete()
     messages.warning(request, 'Service Ticket Deleted successfully')
     return redirect('service-tickets')
 

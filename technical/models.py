@@ -240,7 +240,7 @@ class ServiceSchedules(models.Model):
     to_date = models.DateTimeField()
     notes = models.CharField(max_length=500)
     status = models.CharField(max_length=255, default="Awaiting confirmation")
-    is_active = models.IntegerField()
+    is_active = models.IntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)  # Automatically set upon creation
     updated = models.DateTimeField(auto_now=True)  # Automatically updated on each save
     techs = models.ManyToManyField(User, related_name='service_schedules')

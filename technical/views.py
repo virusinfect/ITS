@@ -1453,6 +1453,7 @@ def edit_service_schedule(request, schedule_id):
         status = request.POST.get('status')
         tech_ids = request.POST.getlist('techs')
         company_instance = Company.objects.get(pk=company_id)
+        active_status = request.POST.get('active_status')
 
         # Update both ServiceSchedules and ServiceTickets instances within a transaction
         with transaction.atomic():
@@ -1462,7 +1463,9 @@ def edit_service_schedule(request, schedule_id):
             service_schedule.to_date = to_date
             service_schedule.notes = notes
             service_schedule.status = status
+            service_schedule.status = status
             service_schedule.updated = timezone.now()
+            service_schedule.is_active = active_status
             service_schedule.save()
             service_schedule.techs.clear()
             for tech_id in tech_ids:
