@@ -92,7 +92,7 @@
     <div>
         <a href="{% url 'edit_delivery' delivery.id %}" class="btn btn-primary waves-effect waves-light me-1"><span
                 class="btn-label"><i class="mdi mdi-square-edit-outline"></i></span>Edit</a>
-        <a id="print-button" class="btn btn-primary">Print</a>
+        <a href="{% url 'print_delivery' delivery.ticket.ticket_id %}" class="btn btn-primary">Print</a>
     </div>
     <script>
         document.getElementById('print-button').addEventListener('click', function () {

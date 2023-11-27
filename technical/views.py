@@ -977,9 +977,22 @@ def view_delivery(request, ticket_id):
     except (Tickets.DoesNotExist, Delivery.DoesNotExist):
         return HttpResponseNotFound("Ticket or Delivery not found")
 
-    return render(request, 'print_delivery.html',
+    return render(request, 'view_delivery.html',
                   {'ticket': ticket, 'delivery': delivery, 'signature': signature, 'items': items})
 
+
+@login_required
+def print_delivery(request, ticket_id):
+    try:
+        ticket = get_object_or_404(Tickets, pk=ticket_id)
+        delivery = Delivery.objects.filter(ticket=ticket, is_active=True).last()
+        signature = delivery.signatures.last()
+        items = delivery.items.all()
+    except (Tickets.DoesNotExist, Delivery.DoesNotExist):
+        return HttpResponseNotFound("Ticket or Delivery not found")
+
+    return render(request, 'print_delivery.html',
+                  {'ticket': ticket, 'delivery': delivery, 'signature': signature, 'items': items})
 
 @login_required
 def view_delivery_normal(request, delivery_id):
