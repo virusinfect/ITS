@@ -113,11 +113,33 @@ def save_signature_view_call(request):
     if request.method == 'POST':
         signature_data = request.POST.get('signature_data')
         cc_id = request.POST.get('cc_id')
-        print('test ccid')
-        print(cc_id)
+        call_card = get_object_or_404(CallCards, pk=cc_id)
+        call_card.time_in = request.POST.get('time_in')
+        call_card.tech_id_id = request.POST.get('tech_id')
+        call_card.time_out = request.POST.get('time_out')
+        call_card.equipment = request.POST.get('equipment')
+        call_card.fault = request.POST.get('fault')
+        call_card.remarks = request.POST.get('remarks')
+        call_card.status = request.POST.get('status')
+        call_card.type = request.POST.get('type')
+        call_card.save()
+        print("data test")
+        print(request.POST.get('equipment'))
+        print(request.POST.get('tech_id'))
+        print(request.POST.get('remarks'))
+
+        if signature_data:
+            try:
+                # Split the base64 data and get the second part
+                base64_data = signature_data.split(',')[1]
+            except IndexError:
+                return JsonResponse({'success': False, 'message': 'Invalid signature data'})
+        else:
+            # Handle the case where there is no signature
+            base64_data = ''
 
         # Extract the Base64 data after the comma
-        base64_data = signature_data.split(',')[1]
+        #base64_data = signature_data.split(',')[1]
 
         # Decode the Base64 data
         signature_binary = base64.b64decode(base64_data)
@@ -127,10 +149,12 @@ def save_signature_view_call(request):
 
         # Update the corresponding Delivery object with the signature
         try:
-            callcard = CallCards.objects.get(pk=cc_id)
-            signature.callcard = callcard  # Associate the delivery with the signature
-            signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
+            signature.callcard = call_card  # Associate the delivery with the signature
+            if signature_data:
+                signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
             return JsonResponse({'success': True})
+            print("signature data")
+            print(signature.signature_image)
         except CallCards.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Format Approval not found'}, status=400)
 

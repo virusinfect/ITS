@@ -6,7 +6,6 @@
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
-
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'active_call_cards' %}">Call Cards</a></li>
@@ -19,7 +18,6 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="mb-3 header-title text-center">Edit Call Card</h4>
-
                 <form method="post">
                     {% csrf_token %}
                     <div class="row">
@@ -41,10 +39,7 @@
                             <label for="client" class="form-label">Client:</label>
                             <input class="form-control" value="{{ call_card.client }}" disabled>
                         </div>
-
                     </div>
-
-
                     <div class="row">
                         <div class="mb-3 col-lg-6">
                             <label for="tech_id" class="form-label">Technician:</label>
@@ -58,46 +53,38 @@
                                 {% endfor %}
                             </select>
                         </div>
-
-
                         <div class="mb-3 col-lg-6">
                             <label for="equipment" class="form-label">Equipment:</label>
-                            <input type="text" class="form-control" name="equipment" value="{{ call_card.equipment }}"
+                            <input type="text" class="form-control" id="equipment" name="equipment"
+                                   value="{{ call_card.equipment }}"
                                    required>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="mb-3 col-lg-6">
                             <label for="time_in" class="form-label">Time In:</label>
-                            <input type="time" class="form-control" name="time_in"
+                            <input type="time" class="form-control" name="time_in" id="time_in"
                                    value="{{ call_card.time_in|time:'H:i' }}" required>
                         </div>
-
-
                         <div class="mb-3 col-lg-6">
                             <label for="time_out" class="form-label">Time Out:</label>
-                            <input type="time" class="form-control" name="time_out" required
+                            <input type="time" class="form-control" name="time_out" id="time_out" required
                                    value="{{ call_card.time_out|time:'H:i' }}">
                         </div>
-
                     </div>
-
-
                     <div class="mb-3">
                         <label for="fault" class="form-label">Fault:</label>
                         <textarea class="form-control" name="fault" id="fault" rows="4"
                                   required>{{ call_card.fault }}</textarea>
                     </div>
-
                     <div class="mb-3">
                         <label for="remarks" class="form-label">Remarks:</label>
-                        <textarea class="form-control" name="remarks" required id="remarks"
+                        <textarea class="form-control" id="remarks" name="remarks" required
                                   rows="4">{{ call_card.remarks }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label for="status" class="form-label">Call Card Status:</label>
-                        <select name="status" class="form-select">
+                        <select name="status" id="status" class="form-select">
                             <option value="Pending" {% if call_card.status == "Pending" %}selected{% endif %}>Pending
                             </option>
                             <option value="Done" {% if call_card.status == "Done" %}selected{% endif %}>Done
@@ -125,34 +112,37 @@
                                 </div>
                             {% endif %}
                         </div>
-                    </div>
-
-
-                    <button type="submit" class="btn btn-primary waves-effect waves-light mt-2">Update Call Card
-                    </button>
+                    </div>{% if  signature %}
+                    <<button type="submit" class="btn btn-primary waves-effect waves-light mt-2"><span class="btn-label"><i
+                            class="mdi mdi-signature-freehand"></i></span>Update Call Card
+                    </button>{% endif %}
                 </form><!-- Add a "Clear Signature" button -->
                 {% if not signature %}
                     <button id="clear-signature" class="btn btn-secondary waves-effect waves-light me-1 mt-2"><span
                             class="btn-label"><i
                             class="mdi mdi-eraser-variant"></i></span>Clear Signature
                     </button>
+
                     <button id="save-signature"
-                            class="btn btn-warning waves-effect waves-light me-1 mt-2"><span class="btn-label"><i
-                            class="mdi mdi-signature-freehand"></i></span>Submit Signature
+                            class="btn btn-primary waves-effect waves-light me-1 mt-2"><span class="btn-label"><i
+                            class="mdi mdi-signature-freehand"></i></span>Update Call Card
                     </button>
                 {% endif %}
-
             </div> <!-- end card-body-->
         </div> <!-- end card-->
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
-
     <script>
         $(document).ready(function () {
             var canvas = document.getElementById('signature-pad');
             var signaturePad = new SignaturePad(canvas);
             var ccId = $('#cc_id').val();  // Get the delivery ID from the hidden input field
+
+            // Ensure the signature pad is fully initialized before trying to clear it
+            setTimeout(function () {
+                signaturePad.clear();
+            }, 500);
 
             // Function to clear the signature
             function clearSignature() {
@@ -160,13 +150,34 @@
             }
 
             $('#save-signature').click(function () {
-                var signatureData = signaturePad.toDataURL();
+                // Check if the signature pad is empty at the moment of the button click
+                if (signaturePad.isEmpty()) {
+                    var signatureData = null;  // or use an empty string if you prefer ''
+                } else {
+                    var signatureData = signaturePad.toDataURL();
+                }
+                var tech_idNo = $('#tech_id').val();
+                var equipmentNo = $('#equipment').val();
+                var time_inNo = $('#time_in').val();
+                var time_outNo = $('#time_out').val();
+                var faultNo = $('#fault').val();
+                var statusNo = $('#status').val();
+                var remarksNo = $('#remarks').val();
+
+                //var signatureData = signaturePad.toDataURL();
                 $.ajax({
                     url: '/save-signature-view-call/',  // Replace with the actual URL
                     method: 'POST',
                     data: {
                         signature_data: signatureData,
-                        cc_id: ccId  // Include the delivery ID in the data
+                        tech_id: tech_idNo,
+                        equipment: equipmentNo,
+                        time_in: time_inNo,
+                        time_out: time_outNo,
+                        fault: faultNo,
+                        status: statusNo,
+                        cc_id: ccId,
+                        remarks: remarksNo,
                     },
                     success: function (response) {
                         // Check if the response indicates success (you can define this)
@@ -184,12 +195,10 @@
             $('#clear-signature').click(clearSignature);
         });
     </script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const companyDropdown = document.getElementById("company");
         const clientDropdown = document.getElementById("client");
-
         companyDropdown.addEventListener("change", () => {
             // Fetch clients based on the selected company
             const selectedCompanyId = companyDropdown.value;

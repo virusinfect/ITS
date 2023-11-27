@@ -2468,8 +2468,7 @@ def save_signature_view_ticket(request):
         eqpass = request.POST.get('eqpass')
         client_id = Clients.objects.get(id=client)
         brought_by = request.POST.get('brought_by')
-        print("test")
-        print(brought_by)
+
         # Create the ticket
         ticket = Tickets.objects.create(
             company=client_id.company,
