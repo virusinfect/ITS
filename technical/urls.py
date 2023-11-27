@@ -17,6 +17,7 @@ urlpatterns = [
     path('create_delivery/<int:ticket_id>/', views.create_delivery, name='create_delivery'),
     path('create_inhouse_delivery/<int:ticket_id>/', views.create_inhouse_delivery, name='create_inhouse_delivery'),
     path('view_delivery/<int:ticket_id>/', views.view_delivery, name='view_delivery'),
+    path('approved_technical_reports/',views. approved_technical_reports,name='approved_technical_reports'),
     path('print_delivery/<int:ticket_id>/', views.print_delivery, name='print_delivery'),
     path('list_deliveries/', views.list_deliveries, name='list_deliveries'),
     path('requisitions/', views.list_requisitions, name='list_requisitions'),

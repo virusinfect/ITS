@@ -307,6 +307,9 @@ def store_dash(request):
 
 @login_required
 def acc_dash(request):
+    reports = TechnicalReport.objects.filter(active=1,is_approved="approved").order_by('-created')
+    reports_count = reports.count()
+
     returned_requisitions_count = Requisition.objects.filter(issue_status="returned",
                                                              return_status__isnull=True).count()
     pending_approved_requisitions_count = Requisition.objects.filter(req_status="Approved",
@@ -384,9 +387,9 @@ def acc_dash(request):
         count = Tickets.objects.filter(tr_status=tr_status, is_active=1).count()
         tr_status_counts[tr_status] = count
 
-    return render(request, "technical/store_dashboard.html",
+    return render(request, "technical/acc_dashboard.html",
                   {'remark_counts': remark_counts, 'bench_status_counts': bench_status_counts,
-                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts,'returned_requisitions_count':returned_requisitions_count,'pending_approved_requisitions_count':pending_approved_requisitions_count})
+                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts,'returned_requisitions_count':returned_requisitions_count,'pending_approved_requisitions_count':pending_approved_requisitions_count,'reports_count':reports_count})
 
 
 @login_required
@@ -397,6 +400,11 @@ def remark_tickets(request, remark, title):
 
     return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
 
+
+@login_required
+def approved_technical_reports(request):
+    reports = TechnicalReport.objects.filter(active=1, is_approved="approved").order_by('-created')
+    return render(request,'technical/technical_report_list.html',{'reports':reports} )
 
 @login_required
 def status_tickets(request, status, title):

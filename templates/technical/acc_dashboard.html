@@ -30,7 +30,6 @@
     </div>
     <div class="row">
         <h5>Status</h5>
-
         <div class="col">
             <div class="card">
                 <div class="card-body widget-user">
@@ -43,8 +42,6 @@
                 </div>
             </div>
         </div>
-
-
         <div class="col">
             <div class="card">
                 <div class="card-body widget-user">
@@ -57,7 +54,18 @@
                 </div>
             </div>
         </div>
+        <div class="col">
 
+            <div class="card">
+                <div class="card-body widget-user">
+                    <div class="text-center">
+                        <a href="{% url 'approved_technical_reports' %}">
+                            <h2 class="fw-normal text-primary" data-plugin="counterup">{{ reports_count }}</h2>
+                            <h5>Technical Reports</h5></a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-xl-4">
