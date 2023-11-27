@@ -114,6 +114,19 @@
                             </tr>
                             <tr>
                                 <td style="font-size:10px">
+                                    Action:
+                                </td>
+                                <td style="font-size:10px">
+                                    {{ ticket.action|safe }}
+                                    {% if action_images %}
+                                        <div class="card w-25 h-25 mt-2">
+                                            <img class="card-img-top img-fluid " src="{{ action_images.image.url }}">
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size:10px">
                                     Recommendation:
                                 </td>
                                 <td style="font-size:10px">

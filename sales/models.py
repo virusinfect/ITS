@@ -33,7 +33,7 @@ class SalesTicketProducts(models.Model):
     currency = models.TextField(blank=True)
     availability = models.CharField(max_length=255,blank=True)
     supplier = models.CharField(max_length=255,blank=True)
-    attachment = models.CharField(max_length=5000)
+    attachment = models.ImageField(upload_to='att/', blank=True, null=True)
     is_active = models.IntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

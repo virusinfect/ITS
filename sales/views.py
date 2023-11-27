@@ -905,6 +905,7 @@ def create_ticket(request):
         supplier_list = request.POST.getlist('supplier[]')
         currency_list = request.POST.getlist('currency[]')
         price_list_strings = request.POST.getlist('price[]')
+        image_list = request.FILES.getlist('image[]')
 
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
@@ -931,6 +932,14 @@ def create_ticket(request):
                     currency=currency_list[i],
                     ticket=ticket,
                 )
+                if i < len(image_list):
+                    if i < len(image_list):
+                        products.attachment = image_list[i]
+                    else:
+                        products.attachment = None
+
+                    print("debug")
+                    print(image_list[i])
 
                 new_sourcing_data.append(products)
 

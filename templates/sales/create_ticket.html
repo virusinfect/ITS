@@ -42,7 +42,7 @@
     <div class="card">
         <div class=" card-body col-11 mx-auto">
             <h3 class="header-title mb-4">Create Ticket </h3>
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <div class="row mb-3">
@@ -87,6 +87,7 @@
                             <th width="8%">Currency</th>
                             <th>Availability</th>
                             <th width="8%">Supplier</th>
+                            <th>Attach</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -135,6 +136,9 @@
                             <td><input type="text" name="supplier[]"
                                        value="{{ product.supplier }}"
                                        class="form-control">
+                            </td>
+                            <td>
+                                <input type="file" class="form-control" name="image[]">
                             </td>
                             <td><a class="add-row-button" onclick="addBlankRow(this)"
                                    title="add row"
