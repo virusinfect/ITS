@@ -27,7 +27,7 @@
                             <option value="" disabled selected>Select a Ticket</option>
                             {% for ticket in active_tickets %}
                                 <option value="{{ ticket.pk }}">ITL/TN/{{ ticket.ticket_id }}
-                                    >> {{ ticket.company }} >> {{ ticket.equipment }}</option>
+                                    >> <strong>Client:</strong> {{ ticket.company }} >> Equipment : {{ ticket.equipment }}</option>
                             {% endfor %}
                         </select>
                     </div>
