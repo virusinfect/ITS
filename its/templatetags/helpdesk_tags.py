@@ -14,6 +14,14 @@ def can_access_view_bank(user):
         return False
 
 @register.filter
+def can_access_view_price(user):
+    try:
+        helpdesk_group = Group.objects.get(name='R_view_price')
+        return helpdesk_group in user.groups.all()
+    except Group.DoesNotExist:
+        return False
+
+@register.filter
 def can_access_view_deliveries(user):
     try:
         helpdesk_group = Group.objects.get(name='R_view_deliveries')
