@@ -794,6 +794,7 @@ def create_order(request):
         date_ordered_list = request.POST.getlist('date_ordered[]')
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
+        part_no_list = request.POST.getlist('part_no[]')
         for i in range(len(product_list)):
             if (product_list[i]):
                 order_product = OrderProducts(
@@ -802,6 +803,7 @@ def create_order(request):
                     supplier=supplier_list[i],
                     is_active=True,
                     orders=order,
+                    part_no=part_no_list[i],
 
                 )
                 order_product.save()
