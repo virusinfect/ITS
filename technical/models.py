@@ -33,7 +33,7 @@ class Tickets(models.Model):
     recommendation = models.TextField(blank=True)
     labour = models.FloatField(default=0)
     currency = models.CharField(max_length=50, default="KSH")
-    remark = models.CharField(max_length=50, blank=True)
+    remark = models.CharField(max_length=50, blank=True,null=True)
     lpo_no = models.CharField(max_length=255, blank=True)
     bench_status = models.CharField(max_length=25, default="Pending")
     more = models.CharField(max_length=300, blank=True)
@@ -218,7 +218,7 @@ class CallCards(models.Model):
                                 related_name='technician')
     equipment = models.CharField(max_length=255)
     fault = models.CharField(max_length=255)
-    remarks = models.TextField(null=True)
+    remarks = models.TextField(null=True,blank=True)
     status = models.CharField(max_length=255, default="Pending")
     type = models.CharField(max_length=255)
     is_active = models.IntegerField(default=1)
@@ -309,6 +309,7 @@ class tQuote(models.Model):
     updated = models.DateTimeField(auto_now=True)
     ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
     availability = models.CharField(max_length=255, null=True)
+    layout = models.CharField(max_length=20,default=1)
 
 class InhouseTsourcing(models.Model):
     ticket = models.ForeignKey(InhouseTickets, on_delete=models.CASCADE)

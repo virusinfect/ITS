@@ -486,6 +486,7 @@
                                                     <th>Price</th>
                                                     <th>Qty</th>
                                                     <th>Currency</th>
+                                                    <th>Layout</th>
                                                     <th>Action</th>
 
                                                     <!-- Add more headers for other fields -->
@@ -520,6 +521,7 @@
                                                                 EUR
                                                             </option>
                                                         </select></td>
+                                                        <td><input type="number" class="form-control" value="{{ item.layout }}" name="layout[]" id="layout"></td>
 
                                                         <td><a href="#" class="delete-entry-quote" title="delete"
                                                                tabindex="0"
@@ -807,158 +809,268 @@
                 </li>
             </ul>
             <form method="post">
-            {% csrf_token %}
-            <div class="tab-content">
+                {% csrf_token %}
+                <div class="tab-content">
 
-                <div class="tab-pane show active" id="home1">
-                    <div class="row mx-auto">
-                        <div class=" mb-1">
-                            <label for="machine_yom" class="form-label">Health Status(%)</label>
-                            <input type="number" class="form-control" name="machine_yom"
-                                   value="{{ ticket.machine_yom }}">
-                        </div>
-                        <div class=" mb-1">
-                            <label for="ram" class="form-label">RAM:</label>
-                            <input type="text" class="form-control" name="ram" value="{{ ticket.ram }}">
-                        </div>
-                        <div class=" mb-1">
-                            <label for="rom" class="form-label">Storage</label>
-                            <input type="text" class="form-control" name="rom" value="{{ ticket.rom }}">
-                        </div>
-                        <div class=" mb-1">
-                            <label for="processor" class="form-label">Processor</label>
-                            <input type="text" class="form-control" name="processor" value="{{ ticket.processor }}">
-                        </div>
-                        <div class=" mb-1">
-                            <label for="os" class="form-label">Operating System (Windows)</label>
-                            <select name="os"  class="form-select">
-                                <option value="">Select a Windows version</option>
-                                <optgroup label="Windows 11">
-                                    <option value="Windows 11 Home" {% if ticket.os == 'Windows 11 Home' %}selected{% endif %}>Windows 11 Home</option>
-                                    <option value="Windows 11 Pro" {% if ticket.os == 'Windows 11 Pro' %}selected{% endif %}>Windows 11 Pro</option>
-                                    <option value="Windows 11 Enterprise" {% if ticket.os == 'Windows 11 Enterprise' %}selected{% endif %}>Windows 11 Enterprise</option>
-                                </optgroup>
-                                <optgroup label="Windows 10">
-                                    <option value="Windows 10 Home" {% if ticket.os == 'Windows 10 Home' %}selected{% endif %}>Windows 10 Home</option>
-                                    <option value="Windows 10 Pro" {% if ticket.os == 'Windows 10 Pro' %}selected{% endif %}>Windows 10 Pro</option>
-                                    <option value="Windows 10 Enterprise" {% if ticket.os == 'Windows 10 Enterprise' %}selected{% endif %}>Windows 10 Enterprise</option>
-                                </optgroup>
-                                <optgroup label="Windows 8.1">
-                                    <option value="Windows 8.1" {% if ticket.os == 'Windows 8.1' %}selected{% endif %}>Windows 8.1</option>
-                                </optgroup>
-                                <optgroup label="Windows 8">
-                                    <option value="Windows 8" {% if ticket.os == 'Windows 8' %}selected{% endif %}>Windows 8</option>
-                                </optgroup>
-                                <optgroup label="Windows 7">
-                                    <option value="Windows 7" {% if ticket.os == 'Windows 7' %}selected{% endif %}>Windows 7</option>
-                                </optgroup>
-                                <optgroup label="Windows Server 2022">
-                                    <option value="Windows Server 2022" {% if ticket.os == 'Windows Server 2022' %}selected{% endif %}>Windows Server 2022</option>
-                                </optgroup>
-                                <optgroup label="Windows Server 2019">
-                                    <option value="Windows Server 2019" {% if ticket.os == 'Windows Server 2019' %}selected{% endif %}>Windows Server 2019</option>
-                                </optgroup>
-                                <optgroup label="Windows Server 2016">
-                                    <option value="Windows Server 2016" {% if ticket.os == 'Windows Server 2016' %}selected{% endif %}>Windows Server 2016</option>
-                                </optgroup>
-                                <optgroup label="Windows Server 2012 R2">
-                                    <option value="Windows Server 2012 R2" {% if ticket.os == 'Windows Server 2012 R2' %}selected{% endif %}>Windows Server 2012 R2</option>
-                                </optgroup>
-                                <optgroup label="Windows Server 2012">
-                                    <option value="Windows Server 2012" {% if ticket.os == 'Windows Server 2012' %}selected{% endif %}>Windows Server 2012</option>
-                                </optgroup>
-                                <optgroup label="Windows XP">
-                                    <option value="Windows XP" {% if ticket.os == 'Windows XP' %}selected{% endif %}>Windows XP</option>
-                                </optgroup>
-                            </select>
-                        </div>
+                    <div class="tab-pane show active" id="home1">
+                        <div class="row mx-auto">
+                            <div class=" mb-1">
+                                <label for="machine_yom" class="form-label">Health Status(%)</label>
+                                <input type="number" class="form-control" name="machine_yom"
+                                       value="{{ ticket.machine_yom }}">
+                            </div>
+                            <div class=" mb-1">
+                                <label for="ram" class="form-label">RAM:</label>
+                                <input type="text" class="form-control" name="ram" value="{{ ticket.ram }}">
+                            </div>
+                            <div class=" mb-1">
+                                <label for="rom" class="form-label">Storage</label>
+                                <input type="text" class="form-control" name="rom" value="{{ ticket.rom }}">
+                            </div>
+                            <div class=" mb-1">
+                                <label for="processor" class="form-label">Processor</label>
+                                <input type="text" class="form-control" name="processor" value="{{ ticket.processor }}">
+                            </div>
+                            <div class=" mb-1">
+                                <label for="os" class="form-label">Operating System (Windows)</label>
+                                <select name="os" class="form-select">
+                                    <option value="">Select a Windows version</option>
+                                    <optgroup label="Windows 11">
+                                        <option value="Windows 11 Home"
+                                                {% if ticket.os == 'Windows 11 Home' %}selected{% endif %}>Windows 11
+                                            Home
+                                        </option>
+                                        <option value="Windows 11 Pro"
+                                                {% if ticket.os == 'Windows 11 Pro' %}selected{% endif %}>Windows 11 Pro
+                                        </option>
+                                        <option value="Windows 11 Enterprise"
+                                                {% if ticket.os == 'Windows 11 Enterprise' %}selected{% endif %}>Windows
+                                            11 Enterprise
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows 10">
+                                        <option value="Windows 10 Home"
+                                                {% if ticket.os == 'Windows 10 Home' %}selected{% endif %}>Windows 10
+                                            Home
+                                        </option>
+                                        <option value="Windows 10 Pro"
+                                                {% if ticket.os == 'Windows 10 Pro' %}selected{% endif %}>Windows 10 Pro
+                                        </option>
+                                        <option value="Windows 10 Enterprise"
+                                                {% if ticket.os == 'Windows 10 Enterprise' %}selected{% endif %}>Windows
+                                            10 Enterprise
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows 8.1">
+                                        <option value="Windows 8.1"
+                                                {% if ticket.os == 'Windows 8.1' %}selected{% endif %}>Windows 8.1
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows 8">
+                                        <option value="Windows 8" {% if ticket.os == 'Windows 8' %}selected{% endif %}>
+                                            Windows 8
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows 7">
+                                        <option value="Windows 7" {% if ticket.os == 'Windows 7' %}selected{% endif %}>
+                                            Windows 7
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows Server 2022">
+                                        <option value="Windows Server 2022"
+                                                {% if ticket.os == 'Windows Server 2022' %}selected{% endif %}>Windows
+                                            Server 2022
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows Server 2019">
+                                        <option value="Windows Server 2019"
+                                                {% if ticket.os == 'Windows Server 2019' %}selected{% endif %}>Windows
+                                            Server 2019
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows Server 2016">
+                                        <option value="Windows Server 2016"
+                                                {% if ticket.os == 'Windows Server 2016' %}selected{% endif %}>Windows
+                                            Server 2016
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows Server 2012 R2">
+                                        <option value="Windows Server 2012 R2"
+                                                {% if ticket.os == 'Windows Server 2012 R2' %}selected{% endif %}>
+                                            Windows Server 2012 R2
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows Server 2012">
+                                        <option value="Windows Server 2012"
+                                                {% if ticket.os == 'Windows Server 2012' %}selected{% endif %}>Windows
+                                            Server 2012
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Windows XP">
+                                        <option value="Windows XP"
+                                                {% if ticket.os == 'Windows XP' %}selected{% endif %}>Windows XP
+                                        </option>
+                                    </optgroup>
+                                </select>
+                            </div>
 
-                        <div class="mb-1">
-                            <label for="office_suite" class="form-label">Microsoft Office</label>
-                            <select name="office_suite" class="form-select">
-                                <option value="">Select a Microsoft Office version</option>
-                                <optgroup label="Microsoft Office 365">
-                                    <option value="Microsoft Office 365" {% if ticket.office_suite == 'Microsoft Office 365' %}selected{% endif %}>Microsoft Office 365</option>
-                                </optgroup>
-                                <optgroup label="Microsoft Office 2021">
-                                    <option value="Microsoft Office 2021 Home and Student" {% if ticket.office_suite == 'Microsoft Office 2021 Home and Student' %}selected{% endif %}>Home and Student</option>
-                                    <option value="Microsoft Office 2021 Home and Business" {% if ticket.office_suite == 'Microsoft Office 2021 Home and Business' %}selected{% endif %}>Home and Business
-                                    </option>
-                                    <option value="Microsoft Office 2021 Professional" {% if ticket.office_suite == 'Microsoft Office 2021 Professional' %}selected{% endif %}>Professional</option>
-                                    <option value="Microsoft Office 2021 Professional Plus" {% if ticket.office_suite == 'Microsoft Office 2021 Professional Plus' %}selected{% endif %}>Professional Plus
-                                    </option>
-                                </optgroup>
-                                <optgroup label="Microsoft Office 2019">
-                                    <option value="Microsoft Office 2019 Home and Student" {% if ticket.office_suite == 'Microsoft Office 2019 Home and Student' %}selected{% endif %}>Home and Student</option>
-                                    <option value="Microsoft Office 2019 Home and Business" {% if ticket.office_suite == 'Microsoft Office 2019 Home and Business' %}selected{% endif %}>Home and Business
-                                    </option>
-                                    <option value="Microsoft Office 2019 Professional" {% if ticket.office_suite == 'Microsoft Office 2019 Professional' %}selected{% endif %}>Professional</option>
-                                    <option value="Microsoft Office 2019 Professional Plus" {% if ticket.office_suite == 'Microsoft Office 2019 Professional Plus' %}selected{% endif %}>Professional Plus
-                                    </option>
-                                </optgroup>
-                                <optgroup label="Microsoft Office 2016">
-                                    <option value="Microsoft Office 2016 Home and Student" {% if ticket.office_suite == 'Microsoft Office 2016 Home and Student' %}selected{% endif %}>Home and Student</option>
-                                    <option value="Microsoft Office 2016 Home and Business" {% if ticket.office_suite == 'Microsoft Office 2016 Home and Business' %}selected{% endif %}>Home and Business
-                                    </option>
-                                    <option value="Microsoft Office 2016 Professional" {% if ticket.office_suite == 'Microsoft Office 2016 Professional' %}selected{% endif %}>Professional</option>
-                                    <option value="Microsoft Office 2016 Professional Plus" {% if ticket.office_suite == 'Microsoft Office 2016 Professional Plus' %}selected{% endif %}>Professional Plus
-                                    </option>
-                                </optgroup>
-                                <optgroup label="Microsoft Office 2013">
-                                    <option value="Microsoft Office 2013 Home and Student" {% if ticket.office_suite == 'Microsoft Office 2013 Home and Student' %}selected{% endif %}>Home and Student</option>
-                                    <option value="Microsoft Office 2013 Home and Business" {% if ticket.office_suite == 'Microsoft Office 2013 Home and Business' %}selected{% endif %}>Home and Business
-                                    </option>
-                                    <option value="Microsoft Office 2013 Professional" {% if ticket.office_suite == 'Microsoft Office 2013 Professional' %}selected{% endif %}>Professional</option>
-                                    <option value="Microsoft Office 2013 Professional Plus" {% if ticket.office_suite == 'Microsoft Office 2013 Professional Plus' %}selected{% endif %}>Professional Plus
-                                    </option>
-                                </optgroup>
-                                <optgroup label="Microsoft Office 2010">
-                                    <option value="Microsoft Office 2010 Home and Student" {% if ticket.office_suite == 'Microsoft Office 2010 Home and Student' %}selected{% endif %}>Home and Student</option>
-                                    <option value="Microsoft Office 2010 Home and Business" {% if ticket.office_suite == 'Microsoft Office 2010 Home and Business' %}selected{% endif %}>Home and Business
-                                    </option>
-                                    <option value="Microsoft Office 2010 Professional" {% if ticket.office_suite == 'Microsoft Office 2010 Professional' %}selected{% endif %}>Professional</option>
-                                    <option value="Microsoft Office 2010 Professional Plus" {% if ticket.office_suite == 'Microsoft Office 2010 Professional Plus' %}selected{% endif %}>Professional Plus
-                                    </option>
-                                </optgroup>
-                                <optgroup label="Microsoft Office 2007">
-                                    <option value="Microsoft Office 2007 Home and Student" {% if ticket.office_suite == 'Microsoft Office 2007 Home and Student' %}selected{% endif %}>Home and Student</option>
-                                    <option value="Microsoft Office 2007 Home and Business" {% if ticket.office_suite == 'Microsoft Office 2007 Home and Business' %}selected{% endif %}>Home and Business
-                                    </option>
-                                    <option value="Microsoft Office 2007 Professional" {% if ticket.office_suite == 'Microsoft Office 2007 Professional' %}selected{% endif %}>Professional</option>
-                                    <option value="Microsoft Office 2007 Professional Plus" {% if ticket.office_suite == 'Microsoft Office 2007 Professional Plus' %}selected{% endif %}>Professional Plus
-                                    </option>
-                                </optgroup>
-                                <!-- Add more Microsoft Office versions and editions as needed -->
-                            </select>
+                            <div class="mb-1">
+                                <label for="office_suite" class="form-label">Microsoft Office</label>
+                                <select name="office_suite" class="form-select">
+                                    <option value="">Select a Microsoft Office version</option>
+                                    <optgroup label="Microsoft Office 365">
+                                        <option value="Microsoft Office 365"
+                                                {% if ticket.office_suite == 'Microsoft Office 365' %}selected{% endif %}>
+                                            Microsoft Office 365
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Microsoft Office 2021">
+                                        <option value="Microsoft Office 2021 Home and Student"
+                                                {% if ticket.office_suite == 'Microsoft Office 2021 Home and Student' %}selected{% endif %}>
+                                            Home and Student
+                                        </option>
+                                        <option value="Microsoft Office 2021 Home and Business"
+                                                {% if ticket.office_suite == 'Microsoft Office 2021 Home and Business' %}selected{% endif %}>
+                                            Home and Business
+                                        </option>
+                                        <option value="Microsoft Office 2021 Professional"
+                                                {% if ticket.office_suite == 'Microsoft Office 2021 Professional' %}selected{% endif %}>
+                                            Professional
+                                        </option>
+                                        <option value="Microsoft Office 2021 Professional Plus"
+                                                {% if ticket.office_suite == 'Microsoft Office 2021 Professional Plus' %}selected{% endif %}>
+                                            Professional Plus
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Microsoft Office 2019">
+                                        <option value="Microsoft Office 2019 Home and Student"
+                                                {% if ticket.office_suite == 'Microsoft Office 2019 Home and Student' %}selected{% endif %}>
+                                            Home and Student
+                                        </option>
+                                        <option value="Microsoft Office 2019 Home and Business"
+                                                {% if ticket.office_suite == 'Microsoft Office 2019 Home and Business' %}selected{% endif %}>
+                                            Home and Business
+                                        </option>
+                                        <option value="Microsoft Office 2019 Professional"
+                                                {% if ticket.office_suite == 'Microsoft Office 2019 Professional' %}selected{% endif %}>
+                                            Professional
+                                        </option>
+                                        <option value="Microsoft Office 2019 Professional Plus"
+                                                {% if ticket.office_suite == 'Microsoft Office 2019 Professional Plus' %}selected{% endif %}>
+                                            Professional Plus
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Microsoft Office 2016">
+                                        <option value="Microsoft Office 2016 Home and Student"
+                                                {% if ticket.office_suite == 'Microsoft Office 2016 Home and Student' %}selected{% endif %}>
+                                            Home and Student
+                                        </option>
+                                        <option value="Microsoft Office 2016 Home and Business"
+                                                {% if ticket.office_suite == 'Microsoft Office 2016 Home and Business' %}selected{% endif %}>
+                                            Home and Business
+                                        </option>
+                                        <option value="Microsoft Office 2016 Professional"
+                                                {% if ticket.office_suite == 'Microsoft Office 2016 Professional' %}selected{% endif %}>
+                                            Professional
+                                        </option>
+                                        <option value="Microsoft Office 2016 Professional Plus"
+                                                {% if ticket.office_suite == 'Microsoft Office 2016 Professional Plus' %}selected{% endif %}>
+                                            Professional Plus
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Microsoft Office 2013">
+                                        <option value="Microsoft Office 2013 Home and Student"
+                                                {% if ticket.office_suite == 'Microsoft Office 2013 Home and Student' %}selected{% endif %}>
+                                            Home and Student
+                                        </option>
+                                        <option value="Microsoft Office 2013 Home and Business"
+                                                {% if ticket.office_suite == 'Microsoft Office 2013 Home and Business' %}selected{% endif %}>
+                                            Home and Business
+                                        </option>
+                                        <option value="Microsoft Office 2013 Professional"
+                                                {% if ticket.office_suite == 'Microsoft Office 2013 Professional' %}selected{% endif %}>
+                                            Professional
+                                        </option>
+                                        <option value="Microsoft Office 2013 Professional Plus"
+                                                {% if ticket.office_suite == 'Microsoft Office 2013 Professional Plus' %}selected{% endif %}>
+                                            Professional Plus
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Microsoft Office 2010">
+                                        <option value="Microsoft Office 2010 Home and Student"
+                                                {% if ticket.office_suite == 'Microsoft Office 2010 Home and Student' %}selected{% endif %}>
+                                            Home and Student
+                                        </option>
+                                        <option value="Microsoft Office 2010 Home and Business"
+                                                {% if ticket.office_suite == 'Microsoft Office 2010 Home and Business' %}selected{% endif %}>
+                                            Home and Business
+                                        </option>
+                                        <option value="Microsoft Office 2010 Professional"
+                                                {% if ticket.office_suite == 'Microsoft Office 2010 Professional' %}selected{% endif %}>
+                                            Professional
+                                        </option>
+                                        <option value="Microsoft Office 2010 Professional Plus"
+                                                {% if ticket.office_suite == 'Microsoft Office 2010 Professional Plus' %}selected{% endif %}>
+                                            Professional Plus
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Microsoft Office 2007">
+                                        <option value="Microsoft Office 2007 Home and Student"
+                                                {% if ticket.office_suite == 'Microsoft Office 2007 Home and Student' %}selected{% endif %}>
+                                            Home and Student
+                                        </option>
+                                        <option value="Microsoft Office 2007 Home and Business"
+                                                {% if ticket.office_suite == 'Microsoft Office 2007 Home and Business' %}selected{% endif %}>
+                                            Home and Business
+                                        </option>
+                                        <option value="Microsoft Office 2007 Professional"
+                                                {% if ticket.office_suite == 'Microsoft Office 2007 Professional' %}selected{% endif %}>
+                                            Professional
+                                        </option>
+                                        <option value="Microsoft Office 2007 Professional Plus"
+                                                {% if ticket.office_suite == 'Microsoft Office 2007 Professional Plus' %}selected{% endif %}>
+                                            Professional Plus
+                                        </option>
+                                    </optgroup>
+                                    <!-- Add more Microsoft Office versions and editions as needed -->
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane " id="profile1">
-                    <div class="row mx-auto">
-                        <div class=" mb-1">
-                            <label for="printer_yom" class="form-label">YOM</label>
-                            <input type="number" class="form-control" name="printer_yom"
-                                   value="{{ ticket.printer_yom }}">
-                        </div>
-                        <div class=" mb-1">
-                            <label for="printer_type" class="form-label">Type</label>
-                            <select name="printer_type" id="printer_type" class="form-select">
-                                <option value="">Select...</option>
-                                <option value="Dot Matrix" {% if ticket.printer_type == 'Dot Matrix' %}selected{% endif %}>Dot Matrix</option>
-                                <option value="Inkjet" {% if ticket.printer_type == 'Inkjet' %}selected{% endif %}>Inkjet</option>
-                                <option value="LaserJet" {% if ticket.printer_type == 'LaserJet' %}selected{% endif %}>LaserJet</option>
-                                <option value="Thermal" {% if ticket.printer_type == 'Thermal' %}selected{% endif %}>Thermal</option>
-                            </select>
-                        </div>
-                        <div class=" mb-1">
-                            <label for="catridge" class="form-label">Toner</label>
-                            <input type="text" class="form-control" name="catridge" value="{{ ticket.catridge }}">
+                    <div class="tab-pane " id="profile1">
+                        <div class="row mx-auto">
+                            <div class=" mb-1">
+                                <label for="printer_yom" class="form-label">YOM</label>
+                                <input type="number" class="form-control" name="printer_yom"
+                                       value="{{ ticket.printer_yom }}">
+                            </div>
+                            <div class=" mb-1">
+                                <label for="printer_type" class="form-label">Type</label>
+                                <select name="printer_type" id="printer_type" class="form-select">
+                                    <option value="">Select...</option>
+                                    <option value="Dot Matrix"
+                                            {% if ticket.printer_type == 'Dot Matrix' %}selected{% endif %}>Dot Matrix
+                                    </option>
+                                    <option value="Inkjet" {% if ticket.printer_type == 'Inkjet' %}selected{% endif %}>
+                                        Inkjet
+                                    </option>
+                                    <option value="LaserJet"
+                                            {% if ticket.printer_type == 'LaserJet' %}selected{% endif %}>LaserJet
+                                    </option>
+                                    <option value="Thermal"
+                                            {% if ticket.printer_type == 'Thermal' %}selected{% endif %}>Thermal
+                                    </option>
+                                </select>
+                            </div>
+                            <div class=" mb-1">
+                                <label for="catridge" class="form-label">Toner</label>
+                                <input type="text" class="form-control" name="catridge" value="{{ ticket.catridge }}">
+                            </div>
                         </div>
                     </div>
+                    <button type="submit" name="form_type" value="form3" class="btn btn-primary mt-2">Save Details
+                    </button>
                 </div>
-                <button type="submit" name="form_type" value="form3" class="btn btn-primary mt-2">Save Details
-                </button>
-            </div>
             </form>
         </div> <!-- end offcanvas-body-->
     </div> <!-- end offcanvas-->
@@ -1013,7 +1125,7 @@
             var newRow = document.createElement('tr');
 
             // Create new input fields for each column
-            var columns = ['description', 'part_no', 'price', 'quantity', 'currency'];
+            var columns = ['description', 'part_no', 'price', 'quantity', 'currency','layout'];
             for (var i = 0; i < columns.length; i++) {
                 var cell = document.createElement('td');
                 var input;

@@ -30,7 +30,6 @@
                 page-break-before: always;
                 margin-top: 50px; /* Adjust the margin-top value as needed */
             }
-
         }
     </style>
     <div class="col-9 mx-auto wrapper px-2 mx-auto">
@@ -87,7 +86,6 @@
                                     <h4 style="font-size:10px">DETAILS</h4>
                                 </th>
                             </tr>
-
                             </thead>
                             <tbody>
                             <tr>
@@ -108,7 +106,6 @@
                                         <div class="card w-25 h-25 mt-2">
                                             <img class="card-img-top img-fluid " src="{{ diagnosis_images.image.url }}">
                                         </div>
-
                                     {% endif %}
                                 </td>
                             </tr>
@@ -135,9 +132,7 @@
                                         <div class="card w-25 h-25 mt-2    ">
                                             <img class="card-img-top img-fluid mb-1"
                                                  src="{{ recommendation_images.image.url }}">
-
                                         </div>
-
                                     {% endif %}
                                 </td>
                             </tr>
@@ -176,14 +171,15 @@
                                 {% endif %}
                                 {% if tquote_data %}
                                     {% for item in tquote_data %}
-                                        <tr data-entry-id="{{ item.id }}">
-                                            <td>{{ item.part_no }}</td>
-                                            <td>{{ item.description }}</td>
-                                            <td>{{ item.price|floatformat:2|intcomma }}</td>
-                                            <td>{{ item.quantity|floatformat:0 }}</td>
-                                            <td class="text-end">{{ item.total|floatformat:2|intcomma }}</td>
-                                            <!-- Add more cells for other fields -->
-                                        </tr>
+                                        {% if item.layout == "1" %}
+                                            <tr data-entry-id="{{ item.id }}">
+                                                <td>{{ item.part_no }}</td>
+                                                <td>{{ item.description }}</td>
+                                                <td>{{ item.price|floatformat:2|intcomma }}</td>
+                                                <td>{{ item.quantity|floatformat:0 }}</td>
+                                                <td class="text-end">{{ item.total|floatformat:2|intcomma }}</td>
+                                                <!-- Add more cells for other fields -->
+                                            </tr>{% endif %}
                                     {% endfor %}
                                 {% endif %}
                                 <tr>
@@ -206,6 +202,61 @@
                             </table>
                         </div>
                     </div>{% endif %}
+                <div><!-- Display tQuote Data -->
+                    {% for layout, items in grouped_tquote_data.items %}
+                        {% if layout != "1" %}
+                            <div class="row mx-auto">
+                                <div class="row mb-1 mt-1 table-responsive mx-auto">
+                                    <table class="table table-bordered">
+                                        <thead class="table-light">
+                                        <tr>
+                                            <th colspan="5" class="text-center">QUOTATION {{ layout }}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Part Number</th>
+                                            <th>Description</th>
+                                            <th>Price</th>
+                                            <th>Qty</th>
+                                            <th>Amount</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for item in items %}
+                                            <tr data-entry-id="{{ item.id }}">
+                                                <td>{{ item.part_no }}</td>
+                                                <td>{{ item.description }}</td>
+                                                <td>{{ item.price|floatformat:2|intcomma }}</td>
+                                                <td>{{ item.quantity|floatformat:0 }}</td>
+                                                <td class="text-end">{{ item.total|floatformat:2|intcomma }}</td>
+                                                <!-- Add more cells for other fields -->
+                                            </tr>
+                                        {% endfor %}
+
+                                        <tr>
+                                            <td colspan="4" class="text-end">SUBTOTALS</td>
+                                            <td colspan="4" class="text-end">
+                                                {{ group_totals|get_layout_total:layout|floatformat:2|intcomma }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class=" text-danger text-end">VAT</td>
+                                            <td colspan="4" class="text-danger text-end">
+                                                {{ group_vat|get_layout_total:layout|floatformat:2|intcomma }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-end">TOTAL AMOUNT</td>
+                                            <td colspan="4  " class="text-end">
+                                                {{ group_total_amount|get_layout_total:layout|floatformat:2|intcomma }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
                 <div class="row mx-auto">
                     <div class="">
                         <p>Add 16% VAT ON ALL PRODUCTS</p>
@@ -219,6 +270,7 @@
                     </div>
                 </div>
             </div>
+
             <img src="{% static 'tr_footer.png' %}" id="footer-image">
         </div>
     </div>

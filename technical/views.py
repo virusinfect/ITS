@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.core.files.base import ContentFile
 from django.core.mail import EmailMessage
-from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
@@ -136,7 +135,8 @@ def helpdesk_dash(request):
                   {'remark_counts': remark_counts, 'site_status_counts': site_status_counts,
                    'bench_status_counts': bench_status_counts,
                    'status_counts': status_counts, 'req_status_counts': req_status_counts,
-                   'tr_status_counts': tr_status_counts,'inhouse_bench_status_counts':inhouse_bench_status_counts,'ticket_count':ticket_count})
+                   'tr_status_counts': tr_status_counts, 'inhouse_bench_status_counts': inhouse_bench_status_counts,
+                   'ticket_count': ticket_count})
 
 
 @login_required
@@ -257,8 +257,6 @@ def store_dash(request):
         count = Tickets.objects.filter(remark=remark, is_active=1).count()
         remark_counts[remark] = count
 
-
-
     bench_statuses_to_count = [
         "Pending"
     ]
@@ -302,13 +300,14 @@ def store_dash(request):
 
     return render(request, "technical/store_dashboard.html",
                   {'remark_counts': remark_counts, 'bench_status_counts': bench_status_counts,
-                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts,'returned_requisitions_count':returned_requisitions_count,'pending_approved_requisitions_count':pending_approved_requisitions_count})
-
+                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts,
+                   'returned_requisitions_count': returned_requisitions_count,
+                   'pending_approved_requisitions_count': pending_approved_requisitions_count})
 
 
 @login_required
 def acc_dash(request):
-    reports = TechnicalReport.objects.filter(active=1,is_approved="approved").order_by('-created')
+    reports = TechnicalReport.objects.filter(active=1, is_approved="approved").order_by('-created')
     reports_count = reports.count()
 
     returned_requisitions_count = Requisition.objects.filter(issue_status="returned",
@@ -390,7 +389,10 @@ def acc_dash(request):
 
     return render(request, "technical/acc_dashboard.html",
                   {'remark_counts': remark_counts, 'bench_status_counts': bench_status_counts,
-                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts,'returned_requisitions_count':returned_requisitions_count,'pending_approved_requisitions_count':pending_approved_requisitions_count,'reports_count':reports_count})
+                   'status_counts': status_counts, 'tr_status_counts': tr_status_counts,
+                   'returned_requisitions_count': returned_requisitions_count,
+                   'pending_approved_requisitions_count': pending_approved_requisitions_count,
+                   'reports_count': reports_count})
 
 
 @login_required
@@ -405,7 +407,8 @@ def remark_tickets(request, remark, title):
 @login_required
 def approved_technical_reports(request):
     reports = TechnicalReport.objects.filter(active=1, is_approved="approved").order_by('-created')
-    return render(request,'technical/technical_report_list.html',{'reports':reports} )
+    return render(request, 'technical/technical_report_list.html', {'reports': reports})
+
 
 @login_required
 def status_tickets(request, status, title):
@@ -435,6 +438,7 @@ def bench_status_tickets(request, type, bench_status, title):
 
     return render(request, 'technical/ticket_list.html', {'tickets': tickets, 'title': title})
 
+
 def inhouse_bench_status_tickets(request, bench_status, title):
     title = title
     if request.user.groups.filter(name='Technician').exists():
@@ -446,6 +450,7 @@ def inhouse_bench_status_tickets(request, bench_status, title):
         tickets = InhouseTickets.objects.filter(is_active=1, bench_status=bench_status).order_by('-created')
 
     return render(request, 'technical/inhouse_ticket_list.html', {'tickets': tickets, 'title': title})
+
 
 @login_required
 def tr_status_tickets(request, tr_status):
@@ -500,7 +505,6 @@ def delivery_list(request):
 def ticket_print(request, ticket_id):
     ticket = get_object_or_404(Tickets, ticket_id=ticket_id)
 
-
     try:
         # Try to get the TechSignature for the ticket
         signature = TSignature.objects.get(ticket=ticket)
@@ -516,6 +520,7 @@ def ticket_print(request, ticket_id):
         tech_signature = None  # You can set a default value or leave it as None
     return render(request, 'technical/ticket_print.html',
                   {'ticket': ticket, 'signature': signature, 'tech_signature': tech_signature})
+
 
 @login_required
 def inhouse_ticket_print(request, ticket_id):
@@ -536,6 +541,7 @@ def inhouse_ticket_print(request, ticket_id):
         tech_signature = None  # You can set a default value or leave it as None
     return render(request, 'technical/inhouse_ticket_print.html',
                   {'ticket': ticket, 'signature': signature, 'tech_signature': tech_signature})
+
 
 @login_required
 def edit_ticket(request, ticket_id):
@@ -589,7 +595,6 @@ def edit_ticket(request, ticket_id):
             if ticket.client != client:
                 ticket.client_id = client
 
-
             # Save the changes
             ticket.save()
             image1 = request.FILES.get('action_image')
@@ -635,7 +640,7 @@ def edit_ticket(request, ticket_id):
                     ticket.company, ticket.ticket_id)
                 recipient_list = [ticket.company.email]
                 from_email = 'its-noreply@intellitech.co.ke'
-                #send_mail(subject, message, from_email, recipient_list)
+                # send_mail(subject, message, from_email, recipient_list)
 
             # Redirect back to the edit view
             return redirect('edit-ticket', ticket_id=ticket_id)
@@ -679,7 +684,6 @@ def edit_ticket(request, ticket_id):
                    'requisitions': requisitions, 'tsourcing_data': tsourcing_data, 'tquote_data': tquote_data,
                    'parts': parts, 'action_images': action_images, 'diagnosis_images': diagnosis_images,
                    'recommendation_images': recommendation_images, 'sales': sales})
-
 
 
 @login_required
@@ -731,8 +735,6 @@ def edit_inhouse_ticket(request, ticket_id):
             ticket.accessories = request.POST.get('accessories')
             ticket.updated = timezone.now()
 
-
-
             # Save the changes
             ticket.save()
             image1 = request.FILES.get('action_image')
@@ -778,7 +780,7 @@ def edit_inhouse_ticket(request, ticket_id):
                     ticket.company, ticket.ticket_id)
                 recipient_list = [ticket.email]
                 from_email = 'its-noreply@intellitech.co.ke'
-                #send_mail(subject, message, from_email, recipient_list)
+                # send_mail(subject, message, from_email, recipient_list)
 
             # Redirect back to the edit view
             return redirect('edit_inhouse_ticket', ticket_id=ticket_id)
@@ -797,6 +799,7 @@ def edit_inhouse_ticket(request, ticket_id):
                    'requisitions': requisitions, 'tsourcing_data': tsourcing_data, 'tquote_data': tquote_data,
                    'parts': parts, 'action_images': action_images, 'diagnosis_images': diagnosis_images,
                    'recommendation_images': recommendation_images, 'sales': sales})
+
 
 def delete_image(request, image_id):
     if request.method == 'POST':
@@ -834,7 +837,7 @@ def create_delivery(request, ticket_id):
         return HttpResponseNotFound("Ticket not found")
 
     accessories_list = [item.strip() for item in ticket.accessories.split(',')]
-        # Check if a delivery already exists for this ticket
+    # Check if a delivery already exists for this ticket
     existing_delivery = Delivery.objects.filter(ticket=ticket, is_active=True).first()
 
     if existing_delivery:
@@ -883,13 +886,12 @@ def create_delivery(request, ticket_id):
                 )
                 items.save()
 
-
-
         messages.success(request, 'Delivery Created successfully')
         # Redirect to the ticket details page or a success page
         return redirect('view_delivery', ticket_id=ticket_id)
 
-    return render(request, 'create_delivery.html', {'ticket': ticket,'accessories_list': accessories_list,})
+    return render(request, 'create_delivery.html', {'ticket': ticket, 'accessories_list': accessories_list, })
+
 
 @login_required
 def create_inhouse_delivery(request, ticket_id):
@@ -901,7 +903,6 @@ def create_inhouse_delivery(request, ticket_id):
 
         # Check if a delivery already exists for this ticket
     # existing_delivery = Delivery.objects.filter(ticket=ticket, is_active=True).first()
-
 
     if request.method == 'POST':
         # Process the form data and create a new delivery
@@ -945,6 +946,7 @@ def create_inhouse_delivery(request, ticket_id):
         return redirect('view_delivery', ticket_id=ticket_id)
 
     return render(request, 'create_delivery.html', {'ticket': ticket})
+
 
 @login_required
 def create_delivery_normal(request):
@@ -1027,6 +1029,7 @@ def print_delivery(request, ticket_id):
 
     return render(request, 'print_delivery.html',
                   {'ticket': ticket, 'delivery': delivery, 'signature': signature, 'items': items})
+
 
 @login_required
 def view_delivery_normal(request, delivery_id):
@@ -1243,7 +1246,7 @@ def edit_requisition(request, requisition_id):
         if 'invoice' in request.POST and request.POST['invoice']:
             requisition.invoice = request.POST.get('invoice')
         if 'selected_product' in request.POST and request.POST['selected_product']:
-            requisition.part_id  = request.POST.get('selected_product')
+            requisition.part_id = request.POST.get('selected_product')
         if 'remarks' in request.POST and request.POST['remarks']:
             requisition.remarks = request.POST.get('remarks')
         if 'req_status' in request.POST and request.POST['req_status']:
@@ -1259,7 +1262,8 @@ def edit_requisition(request, requisition_id):
         messages.success(request, 'Requisition Edited successfully')
         return redirect('list_requisitions')
 
-    return render(request, 'technical/edit_requisition.html', {'requisition': requisition,'active_categories':active_categories})
+    return render(request, 'technical/edit_requisition.html',
+                  {'requisition': requisition, 'active_categories': active_categories})
 
 
 @login_required
@@ -1644,13 +1648,12 @@ def create_ticket(request):
 
         created_by = request.user
 
-
         subject = "TICKET ITL/TN/" + str(ticket.ticket_id) + " OPENED - ITS"
         message = "Dear {0},\n\nA ticket ITL/TN/{1} has been raised for your work order, and our team is now reviewing the details to ensure a prompt and effective resolution.\n\nNote: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.\n\nThank you for your patience and understanding.\n\nRegards,\nIntellitech Limited.\n\nThis is an auto-generated email | © 2023 ITS. All rights reserved.".format(
             company_id, ticket.ticket_id)
         recipient_list = [company_id.email]
         from_email = 'its-noreply@intellitech.co.ke'
-       # send_mail(subject, message, from_email, recipient_list)
+        # send_mail(subject, message, from_email, recipient_list)
         # Redirect to a success page or any other desired action
         return redirect('edit-ticket', ticket.ticket_id)  # Replace 'success_page' with the actual success page URL
 
@@ -1675,6 +1678,7 @@ def delete_ticket(request, ticket_id):
     ticket.save()
 
     return redirect('ticket-list')  # Redirect to the list of tickets after deletion
+
 
 @login_required
 def delete_inhouse_ticket(request, ticket_id):
@@ -1720,6 +1724,7 @@ def quote_tickets(request, ticket_id):
         quantity_list = request.POST.getlist('quantity[]')
         currency_list = request.POST.getlist('currency[]')
         price_list = request.POST.getlist('price[]')
+        layout_list = request.POST.getlist('layout[]')
 
         # Create a list to hold the new tQuote objects
         new_quote_data = []
@@ -1733,6 +1738,7 @@ def quote_tickets(request, ticket_id):
                     currency=currency_list[i],
                     price=price_list[i],
                     ticket=ticket,
+                    layout=layout_list[i]
                 )
                 new_quote_data.append(quote)
 
@@ -1768,10 +1774,9 @@ def sourcing_tickets(request, ticket_id):
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
 
-
         for i in range(len(part_no_list)):
             if (part_no_list[i] and desc_list[i]):
-                z=i+1
+                z = i + 1
                 attachment_list = request.FILES.getlist(f'att_{z}')
                 if attachment_list:
                     attachment = attachment_list[0]
@@ -1871,6 +1876,7 @@ def sourcing_tickets(request, ticket_id):
 
     return redirect('edit-ticket', ticket_id=ticket_id)
 
+
 @login_required
 def sourcing_inhousetickets(request, ticket_id):
     if request.method == 'POST':
@@ -1891,10 +1897,9 @@ def sourcing_inhousetickets(request, ticket_id):
         # Create a list to hold the new sourcing objects
         new_sourcing_data = []
 
-
         for i in range(len(part_no_list)):
             if (part_no_list[i] and desc_list[i]):
-                z=i+1
+                z = i + 1
                 attachment_list = request.FILES.getlist(f'att_{z}')
                 if attachment_list:
                     attachment = attachment_list[0]
@@ -1993,6 +1998,7 @@ def sourcing_inhousetickets(request, ticket_id):
 
     return redirect('edit_inhouse_ticket', ticket_id=ticket_id)
 
+
 @login_required
 def delete_entry(request, entry_id):
     try:
@@ -2045,6 +2051,33 @@ def approve_report(request, report_id):
         report.approval_date = datetime.datetime.now()
 
         report.save()  # You can pass the currently logged-in user
+
+        management_group = Group.objects.get(name='Helpdesk')
+
+        # Get all users in the "management" group
+        management_users = management_group.user_set.all()
+
+        # Extract email addresses
+        management_emails = [user.email for user in management_users]
+
+        # Your existing code to create new_sourcing_data objects
+        url = "http://146.190.61.23:8500/technical/report/" + str(report.id) + "/"  # Replace with your actual URL
+        clickable_url = f"<a href='{url}'>#" + str(report.id) + " " + str(report.ticket.company) + "</a>"
+        # Use the 'table' string in the email message
+        message = (
+            f"Dear Sir/Madam,<br><br>"
+            f"{user} has approved   {clickable_url} Technical Report from ticket  ITL/TN/{report.ticket.ticket_id} on your behalf. <br><br>"
+            "This is an auto-generated email | © 2023 ITS. All rights reserved."
+        )
+        subject = f"Report approval for {report.ticket.company}"
+        recipient_list = management_emails
+        from_email = 'its-noreply@intellitech.co.ke'
+
+        # Create an EmailMessage instance for HTML content
+        email_message = EmailMessage(subject, message, from_email, recipient_list)
+        email_message.content_subtype = 'html'  # Set content type to HTML
+        email_message.send()
+
         messages.success(request, 'Report Approved successfully')
     # Redirect back to the report's detail page (or wherever you prefer)
     return redirect('report', report_id=report_id)
@@ -2069,7 +2102,7 @@ def mark_sent_for_approval(request, report_id):
 
         # Your existing code to create new_sourcing_data objects
         url = "http://146.190.61.23:8500/technical/report/" + str(report.id) + "/"  # Replace with your actual URL
-        clickable_url = f"<a href='{url}'>#" + str(report.id) +" "+str(report.ticket.company)+ "</a>"
+        clickable_url = f"<a href='{url}'>#" + str(report.id) + " " + str(report.ticket.company) + "</a>"
         # Use the 'table' string in the email message
         message = (
             f"Dear Sir,<br><br>"
@@ -2103,6 +2136,7 @@ def generate_report(request, ticket_id):
     # Redirect to the ticket's URL
     return redirect('report', report_id=report.id)
 
+from itertools import groupby
 
 @login_required
 def report(request, report_id):
@@ -2118,35 +2152,64 @@ def report(request, report_id):
     ticket = report.ticket
     subtotals = ticket.labour
     vat = 0
+    grouped_tquote_data={}
+    group_vat={}
+    group_total_amount={}
+
     try:
-
         tquote_data = tQuote.objects.filter(ticket=ticket)
-        for item in tquote_data:
-            item.total = item.quantity * item.price
-            subtotals += item.total
 
+        # Sort the tquote_data by layout
+        tquote_data = sorted(tquote_data, key=lambda x: x.layout)
+
+        # Group tquote_data by layout
+        grouped_tquote_data = {key: list(group) for key, group in groupby(tquote_data, key=lambda x: x.layout)}
+
+          # Dictionary to store totals for each group
+        group_totals = {}
+        for layout, items in grouped_tquote_data.items():
+            group_total = 0  # Initialize total for the current group
+            for item in items:
+                item.total = item.quantity * item.price
+                group_total += item.total
+                print("layout")
+                print(item.layout)
+                if item.layout == "1":
+                    subtotals += item.total
+            group_totals[layout] = group_total
+
+            group_vat[layout] = round(group_total * 0.16)
+            group_total_amount[layout] = group_totals[layout] + group_vat[layout]
 
     except tQuote.DoesNotExist:
         tquote_data = None
 
+    # Your existing code...
+
     try:
         parts = Requisition.objects.filter(ticket=ticket, is_active=True, issue_status="Issue")
+
+        # No need to sort or group since there is no 'layout' field
+
         for requisition in parts:
             if requisition.quantity is not None and requisition.price is not None:
                 requisition.total = requisition.quantity * requisition.price
             else:
                 # Handle the case where either quantity or price is None
-                requisition.total = None  # or set it to some default value or handle it according to your requirements
+                requisition.total = 0  # or set it to some default value or handle it according to your requirements
             subtotals += requisition.total
+
     except Requisition.DoesNotExist:
         parts = None
-
+    subtotals += ticket.labour
     vat = round(subtotals * 0.16)
     total_amount = subtotals + vat
     return render(request, 'technical/report.html',
                   {'ticket': ticket, 'tquote_data': tquote_data, 'parts': parts, 'vat': vat,
-                   'total_amount': total_amount, 'subtotals': subtotals, 'report': report,'diagnosis_images': diagnosis_images,
-                   'recommendation_images': recommendation_images,})
+                   'total_amount': total_amount, 'subtotals': subtotals, 'report': report,
+                   'diagnosis_images': diagnosis_images,
+                   'recommendation_images': recommendation_images, 'grouped_tquote_data':grouped_tquote_data,
+                   'group_totals': group_totals,'group_vat':group_vat,'group_total_amount':group_total_amount })
 
 
 class TechnicalReportListView(ListView):
@@ -2155,6 +2218,7 @@ class TechnicalReportListView(ListView):
     context_object_name = 'reports'
 
 
+@login_required
 def delete_report(request, report_id):
     report = get_object_or_404(TechnicalReport, pk=report_id)
 
@@ -2220,7 +2284,10 @@ def format_approval_detail(request, format_approval_id):
         # You can raise an Http404 or render an error page.
         pass
 
+
 from django.utils.safestring import mark_safe
+
+
 @login_required
 def send_format_email(request, format_approval_id):
     # Retrieve the FormatApproval object
@@ -2252,14 +2319,14 @@ def send_format_email(request, format_approval_id):
         clickable_url = mark_safe(f"<a href='{url}'>URL</a>")
         subject = 'Format Approval Request'
         message = (
-        f"Dear {format_approval.ticket.company},<br><br>"
-        f"We have created a Format Approval request for: {format_approval.ticket.equipment}, Serial Number: {format_approval.ticket.serial_no}.<br><br>"
-        f"Please click this {clickable_url} to preview and sign the document<br><br>"
-        f"Note: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.<br><br>"
-        f"Thank you for your patience and understanding.<br><br>"
-        f"Regards,<br>"
-        f"Intellitech Limited.<br><br>"
-        f"This is an auto-generated email | © 2023 ITS. All rights reserved."
+            f"Dear {format_approval.ticket.company},<br><br>"
+            f"We have created a Format Approval request for: {format_approval.ticket.equipment}, Serial Number: {format_approval.ticket.serial_no}.<br><br>"
+            f"Please click this {clickable_url} to preview and sign the document<br><br>"
+            f"Note: You can reach out to us at support@intellitech.co.ke if you have any questions or concerns.<br><br>"
+            f"Thank you for your patience and understanding.<br><br>"
+            f"Regards,<br>"
+            f"Intellitech Limited.<br><br>"
+            f"This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
 
         recipient_list = [recipient_email]  # Use the recipient's email from the form input
@@ -2272,7 +2339,6 @@ def send_format_email(request, format_approval_id):
         email.content_subtype = 'html'
 
         # Sending the email
-
 
         try:
             email.send()
@@ -2464,6 +2530,7 @@ def requisitions_created_monthly_tech(request):
 
     return JsonResponse(data, safe=False)
 
+
 def requisitions_returned(request):
     current_year = timezone.now().year
 
@@ -2482,6 +2549,7 @@ def requisitions_returned(request):
     data = list(monthly_requisition_counts)
 
     return JsonResponse(data, safe=False)
+
 
 def requisitions_rejected(request):
     current_year = timezone.now().year
@@ -2532,8 +2600,10 @@ def save_signature_view_ticket(request):
             type=type,
             eqpass=eqpass,
             brought_by=brought_by,
-        )
 
+        )
+        print('type')
+        print(type)
         if type == "On-site":
 
             tech_user = get_object_or_404(User, id=tech_id)
@@ -2575,7 +2645,7 @@ def save_signature_view_ticket(request):
             client_id.company, ticket.ticket_id)
         recipient_list = [client_id.company.email]
         from_email = 'its-noreply@intellitech.co.ke'
-        #send_mail(subject, message, from_email, recipient_list)
+        # send_mail(subject, message, from_email, recipient_list)
         # Redirect to a success page or any other desired action
 
         # Extract the Base64 data after the comma
@@ -2631,7 +2701,6 @@ def save_signature_view_inhouse_ticket(request):
 
         messages.success(request, 'Ticket Created successfully')
 
-
         # Extract the Base64 data after the comma
         base64_data = signature_data.split(',')[1]
 
@@ -2682,10 +2751,9 @@ def create_Inhouse_ticket(request):
             brought_by=brought_by,
         )
 
-
         messages.success(request, 'Ticket Created successfully')
 
-            # Assuming you are in a view function, you can access the current user through the request object
+        # Assuming you are in a view function, you can access the current user through the request object
         user = request.user
         # Create a new Task instance without saving it
         new_task = Task(
@@ -2716,6 +2784,7 @@ def create_Inhouse_ticket(request):
         return render(request, 'technical/create_inhouse_ticket.html',
                       {'companies': companies, 'clients': clients, 'users': users})
 
+
 def add_client(request):
     if request.method == 'POST':
         # Extract form data from the request
@@ -2741,6 +2810,7 @@ def add_client(request):
         return JsonResponse({'success': True, 'message': 'Client added successfully!'})
     else:
         return JsonResponse({'warning': True, 'message': 'Error creating client!'})
+
 
 def fetch_equipments(request, client_id):
     client = get_object_or_404(Clients, pk=client_id)

@@ -198,3 +198,8 @@ def is_accounts(user):
         return helpdesk_group in user.groups.all()
     except Group.DoesNotExist:
         return False
+
+
+@register.filter(name='get_layout_total')
+def get_layout_total(group_totals, layout):
+    return group_totals.get(layout, 0)
