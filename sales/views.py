@@ -569,7 +569,7 @@ def convert_to_quote(request, ticket_id):
 
 @login_required
 def convert_to_order(request, ticket_id):
-    tickets = SalesTickets.objects.all()
+    tickets = SalesTickets.objects.all().order_by('-ticket_id')
     ticket = get_object_or_404(SalesTickets, pk=ticket_id)
     sales_group = Group.objects.get(name='Sales')
     users = sales_group.user_set.all()
@@ -674,7 +674,7 @@ def convert_to_order(request, ticket_id):
 
 @login_required
 def convert_quote_to_order(request, quote_id):
-    tickets = SalesTickets.objects.all()
+    tickets = SalesTickets.objects.all().order_by('-ticket_id')
     quote = get_object_or_404(SalesQuotes, sq_id=quote_id)
     sales_group = Group.objects.get(name='Sales')
     users = sales_group.user_set.all()
@@ -773,7 +773,7 @@ def convert_quote_to_order(request, quote_id):
 
 @login_required
 def create_order(request):
-    tickets = SalesTickets.objects.all()
+    tickets = SalesTickets.objects.all().order_by('-ticket_id')
     sales_group = Group.objects.get(name='Sales')
     users = sales_group.user_set.all()
     if request.method == 'POST':
