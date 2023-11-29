@@ -84,6 +84,17 @@ class ColoursoftPriceList(models.Model):
     def __str__(self):
         return self.code
 
+    def save(self, *args, **kwargs):
+        # Check if there is an existing entry with the same code
+        existing_entry = ColoursoftPriceList.objects.filter(code=self.code).first()
+
+        # If there is an existing entry, delete it before saving the new one
+        if existing_entry:
+            existing_entry.delete()
+
+        # Save the new entry
+        super().save(*args, **kwargs)
+
 
 class FellowesPricelist(models.Model):
     code = models.CharField(max_length=255, null=True)

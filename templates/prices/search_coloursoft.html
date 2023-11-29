@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}ColourSoft{% endblock %}
 {% block header %}ColourSoft{% endblock %}
+{% load helpdesk_tags %}
 {% load humanize %}
 {% load static %}
 {% block content %}
@@ -51,9 +52,11 @@
                     <th>HP Code</th>
                     <th>Brand</th>
                     <th>Yield</th>
-                    <th>Cost</th>
-                    <th>Reseller Level 1</th>
-                    <th>Reseller Level 2</th>
+                    {% if user|is_admin %}
+                        <th>Cost</th>
+                        <th>Reseller Level 1</th>
+                        <th>Reseller Level 2</th>
+                    {% endif %}
                     <th>Reseller Level 3</th>
                     <th>End User</th>
                 </tr>
@@ -66,9 +69,11 @@
                         <td>{{ item.hp_code }}</td>
                         <td>{{ item.brand }}</td>
                         <td>{{ item.yield_no|intcomma }}</td>
-                        <td>{{ item.price|floatformat:2|intcomma }}</td>
-                        <td>{{ item.level_1|floatformat:2|intcomma  }}</td>
-                        <td>{{ item.level_2|floatformat:2|intcomma }}</td>
+                        {% if user|is_admin %}
+                            <td>{{ item.price|floatformat:2|intcomma }}</td>
+                            <td>{{ item.level_1|floatformat:2|intcomma  }}</td>
+                            <td>{{ item.level_2|floatformat:2|intcomma }}</td>
+                        {% endif %}
                         <td>{{ item.level_3|floatformat:2|intcomma }}</td>
                         <td>{{ item.end_user|floatformat:2|intcomma }}</td>
                     </tr>

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Products{% endblock %}
 {% block header %}Products{% endblock %}
+{% load helpdesk_tags %}
 {% load humanize %}
 {% load static %}
 {% block content %}
@@ -76,7 +77,9 @@
                             <th width="3%">No.</th>
                             <th>Part No</th>
                             <th>Description</th>
-                            <th>Price</th>
+                            {% if user|is_admin %}
+                                <th>Price</th>
+                            {% endif %}
                             <th width="5%">Min</th>
                             <th width="5%">Max</th>
 
@@ -95,7 +98,9 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ item.product_name }}</td>
                                 <td>{{ item.description }}</td>
-                                <td>{{ item.price|floatformat:2|intcomma }}</td>
+                                {% if user|is_admin %}
+                                    <td>{{ item.price|floatformat:2|intcomma }}</td>
+                                {% endif %}
                                 <td id="Min"><i class="mdi mdi-arrow-up btn-outline-success">
                                     {{ item.price_min|floatformat:2|intcomma }}</i></td>
                                 <td id="Max"><span class="row"><i
