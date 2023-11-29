@@ -569,6 +569,7 @@ def convert_to_quote(request, ticket_id):
 
 @login_required
 def convert_to_order(request, ticket_id):
+    tickets = SalesTickets.objects.all()
     ticket = get_object_or_404(SalesTickets, pk=ticket_id)
     sales_group = Group.objects.get(name='Sales')
     users = sales_group.user_set.all()
@@ -668,11 +669,12 @@ def convert_to_order(request, ticket_id):
         messages.success(request, 'Ticket successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
-    return render(request, 'sales/convert_to_order.html', {'ticket': ticket, 'users': users})
+    return render(request, 'sales/convert_to_order.html', {'ticket': ticket, 'users': users,'tickets':tickets})
 
 
 @login_required
 def convert_quote_to_order(request, quote_id):
+    tickets = SalesTickets.objects.all()
     quote = get_object_or_404(SalesQuotes, sq_id=quote_id)
     sales_group = Group.objects.get(name='Sales')
     users = sales_group.user_set.all()
@@ -766,17 +768,19 @@ def convert_quote_to_order(request, quote_id):
         messages.success(request, 'Quote successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
-    return render(request, 'sales/convert_quote_to_order.html', {'quote': quote, 'users': users})
+    return render(request, 'sales/convert_quote_to_order.html', {'quote': quote, 'users': users,'tickets':tickets})
 
 
 @login_required
 def create_order(request):
+    tickets = SalesTickets.objects.all()
     sales_group = Group.objects.get(name='Sales')
     users = sales_group.user_set.all()
     if request.method == 'POST':
         handler_id = request.POST.get('handler')
         handler = User.objects.get(id=handler_id)
         client_name = request.POST.get('client')
+        ticket = request.POST.get('ticket')
         # Create a new Orders record
         order = Orders(
             client=client_name,
@@ -785,6 +789,9 @@ def create_order(request):
             status=request.POST.get('status'),
             is_active=True,
         )
+        if ticket != "":
+            order.ticket_id = ticket
+
         order.save()
         print(client_name)
 
@@ -864,7 +871,7 @@ def create_order(request):
         messages.success(request, 'Order Created successfully.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
-    return render(request, 'sales/convert_to_order.html', {'users': users})
+    return render(request, 'sales/convert_to_order.html', {'users': users,'tickets':tickets})
 
 
 @login_required

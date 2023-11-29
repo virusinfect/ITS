@@ -55,14 +55,12 @@
                         </div>
                         <div class="col-lg-6">
                             <label for="ticket" class="form-label">Associated Ticket:</label>
-                            {% if ticket %}
-                                <input type="text" class="form-control"
-                                       value="ITL/TN/{{ ticket.ticket_id }} .. {{ ticket.issue_summary }}"
-                                       disabled>
-                            {% else %}
-                                <input type="text" class="form-control" value="NO Associated Ticket"
-                                       disabled>
-                            {% endif %}
+                            <select id="ticket_select" name="ticket" class="form-select">
+                                <option value="">No Ticket Selected</option>
+                                {% for salesticket in tickets %}
+                                    <option value="{{ salesticket.ticket_id }}" {% if salesticket.ticket_id == ticket.ticket_id  %}selected{% endif %}>#{{ salesticket.ticket_id }} >> {{ salesticket.company }} >> {{ salesticket.issue_summary|safe }}</option>
+                                {% endfor %}
+                            </select>
 
                         </div>
                     </div>
