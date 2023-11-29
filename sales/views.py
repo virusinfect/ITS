@@ -618,9 +618,7 @@ def convert_to_order(request, ticket_id):
             "<tr style='border-bottom: 3px solid #ddd;'>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
-            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
-            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
             "</tr>"
         )
 
@@ -630,9 +628,7 @@ def convert_to_order(request, ticket_id):
                     "<tr>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{product_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{quantity_list[i]}</td>"
-                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_ordered_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
-                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_received_list[i]}</td>"
                     "</tr>"
                 )
                 table += row
@@ -725,9 +721,7 @@ def convert_quote_to_order(request, quote_id):
             "<tr style='border-bottom: 3px solid #ddd;'>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
-            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Ordered</th>"
             "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
-            "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Date Received</th>"
             "</tr>"
         )
 
@@ -737,9 +731,7 @@ def convert_quote_to_order(request, quote_id):
                     "<tr>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{product_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{quantity_list[i]}</td>"
-                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_ordered_list[i]}</td>"
                     f"<td style='border: 3px solid #ddd; padding: 8px;'>{supplier_list[i]}</td>"
-                    f"<td style='border: 3px solid #ddd; padding: 8px;'>{date_received_list[i]}</td>"
                     "</tr>"
                 )
                 table += row
