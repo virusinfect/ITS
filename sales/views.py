@@ -256,6 +256,7 @@ def edit_order(request, order_id):
         date_ordered_list = request.POST.getlist('date_ordered[]')
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
+        part_no_list = request.POST.getlist('part_no[]')
 
         new_sourcing_data = []
 
@@ -267,6 +268,7 @@ def edit_order(request, order_id):
                     supplier=supplier_list[i],
                     is_active=True,
                     orders=order,
+                    part_no=part_no_list[i],
                 )
                 if date_received_list[i]:
                     order_product.date_received = date_received_list[i]
@@ -590,6 +592,7 @@ def convert_to_order(request, ticket_id):
         date_ordered_list = request.POST.getlist('date_ordered[]')
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
+        part_no_list = request.POST.getlist('part_no[]')
 
         for i in range(len(product_list)):
             if product_list[i]:
@@ -599,6 +602,7 @@ def convert_to_order(request, ticket_id):
                     supplier=supplier_list[i],
                     is_active=True,
                     orders=order,
+                    part_no=part_no_list[i],
                 )
                 order_product.save()
                 if date_received_list[i]:
@@ -696,7 +700,7 @@ def convert_quote_to_order(request, quote_id):
         date_ordered_list = request.POST.getlist('date_ordered[]')
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
-
+        part_no_list = request.POST.getlist('part_no[]')
         for i in range(len(product_list)):
             if product_list[i]:
                 order_product = OrderProducts(
@@ -705,6 +709,7 @@ def convert_quote_to_order(request, quote_id):
                     supplier=supplier_list[i],
                     is_active=True,
                     orders=order,
+                    part_no=part_no_list[i],
                 )
                 order_product.save()
                 if date_received_list[i]:

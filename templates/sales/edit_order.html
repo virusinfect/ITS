@@ -55,7 +55,9 @@
                         <div class="col-lg-6">
                             <label for="ticket" class="form-label">Associated Ticket:</label>
                             {% if order.ticket %}
-                                <input class="form-control" value="ITL/TN/{{ order.ticket.ticket_id }} .. {{ quote.ticket.issue_summary }}" placeholder="ffff"
+                                <input class="form-control"
+                                       value="ITL/TN/{{ order.ticket.ticket_id }} .. {{ quote.ticket.issue_summary }}"
+                                       placeholder="ffff"
                                        disabled>
                             {% else %}
                                 <input class="form-control" value="No ticket associated" disabled>
@@ -85,7 +87,7 @@
                         <table class="table mb-0">
                             <thead class="table-light">
                             <tr>
-
+                                <th>Part No</th>
                                 <th>Product</th>
                                 <th>Quantity</th>
                                 <th>Date Ordered</th>
@@ -98,7 +100,9 @@
                             {% for product in order.orderproducts_set.all %}
                                 {% if product.is_active %}
                                     <tr>
-
+                                        <td><input type="text" name="part_no[]"
+                                                   value="{{ product.part_no }}" class="form-control">
+                                        </td>
                                         <td><input type="text" name="product[]"
                                                    value="{{ product.product }}" class="form-control">
                                         </td>
@@ -132,6 +136,9 @@
                                 {% endif %}
                             {% endfor %}
                             <tr>
+                                <td><input type="text" name="part_no[]"
+                                            class="form-control">
+                                </td>
                                 <td><input type="text" name="product[]"
                                            class="form-control">
                                 </td>

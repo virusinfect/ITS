@@ -89,7 +89,7 @@
                         <table class="table mb-0">
                             <thead class="table-light">
                             <tr>
-
+                                <th>Part No</th>
                                 <th>Product</th>
                                 <th>Quantity</th>
                                 <th>Date Ordered</th>
@@ -101,6 +101,9 @@
                             <tbody>
                             {% for product in ticket.salesticketproducts_set.all %}
                                 <tr>
+                                    <td><input type="text" name="part_no[]"
+                                               value="{{ product.part_no }}" class="form-control">
+                                    </td>
 
                                     <td><input type="text" name="product[]"
                                                value="{{ product.description }}" class="form-control">
@@ -129,7 +132,9 @@
                                 </tr>
                             {% endfor %}
                             <tr>
-
+                                <td><input type="text" name="part_no[]"
+                                           class="form-control">
+                                </td>
                                 <td><input type="text" name="product[]"
                                            class="form-control">
                                 </td>

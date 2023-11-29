@@ -168,6 +168,7 @@ class OrderProducts(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     orders = models.ForeignKey(Orders, on_delete=models.CASCADE, db_column='o_id')
+    part_no = models.TextField(null=True, blank=True, default=None)
 
     class Meta:
         managed = False
