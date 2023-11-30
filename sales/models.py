@@ -72,6 +72,7 @@ class SalesQuotes(models.Model):
 class SalesQuoteProducts(models.Model):
     product_id = models.AutoField(primary_key=True)
     part_no = models.CharField(max_length=255)
+    supplier = models.CharField(max_length=255,null=True,blank=True)
     description = models.CharField(max_length=2000)
     price = models.FloatField()
     quantity = models.FloatField()

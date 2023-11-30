@@ -103,6 +103,7 @@
                                         <td><input type="text" value="{{ product.quantity }}" class="form-control"
                                                    name="quantity[]" id="qty"></td>
                                         <td><input type="file" class="form-control"></td>
+                                        <td hidden="hidden"><input type="text"  name="supplier[]" value="{{ product.supplier }}"></td>
                                         <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
                                                tabindex="0"
                                                data-plugin="tippy" data-tippy-interactive="true"><i

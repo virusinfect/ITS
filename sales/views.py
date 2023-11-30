@@ -548,6 +548,7 @@ def convert_to_quote(request, ticket_id):
         description_list = request.POST.getlist('description[]')
         price_list = request.POST.getlist('price[]')
         quantity_list = request.POST.getlist('quantity[]')
+        supplier_list = request.POST.getlist('supplier[]')
         availability_list = request.POST.getlist('availability[]')
 
         for i in range(len(part_no_list)):
@@ -557,6 +558,7 @@ def convert_to_quote(request, ticket_id):
                 price=price_list[i],
                 quantity=quantity_list[i],
                 currency='KES',
+                supplier=supplier_list[i],
                 availability=availability_list[i],
                 is_active=True,  # You can set this based on your logic
                 quote=quote,
@@ -703,7 +705,11 @@ def convert_quote_to_order(request, quote_id):
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
         part_no_list = request.POST.getlist('part_no[]')
+        print("data")
+        print(supplier_list)
         for i in range(len(product_list)):
+            print(i)
+            print(supplier_list[i])
             if product_list[i]:
                 order_product = OrderProducts(
                     product=product_list[i],
