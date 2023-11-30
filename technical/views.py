@@ -2150,7 +2150,7 @@ def report(request, report_id):
     # Retrieve the associated ticket
     subtotals = 0
     ticket = report.ticket
-    subtotals = ticket.labour
+    subtotals = 0
     vat = 0
     grouped_tquote_data={}
     group_vat={}
@@ -2201,7 +2201,15 @@ def report(request, report_id):
 
     except Requisition.DoesNotExist:
         parts = None
-    subtotals += ticket.labour
+
+    if isinstance(ticket.labour, int):
+        subtotals += ticket.labour
+    elif isinstance(ticket.labour, str) and ticket.labour.isdigit():
+        subtotals += int(ticket.labour)
+        print("data")
+        print(ticket.labour)
+        print(subtotals)
+
     vat = round(subtotals * 0.16)
     total_amount = subtotals + vat
     return render(request, 'technical/report.html',

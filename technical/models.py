@@ -31,7 +31,7 @@ class Tickets(models.Model):
     diagnosis = models.TextField(blank=True)
     action = models.TextField(blank=True)
     recommendation = models.TextField(blank=True)
-    labour = models.FloatField(default=0)
+    labour = models.CharField(max_length=50, default="0")
     currency = models.CharField(max_length=50, default="KSH")
     remark = models.CharField(max_length=50, blank=True,null=True)
     lpo_no = models.CharField(max_length=255, blank=True)

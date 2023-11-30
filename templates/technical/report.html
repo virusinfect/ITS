@@ -140,7 +140,7 @@
                         </table>
                     </div>
                 </div>
-                {% if parts or tquote_data %}
+                {% if parts or tquote_data or ticket.labour != "0" %}
                     <div class="row mx-auto">
                         <div class="row mb-1 mt-1 table-responsive mx-auto">
                             <table class="table table-bordered">
@@ -182,10 +182,15 @@
                                             </tr>{% endif %}
                                     {% endfor %}
                                 {% endif %}
-                                <tr>
+                                {% if  ticket.labour.isdigit %}
+                                    <tr>
+                                        <td colspan="4" class="text-end">LABOUR</td>
+                                        <td colspan="4" class="text-end">{{ ticket.labour|floatformat:2|intcomma }}</td>
+                                    </tr>
+                                {% else %}
                                     <td colspan="4" class="text-end">LABOUR</td>
-                                    <td colspan="4" class="text-end">{{ ticket.labour|floatformat:2|intcomma }}</td>
-                                </tr>
+                                    <td colspan="4" class="text-end">{{ ticket.labour}}</td>
+                                {% endif %}
                                 <tr>
                                     <td colspan="4" class="text-end">SUBTOTALS</td>
                                     <td colspan="4" class="text-end">{{ subtotals|floatformat:2|intcomma }}</td>
