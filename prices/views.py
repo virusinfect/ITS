@@ -7,24 +7,25 @@ import pandas as pd
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
 
 from .forms import PriceListForm
 from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList, FellowesPricelist, \
-    PriceRule
+    PriceRule, Type
 from .pricing_logic import calculate_discounted_price, calculate_discounted_price2
 
 
 @login_required
 def upload_price_list(request):
     suppliers = Supplier.objects.all()
-    brands = Brand.objects.all()
-    equipment = Equipment.objects.all()
+    brands = Brand.objects.all().order_by("name")
+    equipment = Equipment.objects.all().order_by("name")
 
     if request.method == 'POST':
         equipment_index = request.POST.get('equipment')
+        type_index = request.POST.get('type')
         excel_file = request.FILES['file']
         selected_sheet = request.POST.get('selected_sheet')
 
@@ -83,6 +84,7 @@ def upload_price_list(request):
             supplier = Supplier.objects.get(id=supplier_index)
             brand = Brand.objects.get(id=brand_index)
             equipment = Equipment.objects.get(id=equipment_index)
+            equipment_type = Equipment.objects.get(id=type_index)
 
             product_name = row[product_name_index]
             price_name = row[price_index]
@@ -101,6 +103,7 @@ def upload_price_list(request):
                     series=row[series_index] if series_index is not None else '',
                     ProductLink=row[product_link_index] if product_link_index is not None else '',
                     equipment=equipment,
+                    type=equipment_type,
                     brand=brand
                 )
                 try:
@@ -950,3 +953,64 @@ def price_rules_for_equipment(request, equipment_id):
             price_rule.save()
 
     return render(request, 'prices/edit_price_rules.html', {'equipment': equipment, 'price_rules': price_rules})
+
+
+@login_required
+def type_list(request):
+    types = Type.objects.all()
+    return render(request, 'prices/type_list.html', {'types': types})
+
+
+@login_required
+def create_type(request):
+    equipments = Equipment.objects.all()
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        equipment_id = request.POST.get('equipment_id')  # Assuming you have a form field for selecting equipment
+        equipment = get_object_or_404(Equipment, pk=equipment_id)
+        Type.objects.create(name=name, equipment=equipment)
+        messages.success(request, 'Type Created successfully')
+        return redirect('type_list')  # Redirect to the list view after creating a type
+    return render(request, 'prices/create_type.html', {'equipments': equipments})
+
+
+@login_required
+def edit_type(request, type_id):
+    type_instance = get_object_or_404(Type, pk=type_id)
+    equipments = Equipment.objects.all()
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        equipment_id = request.POST.get('equipment_id')  # Assuming you have a form field for selecting equipment
+        equipment = get_object_or_404(Equipment, pk=equipment_id)
+
+        type_instance.name = name
+        type_instance.equipment = equipment
+        type_instance.save()
+        messages.success(request, 'Type Edited successfully')
+        return redirect('type_list')  # Redirect to the list view after editing a type
+
+    return render(request, 'prices/edit_type.html', {'type_instance': type_instance, 'equipments': equipments})
+
+
+@login_required
+def delete_type(request, type_id):
+    type_instance = get_object_or_404(Type, pk=type_id)
+
+    if request.method == 'POST':
+        type_instance.delete()
+        messages.warning(request, 'Type Deleted successfully')
+        return redirect('type_list')  # Redirect to the list view after deleting a type
+
+    return render(request, 'prices/delete_type.html', {'type_instance': type_instance})
+
+def get_types(request):
+    if request.method == 'GET':
+        equipment_id = request.GET.get('equipment_id')
+
+        # Assuming you have a ForeignKey relationship between Type and Equipment
+        types = Type.objects.filter(equipment_id=equipment_id).values('id', 'name')
+
+        return JsonResponse({'types': list(types)})
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)

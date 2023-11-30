@@ -35,6 +35,13 @@ class Equipment(models.Model):
         return self.name
     # Add other fields as needed
 
+class Type(models.Model):
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.name
+
 
 class LaptopPriceList(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
@@ -50,6 +57,7 @@ class LaptopPriceList(models.Model):
     description = models.TextField()
     product_name = models.CharField(max_length=100)
     availability = models.CharField(max_length=255, null=True)
+    type = models.ForeignKey(Type, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.product_name

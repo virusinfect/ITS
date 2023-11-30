@@ -59,6 +59,12 @@
                             {% endfor %}
                         </select>
                     </div>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type:</label>
+                        <select class="form-select" id="type" name="type" disabled>
+                            <!-- Options will be dynamically added here -->
+                        </select>
+                    </div>
 
                     <div class="mb-3">
                         <label for="currency" class="form-label">Currency:</label>
@@ -77,6 +83,43 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        // Wait for the document to be ready
+        $(document).ready(function () {
+            // Handle the change event on the equipment dropdown
+            $('#equipment').change(function () {
+                // Get the selected equipment id
+                var equipmentId = $(this).val();
 
+                // Disable the types dropdown until data is loaded
+                $('#type').prop('disabled', true);
+
+                // Make an asynchronous request to fetch types for the selected equipment
+                $.ajax({
+                    url: '/price-list/api/get_types/',  // Replace with your Django view URL
+                    method: 'GET',
+                    data: {equipment_id: equipmentId},
+                    dataType: 'json',
+                    success: function (data) {
+                        // Clear existing options in the types dropdown
+                        $('#type').empty();
+
+                        // Add new options based on the response
+                        $.each(data.types, function (index, type) {
+                            $('#type').append('<option value="' + type.id + '">' + type.name + '</option>');
+                        });
+
+                        // Enable the types dropdown
+                        $('#type').prop('disabled', false);
+                    },
+                    error: function (error) {
+                        console.error('Error fetching types:', error);
+                        // Handle errors if needed
+                    }
+                });
+            });
+        });
+    </script>
 
 {% endblock %}

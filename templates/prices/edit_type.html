@@ -1,10 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %}Edit Type{% endblock %}
+{% block header %}Edit Type{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'type_list' %}">Equipment Types</a></li>
+                    <li class="breadcrumb-item active">Edit Equipment Type</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Edit Equipment Type</h4>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" name="name" value="{{ type_instance.name }}" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="equipment_id" class="form-label">Equipment:</label>
+                        <select name="equipment_id" class="form-select" required>
+                            {% for equipment in equipments %}
+                                <option value="{{ equipment.id }}"
+                                        {% if equipment.id == type_instance.equipment.id %}selected{% endif %}>{{ equipment.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="submit" value="Save Changes" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

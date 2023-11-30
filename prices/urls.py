@@ -19,5 +19,10 @@ urlpatterns = [
     path('search_fellowes/', views.search_fellowes, name='search_fellowes'),
     path('exchange/', views.edit_exchange, name='edit_exchange'),
     path('equipment/<int:equipment_id>/', views.price_rules_for_equipment, name='price_rules_for_equipment'),
+    path('types/', views.type_list, name='type_list'),
+    path('types/create/', views.create_type, name='create_type'),
+    path('types/edit/<int:type_id>/', views.edit_type, name='edit_type'),
+    path('types/delete/<int:type_id>/', views.delete_type, name='delete_type'),
+    path('api/get_types/', views.get_types, name='get_types'),
     # Add other URLs as needed
 ]

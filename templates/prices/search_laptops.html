@@ -77,6 +77,7 @@
                             <th width="3%">No.</th>
                             <th>Part No</th>
                             <th>Description</th>
+                            <th>Type</th>
                             {% if user|is_admin %}
                                 <th>Price</th>
                             {% endif %}
@@ -98,6 +99,7 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ item.product_name }}</td>
                                 <td>{{ item.description }}</td>
+                                <td>{{ item.part }}</td>
                                 {% if user|is_admin %}
                                     <td>{{ item.price|floatformat:2|intcomma }}</td>
                                 {% endif %}
