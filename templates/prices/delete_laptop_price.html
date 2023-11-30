@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Delete Type{% endblock %}
+{% block title %}Delete Product{% endblock %}
 
 {% block content %}
 
@@ -11,8 +11,8 @@
                 <div class="modal-body">
                     <div class="text-center">
                         <i class="dripicons-warning h1 text-warning"></i>
-                        <h1 class="mb-3">Delete Type</h1>
-                        <p class="mb-4">Are you sure you want to delete the Type "{{ type_instance.name }}"?</p>
+                        <h1 class="mb-3">Delete Product</h1>
+                        <p class="mb-4">Are you sure you want to delete the Product "{{ laptop_price.product_name }}"?</p>
 
                         <form method="post">
                             {% csrf_token %}
@@ -20,7 +20,7 @@
                                     class="btn-label"><i class="mdi mdi-delete-outline"></i></span>Delete
                             </button>
                             <a type="button" class="btn btn-success waves-effect waves-light mb-1"
-                               href="{% url 'type_list' %}">
+                               href="{% url 'search_laptops' %}">
                                 <span class="btn-label"><i class="mdi mdi-cancel"></i></span>Cancel
                             </a>
                         </form>

@@ -98,6 +98,9 @@
                             <th>Series</th>
                             <th>Stock</th>
                             <th>Product Link</th>
+                            {% if user|is_admin %}
+                                <th>Action</th>
+                            {% endif %}
                         </tr>
                         </thead>
                         <tbody>
@@ -126,6 +129,18 @@
                                 <td>{{ item.series }}</td>
                                 <td>{{ item.stock }}</td>
                                 <td><a href="{{ item.ProductLink }}" target="_blank">{{ item.ProductLink }}</a></td>
+                                {% if user|is_admin %}
+                                    <td><a href="{% url 'edit_laptop_price' item.id %}" title="edit" tabindex="0"
+                                           data-plugin="tippy"
+                                           data-tippy-interactive="true">
+                                        <i class="mdi mdi-square-edit-outline mdi-18px"></i>
+                                    </a>
+                                        <a href="{% url 'delete_laptop_price' item.id %}" title="delete" tabindex="0"
+                                           data-plugin="tippy" data-tippy-interactive="true">
+                                            <i class="s mdi mdi-delete-outline mdi-18px"></i>
+                                        </a>
+                                    </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>

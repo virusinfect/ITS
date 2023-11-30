@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Product{% endblock %}
+{% block header %}Edit Product{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Products</a></li>
+                    <li class="breadcrumb-item active">Edit Product</li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title text-center">Edit Product</h4>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="currency" class="form-label">Part Code:</label>
+                            <input type="text" class="form-control" name="product_name"
+                                   value="{{ laptop_price.product_name }}">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="price" class="form-label">price:</label>
+                            <input type="text" class="form-control" name="price" value="{{ laptop_price.price }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">description:</label>
+                        <textarea name="description" class="form-control"
+                                  rows="5">{{ laptop_price.description }}</textarea>
+                    </div>
+                    <div class="row">
+
+                        <div class="mb-3 col-6">
+                            <label for="processor" class="form-label">Processor:</label>
+                            <input type="text" class="form-control" name="processor"
+                                   value="{{ laptop_price.processor }}">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="os" class="form-label">OS:</label>
+                            <input type="text" name="os" class="form-control" value="{{ laptop_price.os }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="stock" class="form-label">Stock:</label>
+                            <input type="text" class="form-control" name="stock" value="{{ laptop_price.stock }}">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="series" class="form-label">series :</label>
+                            <input type="text" name="series" class="form-control" value="{{ laptop_price.series }}">
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="ProductLink" class="form-label">ProductLink:</label>
+                            <input type="text" name="ProductLink" class="form-control"
+                                   value="{{ laptop_price.ProductLink }}">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="supplier" class="form-label">Supplier:</label>
+                            <select name="supplier" class="form-select" id="supplier" required>
+                                {% for equipment in suppliers %}
+                                    <option value="{{ equipment.id }}"
+                                            {% if equipment.id == laptop_price.supplier.id %}selected{% endif %}>{{ equipment.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="fields" class="form-label">Currency:</label>
+                            <select class="form-select" id="currency" name="currency">
+                                <option value="">Default</option>
+                                <option value="KES" {% if laptop_price.currency == "KES" %}selected {% endif %}>KES
+                                </option>
+                                <option value="USD" {% if laptop_price.currency == "USD" %}selected {% endif %}>USD
+                                </option>
+
+                            </select>
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="brand" class="form-label">Brand:</label>
+                            <select name="brand" class="form-select" id="brand" required>
+                                {% for equipment in brands %}
+                                    <option value="{{ equipment.id }}"
+                                            {% if equipment.id == laptop_price.brand.id %}selected{% endif %}>{{ equipment.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="equipment" class="form-label">Equipment:</label>
+                            <select name="equipment" class="form-select" id="equipment" required>
+                                {% for equipment in equipments %}
+                                    <option value="{{ equipment.id }}"
+                                            {% if equipment.id == laptop_price.equipment.id %}selected{% endif %}>{{ equipment.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="type" class="form-label">Type:</label>
+                            <select class="form-select" id="type" name="type" disabled>
+                                <option value="{{ laptop_price.type }}">{{ laptop_price.type }}</option>
+                                <!-- Options will be dynamically added here -->
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <input type="submit" class="btn btn-primary mt-3" value="Save Changes">
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Wait for the document to be ready
+        $(document).ready(function () {
+            // Handle the change event on the equipment dropdown
+            $('#equipment').change(function () {
+                // Get the selected equipment id
+                var equipmentId = $(this).val();
+
+                // Disable the types dropdown until data is loaded
+                $('#type').prop('disabled', true);
+
+                // Make an asynchronous request to fetch types for the selected equipment
+                $.ajax({
+                    url: '/price-list/api/get_types/',  // Replace with your Django view URL
+                    method: 'GET',
+                    data: {equipment_id: equipmentId},
+                    dataType: 'json',
+                    success: function (data) {
+                        // Clear existing options in the types dropdown
+                        $('#type').empty();
+
+                        // Add new options based on the response
+                        $.each(data.types, function (index, type) {
+                            $('#type').append('<option value="' + type.id + '">' + type.name + '</option>');
+                        });
+
+                        // Enable the types dropdown
+                        $('#type').prop('disabled', false);
+                    },
+                    error: function (error) {
+                        console.error('Error fetching types:', error);
+                        // Handle errors if needed
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

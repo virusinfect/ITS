@@ -1025,3 +1025,47 @@ def get_types(request):
         return JsonResponse({'types': list(types)})
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@login_required
+def delete_laptop_price(request, laptop_price_id):
+    laptop_price = get_object_or_404(LaptopPriceList, pk=laptop_price_id)
+
+    if request.method == 'POST':
+        laptop_price.delete()
+        messages.warning(request, 'Product Deleted successfully')
+        return redirect('search_laptops')  # Redirect to the list view after deleting a laptop price
+
+    return render(request, 'prices/delete_laptop_price.html', {'laptop_price': laptop_price})
+
+@login_required
+def edit_laptop_price(request, laptop_price_id):
+    laptop_price = get_object_or_404(LaptopPriceList, pk=laptop_price_id)
+    suppliers = Supplier.objects.all()
+    equipments = Equipment.objects.all()
+    brands = Brand.objects.all()
+    types = Type.objects.all()
+    print("data")
+    print(laptop_price.supplier_id )
+    print(request.POST.get('supplier'))
+    if request.method == 'POST':
+        print(laptop_price.supplier_id)
+        print(request.POST.get('supplier'))
+        # Handle form data and update the laptop_price instance
+        laptop_price.product_name = request.POST.get('product_name')
+        laptop_price.type_id = request.POST.get('type')
+        laptop_price.supplier_id = request.POST.get('supplier')
+        laptop_price.series = request.POST.get('series')
+        laptop_price.ProductLink = request.POST.get('ProductLink')
+        laptop_price.equipment_id = request.POST.get('equipment')
+        laptop_price.brand_id = request.POST.get('brand')
+        laptop_price.price = request.POST.get('price')
+        laptop_price.description = request.POST.get('description')
+        laptop_price.os = request.POST.get('os')
+        laptop_price.stock = request.POST.get('stock')
+        laptop_price.currency = request.POST.get('currency')
+        # Update other fields as needed
+        laptop_price.save()
+        messages.success(request, 'Product Edited successfully')
+        return redirect('search_laptops')  # Redirect to the list view after editing a laptop price
+
+    return render(request, 'prices/edit_laptop_price.html', {'laptop_price': laptop_price,'suppliers':suppliers,'equipments':equipments,'brands':brands,'types':types})
