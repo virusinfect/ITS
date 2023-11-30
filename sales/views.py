@@ -1,20 +1,22 @@
 from datetime import datetime, date
 from decimal import Decimal
-from django.db import transaction
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.core.mail import EmailMessage
+from django.db import transaction
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from django.utils.html import escape
 from django.utils.html import strip_tags
 from its.models import Company, Task
+
 from .models import SalesTickets, SalesQuotes, Orders, ProformaInvoice, OurBanks, SalesQuoteProducts, OrderProducts, \
     SalesTicketProducts, ProformaInvoiceProducts
+
 
 @login_required
 def sales_tickets_list(request):
@@ -290,7 +292,7 @@ def edit_order(request, order_id):
                 "<tr style='border-bottom: 3px solid #ddd;'>"
                 "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Product</th>"
                 "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Quantity</th>"
-                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"                
+                "<th style='border: 3px solid #ddd; padding: 8px; text-align: left;'>Supplier</th>"
                 "</tr>"
             )
 
@@ -562,8 +564,7 @@ def convert_to_quote(request, ticket_id):
             quote_product.save()
 
         messages.success(request, 'Ticket successfully converted to a quote.')
-        return redirect('edit-quote', quote.sq_id)  # Redirect to the list of active quotes or the desired page
-
+        return redirect('edit-quote', quote.sq_id)
     return render(request, 'sales/convert_to_quote.html', {'ticket': ticket, 'users': users})
 
 
@@ -580,10 +581,10 @@ def convert_to_order(request, ticket_id):
         order = Orders(
             client=ticket.contact,
             lpo_no=request.POST.get('lpo_no'),
-            assignee=handler,  # Set assignee to the current user
+            assignee=handler,
             status=request.POST.get('status'),
             is_active=True,
-            ticket=ticket,  # Attach the ticket
+            ticket=ticket,
         )
         order.save()
 
@@ -640,28 +641,29 @@ def convert_to_order(request, ticket_id):
         else:
             order_id = "No Ticket"
         # Your existing code to create new_sourcing_data objects
-            # Your existing code to create new_sourcing_data objects
+        # Your existing code to create new_sourcing_data objects
         url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
         clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
 
         if order.ticket:
-            url2 = "http://146.190.61.23:8500/sales/edit/" + str(order.ticket.ticket_id) + "/"  # Replace with your actual URL
+            url2 = "http://146.190.61.23:8500/sales/edit/" + str(
+                order.ticket.ticket_id) + "/"  # Replace with your actual URL
             clickable_url2 = f"<a href='{url2}'>#" + str(order.ticket.ticket_id) + "</a>"
         else:
             clickable_url2 = "NO Ticket"
             # Use the 'table' string in the email message
         message = (
-                f"Dear {order.assignee},<br><br>"
-                f"Our sales team has created an order , {clickable_url} from ticket {clickable_url2} on your behalf. Here are the details and summary of the order:<br><br>"
-                f"Client: {order.client};<br><br>"
-                f"Kindly order for below::<br><br>{table}<br><br>"
-                "This is an auto-generated email | © 2023 ITS. All rights reserved."
+            f"Dear {order.assignee},<br><br>"
+            f"Our sales team has created an order , {clickable_url} from ticket {clickable_url2} on your behalf. Here are the details and summary of the order:<br><br>"
+            f"Client: {order.client};<br><br>"
+            f"Kindly order for below::<br><br>{table}<br><br>"
+            "This is an auto-generated email | © 2023 ITS. All rights reserved."
         )
         subject = f"ORDER: SO-{order.o_id}"
         recipient_list = [order.assignee.email]
         from_email = 'its-noreply@intellitech.co.ke'
 
-            # Create an EmailMessage instance for HTML content
+        # Create an EmailMessage instance for HTML content
         email_message = EmailMessage(subject, message, from_email, recipient_list)
         email_message.content_subtype = 'html'  # Set content type to HTML
         email_message.send()
@@ -669,7 +671,7 @@ def convert_to_order(request, ticket_id):
         messages.success(request, 'Ticket successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
-    return render(request, 'sales/convert_to_order.html', {'ticket': ticket, 'users': users,'tickets':tickets})
+    return render(request, 'sales/convert_to_order.html', {'ticket': ticket, 'users': users, 'tickets': tickets})
 
 
 @login_required
@@ -744,7 +746,8 @@ def convert_quote_to_order(request, quote_id):
         clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
 
         if order.ticket:
-            url2 = "http://146.190.61.23:8500/sales/edit/" + str(order.ticket.ticket_id) + "/"  # Replace with your actual URL
+            url2 = "http://146.190.61.23:8500/sales/edit/" + str(
+                order.ticket.ticket_id) + "/"  # Replace with your actual URL
             clickable_url2 = f"<a href='{url2}'>#" + str(order.ticket.ticket_id) + "</a>"
         else:
             clickable_url2 = "NO Ticket"
@@ -768,7 +771,7 @@ def convert_quote_to_order(request, quote_id):
         messages.success(request, 'Quote successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
-    return render(request, 'sales/convert_quote_to_order.html', {'quote': quote, 'users': users,'tickets':tickets})
+    return render(request, 'sales/convert_quote_to_order.html', {'quote': quote, 'users': users, 'tickets': tickets})
 
 
 @login_required
@@ -847,7 +850,8 @@ def create_order(request):
         url = "http://146.190.61.23:8500/sales/orders/edit/" + str(order.o_id) + "/"  # Replace with your actual URL
         clickable_url = f"<a href='{url}'>#" + str(order.o_id) + "</a>"
         if order.ticket:
-            url2 = "http://146.190.61.23:8500/sales/edit/" + str(order.ticket.ticket_id) + "/"  # Replace with your actual URL
+            url2 = "http://146.190.61.23:8500/sales/edit/" + str(
+                order.ticket.ticket_id) + "/"  # Replace with your actual URL
             clickable_url2 = f"<a href='{url2}'>#" + str(order.ticket.ticket_id) + "</a>"
         else:
             clickable_url2 = "NO Ticket"
@@ -871,7 +875,7 @@ def create_order(request):
         messages.success(request, 'Order Created successfully.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
-    return render(request, 'sales/convert_to_order.html', {'users': users,'tickets':tickets})
+    return render(request, 'sales/convert_to_order.html', {'users': users, 'tickets': tickets})
 
 
 @login_required
@@ -1373,7 +1377,7 @@ def sales_dashboard(request):
     order_awaiting_lpo_count = Orders.objects.filter(status='Awaiting LPO', is_active=True).count()
 
     # Count orders in 'Expected' status that are also 'is_active'
-    expected_count = Orders.objects.filter(status='Expected', is_active=True).count()
+    expected_count = Orders.objects.filter(status='Back to Back', is_active=True).count()
 
     # Count orders in 'Ordered' status that are also 'is_active'
     ordered_count = Orders.objects.filter(status='Ordered', is_active=True).count()

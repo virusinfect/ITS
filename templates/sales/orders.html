@@ -84,8 +84,8 @@
                                 <i class="mdi mdi-clock btn-outline-info mdi-18px "> Pending</i>
                             {% elif order.status == "Awaiting LPO" %}
                                 <i class="mdi mdi-file-document btn-outline-warning mdi-18px"> Awaiting LPO</i>
-                            {% elif order.status == "Expected" %}
-                                <i class="mdi mdi-package btn-outline-danger mdi-18px"> Expected</i>
+                            {% elif order.status == "Back to Back" %}
+                                <i class="mdi mdi-package btn-outline-danger mdi-18px"> Back to Back</i>
                             {% elif order.status == "Ordered" %}
                                 <i class="mdi mdi-cart btn-outline-dark mdi-18px"> Ordered</i>
                             {% elif order.status == "Completed" %}

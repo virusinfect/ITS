@@ -1782,8 +1782,7 @@ def sourcing_tickets(request, ticket_id):
                     attachment = attachment_list[0]
                 else:
                     attachment = None
-                print("test")
-                print(attachment)
+
                 sourcing = Tsourcing(
                     part_no=part_no_list[i],
                     desc=desc_list[i],
@@ -1905,8 +1904,7 @@ def sourcing_inhousetickets(request, ticket_id):
                     attachment = attachment_list[0]
                 else:
                     attachment = None
-                print("test")
-                print(attachment)
+
                 sourcing = InhouseTsourcing(
                     part_no=part_no_list[i],
                     desc=desc_list[i],
@@ -2172,8 +2170,6 @@ def report(request, report_id):
             for item in items:
                 item.total = item.quantity * item.price
                 group_total += item.total
-                print("layout")
-                print(item.layout)
                 if item.layout == "1":
                     subtotals += item.total
             group_totals[layout] = group_total
@@ -2206,9 +2202,6 @@ def report(request, report_id):
         subtotals += ticket.labour
     elif isinstance(ticket.labour, str) and ticket.labour.isdigit():
         subtotals += int(ticket.labour)
-        print("data")
-        print(ticket.labour)
-        print(subtotals)
 
     vat = round(subtotals * 0.16)
     total_amount = subtotals + vat
@@ -2610,8 +2603,6 @@ def save_signature_view_ticket(request):
             brought_by=brought_by,
 
         )
-        print('type')
-        print(type)
         if type == "On-site":
 
             tech_user = get_object_or_404(User, id=tech_id)
