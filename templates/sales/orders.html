@@ -62,7 +62,7 @@
                         <td>
                             {% if order.ticket %}
                                 <a href="{% url 'edit_sales_ticket' order.ticket.ticket_id %}">
-                                    #{{ order.ticket.ticket_id }} .. {{ order.ticket.issue_summary }}</a>
+                                    #{{ order.ticket.ticket_id }} .. {{ order.ticket.issue_summary|safe }}</a>
                             {% else %}
                                 No ticket
                             {% endif %}
