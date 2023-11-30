@@ -84,7 +84,6 @@ def upload_price_list(request):
             supplier = Supplier.objects.get(id=supplier_index)
             brand = Brand.objects.get(id=brand_index)
             equipment = Equipment.objects.get(id=equipment_index)
-            equipment_type = Equipment.objects.get(id=type_index)
 
             product_name = row[product_name_index]
             price_name = row[price_index]
@@ -103,9 +102,13 @@ def upload_price_list(request):
                     series=row[series_index] if series_index is not None else '',
                     ProductLink=row[product_link_index] if product_link_index is not None else '',
                     equipment=equipment,
-                    type=equipment_type,
                     brand=brand
                 )
+                if type_index:
+                    equipment_type = Type.objects.get(id=type_index)
+                    price_list_obj.type=equipment_type
+
+
                 try:
                     price_list_obj.save()
                 except Exception as e:
@@ -731,6 +734,7 @@ def search_laptops(request):
         # Add other fields as needed
     }
     equipment_id = request.GET.get('equipment')
+    type_id = request.GET.get('type')
     currency = request.GET.get('currency')
     # Build the Q objects for the selected fields
     q_objects = Q()
@@ -755,19 +759,26 @@ def search_laptops(request):
         laptops = laptops.filter(*keyword_queries)
         if equipment_id:
             laptops = laptops.filter(equipment=equipment_id)
+            if type_id:
+                laptops = laptops.filter(type=type_id)
 
     else:
         # Query the model using the constructed Q objects
         laptops = LaptopPriceList.objects.filter(q_objects)
         if equipment_id:
             laptops = laptops.filter(equipment=equipment_id)
+            if type_id:
+                laptops = laptops.filter(type=type_id)
         # Filter by equipment if selected
 
         if equipment_id:
             laptops = laptops.filter(equipment=equipment_id)
+            if type_id:
+                laptops = laptops.filter(type=type_id)
 
     # Retrieve all equipment for the dropdown
     all_equipment = Equipment.objects.all()
+    all_types = Type.objects.all()
 
     for item in laptops:
         exchange_rate = Exchange.objects.first().rate
@@ -797,7 +808,7 @@ def search_laptops(request):
             item.price_min = item.price_min / exchange_rate
 
     context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
-               'all_equipment': all_equipment, }
+               'all_equipment': all_equipment,'all_types':all_types }
     return render(request, 'prices/search_laptops.html', context)
 
 
