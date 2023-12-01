@@ -72,8 +72,8 @@
                             <div class="product-list" data-order-id="{{ order.o_id }}" style="display: none;">
                                 {% for product in order.orderproducts_set.all %}
                                     <li>{{ product.product }} <span class="text-success">{% if product.date_ordered %}// Ordered:
-                                        {{ product.date_ordered }} {% endif %} {% if product.date_expected %}//Expected:
-                                        {{ product.date_expected }}{% endif %}</span></li>
+                                        {{ product.date_ordered|date:'Y-m-d' }} {% endif %} {% if product.date_expected %}//Expected:
+                                        {{ product.date_expected|date:'Y-m-d' }}{% endif %}</span></li>
                                     {% empty %}
                                     No products associated
                                 {% endfor %}
