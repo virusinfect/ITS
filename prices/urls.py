@@ -15,6 +15,7 @@ urlpatterns = [
     path('list_brands/', views.list_brands, name='list_brands'),
     path('list_equipment/', views.list_equipment, name='list-equipment'),
     path('search/', views.search_laptops, name='search_laptops'),
+    path('search_js/', views.search_laptops_js, name='search_laptops_js'),
     path('search_coloursoft/', views.search_coloursoft, name='search_coloursoft'),
     path('search_fellowes/', views.search_fellowes, name='search_fellowes'),
     path('exchange/', views.edit_exchange, name='edit_exchange'),

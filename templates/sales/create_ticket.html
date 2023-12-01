@@ -1,8 +1,6 @@
 {% extends "base.html" %}
-
 {% block title %}Create Ticket{% endblock %}
 {% block header %}Create Ticket{% endblock %}
-
 {% block content %}
     <style>
         /* Apply Bootstrap styling to the Awesomplete dropdown */
@@ -27,6 +25,10 @@
             outline: none;
             background-color: #f8f9fa;
         }
+
+        .offcanvas-wider {
+            width: 80%; /* Adjust the width as needed */
+        }
     </style>
     <div class="row">
         <div class="col-md-6">
@@ -44,11 +46,8 @@
             <h3 class="header-title mb-4">Create Ticket </h3>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-
                 <div class="row mb-3">
-
                     <div class="col-md-6">
-
                         <label for="company_id" class="form-label">Company : <a type="button" class="text-danger"
                                                                                 data-bs-toggle="modal"
                                                                                 data-bs-target="#signup-modal">
@@ -75,7 +74,6 @@
                                   placeholder="Issues Summary" rows="5"></textarea>
                     </div>
                 </div>
-
                 <div class="row mb-3 table-responsive mx-auto">
                     <table class="table mb-3">
                         <thead class="table-dark">
@@ -93,12 +91,13 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td><input type="text" name="part_no[]"
+                            <td><input type="text" name="part_no[]" id="part_no"
                                        value="{{ product.part_no }}"
                                        class="form-control">
                             </td>
                             <td>
-                                <input type="text" name="description[]" id="description" class="form-control" value="{{ product.description }}">
+                                <input type="text" name="description[]" id="description" class="form-control"
+                                       value="{{ product.description }}">
                             </td>
 
                             <td>
@@ -140,12 +139,19 @@
                             <td>
                                 <input type="file" class="form-control" name="image[]">
                             </td>
-                            <td><a class="add-row-button" onclick="addBlankRow(this)"
+                            <td>
+                                <a class="" data-bs-toggle="offcanvas"
+                                   data-bs-target="#offcanvasSearch" title="search products"
+                                   tabindex="0"
+                                   data-plugin="tippy" data-tippy-interactive="true" onclick="openOffcanvas(this)">
+                                    <i class="s mdi mdi-database-search-outline mdi-18px"></i>
+                                </a>
+                                <a class="add-row-button" onclick="addBlankRow(this)"
                                    title="add row"
                                    tabindex="0"
                                    data-plugin="tippy" data-tippy-interactive="true"><i
-                                    class="s mdi mdi-plus-circle mdi-18px"></i>
-                            </a>
+                                        class="s mdi mdi-plus-circle mdi-18px"></i>
+                                </a>
                                 <a class="delete-row-button" onclick="deleteRow(this)"
                                    title="delete row" tabindex="0"
                                    data-plugin="tippy" data-tippy-interactive="true">
@@ -285,6 +291,40 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    <div class="offcanvas offcanvas-end offcanvas-wider" tabindex="-1" id="offcanvasSearch"
+         aria-labelledby="offcanvasSearchLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasSearchLabel">Search Results</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- Search Form -->
+            <form id="searchForm">
+                {% csrf_token %}
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" class="form-control">
+                <button type="button" class="btn btn-primary mt-2" onclick="searchLaptops()">Search</button>
+            </form>
+            <p id="offcanvasContent">Row Number: </p>
+            <!-- Search Results Table -->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>description</th>
+                    <th>Supplier</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                    <!-- Add other fields as needed -->
+                </tr>
+                </thead>
+                <tbody id="searchResultsBody">
+                <!-- Search results will be dynamically populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 
     <script>
         function addBlankRow(button) {
@@ -410,7 +450,6 @@
             });
         });
     </script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             ClassicEditor
@@ -455,8 +494,105 @@
                 });
         });
     </script>
+    <script>
+        var rowNumber = 1;
+
+        function openOffcanvas(button) {
+            // Get the row containing the clicked button
+            var row = button.closest('tr');
+
+            // Get the row number
+            rowNumber = Array.from(row.parentNode.children).indexOf(row) + 1;
+
+            // Get the part_no value from the row
+            var partNumber = row.querySelector('input[name="part_no[]"]').value;
+
+            // Set the Offcanvas content with the row number
+            var offcanvasContent = document.getElementById('offcanvasContent');
+            offcanvasContent.textContent = 'Row Number: ' + rowNumber;
+
+            // Set the value of the input field in the Offcanvas
+            var partNoInput = document.getElementById('part_no');
+            partNoInput.value = partNumber;
+
+            // Trigger the Offcanvas
+            var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasExample'));
+            offcanvas.show();
+        }
 
 
+        function searchLaptops() {
+            // Get the input value
+            var productName = document.getElementById('productName').value;
+
+            // Perform the search (you can customize this based on your needs)
+            // For simplicity, let's assume you're using jQuery for AJAX
+            $.ajax({
+                url: '/price-list/search_js/',  // Update the URL to your search endpoint
+                method: 'POST',
+                data: {product_name: productName},
+                success: function (data) {
+                    // Update the table with the search results
+                    var searchResultsBody = document.getElementById('searchResultsBody');
+                    searchResultsBody.innerHTML = '';  // Clear previous results
+
+                    // Iterate over the JSON data and append rows to the table
+                    data.forEach(function (laptop) {
+                        var row = '<tr>' +
+                            '<td>' + laptop.product_name + '</td>' +
+                            '<td>' + laptop.description + '</td>' +
+                            '<td>' + laptop.supplier + '</td>' +
+                            '<td>' + laptop.price + '</td>' +
+                            '<td><button class="btn btn-secondary" onclick="addToOriginalTable(&#39;' + laptop.product_name + '&#39;, &#39;' + laptop.description + '&#39;, &#39;' + laptop.price + '&#39;, &quot;' + laptop.supplier + '&quot;)">Add to Table</button></td>' +
+                            '</tr>';
+                        searchResultsBody.innerHTML += row;
+                    });
+                },
+                error: function (error) {
+                    console.error('Search error:', error);
+                }
+            });
+        }
+
+        // Function to add the selected laptop to the original table
+        function addToOriginalTable(productName, description, price, supplier) {
+            // Get the row number from the Offcanvas container's data attribute
+            var offcanvasContainer = document.getElementById('offcanvasSearch');
 
 
+            // Get the original table row corresponding to the row number
+            var originalTableRow = document.querySelector('table tbody tr:nth-child(' + rowNumber + ')');
+
+            // Update the 'part_no' input in the original table row with the selected product name
+            originalTableRow.querySelector('input[name="part_no[]"]').value = productName;
+            originalTableRow.querySelector('input[name="description[]"]').value = description;
+            originalTableRow.querySelector('input[name="price[]"]').value = price;
+            originalTableRow.querySelector('input[name="supplier[]"]').value = supplier;
+
+            toastr.success(success,"product added successfully")
+            // Close the Offcanvas
+            var offcanvas = new bootstrap.Offcanvas(offcanvasContainer);
+            offcanvas.hide();
+        }
+
+        function updateTableRow() {
+            // Get the Offcanvas content and input data
+            var offcanvasContent = document.getElementById('offcanvasContent');
+            var inputData = document.getElementById('inputData').value;
+
+            console.log("data")
+            console.log(rowNumber)
+
+            // Get the original table row corresponding to the row number
+            var originalTableRow = document.querySelector('table tbody tr:nth-child(' + rowNumber + ')');
+
+            // Update the 'part_no' input in the original table row with the inputted data
+            originalTableRow.querySelector('input[name="part_no[]"]').value = inputData;
+
+            // Close the Offcanvas
+            var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasExample'));
+            offcanvas.hide();
+        }
+
+    </script>
 {% endblock %}

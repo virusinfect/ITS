@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 from .forms import PriceListForm
 from .models import Supplier, Equipment, Brand, Exchange, LaptopPriceList, ColoursoftPriceList, FellowesPricelist, \
@@ -1069,3 +1070,33 @@ def edit_laptop_price(request, laptop_price_id):
         return redirect('search_laptops')  # Redirect to the list view after editing a laptop price
 
     return render(request, 'prices/edit_laptop_price.html', {'laptop_price': laptop_price,'suppliers':suppliers,'equipments':equipments,'brands':brands,'types':types})
+
+@csrf_exempt
+def search_laptops_js(request):
+    if request.method == 'POST':
+        query = request.POST.get('q', '')
+        equipment = request.POST.get('equipment', '')
+        fields = request.POST.get('fields', '')
+        currency = request.POST.get('currency', '')
+
+        # Perform the search based on the form data
+        laptops = LaptopPriceList.objects.filter(
+            product_name__icontains=query,
+            # Add other filters based on the form data
+        )
+
+        # Prepare JSON data
+        laptop_data = []
+        for laptop in laptops:
+            laptop_data.append({
+                'product_name': laptop.product_name,
+                'supplier': laptop.supplier.name,
+                'price': str(laptop.price),
+                'description': laptop.description,
+                # Add other fields as needed
+            })
+
+        # Return JSON response
+        return JsonResponse(laptop_data, safe=False)
+    else:
+        return JsonResponse({'error': 'Invalid request method'})
