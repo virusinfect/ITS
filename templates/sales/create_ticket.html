@@ -144,7 +144,7 @@
                                    data-bs-target="#offcanvasSearch" title="search products"
                                    tabindex="0"
                                    data-plugin="tippy" data-tippy-interactive="true" onclick="openOffcanvas(this)">
-                                    <i class="s mdi mdi-database-search-outline mdi-18px"></i>
+                                    <i class="s mdi mdi-magnify-plus-cursor mdi-18px"></i>
                                 </a>
                                 <a class="add-row-button" onclick="addBlankRow(this)"
                                    title="add row"
@@ -511,7 +511,7 @@
             var offcanvasContent = document.getElementById('offcanvasContent');
             offcanvasContent.textContent = 'Row Number: ' + rowNumber;
 
-           
+
 
             // Trigger the Offcanvas
             var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasExample'));
@@ -541,7 +541,7 @@
                             '<td>' + laptop.description + '</td>' +
                             '<td>' + laptop.supplier + '</td>' +
                             '<td>' + laptop.price + '</td>' +
-                            '<td><button class="btn btn-secondary" onclick="addToOriginalTable(&#39;' + laptop.product_name + '&#39;, &#39;' + laptop.description + '&#39;, &#39;' + laptop.price + '&#39;, &quot;' + laptop.supplier + '&quot;)">Add to Table</button></td>' +
+                            '<td><a class="" title="add product" tabindex="0" data-plugin="tippy" data-tippy-interactive="true"  onclick="addToOriginalTable(&#39;' + laptop.product_name + '&#39;, &#39;' + laptop.description + '&#39;, &#39;' + laptop.price + '&#39;, &quot;' + laptop.supplier + '&quot;)"><i class="mdi mdi-plus-circle mdi-18px"></i></a></td>' +
                             '</tr>';
                         searchResultsBody.innerHTML += row;
                     });
