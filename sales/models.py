@@ -165,6 +165,7 @@ class OrderProducts(models.Model):
     date_ordered = models.DateField(null=True, blank=True, default=None)
     supplier = models.TextField()
     date_received = models.DateField(null=True, blank=True, default=None)
+    date_expected = models.DateField(null=True, blank=True, default=None)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

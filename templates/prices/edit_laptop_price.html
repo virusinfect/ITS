@@ -1,8 +1,6 @@
 {% extends "base.html" %}
-
 {% block title %}Edit Product{% endblock %}
 {% block header %}Edit Product{% endblock %}
-
 {% block content %}
     <div class="row">
         <div class="col-md-6">
@@ -58,7 +56,6 @@
                             <label for="series" class="form-label">series :</label>
                             <input type="text" name="series" class="form-control" value="{{ laptop_price.series }}">
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="mb-3 col-6">
@@ -97,8 +94,6 @@
                                 {% endfor %}
                             </select>
                         </div>
-
-
                     </div>
                     <div class="row">
                         <div class="mb-3 col-6">
@@ -118,8 +113,6 @@
                             </select>
                         </div>
                     </div>
-
-
                     <input type="submit" class="btn btn-primary mt-3" value="Save Changes">
                 </form>
             </div>

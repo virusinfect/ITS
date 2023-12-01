@@ -58,7 +58,10 @@
                             <select id="ticket_select" name="ticket" class="form-select">
                                 <option value="">No Ticket Selected</option>
                                 {% for salesticket in tickets %}
-                                    <option value="{{ salesticket.ticket_id }}" {% if salesticket.ticket_id == ticket.ticket_id  %}selected{% endif %}>#{{ salesticket.ticket_id }} >> {{ salesticket.company }} >> {{ salesticket.issue_summary|safe }}</option>
+                                    <option value="{{ salesticket.ticket_id }}"
+                                            {% if salesticket.ticket_id == ticket.ticket_id %}selected{% endif %}>
+                                        #{{ salesticket.ticket_id }} >> {{ salesticket.company }}
+                                        >> {{ salesticket.issue_summary|safe }}</option>
                                 {% endfor %}
                             </select>
 
@@ -91,6 +94,7 @@
                                 <th>Product</th>
                                 <th>Quantity</th>
                                 <th>Date Ordered</th>
+                                <th>Date Expected</th>
                                 <th>Supplier</th>
                                 <th>Date Received</th>
                                 <th>Action</th>
@@ -110,6 +114,9 @@
                                                value="{{ product.quantity }}" class="form-control"></td>
                                     <td><input type="datetime-local" name="date_ordered[]"
                                                value=" "
+                                               class="form-control"></td>
+                                    <td><input type="date" name="date_expected[]"
+                                               value="{{ product.date_expected|date:'Y-m-d' }}"
                                                class="form-control"></td>
                                     <td><input type="text" name="supplier[]"
                                                value="{{ product.supplier }}" class="form-control"></td>
@@ -141,6 +148,8 @@
                                 <td><input type="date" name="date_ordered[]"
 
                                            class="form-control" value="00-00-0000"></td>
+                                <td><input type="date" name="date_expected[]"
+                                           class="form-control"></td>
                                 <td><input type="text" name="supplier[]"
                                            class="form-control"></td>
                                 <td><input type="date" name="date_received[]"
@@ -168,7 +177,8 @@
                                 Awaiting
                                 LPO
                             </option>
-                            <option value="Back to Back" {% if order.status == 'Back to Back' %}selected{% endif %}>Back to Back
+                            <option value="Back to Back" {% if order.status == 'Back to Back' %}selected{% endif %}>Back
+                                to Back
                             </option>
                             <option value="Ordered" {% if order.status == 'Ordered' %}selected{% endif %}>Ordered
                             </option>

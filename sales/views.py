@@ -258,6 +258,7 @@ def edit_order(request, order_id):
         date_ordered_list = request.POST.getlist('date_ordered[]')
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
+        date_expected_list = request.POST.getlist('date_expected[]')
         part_no_list = request.POST.getlist('part_no[]')
 
         new_sourcing_data = []
@@ -276,6 +277,8 @@ def edit_order(request, order_id):
                     order_product.date_received = date_received_list[i]
                 if date_ordered_list[i]:
                     order_product.date_ordered = date_ordered_list[i]
+                if date_expected_list[i]:
+                    order_product.date_expected = date_expected_list[i]
                 new_sourcing_data.append(order_product)
 
         with transaction.atomic():
@@ -596,6 +599,7 @@ def convert_to_order(request, ticket_id):
         date_ordered_list = request.POST.getlist('date_ordered[]')
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
+        date_expected_list = request.POST.getlist('date_expected[]')
         part_no_list = request.POST.getlist('part_no[]')
 
         for i in range(len(product_list)):
@@ -615,6 +619,10 @@ def convert_to_order(request, ticket_id):
 
                 if date_ordered_list[i]:
                     order_product.date_ordered = date_ordered_list[i]
+                    order_product.save()
+
+                if date_expected_list[i]:
+                    order_product.date_expected = date_expected_list[i]
                     order_product.save()
 
         table = (
@@ -704,6 +712,7 @@ def convert_quote_to_order(request, quote_id):
         date_ordered_list = request.POST.getlist('date_ordered[]')
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
+        date_expected_list = request.POST.getlist('date_expected[]')
         part_no_list = request.POST.getlist('part_no[]')
         print("data")
         print(supplier_list)
@@ -726,6 +735,10 @@ def convert_quote_to_order(request, quote_id):
 
                 if date_ordered_list[i]:
                     order_product.date_ordered = date_ordered_list[i]
+                    order_product.save()
+
+                if date_expected_list[i]:
+                    order_product.date_expected = date_expected_list[i]
                     order_product.save()
 
         table = (
@@ -814,6 +827,7 @@ def create_order(request):
         date_ordered_list = request.POST.getlist('date_ordered[]')
         supplier_list = request.POST.getlist('supplier[]')
         date_received_list = request.POST.getlist('date_received[]')
+        date_expected_list = request.POST.getlist('date_expected[]')
         part_no_list = request.POST.getlist('part_no[]')
         for i in range(len(product_list)):
             if (product_list[i]):
@@ -833,6 +847,10 @@ def create_order(request):
 
                 if date_ordered_list[i]:
                     order_product.date_ordered = date_ordered_list[i]
+                    order_product.save()
+
+                if date_expected_list[i]:
+                    order_product.date_expected = date_expected_list[i]
                     order_product.save()
 
         table = (

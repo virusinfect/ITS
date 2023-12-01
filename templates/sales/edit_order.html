@@ -91,6 +91,7 @@
                                 <th>Product</th>
                                 <th>Quantity</th>
                                 <th>Date Ordered</th>
+                                <th>Date Expected</th>
                                 <th>Supplier</th>
                                 <th>Date Received</th>
                                 <th>Actions</th>
@@ -110,6 +111,9 @@
                                                    value="{{ product.quantity }}" id="qty" class="form-control"></td>
                                         <td><input type="date" name="date_ordered[]"
                                                    value="{{ product.date_ordered|date:'Y-m-d' }}"
+                                                   class="form-control"></td>
+                                        <td><input type="date" name="date_expected[]"
+                                                   value="{{ product.date_expected|date:'Y-m-d' }}"
                                                    class="form-control"></td>
                                         <td><input type="text" name="supplier[]"
                                                    value="{{ product.supplier }}" class="form-control"></td>
@@ -137,7 +141,7 @@
                             {% endfor %}
                             <tr>
                                 <td><input type="text" name="part_no[]"
-                                            class="form-control">
+                                           class="form-control">
                                 </td>
                                 <td><input type="text" name="product[]"
                                            class="form-control">
@@ -145,6 +149,8 @@
                                 <td><input type="number" name="quantity[]"
                                            class="form-control" id="qty" value="0"></td>
                                 <td><input type="date" name="date_ordered[]"
+                                           class="form-control"></td>
+                                <td><input type="date" name="date_expected[]"
                                            class="form-control"></td>
                                 <td><input type="text" name="supplier[]"
                                            class="form-control"></td>
@@ -172,7 +178,8 @@
                                 Awaiting
                                 LPO
                             </option>
-                            <option value="Back to Back" {% if order.status == 'Back to Back' %}selected{% endif %}>Back to Back
+                            <option value="Back to Back" {% if order.status == 'Back to Back' %}selected{% endif %}>Back
+                                to Back
                             </option>
                             <option value="Ordered" {% if order.status == 'Ordered' %}selected{% endif %}>Ordered
                             </option>

@@ -94,6 +94,7 @@
                                 <th>Product</th>
                                 <th>Quantity</th>
                                 <th>Date Ordered</th>
+                                <th>Date Expected</th>
                                 <th>Supplier</th>
                                 <th>Date Received</th>
                                 <th>Action</th>
@@ -113,7 +114,9 @@
                                     <td><input type="datetime-local" name="date_ordered[]"
                                                value=" "
                                                class="form-control"></td>
-
+                                    <td><input type="date" name="date_expected[]"
+                                               value="{{ product.date_expected|date:'Y-m-d' }}"
+                                               class="form-control"></td>
                                     <td><input type="text" name="supplier[]"
                                                value="{{ product.supplier }}" class="form-control"></td>
                                     <td><input type="datetime-local" name="date_received[]"
@@ -144,6 +147,8 @@
                                 <td><input type="date" name="date_ordered[]"
 
                                            class="form-control" value="00-00-0000"></td>
+                                <td><input type="date" name="date_expected[]"
+                                           class="form-control"></td>
                                 <td><input type="text" name="supplier[]"
                                            class="form-control"></td>
                                 <td><input type="date" name="date_received[]"

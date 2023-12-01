@@ -71,7 +71,9 @@
                         <td>
                             <div class="product-list" data-order-id="{{ order.o_id }}" style="display: none;">
                                 {% for product in order.orderproducts_set.all %}
-                                    <li>{{ product.product }}</li>
+                                    <li>{{ product.product }} {% if product.date_ordered %}// Ordered:
+                                        {{ product.date_ordered }} {% endif %} {% if product.date_expected %}//Expected:
+                                        {{ product.date_expected }}{% endif %}</li>
                                     {% empty %}
                                     No products associated
                                 {% endfor %}
