@@ -31,12 +31,23 @@
     </style>
     <div class="row">
         <div class="col-md-6">
-            <div class="mb-4">
+            <div class="mb-1">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'active-orders' %}">Orders</a></li>
                     <li class="breadcrumb-item active">Edit Order</li>
                 </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-2">
+                <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Pending' %}">Pending</a>
+                <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Awaiting LPO' %}">Awaiting LPO</a>
+                <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Back to Back' %}">Back to Back</a>
+                <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Ordered' %}">Ordered</a>
+                <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Completed' %}">Completed</a>
             </div>
         </div> <!-- end col -->
     </div>
