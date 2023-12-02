@@ -791,6 +791,8 @@ def convert_quote_to_order(request, quote_id):
         email_message.content_subtype = 'html'  # Set content type to HTML
         email_message.send()
 
+        quote.status="Done"
+        quote.save()
         messages.success(request, 'Quote successfully converted to an order.')
         return redirect('edit-order', order.o_id)  # Redirect to the list of active orders or the desired page
 
