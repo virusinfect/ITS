@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="mb-3 col-lg-3">
                             <label for="type" class="form-label">Call Type:</label>
-                            <select name="type" class="form-select">
+                            <select name="type" id="type" class="form-select">
                                 <option value="Remote" {% if call_card.type == "Remote" %}selected{% endif %}>Remote
                                 </option>
                                 <option value="On-site" {% if call_card.type == "On-site" %}selected{% endif %}>On
@@ -165,6 +165,8 @@
                 var faultNo = $('#fault').val();
                 var statusNo = $('#status2').val();
                 var remarksNo = $('#remarks').val();
+                var typeNo = $('#type').val();
+
 
                 //var signatureData = signaturePad.toDataURL();
                 $.ajax({
@@ -178,6 +180,7 @@
                         time_out: time_outNo,
                         fault: faultNo,
                         status: statusNo,
+                        type: typeNo,
                         cc_id: ccId,
                         remarks: remarksNo,
                     },
