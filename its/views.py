@@ -121,7 +121,6 @@ def save_signature_view_call(request):
         call_card.fault = request.POST.get('fault')
         call_card.remarks = request.POST.get('remarks')
         call_card.status = request.POST.get('status')
-        call_card.type = request.POST.get('type')
         call_card.save()
         print("data test")
         print(request.POST.get('equipment'))
