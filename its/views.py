@@ -630,7 +630,7 @@ def view_task_details(request, task_id):
     return render(request, 'task_details.html', {'task': task,'asignees': asignees})
 
 
-@login_required
+
 def form_with_uuid(request, token):
     try:
         # Retrieve the UniqueToken associated with the UUID
