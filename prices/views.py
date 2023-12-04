@@ -973,11 +973,11 @@ def price_rules_for_equipment(request, equipment_id):
 def add_price_rule(request,equipment_id):
     if request.method == 'POST':
         # Retrieve form data from the request
-        price_range_start_data = request.POST.getlist('price_range_start[]')
-        constant = request.POST.getlist('constant[]')
-        price_range_end_data = request.POST.getlist('price_range_end[]')
-        discount_percentage_data = request.POST.getlist('discount_percentage[]')
-        discount_percentage2_data = request.POST.getlist('discount_percentage2[]')
+        price_range_start_data = request.POST.getlist('price_range_startb[]')
+        constant = request.POST.getlist('constantb[]')
+        price_range_end_data = request.POST.getlist('price_range_endb[]')
+        discount_percentage_data = request.POST.getlist('discount_percentageb[]')
+        discount_percentage2_data = request.POST.getlist('discount_percentage2b[]')
         equipment_id =equipment_id
         print("data")
         print(price_range_start_data)

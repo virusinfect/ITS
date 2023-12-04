@@ -71,7 +71,6 @@
                 <h4 class="mb-3 header-title">Add Price Rule for {{ equipment }}</h4>
                 <form method="post" action="{% url 'add_price_rule' equipment.id %}">
                     {% csrf_token %}
-
                     <!-- Multiple instances of price_rule data -->
                     <table class="table mb-0">
                         <thead class="table-light">
@@ -83,19 +82,18 @@
                         </tr>
                         </thead>
                         <tbody>
-
                         <div id="price_rules">
                             <div class="price_rule">
                                 <tr>
-                                    <td><input class="form-control" type="text" name="price_range_start[]"
+                                    <td><input class="form-control" type="text" name="price_range_startb[]"
                                                placeholder="Price Range Start" required>
                                     </td>
-                                    <td><input class="form-control" type="text" name="price_range_end[]"
+                                    <td><input class="form-control" type="text" name="price_range_endb[]"
                                                placeholder="Price Range End"></td>
-                                    <td><input class="form-control" type="text" name="discount_percentage[]"
+                                    <td><input class="form-control" type="text" name="discount_percentageb[]"
                                                placeholder="Min"
                                                required></td>
-                                    <td><input class="form-control" type="text" name="discount_percentage2[]"
+                                    <td><input class="form-control" type="text" name="discount_percentage2b[]"
                                                placeholder="Max"
                                                required></td>
                                 </tr>
@@ -103,13 +101,9 @@
                         </div>
                         </tbody>
                     </table>
-
                     <button type="submit" class="btn btn-primary mt-2">Submit</button>
                 </form>
-
             </div>
-
-
             <script>
                 function addPriceRule() {
                     var priceRulesDiv = document.getElementById('price_rules');
