@@ -83,19 +83,27 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr id="price_rules" class="price_rule">
 
-                            <td><input class="form-control" type="text" name="price_range_start[]" placeholder="Price Range Start" required>
-                            </td>
-                            <td><input class="form-control" type="text" name="price_range_end[]" placeholder="Price Range End"></td>
-                            <td><input class="form-control" type="text" name="discount_percentage[]" placeholder="Min"
-                                       required></td>
-                            <td><input class="form-control" type="text" name="discount_percentage2[]" placeholder="Max"
-                                       required></td>
-                        </tr>
+                        <div id="price_rules">
+                            <div class="price_rule">
+                                <tr>
+                                    <td><input class="form-control" type="text" name="price_range_start[]"
+                                               placeholder="Price Range Start" required>
+                                    </td>
+                                    <td><input class="form-control" type="text" name="price_range_end[]"
+                                               placeholder="Price Range End"></td>
+                                    <td><input class="form-control" type="text" name="discount_percentage[]"
+                                               placeholder="Min"
+                                               required></td>
+                                    <td><input class="form-control" type="text" name="discount_percentage2[]"
+                                               placeholder="Max"
+                                               required></td>
+                                </tr>
+                            </div>
+                        </div>
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-primary mt-2" onclick="addPriceRule()">Add Row</button>
+
                     <button type="submit" class="btn btn-primary mt-2">Submit</button>
                 </form>
 
