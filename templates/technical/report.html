@@ -189,12 +189,14 @@
                                     </tr>
                                 {% else %}
                                     <td colspan="4" class="text-end">LABOUR</td>
-                                    <td colspan="4" class="text-end">{{ ticket.labour}}</td>
+                                    <td colspan="4" class="text-end">{{ ticket.labour }}</td>
                                 {% endif %}
-                                <tr>
-                                    <td colspan="4" class="text-end">SUBTOTALS</td>
-                                    <td colspan="4" class="text-end">{{ subtotals|floatformat:2|intcomma }}</td>
-                                </tr>
+                                {% if tquote_data|length > 1 %}
+                                    <tr>
+                                        <td colspan="4" class="text-end">SUBTOTALS</td>
+                                        <td colspan="4" class="text-end">{{ subtotals|floatformat:2|intcomma }}</td>
+                                    </tr>
+                                {% endif %}
                                 <tr>
                                     <td colspan="4" class=" text-danger text-end">VAT</td>
                                     <td colspan="4" class="text-danger text-end">{{ vat|floatformat:2|intcomma }}</td>
