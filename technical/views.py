@@ -2208,11 +2208,11 @@ def report(request, report_id):
 
     if isinstance(ticket.labour, int):
         subtotals += ticket.labour
-        if ticket.labour == 0:
+        if ticket.labour != 0:
             layout_2_count += 1
     elif isinstance(ticket.labour, str) and ticket.labour.isdigit():
         subtotals += int(ticket.labour)
-        if int(ticket.labour) == 0:
+        if int(ticket.labour) != 0:
             layout_2_count += 1
 
     vat = round(subtotals * 0.16)
