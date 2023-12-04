@@ -956,15 +956,37 @@ def price_rules_for_equipment(request, equipment_id):
         # Extract data and update PriceRule objects accordingly
         for price_rule in price_rules:
             # Use the appropriate field names based on your form
+            minint = Decimal(request.POST.get(f"min_{price_rule.id}", 0))
+            maxintorginal = request.POST.get(f"max_{price_rule.id}")
+
+
+
+            print("max")
+            print(maxintorginal)
+
+            if maxintorginal:
+                if maxintorginal == "None":
+                    price_rule.price_range_end = None
+                    print("int is none")
+                else:
+                    price_rule.price_range_end = Decimal(request.POST.get(f"max_{price_rule.id}", 0))
+                    print(Decimal(request.POST.get(f"max_{price_rule.id}", 0)))
+                    print("not none")
+            else:
+                price_rule.price_range_end = None
+                print("int is none")
+
             discount_percentage = Decimal(request.POST.get(f"discount_percentage_{price_rule.id}", 0))
             discount_percentage2 = Decimal(request.POST.get(f"discount_percentage2_{price_rule.id}", 0))
             constant = request.POST.get(f"constant_{price_rule.id}")
+
             if constant == "on":
                 constant = True
             else:
                 constant = False
             price_rule.discount_percentage = discount_percentage
             price_rule.discount_percentage2 = discount_percentage2
+            price_rule.price_range_start = minint
 
             price_rule.constant = constant
 

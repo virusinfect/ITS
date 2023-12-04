@@ -37,11 +37,11 @@
                             {% for price_rule in price_rules %}
                                 <tr>
                                     <td>
-                                        <input type="text" name="discount_percentage_{{ price_rule.id }}"
+                                        <input type="text" name="min_{{ price_rule.id }}"
                                                value="{{ price_rule.price_range_start }}" class="form-control">
                                     </td>
                                     <td>
-                                        <input type="text" name="discount_percentage_{{ price_rule.id }}"
+                                        <input type="text" name="max_{{ price_rule.id }}"
                                                value="{{ price_rule.price_range_end }}" class="form-control">
                                     </td>
                                     </td>
