@@ -2197,6 +2197,7 @@ def report(request, report_id):
         for requisition in parts:
             if requisition.quantity is not None and requisition.price is not None:
                 requisition.total = requisition.quantity * requisition.price
+                layout_2_count += 1
             else:
                 # Handle the case where either quantity or price is None
                 requisition.total = 0  # or set it to some default value or handle it according to your requirements
