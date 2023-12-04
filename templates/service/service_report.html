@@ -174,7 +174,7 @@
                             <td>{{ checklist_data.client }}</td>
 
 
-                            <td><u>EQUIP</u>  :{{ equip.name }} <br> <u>S/N :</u> {{ equip.serial_no }}</td>
+                            <td><u>{{ equip.name }} <br> <u>S/N :</u> {{ equip.serial_no }}</td>
                             <td>
                                 {% if equip.type == "Monitor" %}
                                     {% for monitor_checklist in checklist_data.monitor_checklists %}
