@@ -54,7 +54,7 @@
                                                value="{{ price_rule.discount_percentage2 }}" class="form-control">
                                     </td>
                                     <td><input type="checkbox" name="constant_{{ price_rule.id }}"
-                                                data-color="red"
+                                               data-color="red"
                                                class="form-check switchery" data-size="small"
                                                {% if price_rule.constant %}checked{% endif %}></td>
                                 </tr>
@@ -67,6 +67,48 @@
                     </form>
                 </div>
             </div>
+            <div class="card-body col-lg-11 mx-auto">
+                <h4 class="mb-3 header-title">Add Price Rule for {{ equipment }}</h4>
+                <form method="post" action="{% url 'add_price_rule' equipment.id %}">
+                    {% csrf_token %}
+
+                    <!-- Multiple instances of price_rule data -->
+                    <table class="table mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Price Range Start</th>
+                            <th>Price Range End</th>
+                            <th>Min</th>
+                            <th>Max</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id="price_rules" class="price_rule">
+
+                            <td><input class="form-control" type="text" name="price_range_start[]" placeholder="Price Range Start" required>
+                            </td>
+                            <td><input class="form-control" type="text" name="price_range_end[]" placeholder="Price Range End"></td>
+                            <td><input class="form-control" type="text" name="discount_percentage[]" placeholder="Min"
+                                       required></td>
+                            <td><input class="form-control" type="text" name="discount_percentage2[]" placeholder="Max"
+                                       required></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary mt-2" onclick="addPriceRule()">Add Row</button>
+                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                </form>
+
+            </div>
+
+
+            <script>
+                function addPriceRule() {
+                    var priceRulesDiv = document.getElementById('price_rules');
+                    var priceRuleDiv = priceRulesDiv.querySelector('.price_rule').cloneNode(true);
+                    priceRulesDiv.appendChild(priceRuleDiv);
+                }
+            </script>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"

@@ -970,7 +970,37 @@ def price_rules_for_equipment(request, equipment_id):
 
     return render(request, 'prices/edit_price_rules.html', {'equipment': equipment, 'price_rules': price_rules})
 
+def add_price_rule(request,equipment_id):
+    if request.method == 'POST':
+        # Retrieve form data from the request
+        price_range_start_data = request.POST.getlist('price_range_start[]')
+        constant = request.POST.getlist('constant[]')
+        price_range_end_data = request.POST.getlist('price_range_end[]')
+        discount_percentage_data = request.POST.getlist('discount_percentage[]')
+        discount_percentage2_data = request.POST.getlist('discount_percentage2[]')
+        equipment_id =equipment_id
+        print("data")
+        print(price_range_start_data)
+        print(constant)
+        for i in range(len(price_range_start_data)):
+            if (price_range_start_data[i]):
+                price_rule = PriceRule(
+                    product_type_id=equipment_id,
+                    price_range_start=Decimal(price_range_start_data[i]),
+                    discount_percentage=Decimal(discount_percentage_data[i]),
+                    discount_percentage2=Decimal(discount_percentage2_data[i]),
 
+                )
+
+                if price_range_end_data[i]:
+                    price_rule.price_range_end = price_range_end_data[i]
+
+                price_rule.save()
+
+        return redirect('price_rules_for_equipment',equipment_id)  # Change 'success_page' to the actual URL name or path
+
+    equipment_types = Equipment.objects.all()  # Assuming Equipment is the related model
+    return render(request, 'prices/edit_price_rules.html', {'equipment_types': equipment_types})
 
 @login_required
 def type_list(request):

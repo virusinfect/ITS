@@ -27,5 +27,6 @@ urlpatterns = [
     path('api/get_types/', views.get_types, name='get_types'),
     path('laptop_prices/edit/<int:laptop_price_id>/', views.edit_laptop_price, name='edit_laptop_price'),
     path('laptop_prices/delete/<int:laptop_price_id>/', views.delete_laptop_price, name='delete_laptop_price'),
+    path('add_price_rule/<int:equipment_id>/', views.add_price_rule, name='add_price_rule'),
     # Add other URLs as needed
 ]
