@@ -60,7 +60,7 @@
                                 <td>Servers</td>
                                 <td>{{ ticket.servers }}</td>
                                 <td></td>
-                                <td>REFER TO OBSERVATION</td>
+                                <td><input type="text" value="REFER TO OBSERVATION" class="form-control"></td>
                             </tr>
                         {% endif %}
                         {% if ticket.cpus %}
@@ -72,7 +72,7 @@
                             </tr>
                         {% endif %}
                         {% if ticket.laptops %}
-                            <tr>
+                            <tr>    
                                 <td>Laptops</td>
                                 <td>{{ ticket.laptops }}</td>
                                 <td></td>
