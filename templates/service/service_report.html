@@ -17,7 +17,7 @@
     <link href="{% static 'css/icons.min.css' %}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<div class="row container-fluid" id="content">
+<div class="row container-fluid" id="delivery-note">
     <div class="card">
         <div class="card-body mx-auto">
             <div class="row">
@@ -38,14 +38,14 @@
             <div class="row mb-3  border-bottom"><h4 class="text-center">MAINTENANCE SERVICE REPORT</h4></div>
             <div class="row">
                 <p>
-                    The service was carried out from {{ service_schedule.from_date }} to {{ service_schedule.to_date }}
+                    The service was carried out from {{ service_schedule.from_date|date:"d/m/y" }} to {{ service_schedule.to_date|date:"d/m/y" }}
                     which included cleaning of the following.
                 </p>
 
             </div>
             <div class="row mx-auto">
                 <table class="table table-bordered">
-                    <thead class="table-dark">
+                    <thead >
                     <tr>
                         <th>ITEM</th>
                         <th>QTY</th>
@@ -157,7 +157,7 @@
             </div>
             <table class="table table-bordered">
                 <h4 class="text-center">OBSERVATIONS AND RECOMENDATIONS</h4>
-                <thead class="table-dark">
+                <thead >
                 <tr>
                     <th>USER/DEPARTMENT/LOCATION</th>
                     <th>ITEM/SERIAL NO:</th>
@@ -270,41 +270,52 @@
         </div>
     </div>
 </div>
-<button id="printButton" class="btn btn-primary">Print</button>
+<button id="print-button" class="btn btn-primary">Print</button>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
 <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
-<script>
-    document.getElementById('printButton').addEventListener('click', function () {
-        // Create a new window or popup for printing
-        const printWindow = window.open('', '', 'width=600,height=600');
-
-        // Copy the content and styles to the new window
-        printWindow.document.open();
-        printWindow.document.write('<html><head>' +
-            '<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">' +
-            '</head><body>');
-        printWindow.document.write(document.getElementById('content').innerHTML);
-        printWindow.document.write('</body></html>');
-        printWindow.document.close();
-
-        // Wait for the styles to load and print the content
-        printWindow.addEventListener('load', function () {
-            printWindow.print();
-            printWindow.close();
+  <script>
+        document.getElementById('print-button').addEventListener('click', function () {
+            printDeliveryNote();
         });
-    });
-</script>
-<button onclick="downloadAsPDF()">Download as PDF</button>
 
-<script>
-    function downloadAsPDF() {
-        const content = document.getElementById("content");
+        function printDeliveryNote() {
+            var printContents = document.getElementById('delivery-note').innerHTML;
+            var originalContents = document.body.innerHTML;
 
-        html2pdf()
-            .from(content)
-            .save();
-    }
-</script>
+            var style = document.createElement('style');
+            style.innerHTML = `
+            @media print {
+                #footer-container {
+                    position: relative;
+                }
+
+                #footer-image {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    max-width: 100%;
+                }
+
+                body {
+                    margin: 0 !important;
+                }
+                .page #delivery-note {
+                    page-break-before: always;
+                    margin-top: 5; /* Adjust the margin-top value as needed */
+                }
+
+            }
+        `;
+            document.head.appendChild(style);
+
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+
+            document.head.removeChild(style);
+        }
+    </script>
 
 
 </body>
