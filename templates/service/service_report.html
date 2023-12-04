@@ -60,7 +60,7 @@
                                 <td>Servers</td>
                                 <td>{{ ticket.servers }}</td>
                                 <td></td>
-                                <td><input type="text" value="REFER TO OBSERVATION" class="form-control"></td>
+                                <td>REFER TO OBSERVATION</td>
                             </tr>
                         {% endif %}
                         {% if ticket.cpus %}
@@ -72,7 +72,7 @@
                             </tr>
                         {% endif %}
                         {% if ticket.laptops %}
-                            <tr>    
+                            <tr>
                                 <td>Laptops</td>
                                 <td>{{ ticket.laptops }}</td>
                                 <td></td>
@@ -272,7 +272,7 @@
 </div>
 <button id="print-button" class="btn btn-primary">Print</button>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
-<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script> 
   <script>
         document.getElementById('print-button').addEventListener('click', function () {
             printDeliveryNote();
