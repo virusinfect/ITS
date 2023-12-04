@@ -90,12 +90,12 @@
                     <div class="mb-3">
                         <label for="observations" class="form-label">Observations:</label>
                         <textarea class="form-control" name="observations"
-                                  rows="3">{{ laptop_checklist.observations }}</textarea>
+                                  rows="3" id="observations">{{ laptop_checklist.observations }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label for="recommendation" class="form-label">Recommendation:</label>
                         <textarea class="form-control" name="recommendation"
-                                  rows="3">{{ laptop_checklist.recommendation }}</textarea>
+                                  rows="3" id="recommendation">{{ laptop_checklist.recommendation }}</textarea>
                     </div>
 
                     <div class="mb-3">
@@ -134,5 +134,25 @@
         for (var i = 0; i < elems.length; i++) {
             new Switchery(elems[i]);
         }
+    </script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#observations'))
+            .catch(error => {
+                console.error(error);
+            });
+
+        ClassicEditor
+            .create(document.querySelector('#recommendation'))
+            .catch(error => {
+                console.error(error);
+            });
+
+        document.getElementById('myForm').addEventListener('submit', function (event) {
+            // Retrieve CKEditor data and set it to the corresponding textarea before form submission
+            document.querySelector('#observations').value = CKEditor.instances.observations.getData();
+            document.querySelector('#recommendation').value = CKEditor.instances.recommendation.getData();
+        });
     </script>
 {% endblock %}

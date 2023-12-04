@@ -178,27 +178,27 @@
                             <td>
                                 {% if equip.type == "Monitor" %}
                                     {% for monitor_checklist in checklist_data.monitor_checklists %}
-                                        {{ monitor_checklist.observations }}
+                                        {{ monitor_checklist.observations|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "Printer" %}
                                     {% for printer_checklist in checklist_data.printer_checklists %}
-                                        {{ printer_checklist.observations }}
+                                        {{ printer_checklist.observations|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "UPS" %}
                                     {% for ups_checklist in checklist_data.ups_checklists %}
-                                        {{ ups_checklist.observations }}
+                                        {{ ups_checklist.observations|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "CPU" %}
                                     {% for cpu_checklist in checklist_data.cpu_checklists %}
-                                        {{ cpu_checklist.observations }}
+                                        {{ cpu_checklist.observations|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "Server" %}
                                     {% for server_checklist in checklist_data.server_checklists %}
-                                        {{ server_checklist.observations }}
+                                        {{ server_checklist.observations|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "Laptop" %}
                                     {% for laptop_checklist in checklist_data.laptop_checklists %}
-                                        {{ laptop_checklist.observations }}
+                                        {{ laptop_checklist.observations|safe }}
                                     {% endfor %}
                                 {% else %}
 
@@ -207,27 +207,27 @@
                             <td>
                                 {% if equip.type == "Monitor" %}
                                     {% for monitor_checklist in checklist_data.monitor_checklists %}
-                                        {{ monitor_checklist.recommendation }}
+                                        {{ monitor_checklist.recommendation|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "Printer" %}
                                     {% for printer_checklist in checklist_data.printer_checklists %}
-                                        {{ printer_checklist.recommendation }}
+                                        {{ printer_checklist.recommendation|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "UPS" %}
                                     {% for ups_checklist in checklist_data.ups_checklists %}
-                                        {{ ups_checklist.recommendation }}
+                                        {{ ups_checklist.recommendation|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "CPU" %}
                                     {% for cpu_checklist in checklist_data.cpu_checklists %}
-                                        {{ cpu_checklist.recommendation }}
+                                        {{ cpu_checklist.recommendation|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "Server" %}
                                     {% for server_checklist in checklist_data.server_checklists %}
-                                        {{ server_checklist.recommendation }}
+                                        {{ server_checklist.recommendation|safe }}
                                     {% endfor %}
                                 {% elif equip.type == "Laptop" %}
                                     {% for laptop_checklist in checklist_data.laptop_checklists %}
-                                        {{ laptop_checklist.recommendation }}
+                                        {{ laptop_checklist.recommendation|safe }}
                                     {% endfor %}
                                 {% else %}
 
