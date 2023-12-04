@@ -1,8 +1,6 @@
 {% extends "base.html" %}
-
 {% block title %}Add Price list{% endblock %}
 {% block header %}Add Price list{% endblock %}
-
 {% block content %}
     <div class="row">
         <div class="col-md-6">
@@ -83,7 +81,6 @@
             </div>
         </div>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         // Wait for the document to be ready
@@ -105,6 +102,9 @@
                     success: function (data) {
                         // Clear existing options in the types dropdown
                         $('#type').empty();
+
+                        // Add a default blank option
+                        $('#type').append('<option value="">Select Type</option>');
 
                         // Add new options based on the response
                         $.each(data.types, function (index, type) {

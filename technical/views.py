@@ -1247,6 +1247,8 @@ def edit_requisition(request, requisition_id):
             requisition.invoice = request.POST.get('invoice')
         if 'selected_product' in request.POST and request.POST['selected_product']:
             requisition.part_id = request.POST.get('selected_product')
+        if 'company' in request.POST and request.POST['company']:
+            requisition.company = request.POST.get('company')
         if 'remarks' in request.POST and request.POST['remarks']:
             requisition.remarks = request.POST.get('remarks')
         if 'req_status' in request.POST and request.POST['req_status']:
@@ -2134,7 +2136,9 @@ def generate_report(request, ticket_id):
     # Redirect to the ticket's URL
     return redirect('report', report_id=report.id)
 
+
 from itertools import groupby
+
 
 @login_required
 def report(request, report_id):
@@ -2150,9 +2154,9 @@ def report(request, report_id):
     ticket = report.ticket
     subtotals = 0
     vat = 0
-    grouped_tquote_data={}
-    group_vat={}
-    group_total_amount={}
+    grouped_tquote_data = {}
+    group_vat = {}
+    group_total_amount = {}
 
     try:
         tquote_data = tQuote.objects.filter(ticket=ticket)
@@ -2163,7 +2167,7 @@ def report(request, report_id):
         # Group tquote_data by layout
         grouped_tquote_data = {key: list(group) for key, group in groupby(tquote_data, key=lambda x: x.layout)}
 
-          # Dictionary to store totals for each group
+        # Dictionary to store totals for each group
         group_totals = {}
         for layout, items in grouped_tquote_data.items():
             group_total = 0  # Initialize total for the current group
@@ -2209,8 +2213,8 @@ def report(request, report_id):
                   {'ticket': ticket, 'tquote_data': tquote_data, 'parts': parts, 'vat': vat,
                    'total_amount': total_amount, 'subtotals': subtotals, 'report': report,
                    'diagnosis_images': diagnosis_images,
-                   'recommendation_images': recommendation_images, 'grouped_tquote_data':grouped_tquote_data,
-                   'group_totals': group_totals,'group_vat':group_vat,'group_total_amount':group_total_amount })
+                   'recommendation_images': recommendation_images, 'grouped_tquote_data': grouped_tquote_data,
+                   'group_totals': group_totals, 'group_vat': group_vat, 'group_total_amount': group_total_amount})
 
 
 class TechnicalReportListView(ListView):
