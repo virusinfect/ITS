@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.conf.urls.static import static
 from django.urls import path
 
 from . import views
@@ -21,7 +19,14 @@ urlpatterns = [
          views.create_or_edit_monitor_checklist, name='create_or_edit_monitor_checklist'),
     path('create-or-edit-printer-checklist/<int:equipment_id>/<int:service_id>/<int:client_id>/<int:ticket_id>/',
          views.create_or_edit_printer_checklist, name='create_or_edit_printer_checklist'),
-    path('create-or-edit-ups-checklist/<int:equipment_id>/<int:service_id>/<int:client_id>/<int:ticket_id>/', views.create_or_edit_ups_checklist,
+    path('create-or-edit-server-checklist/<int:equipment_id>/<int:service_id>/<int:client_id>/<int:ticket_id>/',
+         views.create_or_edit_server_checklist, name='create_or_edit_server_checklist'),
+    path('create-or-edit-laptop-checklist/<int:equipment_id>/<int:service_id>/<int:client_id>/<int:ticket_id>/',
+         views.create_or_edit_laptop_checklist, name='create_or_edit_laptop_checklist'),
+    path('create-or-edit-cpu-checklist/<int:equipment_id>/<int:service_id>/<int:client_id>/<int:ticket_id>/',
+         views.create_or_edit_cpu_checklist, name='create_or_edit_cpu_checklist'),
+    path('create-or-edit-ups-checklist/<int:equipment_id>/<int:service_id>/<int:client_id>/<int:ticket_id>/',
+         views.create_or_edit_ups_checklist,
          name='create_or_edit_ups_checklist'),
-    path('service_report/<int:schedule_id>/',views.service_report,name='service_report')
+    path('service_report/<int:schedule_id>/', views.service_report, name='service_report')
 ]

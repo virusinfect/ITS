@@ -32,7 +32,7 @@
                     <ul>
                         {% for equipment in client.equipment_set.all %}
                             {% if equipment.type == "CPU" %}
-                                <a href="{% url 'create_or_edit_monitor_checklist' equipment.id service.id client.id ticket.id %}"
+                                <a href="{% url 'create_or_edit_cpu_checklist' equipment.id service.id client.id ticket.id %}"
                                    type="button"  class="btn btn-success waves-effect waves-light">
                                     <span class="btn-label"><i class="mdi mdi-desktop-tower mdi-"></i></span>CPU
                                 </a>
@@ -47,7 +47,7 @@
                                     <span class="btn-label"><i class="mdi mdi-monitor"></i></span>monitor
                                 </a>
                             {% elif equipment.type == "Server" %}
-                                <a href="{% url 'create_or_edit_monitor_checklist' equipment.id service.id client.id ticket.id %}"
+                                <a href="{% url 'create_or_edit_server_checklist' equipment.id service.id client.id ticket.id %}"
                                    type="button" class="btn btn-success waves-effect waves-light">
                                     <span class="btn-label"><i class="mdi mdi-server"></i></span>Server
                                 </a>
@@ -57,7 +57,7 @@
                                     <span class="btn-label"><i class="mdi mdi-printer"></i></span>Printer
                                 </a>
                             {% elif equipment.type == "Laptop" %}
-                                <a href="{% url 'create_or_edit_printer_checklist' equipment.id service.id client.id ticket.id %}"
+                                <a href="{% url 'create_or_edit_laptop_checklist' equipment.id service.id client.id ticket.id %}"
                                    type="button" class="btn btn-success waves-effect waves-light">
                                     <span class="btn-label"><i class="mdi mdi-laptop-chromebook"></i></span>Laptop
                                 </a>

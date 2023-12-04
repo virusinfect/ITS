@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Server Checklist{% endblock %}
+{% block header %}Server Checklist{% endblock %}
+{% block content %}
+    <div class="card col-lg-6 mx-auto">
+        <div class="card-body">
+            <h4 class="mb-3 header-title text-center">Server Checklist</h4>
+            <div class="row">
+                <h4>Server : {{ equipment.name }}</h4>
+                <h4>Serial Number : {{ equipment.serial_no }}</h4>
+            </div>
+            <div class="row">
+                <form method="post">
+                    {% csrf_token %}
+                    <table class="table">
+                        <tr>
+                            <th colspan="2" class="text-center"><h5>Checklists</h5></th>
+                        </tr>
+                        <tr>
+                            <td><label class="form-check-label" for="antiv">Antivirus</label></td>
+                            <td>
+                                <input type="checkbox" class="form-control switchery" name="antiv" data-size="small"
+                                       {% if server_checklist and server_checklist.antiv %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-check-label" for="pwr">Power Supply</label></td>
+                            <td>
+                                <input type="checkbox" class="form-control switchery" name="pwr" data-size="small"
+                                       {% if server_checklist and server_checklist.pwr %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-check-label" for="memory">Memory</label></td>
+                            <td>
+                                <input type="checkbox" class="form-control switchery" name="memory"
+                                       data-size="small"
+                                       {% if server_checklist and server_checklist.memory %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-check-label" for="fan">Cooling Fan</label></td>
+                            <td>
+                                <input type="checkbox" class="form-control switchery" name="fan"
+                                       data-size="small"
+                                       {% if server_checklist and server_checklist.fan %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-check-label" for="dvd">CD/DVD Rom</label></td>
+                            <td>
+                                <input type="checkbox" class="form-control switchery" name="dvd"
+                                       data-size="small"
+                                       {% if server_checklist and server_checklist.dvd %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-check-label" for="processor">Processor</label></td>
+                            <td>
+                                <input type="checkbox" class="form-control switchery" name="processor"
+                                       data-size="small"
+                                       {% if server_checklist and server_checklist.processor %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-check-label" for="hdd">HDD</label>
+                            </td>
+                            <td>
+                                <input type="checkbox" class="form-control switchery" name="hdd"
+                                       data-size="small"
+                                       {% if server_checklist and server_checklist.hdd %}checked{% endif %}>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="form-check-label" for="board">Mainboard</label></td>
+                            <td>
+                                <input type="checkbox" class="form-control switchery" name="board" data-size="small"
+                                       {% if server_checklist and server_checklist.board %}checked{% endif %}>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="mb-3">
+                        <label for="observations" class="form-label">Observations:</label>
+                        <textarea class="form-control" name="observations"
+                                  rows="3">{{ server_checklist.observations }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recommendation" class="form-label">Recommendation:</label>
+                        <textarea class="form-control" name="recommendation"
+                                  rows="3">{{ server_checklist.recommendation }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status:</label>
+                        <select class="form-select" name="status">
+                            <option value="Pending" {% if server_checklist.status == "Pending" %}selected{% endif %}>
+                                Pending
+                            </option>
+                            <option value="Done" {% if server_checklist.status == "Done" %}selected{% endif %}>Done
+                            </option>
+                            <option value="Consider as soon as possible"
+                                    {% if server_checklist.status == "Consider as soon as possible" %}selected{% endif %}>
+                                Consider as soon as possible
+                            </option>
+                            <option value="Critical and requires immediate action"
+                                    {% if server_checklist.status == "Critical and requires immediate action" %}selected{% endif %}>
+                                Critical and requires immediate action
+                            </option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"
+            integrity="sha512-lC8vSUSlXWqh7A/F+EUS3l77bdlj+rGMN4NB5XFAHnTR3jQtg4ibZccWpuSSIdPoPUlUxtnGktLyrWcDhG8RvA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css"
+          integrity="sha512-uyGg6dZr3cE1PxtKOCGqKGTiZybe5iSq3LsqOolABqAWlIRLo/HKyrMMD8drX+gls3twJdpYX0gDKEdtf2dpmw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script>
+        // Initialize Switchery on all checkbox inputs with the 'switchery' class
+        var elems = document.querySelectorAll('.switchery');
+        for (var i = 0; i < elems.length; i++) {
+            new Switchery(elems[i]);
+        }
+    </script>
+{% endblock %}

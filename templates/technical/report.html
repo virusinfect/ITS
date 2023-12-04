@@ -154,7 +154,6 @@
                                     <th>Price</th>
                                     <th>Qty</th>
                                     <th>Amount</th>
-
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -226,11 +225,9 @@
                                             <th>Price</th>
                                             <th>Qty</th>
                                             <th>Amount</th>
-
                                         </tr>
                                         </thead>
                                         <tbody>
-
                                         {% for item in items %}
                                             <tr data-entry-id="{{ item.id }}">
                                                 <td>{{ item.part_no }}</td>
@@ -264,7 +261,6 @@
                             </div>
                         {% endif %}
                     {% endfor %}
-
                 </div>
                 <div class="row mx-auto">
                     <div class="">
@@ -279,7 +275,6 @@
                     </div>
                 </div>
             </div>
-
             <img src="{% static 'tr_footer.png' %}" id="footer-image">
         </div>
     </div>

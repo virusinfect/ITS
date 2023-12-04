@@ -7,7 +7,7 @@ from django.views.decorators.http import require_POST
 from technical.models import ServiceTickets, ServiceSchedules
 from its.models import Company, Clients
 from .models import Equipment, Software, EquipmentSpecs, Service, MonitorChecklist, PrinterChecklist, UpsChecklist, \
-    ServiceQuote
+    ServiceQuote, ServerChecklist, LaptopChecklist, CpuChecklist
 
 
 @login_required
@@ -306,6 +306,128 @@ def create_or_edit_printer_checklist(request, equipment_id, service_id, client_i
     return render(request, 'service/printer_checklist_form.html',
                   {'equipment': equipment, 'service': service, 'printer_checklist': printer_checklist})
 
+@login_required
+def create_or_edit_server_checklist(request, equipment_id, service_id, client_id, ticket_id):
+    equipment = get_object_or_404(Equipment, pk=equipment_id)
+    service = get_object_or_404(Service, pk=service_id)
+
+    server_checklist, created = ServerChecklist.objects.get_or_create(equipment=equipment, service=service)
+
+    if request.method == 'POST':
+        antiv = request.POST.get('antiv') == 'on'
+        pwr = request.POST.get('pwr') == 'on'
+        memory = request.POST.get('memory') == 'on'
+        fan = request.POST.get('fan') == 'on'
+        dvd = request.POST.get('dvd') == 'on'
+        processor = request.POST.get('processor') == 'on'
+        hdd = request.POST.get('hdd') == 'on'
+        board = request.POST.get('board') == 'on'
+        status = request.POST.get('status')
+        observations = request.POST.get('observations')
+        recommendation = request.POST.get('recommendation')
+
+        server_checklist.antiv = antiv
+        server_checklist.pwr = pwr
+        server_checklist.memory = memory
+        server_checklist.fan = fan
+        server_checklist.dvd = dvd
+        server_checklist.processor = processor
+        server_checklist.hdd = hdd
+        server_checklist.board = board
+        server_checklist.status = status
+        server_checklist.observations = observations
+        server_checklist.recommendation = recommendation
+        server_checklist.save()
+
+        # Redirect to a success page or the equipment or service detail page
+        # Adjust this based on your project's requirements
+        messages.success(request, 'Server Checklist Edited successfully.')
+        return redirect('create_service_form', client_id=client_id, ticket_id=ticket_id)
+
+    return render(request, 'service/server_checklist_form.html',
+                  {'equipment': equipment, 'service': service, 'server_checklist': server_checklist})
+
+@login_required
+def create_or_edit_laptop_checklist(request, equipment_id, service_id, client_id, ticket_id):
+    equipment = get_object_or_404(Equipment, pk=equipment_id)
+    service = get_object_or_404(Service, pk=service_id)
+
+    laptop_checklist, created = LaptopChecklist.objects.get_or_create(equipment=equipment, service=service)
+
+    if request.method == 'POST':
+        antiv = request.POST.get('antiv') == 'on'
+        pwr = request.POST.get('pwr') == 'on'
+        memory = request.POST.get('memory') == 'on'
+        fan = request.POST.get('fan') == 'on'
+        dvd = request.POST.get('dvd') == 'on'
+        processor = request.POST.get('processor') == 'on'
+        hdd = request.POST.get('hdd') == 'on'
+        board = request.POST.get('board') == 'on'
+        status = request.POST.get('status')
+        observations = request.POST.get('observations')
+        recommendation = request.POST.get('recommendation')
+
+        laptop_checklist.antiv = antiv
+        laptop_checklist.pwr = pwr
+        laptop_checklist.memory = memory
+        laptop_checklist.fan = fan
+        laptop_checklist.dvd = dvd
+        laptop_checklist.processor = processor
+        laptop_checklist.hdd = hdd
+        laptop_checklist.board = board
+        laptop_checklist.status = status
+        laptop_checklist.observations = observations
+        laptop_checklist.recommendation = recommendation
+        laptop_checklist.save()
+
+        # Redirect to a success page or the equipment or service detail page
+        # Adjust this based on your project's requirements
+        messages.success(request, 'Laptop Checklist Edited successfully.')
+        return redirect('create_service_form', client_id=client_id, ticket_id=ticket_id)
+
+    return render(request, 'service/laptop_checklist_form.html',
+                  {'equipment': equipment, 'service': service, 'laptop_checklist': laptop_checklist})
+
+@login_required
+def create_or_edit_cpu_checklist(request, equipment_id, service_id, client_id, ticket_id):
+    equipment = get_object_or_404(Equipment, pk=equipment_id)
+    service = get_object_or_404(Service, pk=service_id)
+
+    cpu_checklist, created = CpuChecklist.objects.get_or_create(equipment=equipment, service=service)
+
+    if request.method == 'POST':
+        antiv = request.POST.get('antiv') == 'on'
+        pwr = request.POST.get('pwr') == 'on'
+        memory = request.POST.get('memory') == 'on'
+        fan = request.POST.get('fan') == 'on'
+        dvd = request.POST.get('dvd') == 'on'
+        processor = request.POST.get('processor') == 'on'
+        hdd = request.POST.get('hdd') == 'on'
+        board = request.POST.get('board') == 'on'
+        status = request.POST.get('status')
+        observations = request.POST.get('observations')
+        recommendation = request.POST.get('recommendation')
+
+        cpu_checklist.antiv = antiv
+        cpu_checklist.pwr = pwr
+        cpu_checklist.memory = memory
+        cpu_checklist.fan = fan
+        cpu_checklist.dvd = dvd
+        cpu_checklist.processor = processor
+        cpu_checklist.hdd = hdd
+        cpu_checklist.board = board
+        cpu_checklist.status = status
+        cpu_checklist.observations = observations
+        cpu_checklist.recommendation = recommendation
+        cpu_checklist.save()
+
+        # Redirect to a success page or the equipment or service detail page
+        # Adjust this based on your project's requirements
+        messages.success(request, 'Cpu Checklist Edited successfully.')
+        return redirect('create_service_form', client_id=client_id, ticket_id=ticket_id)
+
+    return render(request, 'service/cpu_checklist_form.html',
+                  {'equipment': equipment, 'service': service, 'cpu_checklist': cpu_checklist})
 
 @login_required
 def create_or_edit_ups_checklist(request, equipment_id, service_id, client_id, ticket_id):
@@ -357,6 +479,9 @@ def service_report(request, schedule_id):
 
         monitor_checklists = MonitorChecklist.objects.filter(equipment__in=equipment, service=service)
         printer_checklists = PrinterChecklist.objects.filter(equipment__in=equipment, service=service)
+        laptop_checklists = LaptopChecklist.objects.filter(equipment__in=equipment, service=service)
+        cpu_checklists = CpuChecklist.objects.filter(equipment__in=equipment, service=service)
+        server_checklists = ServerChecklist.objects.filter(equipment__in=equipment, service=service)
         ups_checklists = UpsChecklist.objects.filter(equipment__in=equipment, service=service)
 
         checklists.append({
@@ -366,6 +491,10 @@ def service_report(request, schedule_id):
             'monitor_checklists': monitor_checklists,
             'printer_checklists': printer_checklists,
             'ups_checklists': ups_checklists,
+            'laptop_checklists':laptop_checklists,
+            'cpu_checklists':cpu_checklists,
+            'server_checklists':server_checklists,
+
         })
 
     return render(request, 'service/service_report.html',
