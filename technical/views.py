@@ -2148,7 +2148,7 @@ def report(request, report_id):
     action_images = TicketImage.objects.filter(ticket=ticket, tag="action")
     diagnosis_images = TicketImage.objects.filter(ticket=ticket, tag="diagnosis").last()
     recommendation_images = TicketImage.objects.filter(ticket=ticket, tag="recommendation").last()
-
+    layout_2_count =0
     # Retrieve the associated ticket
     subtotals = 0
     ticket = report.ticket
@@ -2163,6 +2163,8 @@ def report(request, report_id):
 
         # Sort the tquote_data by layout
         tquote_data = sorted(tquote_data, key=lambda x: x.layout)
+        print("data")
+        print(tquote_data)
 
         # Group tquote_data by layout
         grouped_tquote_data = {key: list(group) for key, group in groupby(tquote_data, key=lambda x: x.layout)}
@@ -2176,6 +2178,7 @@ def report(request, report_id):
                 group_total += item.total
                 if item.layout == "1":
                     subtotals += item.total
+                    layout_2_count += 1
             group_totals[layout] = group_total
 
             group_vat[layout] = round(group_total * 0.16)
@@ -2204,17 +2207,20 @@ def report(request, report_id):
 
     if isinstance(ticket.labour, int):
         subtotals += ticket.labour
+        layout_2_count += 1
     elif isinstance(ticket.labour, str) and ticket.labour.isdigit():
         subtotals += int(ticket.labour)
+        layout_2_count += 1
 
     vat = round(subtotals * 0.16)
     total_amount = subtotals + vat
+    print(layout_2_count)
     return render(request, 'technical/report.html',
                   {'ticket': ticket, 'tquote_data': tquote_data, 'parts': parts, 'vat': vat,
                    'total_amount': total_amount, 'subtotals': subtotals, 'report': report,
                    'diagnosis_images': diagnosis_images,
                    'recommendation_images': recommendation_images, 'grouped_tquote_data': grouped_tquote_data,
-                   'group_totals': group_totals, 'group_vat': group_vat, 'group_total_amount': group_total_amount})
+                   'group_totals': group_totals, 'group_vat': group_vat, 'group_total_amount': group_total_amount,'layout_2_count':layout_2_count})
 
 
 class TechnicalReportListView(ListView):
