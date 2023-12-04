@@ -961,6 +961,8 @@ def price_rules_for_equipment(request, equipment_id):
             constant = request.POST.get(f"constant_{price_rule.id}")
             if constant == "on":
                 constant = True
+            else:
+                constant = False
             price_rule.discount_percentage = discount_percentage
             price_rule.discount_percentage2 = discount_percentage2
 
