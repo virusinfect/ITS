@@ -958,13 +958,18 @@ def price_rules_for_equipment(request, equipment_id):
             # Use the appropriate field names based on your form
             discount_percentage = Decimal(request.POST.get(f"discount_percentage_{price_rule.id}", 0))
             discount_percentage2 = Decimal(request.POST.get(f"discount_percentage2_{price_rule.id}", 0))
-
+            constant = request.POST.get(f"constant_{price_rule.id}")
+            if constant == "on":
+                constant = True
             price_rule.discount_percentage = discount_percentage
             price_rule.discount_percentage2 = discount_percentage2
+
+            price_rule.constant = constant
 
             price_rule.save()
 
     return render(request, 'prices/edit_price_rules.html', {'equipment': equipment, 'price_rules': price_rules})
+
 
 
 @login_required

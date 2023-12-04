@@ -121,14 +121,21 @@ class PriceRule(models.Model):
     product_type = models.ForeignKey(Equipment, on_delete=models.CASCADE)
     price_range_start = models.DecimalField(max_digits=10, decimal_places=2)
     price_range_end = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
-    discount_percentage2 = models.DecimalField(max_digits=5, decimal_places=2)
+    discount_percentage = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_percentage2 = models.DecimalField(max_digits=10, decimal_places=2)
+    constant = models.BooleanField(default=False)
 
     def apply_discount(self, price):
-        return (price + price * Decimal(self.discount_percentage)).quantize(Decimal('0.00'),rounding=ROUND_DOWN)
+        if self.constant is True:
+            return price + self.discount_percentage
+        else:
+            return (price + price * Decimal(self.discount_percentage)).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     def apply_discount2(self, price):
-        return (price + price * Decimal(self.discount_percentage2)).quantize(Decimal('0.00'),rounding=ROUND_DOWN)
+        if self.constant  is True:
+            return price + self.discount_percentage2
+        else:
+            return (price + price * Decimal(self.discount_percentage2)).quantize(Decimal('0.00'),rounding=ROUND_DOWN)
     def __str__(self):
         return f"{self.product_type} - {self.price_range_start} to {self.price_range_end}"
 

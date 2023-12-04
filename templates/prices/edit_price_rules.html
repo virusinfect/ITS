@@ -6,7 +6,6 @@
     <div class="row">
         <div class="col-md-6">
             <div class="mb-4">
-
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'list-equipment' %}">Equipmments</a></li>
@@ -31,19 +30,20 @@
                                 <th>Price Range End</th>
                                 <th>Min</th>
                                 <th>Max</th>
+                                <th>Constant</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for price_rule in price_rules %}
                                 <tr>
                                     <td>
-                                         <input type="text" name="discount_percentage_{{ price_rule.id }}"
+                                        <input type="text" name="discount_percentage_{{ price_rule.id }}"
                                                value="{{ price_rule.price_range_start }}" class="form-control">
-                                        </td>
+                                    </td>
                                     <td>
-                                    <input type="text" name="discount_percentage_{{ price_rule.id }}"
+                                        <input type="text" name="discount_percentage_{{ price_rule.id }}"
                                                value="{{ price_rule.price_range_end }}" class="form-control">
-                                        </td>
+                                    </td>
                                     </td>
                                     <td>
                                         <input type="text" name="discount_percentage_{{ price_rule.id }}"
@@ -53,16 +53,34 @@
                                         <input type="text" name="discount_percentage2_{{ price_rule.id }}"
                                                value="{{ price_rule.discount_percentage2 }}" class="form-control">
                                     </td>
+                                    <td><input type="checkbox" name="constant_{{ price_rule.id }}"
+                                                data-color="red"
+                                               class="form-check switchery" data-size="small"
+                                               {% if price_rule.constant %}checked{% endif %}></td>
                                 </tr>
                             {% endfor %}
                             </tbody>
                         </table>
 
-                        <button type="submit" class="btn btn-primary waves-effect waves-light mt-2">Save Changes</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light mt-2">Save Changes
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"
+            integrity="sha512-lC8vSUSlXWqh7A/F+EUS3l77bdlj+rGMN4NB5XFAHnTR3jQtg4ibZccWpuSSIdPoPUlUxtnGktLyrWcDhG8RvA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css"
+          integrity="sha512-uyGg6dZr3cE1PxtKOCGqKGTiZybe5iSq3LsqOolABqAWlIRLo/HKyrMMD8drX+gls3twJdpYX0gDKEdtf2dpmw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script>
+        // Initialize Switchery for each checkbox
+        var checkboxes = document.querySelectorAll('.form-check');
+        checkboxes.forEach(function (checkbox) {
+            new Switchery(checkbox);
+        });
+    </script>
 
 {% endblock %}
