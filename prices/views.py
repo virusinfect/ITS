@@ -30,6 +30,10 @@ def upload_price_list(request):
         excel_file = request.FILES['file']
         selected_sheet = request.POST.get('selected_sheet')
         supplier_index = request.POST.get('supplier')
+        if type_index:
+            type_obj = Type.objects.get(id=type_index)
+        else:
+            type_obj = None
 
         try:
             wb = openpyxl.load_workbook(excel_file, read_only=True)
@@ -82,10 +86,12 @@ def upload_price_list(request):
 
         filtered_laptops = LaptopPriceList.objects.filter(
             equipment_id=equipment_index,
-            type_id=type_index,
+            supplier_id=supplier_index,
+            type=type_obj
+        ) if type_obj else LaptopPriceList.objects.filter(
+            equipment_id=equipment_index,
             supplier_id=supplier_index
         )
-
         # Now, update the 'data' field for each instance in 'filtered_laptops'
         for laptop in filtered_laptops:
             laptop.data = 1
@@ -120,7 +126,6 @@ def upload_price_list(request):
                     existing_entry.series = row[series_index] if series_index is not None else ''
                     existing_entry.ProductLink = row[product_link_index] if product_link_index is not None else ''
                     existing_entry.data = 2  # Assuming you want to update the 'data' field to 2
-
 
                     try:
                         existing_entry.save()
