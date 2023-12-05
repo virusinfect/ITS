@@ -58,6 +58,7 @@ class LaptopPriceList(models.Model):
     product_name = models.CharField(max_length=100)
     availability = models.CharField(max_length=255, null=True)
     type = models.ForeignKey(Type, on_delete=models.CASCADE, null=True)
+    data = models.IntegerField(null=True)
 
     def __str__(self):
         return self.product_name
@@ -67,11 +68,6 @@ class LaptopPriceList(models.Model):
         # Add the unique_together constraint
         unique_together = ['product_name', 'supplier']
 
-    def save(self, *args, **kwargs):
-        # Delete older entries with the same product_name and supplier
-        LaptopPriceList.objects.filter(product_name=self.product_name, supplier=self.supplier).exclude(
-            pk=self.pk).delete()
-        super().save(*args, **kwargs)
 
 
 class ColoursoftPriceList(models.Model):

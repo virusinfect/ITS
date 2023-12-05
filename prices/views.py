@@ -29,6 +29,7 @@ def upload_price_list(request):
         type_index = request.POST.get('type')
         excel_file = request.FILES['file']
         selected_sheet = request.POST.get('selected_sheet')
+        supplier_index = request.POST.get('supplier')
 
         try:
             wb = openpyxl.load_workbook(excel_file, read_only=True)
@@ -47,7 +48,6 @@ def upload_price_list(request):
                 messages.error(request, f"Column '{column}' not found in the Excel file.")
                 return redirect('upload_price_list')
 
-        supplier_index = request.POST.get('supplier')
         brand_index = request.POST.get('brand')
 
         # Assume headers is a list containing the column headers
@@ -80,6 +80,17 @@ def upload_price_list(request):
         stock_index = index_mapping['stock']
         availability_index = index_mapping['availability']
 
+        filtered_laptops = LaptopPriceList.objects.filter(
+            equipment_id=equipment_index,
+            type_id=type_index,
+            supplier_id=supplier_index
+        )
+
+        # Now, update the 'data' field for each instance in 'filtered_laptops'
+        for laptop in filtered_laptops:
+            laptop.data = 1
+            laptop.save()
+
         for row in ws.iter_rows(min_row=2, values_only=True):
             # Create instances of Supplier, Brand, and Equipment if they don't exist
             supplier = Supplier.objects.get(id=supplier_index)
@@ -88,33 +99,69 @@ def upload_price_list(request):
 
             product_name = row[product_name_index]
             price_name = row[price_index]
+
             if product_name is not None and price_name is not None:
-                # Create an instance of PriceList
-                price_list_obj = LaptopPriceList(
+                # Check if an entry with the same product_name, supplier, and type exists
+                existing_entry = LaptopPriceList.objects.filter(
                     product_name=product_name,
-                    price=price_name,
-                    description=row[description_index] if description_index is not None else '',
-                    availability=row[availability_index] if availability_index is not None else '',
-                    processor=row[processor_index] if processor_index is not None else '',
-                    os=row[os_index] if os_index is not None else '',
-                    stock=row[stock_index] if stock_index is not None else '',
-                    currency=request.POST.get('currency'),
-                    supplier=supplier,
-                    series=row[series_index] if series_index is not None else '',
-                    ProductLink=row[product_link_index] if product_link_index is not None else '',
-                    equipment=equipment,
-                    brand=brand
-                )
-                if type_index:
-                    equipment_type = Type.objects.get(id=type_index)
-                    price_list_obj.type=equipment_type
+                    supplier_id=supplier_index,
+                    type_id=type_index,  # Assuming equipment_type is defined earlier in your code
+                ).first()
+
+                if existing_entry:
+                    # Update the existing entry
+                    existing_entry.price = price_name
+                    existing_entry.description = row[description_index] if description_index is not None else ''
+                    existing_entry.availability = row[availability_index] if availability_index is not None else ''
+                    existing_entry.processor = row[processor_index] if processor_index is not None else ''
+                    existing_entry.os = row[os_index] if os_index is not None else ''
+                    existing_entry.stock = row[stock_index] if stock_index is not None else ''
+                    existing_entry.currency = request.POST.get('currency')
+                    existing_entry.series = row[series_index] if series_index is not None else ''
+                    existing_entry.ProductLink = row[product_link_index] if product_link_index is not None else ''
+                    existing_entry.data = 2  # Assuming you want to update the 'data' field to 2
 
 
-                try:
-                    price_list_obj.save()
-                except Exception as e:
-                    messages.error(request, f"Error Processing Data: {str(e)}")
-                    return redirect('upload_price_list')
+                    try:
+                        existing_entry.save()
+                    except Exception as e:
+                        messages.error(request, f"Error Processing Data: {str(e)}")
+                        return redirect('upload_price_list')
+                else:
+                    # Create a new instance of LaptopPriceList
+                    price_list_obj = LaptopPriceList(
+                        product_name=product_name,
+                        price=price_name,
+                        description=row[description_index] if description_index is not None else '',
+                        availability=row[availability_index] if availability_index is not None else '',
+                        processor=row[processor_index] if processor_index is not None else '',
+                        os=row[os_index] if os_index is not None else '',
+                        stock=row[stock_index] if stock_index is not None else '',
+                        currency=request.POST.get('currency'),
+                        supplier=supplier,
+                        series=row[series_index] if series_index is not None else '',
+                        ProductLink=row[product_link_index] if product_link_index is not None else '',
+                        equipment=equipment,
+                        brand=brand,
+                        data=2,
+                    )
+                    if type_index:
+                        equipment_type = Type.objects.get(id=type_index)
+                        price_list_obj.type = equipment_type
+
+                    try:
+                        price_list_obj.save()
+                    except Exception as e:
+                        messages.error(request, f"Error Processing Data: {str(e)}")
+                        return redirect('upload_price_list')
+
+        updated_laptops = LaptopPriceList.objects.filter(
+            equipment_id=equipment_index,
+            type_id=type_index,
+            supplier_id=supplier_index
+        )
+        updated_laptops.filter(data=1).delete()
+
         messages.success(request, 'Products Uploaded successfully')
         return redirect('search_laptops')  # Redirect to a success page
 
@@ -809,7 +856,7 @@ def search_laptops(request):
             item.price_min = item.price_min / exchange_rate
 
     context = {'laptops': laptops, 'query': query, 'selected_fields': selected_fields, 'allowed_fields': allowed_fields,
-               'all_equipment': all_equipment,'all_types':all_types }
+               'all_equipment': all_equipment, 'all_types': all_types}
     return render(request, 'prices/search_laptops.html', context)
 
 
@@ -959,8 +1006,6 @@ def price_rules_for_equipment(request, equipment_id):
             minint = Decimal(request.POST.get(f"min_{price_rule.id}", 0))
             maxintorginal = request.POST.get(f"max_{price_rule.id}")
 
-
-
             print("max")
             print(maxintorginal)
 
@@ -994,7 +1039,8 @@ def price_rules_for_equipment(request, equipment_id):
 
     return render(request, 'prices/edit_price_rules.html', {'equipment': equipment, 'price_rules': price_rules})
 
-def add_price_rule(request,equipment_id):
+
+def add_price_rule(request, equipment_id):
     if request.method == 'POST':
         # Retrieve form data from the request
         price_range_start_data = request.POST.getlist('price_range_startb[]')
@@ -1002,7 +1048,7 @@ def add_price_rule(request,equipment_id):
         price_range_end_data = request.POST.getlist('price_range_endb[]')
         discount_percentage_data = request.POST.getlist('discount_percentageb[]')
         discount_percentage2_data = request.POST.getlist('discount_percentage2b[]')
-        equipment_id =equipment_id
+        equipment_id = equipment_id
         print("data")
         print(price_range_start_data)
         print(constant)
@@ -1021,10 +1067,12 @@ def add_price_rule(request,equipment_id):
 
                 price_rule.save()
 
-        return redirect('price_rules_for_equipment',equipment_id)  # Change 'success_page' to the actual URL name or path
+        return redirect('price_rules_for_equipment',
+                        equipment_id)  # Change 'success_page' to the actual URL name or path
 
     equipment_types = Equipment.objects.all()  # Assuming Equipment is the related model
     return render(request, 'prices/edit_price_rules.html', {'equipment_types': equipment_types})
+
 
 @login_required
 def type_list(request):
@@ -1075,6 +1123,7 @@ def delete_type(request, type_id):
 
     return render(request, 'prices/delete_type.html', {'type_instance': type_instance})
 
+
 def get_types(request):
     if request.method == 'GET':
         equipment_id = request.GET.get('equipment_id')
@@ -1085,6 +1134,7 @@ def get_types(request):
         return JsonResponse({'types': list(types)})
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
 
 @login_required
 def delete_laptop_price(request, laptop_price_id):
@@ -1097,6 +1147,7 @@ def delete_laptop_price(request, laptop_price_id):
 
     return render(request, 'prices/delete_laptop_price.html', {'laptop_price': laptop_price})
 
+
 @login_required
 def edit_laptop_price(request, laptop_price_id):
     laptop_price = get_object_or_404(LaptopPriceList, pk=laptop_price_id)
@@ -1105,7 +1156,7 @@ def edit_laptop_price(request, laptop_price_id):
     brands = Brand.objects.all()
     types = Type.objects.all()
     print("data")
-    print(laptop_price.supplier_id )
+    print(laptop_price.supplier_id)
     print(request.POST.get('supplier'))
     if request.method == 'POST':
         print(laptop_price.supplier_id)
@@ -1128,7 +1179,10 @@ def edit_laptop_price(request, laptop_price_id):
         messages.success(request, 'Product Edited successfully')
         return redirect('search_laptops')  # Redirect to the list view after editing a laptop price
 
-    return render(request, 'prices/edit_laptop_price.html', {'laptop_price': laptop_price,'suppliers':suppliers,'equipments':equipments,'brands':brands,'types':types})
+    return render(request, 'prices/edit_laptop_price.html',
+                  {'laptop_price': laptop_price, 'suppliers': suppliers, 'equipments': equipments, 'brands': brands,
+                   'types': types})
+
 
 @csrf_exempt
 def search_laptops_js(request):
