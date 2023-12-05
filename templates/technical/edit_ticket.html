@@ -144,14 +144,14 @@
                                     <div class="row mb-3">
                                         <div class="mb-3 col-lg-6">
                                             <label for="fault" class="form-label"><strong>Fault:</strong></label>
-                                            <textarea class="form-control" id="fault"
+                                            <textarea class="form-control" id="Fault"
                                                       name="fault" rows="5">{{ ticket.fault|safe }}</textarea>
                                             <input type="file" name="file" class="form-control form-control-sm mt-1">
                                         </div>
                                         <div class="mb-3 col-lg-6">
                                             <label for="diagnosis"
                                                    class="form-label"><strong>Diagnosis:</strong></label>
-                                            <textarea class="form-control" id="diagnosis"
+                                            <textarea class="form-control" id="Diagnosis"
                                                       name="diagnosis" rows="5">{{ ticket.diagnosis|safe }}</textarea>
                                             {% for image in diagnosis_images %}
                                                 <div class="card w-25 h-25">
@@ -169,7 +169,7 @@
                                     <div class="row mb-3">
                                         <div class="mb-3 col-lg-6">
                                             <label for="action" class="form-label"><strong>Action:</strong></label>
-                                            <textarea class="form-control" id="action"
+                                            <textarea class="form-control" id="Action"
                                                       name="action" rows="5">{{ ticket.action|safe }}</textarea>
                                             {% for image in action_images %}
                                                 <div class="card w-25 h-25">
@@ -184,7 +184,7 @@
                                         <div class="mb-3 col-lg-6">
                                             <label for="recommendation"
                                                    class="form-label"><strong>Recommendation:</strong></label>
-                                            <textarea class="form-control" id="recommendation"
+                                            <textarea class="form-control" id="Recommendation"
                                                       name="recommendation"
                                                       rows="5">{{ ticket.recommendation|safe }}</textarea>
                                             {% for image in recommendation_images %}
@@ -521,7 +521,9 @@
                                                                 EUR
                                                             </option>
                                                         </select></td>
-                                                        <td><input type="number" class="form-control" value="{{ item.layout }}" name="layout[]" id="layout"></td>
+                                                        <td><input type="number" class="form-control"
+                                                                   value="{{ item.layout }}" name="layout[]"
+                                                                   id="layout"></td>
 
                                                         <td><a href="#" class="delete-entry-quote" title="delete"
                                                                tabindex="0"
@@ -549,7 +551,8 @@
                                                         <option value="EUR">EUR
                                                         </option>
                                                     </select></td>
-                                                    <td><input type="number" class="form-control" value="1" name="layout[]"></td>
+                                                    <td><input type="number" class="form-control" value="1"
+                                                               name="layout[]"></td>
 
                                                     <!-- Add more cells for other fields -->
                                                 </tr>
@@ -1126,7 +1129,7 @@
             var newRow = document.createElement('tr');
 
             // Create new input fields for each column
-            var columns = ['description', 'part_no', 'price', 'quantity', 'currency','layout'];
+            var columns = ['description', 'part_no', 'price', 'quantity', 'currency', 'layout'];
             for (var i = 0; i < columns.length; i++) {
                 var cell = document.createElement('td');
                 var input;
@@ -1324,6 +1327,38 @@
                     });
             }
         }
+    </script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#Diagnosis'))
+            .catch(error => {
+                console.error(error);
+            });
+
+        ClassicEditor
+            .create(document.querySelector('#Recommendation'))
+            .catch(error => {
+                console.error(error);
+            });
+        ClassicEditor
+            .create(document.querySelector('#Action'))
+            .catch(error => {
+                console.error(error);
+            });
+        ClassicEditor
+            .create(document.querySelector('#Fault'))
+            .catch(error => {
+                console.error(error);
+            });
+
+        document.getElementById('myForm').addEventListener('submit', function (event) {
+            // Retrieve CKEditor data and set it to the corresponding textarea before form submission
+            document.querySelector('#Action').value = CKEditor.instances.Action.getData();
+            document.querySelector('#Diagnosis').value = CKEditor.instances.Diagnosis.getData();
+            document.querySelector('#Recommendation').value = CKEditor.instances.Recommendation.getData();
+            document.querySelector('#Fault').value = CKEditor.instances.Fault.getData();
+        });
     </script>
 
 

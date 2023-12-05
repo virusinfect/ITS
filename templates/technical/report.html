@@ -182,10 +182,13 @@
                                     {% endfor %}
                                 {% endif %}
                                 {% if  ticket.labour.isdigit %}
-                                    <tr>
-                                        <td colspan="4" class="text-end">LABOUR</td>
-                                        <td colspan="4" class="text-end">{{ ticket.labour|floatformat:2|intcomma }}</td>
-                                    </tr>
+                                    {% if ticket.labour != "0" %}
+                                        <tr>
+                                            <td colspan="4" class="text-end">LABOUR</td>
+                                            <td colspan="4" class="text-end">
+                                                {{ ticket.labour|floatformat:2|intcomma }}</td>
+                                        </tr>
+                                    {% endif %}
                                 {% else %}
                                     <td colspan="4" class="text-end">LABOUR</td>
                                     <td colspan="4" class="text-end">{{ ticket.labour }}</td>
