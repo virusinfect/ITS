@@ -12,7 +12,7 @@ from .models import Equipment, Software, EquipmentSpecs, Service, MonitorCheckli
 
 @login_required
 def ticket_list(request):
-    tickets = ServiceSchedules.objects.all().order_by('-created')
+    tickets = ServiceSchedules.objects.filter(is_active=1).order_by('-created')
     return render(request, 'service/tickets.html', {'tickets': tickets})
 
 
