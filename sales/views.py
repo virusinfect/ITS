@@ -401,7 +401,15 @@ def deactivate_order_product(request, op_id, order_id):
 @login_required
 def active_orders(request):
     orders = Orders.objects.filter(is_active=True).prefetch_related('orderproducts_set').order_by('-o_id')
-    return render(request, 'sales/orders.html', {'orders': orders})
+
+    today_date = datetime.now().date()
+    for order in orders:
+        order.has_future_date = any(
+            product.date_expected and product.date_expected < today_date
+            for product in order.orderproducts_set.all()
+        )
+
+    return render(request, 'sales/orders.html', {'orders': orders,'today_date':today_date})
 
 
 @login_required

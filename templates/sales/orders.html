@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}Orders List{% endblock %}
 {% block header %}Orders List{% endblock %}
+{% load helpdesk_tags %}
 {% block content %}
     <style>
         .wrap-text {
@@ -56,7 +57,14 @@
                 {% for order in orders %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>#{{ order.o_id }}</td>
+                        <td>
+
+                            {% if order.has_future_date %}
+                                <span class="text-primary">#{{ order.o_id }} <i
+                                        class="mdi mdi-calendar-alert mdi-18px"></i></span>
+                            {% else %}
+                                {{ order.o_id }}
+                            {% endif %}</td>
                         <td>{{ order.created }}</td>
                         <td>{{ order.client }}</td>
                         <td>
@@ -69,16 +77,23 @@
                         </td>
                         <td>{{ order.assignee }}</td>
                         <td>
+
                             <div class="product-list" data-order-id="{{ order.o_id }}" style="display: none;">
                                 {% for product in order.orderproducts_set.all %}
-                                    <li>{{ product.product }} <span class="text-success">{% if product.date_ordered %}// Ordered:
-                                        {{ product.date_ordered|date:'Y-m-d' }} {% endif %} {% if product.date_expected %}//Expected:
-                                        {{ product.date_expected|date:'Y-m-d' }}{% endif %}</span></li>
+                                    <li>{{ product.product }} <span class="text-success">
+                                            {% if product.date_ordered %}// Ordered: {{ product.date_ordered|date:'Y-m-d' }}{% endif %}
+                                        {% if product.date_expected %}// Expected: {{ product.date_expected|date:'Y-m-d' }}{% endif %}
+                                            </span>
+                                    </li>
                                     {% empty %}
                                     No products associated
                                 {% endfor %}
                             </div>
-                            <a class="show-more-btn btn btn-outline-primary py-0 px-3" data-order-id="{{ order.o_id }}">More</a>
+
+                            <a class="show-more-btn btn btn-outline-primary py-0 px-3"
+                               data-order-id="{{ order.o_id }}">More</a>
+
+
                         </td>
 
                         <td>
