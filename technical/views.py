@@ -2247,9 +2247,14 @@ def report(request, report_id):
         subtotals += int(ticket.labour)
         if int(ticket.labour) != 0:
             layout_2_count += 1
+    if ticket.company.id == 55:
+        vat = 0
+        total_amount = subtotals + vat
+    else:
+        vat = round(subtotals * 0.16)
+        total_amount = subtotals + vat
 
-    vat = round(subtotals * 0.16)
-    total_amount = subtotals + vat
+
     print(layout_2_count)
     return render(request, 'technical/report.html',
                   {'ticket': ticket, 'tquote_data': tquote_data, 'parts': parts, 'vat': vat,
