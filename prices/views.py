@@ -87,7 +87,6 @@ def upload_price_list(request):
         filtered_laptops = LaptopPriceList.objects.filter(
             equipment_id=equipment_index,
             supplier_id=supplier_index,
-            type=type_obj
         ) if type_obj else LaptopPriceList.objects.filter(
             equipment_id=equipment_index,
             supplier_id=supplier_index
@@ -111,7 +110,6 @@ def upload_price_list(request):
                 existing_entry = LaptopPriceList.objects.filter(
                     product_name=product_name,
                     supplier_id=supplier_index,
-                    type_id=type_index,  # Assuming equipment_type is defined earlier in your code
                 ).first()
 
                 if existing_entry:
@@ -125,7 +123,15 @@ def upload_price_list(request):
                     existing_entry.currency = request.POST.get('currency')
                     existing_entry.series = row[series_index] if series_index is not None else ''
                     existing_entry.ProductLink = row[product_link_index] if product_link_index is not None else ''
-                    existing_entry.data = 2  # Assuming you want to update the 'data' field to 2
+                    existing_entry.data = 2
+                    existing_entry.brand=brand
+
+                    if type_index:
+                        existing_entry.type = type_obj
+                    else:
+                        existing_entry.type = None
+
+
 
                     try:
                         existing_entry.save()
@@ -151,21 +157,19 @@ def upload_price_list(request):
                         data=2,
                     )
                     if type_index:
-                        equipment_type = Type.objects.get(id=type_index)
-                        price_list_obj.type = equipment_type
+                        price_list_obj.type = type_obj
 
                     try:
                         price_list_obj.save()
+                        updated_laptops = LaptopPriceList.objects.filter(
+                            equipment_id=equipment_index,
+                            supplier_id=supplier_index
+                        )
+                        updated_laptops.filter(data=1).delete()
                     except Exception as e:
                         messages.error(request, f"Error Processing Data: {str(e)}")
                         return redirect('upload_price_list')
 
-        updated_laptops = LaptopPriceList.objects.filter(
-            equipment_id=equipment_index,
-            type_id=type_index,
-            supplier_id=supplier_index
-        )
-        updated_laptops.filter(data=1).delete()
 
         messages.success(request, 'Products Uploaded successfully')
         return redirect('search_laptops')  # Redirect to a success page
@@ -830,7 +834,7 @@ def search_laptops(request):
                 laptops = laptops.filter(type=type_id)
 
     # Retrieve all equipment for the dropdown
-    all_equipment = Equipment.objects.all()
+    all_equipment = Equipment.objects.all().order_by('name')
     all_types = Type.objects.all()
 
     for item in laptops:

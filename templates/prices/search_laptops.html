@@ -43,7 +43,7 @@
                             <select class="form-select" id="fields" name="fields">
                                 {% for field in allowed_fields %}
                                     <option value="{{ field }}"
-                                            {% if field in selected_fields %}selected{% endif %}>{{ field }}</option>
+                                            {% if field in selected_fields %}selected{% endif %}>{% if field == 'product_name' %}part code{% elif  field == 'brand__name' %}brand{% else %}{{ field }}{% endif %}</option>
                                 {% endfor %}
                             </select>
                         </div>

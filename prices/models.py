@@ -63,10 +63,7 @@ class LaptopPriceList(models.Model):
     def __str__(self):
         return self.product_name
 
-    # Add other fields as needed
-    class Meta:
-        # Add the unique_together constraint
-        unique_together = ['product_name', 'supplier']
+
 
 
 
