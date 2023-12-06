@@ -40,10 +40,10 @@
                                 <div class="mb-3 col-lg-6">
                                     <label for="selected_category" class="form-label">Category:</label>
                                     <select name="selected_category" id="selected_category" class="form-select mb-3"
-                                             {% if not user|is_helpdesk %}disabled{% endif %} required>
+                                            {% if not user|is_helpdesk %}disabled{% endif %} required>
                                         <option value="" disabled>Select a Category</option>
                                         {% for category in active_categories %}
-                                            <option  value="{{ category.id }}"
+                                            <option value="{{ category.id }}"
                                                     {% if category.id == requisition.part.category.id %}selected{% endif %}>
                                                 {{ category.name }}
                                             </option>
@@ -54,7 +54,7 @@
                                     <label for="selected_product" class="form-label">Item:</label>
                                     <select name="selected_product" id="selected_product" class="form-select mb-3"
                                             required {% if not user|is_helpdesk %} disabled {% endif %}>
-                                        <option  value="{{ requisition.part }}" disabled
+                                        <option value="{{ requisition.part }}" disabled
                                                 selected>{{ requisition.part }}</option>
                                     </select>
                                 </div>
@@ -67,7 +67,14 @@
                                 </div>
                                 <div class="mb-3 col-lg-6">
                                     <label for="exampleFormControlInput1" class="form-label">Collected By</label>
-                                    <input class="form-control" disabled value="{{ requisition.collected_by }}">
+                                    <select id="tech" name="tech" class="form-select" required {% if not user|is_helpdesk %} disabled {% endif %}>
+                                        {% for tech_option in users %}
+                                            <option value="{{ tech_option.id }}"
+                                                    {% if tech_option == requisition.collected_by %}selected{% endif %}>
+                                                {{ tech_option.username }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
 
                             </div>
@@ -75,7 +82,7 @@
                                 <div class="mb-3 col-lg-6">
                                     <label for="company" class="form-label">Company.</label>
                                     <input name="company" id="company" class="form-control"
-                                           value="{{ requisition.company }}" >
+                                           value="{{ requisition.company }}">
                                 </div>
                                 <div class="mb-3 col-lg-6">
                                     <label for="invoice" class="form-label">Invoice</label>

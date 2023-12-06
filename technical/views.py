@@ -1238,7 +1238,8 @@ def change_requisition_status(request, requisition_id):
 def edit_requisition(request, requisition_id):
     requisition = get_object_or_404(Requisition, pk=requisition_id)
     active_categories = PartsCategory.objects.all()
-
+    technician_group = Group.objects.get(name='Technician')
+    users = technician_group.user_set.all()
     if request.method == 'POST':
         # Process the form submission and update the requisition fields
         if 'serial_no' in request.POST and request.POST['serial_no']:
@@ -1255,6 +1256,10 @@ def edit_requisition(request, requisition_id):
             requisition.req_status = request.POST.get('req_status')
         if 'issue_status' in request.POST and request.POST['issue_status']:
             requisition.issue_status = request.POST.get('issue_status')
+        if 'tech' in request.POST and request.POST['tech']:
+            user_id =request.POST.get('tech')
+            user = User.objects.get(id=user_id)
+            requisition.collected_by = user
         if 'return_status' in request.POST and request.POST['return_status']:
             requisition.return_status = request.POST.get('return_status')
             requisition.return_approved_by = request.user
@@ -1265,7 +1270,7 @@ def edit_requisition(request, requisition_id):
         return redirect('list_requisitions')
 
     return render(request, 'technical/edit_requisition.html',
-                  {'requisition': requisition, 'active_categories': active_categories})
+                  {'requisition': requisition, 'active_categories': active_categories,'users':users })
 
 
 @login_required
