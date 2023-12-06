@@ -62,7 +62,7 @@
                         <td>{{ ticket.client.f_name }}</td>
                         <td>{{ ticket.equipment }}</td>
                         <td>{{ ticket.serial_no }}</td>
-                        <td>{{ ticket.fault }}</td>
+                        <td>{{ ticket.fault|safe }}</td>
                         <td>ITL/TN/{{ ticket.ticket_id }}</td>
                         <td>
                             {% if ticket.status == "Open" %}
