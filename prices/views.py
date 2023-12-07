@@ -87,6 +87,7 @@ def upload_price_list(request):
         filtered_laptops = LaptopPriceList.objects.filter(
             equipment_id=equipment_index,
             supplier_id=supplier_index,
+            type_id=type_index,
         ) if type_obj else LaptopPriceList.objects.filter(
             equipment_id=equipment_index,
             supplier_id=supplier_index
