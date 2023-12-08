@@ -83,8 +83,7 @@ def save_signature_view_format(request):
         signature_data = request.POST.get('signature_data')
         format_id = request.POST.get('format_id')
         approved = request.POST.get('approved')
-        print('approved')
-        print(approved)
+
 
         # Extract the Base64 data after the comma
         base64_data = signature_data.split(',')[1]
@@ -114,19 +113,18 @@ def save_signature_view_call(request):
         signature_data = request.POST.get('signature_data')
         cc_id = request.POST.get('cc_id')
         call_card = get_object_or_404(CallCards, pk=cc_id)
+        status1 = call_card.status
         call_card.time_in = request.POST.get('time_in')
         call_card.tech_id_id = request.POST.get('tech_id')
         call_card.time_out = request.POST.get('time_out')
         call_card.equipment = request.POST.get('equipment')
         call_card.fault = request.POST.get('fault')
         call_card.remarks = request.POST.get('remarks')
-        call_card.status = request.POST.get('status')
+        status2 = request.POST.get('status')
+        call_card.status = status2
         call_card.type = request.POST.get('type')
         call_card.save()
-        print("data test")
-        print(request.POST.get('equipment'))
-        print(request.POST.get('tech_id'))
-        print(request.POST.get('remarks'))
+
 
         if signature_data:
             try:
@@ -152,9 +150,36 @@ def save_signature_view_call(request):
             signature.callcard = call_card  # Associate the delivery with the signature
             if signature_data:
                 signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
+
+            if status1 == "Pending" and status2 == "Done":
+                management_group = Group.objects.get(name='Helpdesk')
+
+                # Get all users in the "management" group
+                management_users = management_group.user_set.all()
+
+                # Extract email addresses
+                management_emails = [user.email for user in management_users]
+
+                # Your existing code to create new_sourcing_data objects
+                url = "http://146.190.61.23:8500/technical/edit_call_card/" + str(
+                    call_card.cc_id) + "/"  # Replace with your actual URL
+                clickable_url = f"<a href='{url}'>#" + str(call_card.cc_id) + "  " + str(call_card.company) + "</a>"
+                # Use the 'table' string in the email message
+                message = (
+                    f"Dear Sir/Madam,<br><br>"
+                    f"Our technician has closed Call Card  for {clickable_url} . <br><br>"
+                    "This is an auto-generated email | © 2023 ITS. All rights reserved."
+                )
+                subject = f"Call card closed for {call_card.company}"
+                recipient_list = management_emails
+                from_email = 'its-noreply@intellitech.co.ke'
+
+                # Create an EmailMessage instance for HTML content
+                email_message = EmailMessage(subject, message, from_email, recipient_list)
+                email_message.content_subtype = 'html'  # Set content type to HTML
+                email_message.send()
             return JsonResponse({'success': True})
-            print("signature data")
-            print(signature.signature_image)
+
         except CallCards.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Format Approval not found'}, status=400)
 
@@ -785,5 +810,4 @@ class CompanyAutocompleteView(View):
         query = request.GET.get('query', '')
         companies = Company.objects.filter(name__icontains=query)
         company_names = [company.name for company in companies]
-        print("Retrieved company names:", company_names)  # Add this line for debugging
         return JsonResponse({'company_names': company_names})
