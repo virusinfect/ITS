@@ -82,15 +82,15 @@
                                 {% for product in order.orderproducts_set.all %}
                                     {% if product.orders.status  == "Back to Back" %}
                                         <li>{{ product.product }} <span class="text-success">
-                                            {% if product.date_ordered %}// Ordered: {{ product.date_ordered|date:'Y-m-d' }}{% endif %}
-                                            {% if product.date_expected %}// Expected Start: {{ product.date_expected|date:'Y-m-d' }}{% endif %}
-                                            {% if product.date_expected1 %}// Expected End: {{ product.date_expected1|date:'Y-m-d' }}{% endif %}
+                                            {% if product.date_ordered %}// Ordered: {{ product.date_ordered|date:'d-m-Y' }}{% endif %}
+                                            {% if product.date_expected %}// Expected Start: {{ product.date_expected|date:'d-m-Y' }}{% endif %}
+                                            {% if product.date_expected1 %}// Expected End: {{ product.date_expected1|date:'d-m-Y' }}{% endif %}
                                             </span>
                                         </li>
                                     {% else %}
                                         <li>{{ product.product }} <span class="text-success">
-                                            {% if product.date_ordered %}// Ordered: {{ product.date_ordered|date:'Y-m-d' }}{% endif %}
-                                            {% if product.date_expected %}// Expected: {{ product.date_expected|date:'Y-m-d' }}{% endif %}
+                                            {% if product.date_ordered %}// Ordered: {{ product.date_ordered|date:'d-m-Y' }}{% endif %}
+                                            {% if product.date_expected %}// Expected: {{ product.date_expected|date:'d-m-Y' }}{% endif %}
                                             </span>
                                         </li>
                                     {% endif %}
