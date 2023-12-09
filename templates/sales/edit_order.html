@@ -44,8 +44,10 @@
         <div class="col-md-6">
             <div class="mb-2">
                 <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Pending' %}">Pending</a>
-                <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Awaiting LPO' %}">Awaiting LPO</a>
-                <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Back to Back' %}">Back to Back</a>
+                <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Awaiting LPO' %}">Awaiting
+                    LPO</a>
+                <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Back to Back' %}">Back to
+                    Back</a>
                 <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Ordered' %}">Ordered</a>
                 <a class="me-1 btn-xs px-1 btn-primary" href="{% url 'orders_in_status' 'Completed' %}">Completed</a>
             </div>
@@ -103,6 +105,7 @@
                                 <th>Quantity</th>
                                 <th>Date Ordered</th>
                                 <th>Date Expected</th>
+                                <th id="dateEnd" class="back-to-back-column">Date Expected Last</th>
                                 <th>Supplier</th>
                                 <th>Date Received</th>
                                 <th>Actions</th>
@@ -126,6 +129,7 @@
                                         <td><input type="date" name="date_expected[]"
                                                    value="{{ product.date_expected|date:'Y-m-d' }}"
                                                    class="form-control"></td>
+                                        <td id="dateEnd" class="back-to-back-column"><input type="date" name="date_expected_last[]" value="{{ product.date_expected1|date:'Y-m-d' }}" class="form-control"></td>
                                         <td><input type="text" name="supplier[]"
                                                    value="{{ product.supplier }}" class="form-control"></td>
                                         <td><input type="date" name="date_received[]"
@@ -163,6 +167,8 @@
                                            class="form-control"></td>
                                 <td><input type="date" name="date_expected[]"
                                            class="form-control"></td>
+                                <td id="dateEnd" class="back-to-back-column"><input type="date" name="date_expected1[]"
+                                                                                    class="form-control"></td>
                                 <td><input type="text" name="supplier[]"
                                            class="form-control"></td>
                                 <td><input type="date" name="date_received[]"
@@ -333,4 +339,27 @@
             tableBody.appendChild(newRow);
         }
     </script>
+    <script>
+        $(document).ready(function () {
+            // Function to toggle the visibility of the "dateEnd" column
+            function toggleDateEndVisibility() {
+                var selectedStatus = $('select[name="status"]').val();
+                if (selectedStatus === 'Back to Back') {
+                    $('.back-to-back-column').css('display', '');
+                } else {
+                    $('.back-to-back-column').css('display', 'none');
+                }
+            }
+
+            // Initial visibility check on page load
+            toggleDateEndVisibility();
+
+            // Event listener for dropdown change
+            $('select[name="status"]').on('change', function () {
+                toggleDateEndVisibility();
+            });
+        });
+    </script>
+
+
 {% endblock %}

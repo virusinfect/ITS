@@ -80,11 +80,20 @@
 
                             <div class="product-list" data-order-id="{{ order.o_id }}" style="display: none;">
                                 {% for product in order.orderproducts_set.all %}
-                                    <li>{{ product.product }} <span class="text-success">
+                                    {% if product.orders.status  == "Back to Back" %}
+                                        <li>{{ product.product }} <span class="text-success">
                                             {% if product.date_ordered %}// Ordered: {{ product.date_ordered|date:'Y-m-d' }}{% endif %}
-                                        {% if product.date_expected %}// Expected: {{ product.date_expected|date:'Y-m-d' }}{% endif %}
+                                            {% if product.date_expected %}// Expected Start: {{ product.date_expected|date:'Y-m-d' }}{% endif %}
+                                            {% if product.date_expected1 %}// Expected End: {{ product.date_expected1|date:'Y-m-d' }}{% endif %}
                                             </span>
-                                    </li>
+                                        </li>
+                                    {% else %}
+                                        <li>{{ product.product }} <span class="text-success">
+                                            {% if product.date_ordered %}// Ordered: {{ product.date_ordered|date:'Y-m-d' }}{% endif %}
+                                            {% if product.date_expected %}// Expected: {{ product.date_expected|date:'Y-m-d' }}{% endif %}
+                                            </span>
+                                        </li>
+                                    {% endif %}
                                     {% empty %}
                                     No products associated
                                 {% endfor %}
