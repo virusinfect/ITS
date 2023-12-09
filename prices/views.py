@@ -842,13 +842,19 @@ def search_laptops(request):
         exchange_rate = Exchange.objects.first().rate
         exchange_rate2 = Exchange.objects.first().rate2
 
+        if item.currency == "USD":
+            currency_model = exchange_rate
+        else:
+            currency_model = None
+
         if item.currency == "KES":
             price2 = item.price / exchange_rate
+
         else:
             price2 = item.price
 
-        item.price_min = calculate_discounted_price(item.price, item.equipment, price2)
-        item.price_max = calculate_discounted_price2(item.price, item.equipment, price2)
+        item.price_min = calculate_discounted_price(item.price, item.equipment, price2,currency_model)
+        item.price_max = calculate_discounted_price2(item.price, item.equipment, price2,currency_model)
 
         if currency == "KES" and item.currency == "USD":
 

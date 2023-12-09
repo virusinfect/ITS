@@ -118,15 +118,23 @@ class PriceRule(models.Model):
     discount_percentage2 = models.DecimalField(max_digits=10, decimal_places=2)
     constant = models.BooleanField(default=False)
 
-    def apply_discount(self, price):
+    def apply_discount(self, price,currency):
         if self.constant is True:
-            return price + self.discount_percentage
+            if currency:
+                discount = self.discount_percentage / currency
+                return price + discount
+            else:
+                return price + self.discount_percentage
         else:
             return (price + price * Decimal(self.discount_percentage)).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
-    def apply_discount2(self, price):
+    def apply_discount2(self, price,currency):
         if self.constant  is True:
-            return price + self.discount_percentage2
+            if currency:
+                discount = self.discount_percentage2 / currency
+                return price + discount
+            else:
+                return price + self.discount_percentage2
         else:
             return (price + price * Decimal(self.discount_percentage2)).quantize(Decimal('0.00'),rounding=ROUND_DOWN)
     def __str__(self):
