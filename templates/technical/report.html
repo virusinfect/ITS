@@ -96,46 +96,54 @@
                                     {{ ticket.fault|safe }}
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="font-size:10px">
-                                    Diagnosis:
-                                </td>
-                                <td style="font-size:10px">
-                                    {{ ticket.diagnosis|safe }}
-                                    {% if diagnosis_images %}
-                                        <div class="card w-25 h-25 mt-2">
-                                            <img class="card-img-top img-fluid " src="{{ diagnosis_images.image.url }}">
-                                        </div>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="font-size:10px">
-                                    Action:
-                                </td>
-                                <td style="font-size:10px">
-                                    {{ ticket.action|safe }}
-                                    {% if action_images %}
-                                        <div class="card w-25 h-25 mt-2">
-                                            <img class="card-img-top img-fluid " src="{{ action_images.image.url }}">
-                                        </div>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="font-size:10px">
-                                    Recommendation:
-                                </td>
-                                <td style="font-size:10px">
-                                    {{ ticket.recommendation|safe }}
-                                    {% if recommendation_images %}
-                                        <div class="card w-25 h-25 mt-2    ">
-                                            <img class="card-img-top img-fluid mb-1"
-                                                 src="{{ recommendation_images.image.url }}">
-                                        </div>
-                                    {% endif %}
-                                </td>
-                            </tr>
+                            {% if ticket.diagnosis %}
+                                <tr>
+                                    <td style="font-size:10px">
+                                        Diagnosis:
+                                    </td>
+                                    <td style="font-size:10px">
+                                        {{ ticket.diagnosis|safe }}
+                                        {% if diagnosis_images %}
+                                            <div class="card w-25 h-25 mt-2">
+                                                <img class="card-img-top img-fluid "
+                                                     src="{{ diagnosis_images.image.url }}">
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if ticket.action %}
+                                <tr>
+                                    <td style="font-size:10px">
+                                        Action:
+                                    </td>
+                                    <td style="font-size:10px">
+                                        {{ ticket.action|safe }}
+                                        {% if action_images %}
+                                            <div class="card w-25 h-25 mt-2">
+                                                <img class="card-img-top img-fluid "
+                                                     src="{{ action_images.image.url }}">
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if ticket.recommendation %}
+                                <tr>
+                                    <td style="font-size:10px">
+                                        Recommendation:
+                                    </td>
+                                    <td style="font-size:10px">
+                                        {{ ticket.recommendation|safe }}
+                                        {% if recommendation_images %}
+                                            <div class="card w-25 h-25 mt-2    ">
+                                                <img class="card-img-top img-fluid mb-1"
+                                                     src="{{ recommendation_images.image.url }}">
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
                             </tbody>
                         </table>
                     </div>
