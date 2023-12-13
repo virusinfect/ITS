@@ -201,20 +201,24 @@
                                     <td colspan="4" class="text-end">LABOUR</td>
                                     <td colspan="4" class="text-end">{{ ticket.labour }}</td>
                                 {% endif %}
-                                {% if layout_2_count > 1 %}
+                                {% if ticket.labour != "WARRANTY" %}
+                                    {% if layout_2_count > 1 %}
+                                        <tr>
+                                            <td colspan="4" class="text-end">SUBTOTALS</td>
+                                            <td colspan="4" class="text-end">{{ subtotals|floatformat:2|intcomma }}</td>
+                                        </tr>
+                                    {% endif %}
                                     <tr>
-                                        <td colspan="4" class="text-end">SUBTOTALS</td>
-                                        <td colspan="4" class="text-end">{{ subtotals|floatformat:2|intcomma }}</td>
+                                        <td colspan="4" class=" text-danger text-end">VAT</td>
+                                        <td colspan="4" class="text-danger text-end">
+                                            {{ vat|floatformat:2|intcomma }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-end">TOTAL AMOUNT</td>
+                                        <td colspan="4  " class="text-end">
+                                            {{ total_amount|floatformat:2|intcomma }}</td>
                                     </tr>
                                 {% endif %}
-                                <tr>
-                                    <td colspan="4" class=" text-danger text-end">VAT</td>
-                                    <td colspan="4" class="text-danger text-end">{{ vat|floatformat:2|intcomma }}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4" class="text-end">TOTAL AMOUNT</td>
-                                    <td colspan="4  " class="text-end">{{ total_amount|floatformat:2|intcomma }}</td>
-                                </tr>
                                 </tbody>
                             </table>
                         </div>
