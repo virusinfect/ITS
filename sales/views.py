@@ -261,6 +261,7 @@ def edit_order(request, order_id):
         date_expected_list = request.POST.getlist('date_expected[]')
         date_expected_last_list = request.POST.getlist('date_expected_last[]')
         part_no_list = request.POST.getlist('part_no[]')
+        remarks_list = request.POST.getlist('remarks[]')
 
         new_sourcing_data = []
 
@@ -282,6 +283,8 @@ def edit_order(request, order_id):
                     order_product.date_expected = date_expected_list[i]
                 if date_expected_last_list[i]:
                     order_product.date_expected1 = date_expected_last_list[i]
+                if remarks_list[i]:
+                    order_product.remarks = remarks_list[i]
                 new_sourcing_data.append(order_product)
 
         with transaction.atomic():

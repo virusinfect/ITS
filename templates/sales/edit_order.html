@@ -108,6 +108,7 @@
                                 <th id="dateEnd" class="back-to-back-column">Date Expected Last</th>
                                 <th>Supplier</th>
                                 <th>Date Received</th>
+                                <th>Remarks</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -135,6 +136,9 @@
                                         <td><input type="date" name="date_received[]"
                                                    value="{{ product.date_received|date:'Y-m-d' }}"
                                                    class="form-control"></td>
+                                        <td><input type="text" name="remarks[]"
+                                                   value="{{ product.remarks }}" class="form-control">
+                                        </td>
                                         <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
                                                tabindex="0"
                                                data-plugin="tippy" data-tippy-interactive="true"><i
@@ -173,6 +177,9 @@
                                            class="form-control"></td>
                                 <td><input type="date" name="date_received[]"
                                            class="form-control"></td>
+                                <td><input type="text" name="remarks[]"
+                                                    class="form-control">
+                                        </td>
                                 <td><a class="add-row-button" onclick="addBlankRow(this)" title="add row"
                                        tabindex="0"
                                        data-plugin="tippy" data-tippy-interactive="true"><i

@@ -164,6 +164,7 @@ class OrderProducts(models.Model):
     quantity = models.FloatField()
     date_ordered = models.DateField(null=True, blank=True, default=None)
     supplier = models.TextField()
+    remarks = models.TextField(blank=True,null=True)
     date_received = models.DateField(null=True, blank=True, default=None)
     date_expected1 = models.DateField(null=True, blank=True, default=None)
     date_expected = models.DateField(null=True, blank=True, default=None)
