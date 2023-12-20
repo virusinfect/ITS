@@ -841,11 +841,11 @@ def daily_report(request):
     management_emails = [user.email for user in management_users]
 
     InProgres_list = "\n".join(
-        [f"<li>{Progres.title}: {Progres.description}</li>" for Progres in InProgres])
+        [f"<li>{Progres.title}: </li>" for Progres in InProgres])
     pending_tasks_list = "\n".join(
-        [f"<li>{pending.title}: {pending.description}</li>" for pending in pending_tasks])
+        [f"<li>{pending.title}: </li>" for pending in pending_tasks])
     completed_tasks_list = "\n".join(
-        [f"<li>{completed.title}: {completed.description}</li>" for completed in completed_tasks])
+        [f"<li>{completed.title}: </li>" for completed in completed_tasks])
     message = (
         f"Dear Sir/Madam,<br><br>"
         f"Here is my daily task report . <br><br>"
