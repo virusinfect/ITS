@@ -819,8 +819,8 @@ class CompanyAutocompleteView(View):
 def daily_report(request):
     # Filter tasks with "pending" and "in-progress" status for the current day
     today = timezone.now().date()
-    pending_tasks = Task.objects.filter(status='pending',user=request.user,is_active=True)
-    InProgres = Task.objects.filter(status='in Progress', user=request.user,is_active=True)
+    pending_tasks = Task.objects.filter(status='Pending',user=request.user,is_active=True)
+    InProgres = Task.objects.filter(status='In Progress', user=request.user,is_active=True)
     completed_tasks = Task.objects.filter(status='completed', updated__date=today,user=request.user,is_active=True)
 
 
