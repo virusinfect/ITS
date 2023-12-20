@@ -81,7 +81,7 @@ class Task(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_tasks')
 
     def __str__(self):
-        return self.title
+        return self.title - self.user
 
     @classmethod
     def create_task(cls, title, description, is_active=True, status=None, user=None, users=None):
