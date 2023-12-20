@@ -211,3 +211,7 @@ def is_accounts(user):
 @register.filter(name='get_layout_total')
 def get_layout_total(group_totals, layout):
     return group_totals.get(layout, 0)
+
+@register.filter(name='set_flag')
+def set_flag(value, arg):
+    return arg

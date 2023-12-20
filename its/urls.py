@@ -46,6 +46,7 @@ urlpatterns = [
     path('clients/delete/<int:client_id>/', views.delete_client, name='delete_client'),
     path('tasks/create/', views.create_task, name='create_task'),
     path('get_company_names/', CompanyAutocompleteView.as_view(), name='get_company_names'),
+    path('daily-report/', views.daily_report, name='daily_report'),
 
 ]
 handler500 = 'its.views.server_error'

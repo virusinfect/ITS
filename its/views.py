@@ -1,5 +1,8 @@
 import base64
-from datetime import timedelta
+from datetime import timedelta, datetime
+
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -811,3 +814,57 @@ class CompanyAutocompleteView(View):
         companies = Company.objects.filter(name__icontains=query)
         company_names = [company.name for company in companies]
         return JsonResponse({'company_names': company_names})
+
+@login_required
+def daily_report(request):
+    # Filter tasks with "pending" and "in-progress" status for the current day
+    today = timezone.now().date()
+    pending_tasks = Task.objects.filter(status='pending',user=request.user,is_active=True)
+    InProgres = Task.objects.filter(status='in Progress', user=request.user,is_active=True)
+    completed_tasks = Task.objects.filter(status='completed', updated__date=today,user=request.user,is_active=True)
+
+
+
+    # Prepare data for the template
+    context = {
+        'pending_tasks': pending_tasks,
+        'completed_tasks': completed_tasks,
+        'InProgres':InProgres
+    }
+
+    management_group = Group.objects.get(name='Management')
+
+    # Get all users in the "management" group
+    management_users = management_group.user_set.all()
+
+    # Extract email addresses
+    management_emails = [user.email for user in management_users]
+
+    InProgres_list = "\n".join(
+        [f"<li>{Progres.title}: {Progres.description}</li>" for Progres in InProgres])
+    pending_tasks_list = "\n".join(
+        [f"<li>{pending.title}: {pending.description}</li>" for pending in pending_tasks])
+    completed_tasks_list = "\n".join(
+        [f"<li>{completed.title}: {completed.description}</li>" for completed in completed_tasks])
+    message = (
+        f"Dear Sir/Madam,<br><br>"
+        f"Here is my daily task report . <br><br>"
+        f"Completed tasks . <br><br>"
+        f"<ol>{completed_tasks_list}</ol><br>"
+        f"In-Progress tasks . <br><br>"
+        f"<ol>{InProgres_list}</ol><br>"
+        f"Pending tasks . <br><br>"
+        f"<ol>{pending_tasks_list}</ol><br>"
+        "This is an auto-generated email | © 2023 ITS. All rights reserved."
+    )
+    subject = f"Daily report for {request.user} - {today} "
+    recipient_list = management_emails
+    from_email = 'its-noreply@intellitech.co.ke'
+
+    # Create an EmailMessage instance for HTML content
+    email_message = EmailMessage(subject, message, from_email, recipient_list)
+    email_message.content_subtype = 'html'  # Set content type to HTML
+    email_message.send()
+
+    messages.success(request,'Daily report sent successfully')
+    return redirect('tasks')

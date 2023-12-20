@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Tasks{% endblock %}
+{% block header %}Tasks{% endblock %}
+{% block content %}
+<h1>Daily Task Report</h1>
+
+    <h2>Pending and In-Progress Tasks:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in pending_tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in InProgres %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Completed Tasks:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in completed_tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
