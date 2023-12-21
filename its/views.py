@@ -860,7 +860,11 @@ def daily_report(request):
     subject = f"Daily report for {request.user} - {today} "
     recipient_list = management_emails
     from_email = 'its-noreply@intellitech.co.ke'
-
+    print("before")
+    print(recipient_list)
+    recipient_list.append(request.user.email)
+    print("after")
+    print(recipient_list)
     # Create an EmailMessage instance for HTML content
     email_message = EmailMessage(subject, message, from_email, recipient_list)
     email_message.content_subtype = 'html'  # Set content type to HTML
