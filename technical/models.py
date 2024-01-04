@@ -249,19 +249,32 @@ class ServiceSchedules(models.Model):
 class ServiceTickets(models.Model):
     ticket_id = models.ForeignKey(ServiceSchedules, on_delete=models.CASCADE, db_column='ticket_ids')
     servers = models.IntegerField(null=True)
+    serversdone = models.CharField(max_length=255,blank=True, null=True)
     cpus = models.IntegerField(null=True)
+    cpusdone = models.CharField(max_length=255,blank=True, null=True)
     laptops = models.IntegerField(null=True)
+    laptopsdone = models.CharField(max_length=255,blank=True, null=True)
     printers = models.IntegerField(null=True)
+    printersdone = models.CharField(max_length=255,blank=True, null=True)
     scanners = models.IntegerField(null=True)
+    scannersdone = models.CharField(max_length=255,blank=True, null=True)
     ups = models.IntegerField(null=True)
+    upsdone = models.CharField(max_length=255,blank=True, null=True)
     large_ups = models.IntegerField(null=True)
+    large_upsdone = models.CharField(max_length=255,blank=True, null=True)
     aios = models.IntegerField(null=True)
+    aiosdone = models.CharField(max_length=255,blank=True, null=True)
     biometrics = models.IntegerField(null=True)
+    biometricsdone = models.CharField(max_length=255,blank=True, null=True)
     cctvs = models.IntegerField(null=True)
+    cctvsdone = models.CharField(max_length=255,blank=True, null=True)
     highend_machines = models.IntegerField(null=True)
+    highend_machinesdone = models.CharField(max_length=255,blank=True, null=True)
     nas = models.IntegerField(null=True)
+    nasdone = models.CharField(max_length=255,blank=True, null=True)
     more = models.CharField(max_length=255, null=True)
     remark = models.CharField(max_length=200, null=True)
+
 
 
 class Signature(models.Model):

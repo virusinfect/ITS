@@ -1524,6 +1524,18 @@ def edit_service_schedule(request, schedule_id):
             service_ticket.more = request.POST.get('more')
             service_ticket.remark = request.POST.get('remark')
             service_ticket.cctvs = request.POST.get('cctvs')
+            service_ticket.serversdone = request.POST.get('serversdone')
+            service_ticket.cpusdone  = request.POST.get('cpusdone')
+            service_ticket.laptopsdone  = request.POST.get('laptopsdone')
+            service_ticket.printersdone  = request.POST.get('printersdone')
+            service_ticket.scannersdone  = request.POST.get('scannersdone')
+            service_ticket.upsdone  = request.POST.get('upsdone')
+            service_ticket.large_upsdone  = request.POST.get('large_upsdone')
+            service_ticket.aiosdone  = request.POST.get('aiosdone')
+            service_ticket.biometricsdone  = request.POST.get('biometricsdone')
+            service_ticket.highend_machinesdone  = request.POST.get('highend_machinesdone')
+            service_ticket.nasdone  = request.POST.get('nasdone')
+            service_ticket.cctvsdone  = request.POST.get('cctvsdone')
 
             # Update other fields...
             service_ticket.save()
