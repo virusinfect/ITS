@@ -33,7 +33,7 @@
 
                 </div>
             </div>
-        <div class="row mb-3"><h4 class="text-center">Format Approval Document</h4></div>
+            <div class="row mb-3"><h4 class="text-center">Format Approval Document</h4></div>
 
             <div class="row">
                 <div class="col-xl-6 col-lg-6">
@@ -117,10 +117,9 @@
     $(document).ready(function () {
         var canvas = document.getElementById('signature-pad');
         var signaturePad = new SignaturePad(canvas);
-        var formatId = $('#format_id').val();
-        var approvedId = $('#approved').val();// Get the delivery ID from the hidden input field
-
         $('#save-signature').click(function () {
+            var formatId = $('#format_id').val();
+            var approvedId = $('#approved').val();// Get the delivery ID from the hidden input field
             var signatureData = signaturePad.toDataURL();
             $.ajax({
                 url: '/save-signature-view-format/',  // Replace with the actual URL

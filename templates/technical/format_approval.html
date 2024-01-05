@@ -118,9 +118,11 @@
             var canvas = document.getElementById('signature-pad');
             var signaturePad = new SignaturePad(canvas);
             var formatId = $('#format_id').val();
-            var approvedId = $('#approved').val();// Get the delivery ID from the hidden input field
 
             $('#save-signature').click(function () {
+                var approvedId = $('#approved').val();// Get the delivery ID from the hidden input field
+                console.log("data")
+                console.log(approvedId)
                 var signatureData = signaturePad.toDataURL();
                 $.ajax({
                     url: '/save-signature-view-format/',  // Replace with the actual URL

@@ -86,6 +86,8 @@ def save_signature_view_format(request):
         signature_data = request.POST.get('signature_data')
         format_id = request.POST.get('format_id')
         approved = request.POST.get('approved')
+        print("data")
+        print(approved)
 
 
         # Extract the Base64 data after the comma
@@ -113,6 +115,7 @@ def save_signature_view_format(request):
 @csrf_exempt
 def save_signature_view_call(request):
     if request.method == 'POST':
+        approved = request.POST.get('approved')
         signature_data = request.POST.get('signature_data')
         cc_id = request.POST.get('cc_id')
         call_card = get_object_or_404(CallCards, pk=cc_id)
@@ -152,7 +155,9 @@ def save_signature_view_call(request):
         try:
             signature.callcard = call_card  # Associate the delivery with the signature
             if signature_data:
+                signature.approved = approved  # Associate the delivery with the signature
                 signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
+
 
             if status1 == "Pending" and status2 == "Done":
                 management_group = Group.objects.get(name='Helpdesk')

@@ -284,6 +284,7 @@ class Signature(models.Model):
 
 class CSignature(models.Model):
     signature_image = models.ImageField(upload_to='signatures/')
+    approved = models.CharField(max_length=255,null=True)
     callcard = models.ForeignKey(CallCards, on_delete=models.CASCADE, related_name='signatures')
 
 

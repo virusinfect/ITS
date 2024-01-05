@@ -98,6 +98,7 @@
                             {% if signature %}
                                 <div class="row mx-auto">
                                     <div class="card">
+                                        <h5>Signed By : {{ signature.approved }}</h5>
                                         <img src="{{ signature.signature_image.url }}" width="400"
                                              class="card border border-primary mt-1 mx-auto"
                                              alt="Signature">
@@ -106,6 +107,11 @@
                             {% else %}
                                 <div class="row mx-auto">
                                     <div class="card">
+                                        <div class="mb-3">
+                                            <label for="approved">Signed By : </label>
+                                            <input class="form-control" name="approved" id="approved" width="400" type="text"
+                                                   required>
+                                        </div>
                                         <canvas id="signature-pad" width="400" height="200"
                                                 class="card border border-primary mt-1 mx-auto"></canvas>
                                         <input type="hidden" id="cc_id" value="{{ call_card.cc_id }}">
@@ -152,6 +158,7 @@
             }
 
             $('#save-signature').click(function () {
+                var approvedId = $('#approved').val();// Get the delivery ID from the hidden input field
                 // Check if the signature pad is empty at the moment of the button click
                 if (signaturePad.isEmpty()) {
                     var signatureData = null;  // or use an empty string if you prefer ''
@@ -183,6 +190,7 @@
                         type: typeNo,
                         cc_id: ccId,
                         remarks: remarksNo,
+                        approved: approvedId// Include the delivery ID in the data
                     },
                     success: function (response) {
                         // Check if the response indicates success (you can define this)
