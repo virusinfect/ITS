@@ -1022,20 +1022,17 @@ def price_rules_for_equipment(request, equipment_id):
             minint = Decimal(request.POST.get(f"min_{price_rule.id}", 0))
             maxintorginal = request.POST.get(f"max_{price_rule.id}")
 
-            print("max")
-            print(maxintorginal)
 
             if maxintorginal:
                 if maxintorginal == "None":
                     price_rule.price_range_end = None
-                    print("int is none")
+
                 else:
                     price_rule.price_range_end = Decimal(request.POST.get(f"max_{price_rule.id}", 0))
-                    print(Decimal(request.POST.get(f"max_{price_rule.id}", 0)))
-                    print("not none")
+
             else:
                 price_rule.price_range_end = None
-                print("int is none")
+
 
             discount_percentage = Decimal(request.POST.get(f"discount_percentage_{price_rule.id}", 0))
             discount_percentage2 = Decimal(request.POST.get(f"discount_percentage2_{price_rule.id}", 0))
@@ -1065,9 +1062,7 @@ def add_price_rule(request, equipment_id):
         discount_percentage_data = request.POST.getlist('discount_percentageb[]')
         discount_percentage2_data = request.POST.getlist('discount_percentage2b[]')
         equipment_id = equipment_id
-        print("data")
-        print(price_range_start_data)
-        print(constant)
+
         for i in range(len(price_range_start_data)):
             if (price_range_start_data[i]):
                 price_rule = PriceRule(
@@ -1171,12 +1166,9 @@ def edit_laptop_price(request, laptop_price_id):
     equipments = Equipment.objects.all()
     brands = Brand.objects.all()
     types = Type.objects.all()
-    print("data")
-    print(laptop_price.supplier_id)
-    print(request.POST.get('supplier'))
+
     if request.method == 'POST':
-        print(laptop_price.supplier_id)
-        print(request.POST.get('supplier'))
+
         # Handle form data and update the laptop_price instance
         laptop_price.product_name = request.POST.get('product_name')
         laptop_price.type_id = request.POST.get('type')
@@ -1201,17 +1193,20 @@ def edit_laptop_price(request, laptop_price_id):
 
 
 @csrf_exempt
-def search_laptops_js(request):
+def search_laptops_js2(request):
     if request.method == 'POST':
-        query = request.POST.get('q', '')
+        query = request.POST.get('q', '').lower().strip()
         equipment = request.POST.get('equipment', '')
         fields = request.POST.get('fields', '')
+        type_id = request.GET.get('type')
         currency = request.POST.get('currency', '')
 
         # Perform the search based on the form data
         laptops = LaptopPriceList.objects.filter(
             product_name__icontains=query,
-            # Add other filters based on the form data
+            equipment_id = equipment,
+            type_id=type_id,
+            currency=currency,
         )
 
         # Prepare JSON data
@@ -1229,3 +1224,115 @@ def search_laptops_js(request):
         return JsonResponse(laptop_data, safe=False)
     else:
         return JsonResponse({'error': 'Invalid request method'})
+
+@csrf_exempt
+def search_laptops_js(request):
+    query = request.POST.get('q', '').lower().strip()
+    selected_fields = request.POST.getlist('fields', [])
+
+    # Define the fields you want to allow searching
+    allowed_fields = ['processor', 'brand__name', 'series', 'description', 'product_name']
+
+    # Create a dictionary to map the field names to their corresponding lookup
+    field_lookup = {
+        'product_name': 'icontains',
+        'processor': 'icontains',
+        'brand__name': 'icontains',
+        'series': 'icontains',
+        'description': 'icontains',  # Use icontains for case-insensitive search
+        # Add other fields as needed
+    }
+    equipment_id = request.POST.get('equipment')
+    type_id = request.POST.get('type1')
+    currency = request.POST.get('currency')
+     # Build the Q objects for the selected fields
+    q_objects = Q()
+    for field in selected_fields:
+        if field in allowed_fields:
+            lookup = field_lookup[field]
+            q_objects |= Q(**{f'{field}__{lookup}': query})
+
+    # Check if both query and selected_fields are empty
+    if not query and not selected_fields:
+        # Return an empty queryset or default products if needed
+        laptops = LaptopPriceList.objects.none()
+
+    # Additional filter for the description field
+    elif 'description' in selected_fields and query:
+
+        # Split the query into keywords using both semicolons and spaces
+        keywords = [kw.strip().lower() for kw in re.split(r'[;\s]+', query)]
+
+        # Construct a list of Q objects for each keyword
+        keyword_queries = [Q(description__icontains=keyword) for keyword in keywords]
+        laptops = LaptopPriceList.objects.all()
+        # Combine the Q objects using the | operator
+        laptops = laptops.filter(*keyword_queries)
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+            if type_id:
+                laptops = laptops.filter(type=type_id)
+
+    else:
+
+        # Query the model using the constructed Q objects
+        laptops = LaptopPriceList.objects.filter(q_objects)
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+            if type_id:
+                laptops = laptops.filter(type=type_id)
+        # Filter by equipment if selected
+
+        if equipment_id:
+            laptops = laptops.filter(equipment=equipment_id)
+            if type_id:
+                laptops = laptops.filter(type=type_id)
+
+
+    for item in laptops:
+
+        exchange_rate = Exchange.objects.first().rate
+        exchange_rate2 = Exchange.objects.first().rate2
+
+        if item.currency == "USD":
+            currency_model = exchange_rate
+        else:
+            currency_model = None
+
+        if item.currency == "KES":
+            price2 = item.price / exchange_rate
+
+        else:
+            price2 = item.price
+
+        item.price_min = calculate_discounted_price(item.price, item.equipment, price2,currency_model)
+        item.price_max = calculate_discounted_price2(item.price, item.equipment, price2,currency_model)
+
+        if currency == "KES" and item.currency == "USD":
+
+            item.price = item.price * exchange_rate2
+            item.price_max = item.price_max * exchange_rate2
+            item.price_min = item.price_min * exchange_rate2
+            item.currency = "KES"
+
+        elif currency == "USD" and item.currency == "KES":
+
+            item.currency = "USD"
+
+            item.price = item.price / exchange_rate
+            item.price_max = item.price_max / exchange_rate
+            item.price_min = item.price_min / exchange_rate
+
+    laptop_data = []
+    for laptop in laptops:
+        laptop_data.append({
+                'product_name': laptop.product_name,
+                'supplier': laptop.supplier.name,
+                'price': str(laptop.price),
+                'description': laptop.description,
+                # Add other fields as needed
+            })
+
+
+
+    return JsonResponse(laptop_data, safe=False)

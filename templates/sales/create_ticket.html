@@ -298,11 +298,58 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <!-- Search Form -->
-            <form id="searchForm">
-                {% csrf_token %}
-                <label for="productName">Product Name:</label>
-                <input type="text" id="productName" class="form-control">
+
+            <form form id="searchForm" class="my-4">
+                <div class="row">
+                    <div class="mb-3 col-5">
+                        <label for="search" class="form-label">Search:</label>
+                        <input type="text" class="form-control" id="q" name="q" value="{{ query }}">
+                    </div>
+                    <div class="mb-3 col-3">
+                        <label for="equipment" class="form-label">Equipment:</label>
+                        <select id="equipment" name="equipment" class="form-select">
+                            <option value="">All Equipment</option>
+                            {% for equip in all_equipment %}
+                                <option value="{{ equip.id }}"
+                                        {% if equip.id|stringformat:"s" == request.GET.equipment|stringformat:"s" %}selected{% endif %}>
+                                    {{ equip.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3 col-2">
+                        <label for="fields" class="form-label">Select Fields:</label>
+                        <select class="form-select" id="fields" name="fields">
+                            {% for field in allowed_fields %}
+                                <option value="{{ field }}"
+                                        {% if field in selected_fields %}selected{% endif %}>
+                                    {% if field == 'product_name' %}part code{% elif field == 'brand__name' %}
+                                        brand{% else %}{{ field }}{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3 col-1">
+                        <label for="type" class="form-label">Type:</label>
+                        <select class="form-select" id="type1" name="type1" disabled>
+                            <option value="">select</option>
+                            <!-- Options will be dynamically added here -->
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-1">
+                        <label for="fields" class="form-label">Currency:</label>
+                        <select class="form-select" id="currency" name="currency">
+                            <option value="">Default</option>
+                            <option value="KES"
+                                    {% if "KES" == request.GET.currency %}selected{% endif %}>KES
+                            </option>
+                            <option value="USD"
+                                    {% if "USD" == request.GET.currency %}selected{% endif %}>USD
+                            </option>
+
+                        </select>
+                    </div>
+                </div>
                 <button type="button" class="btn btn-primary mt-2" onclick="searchLaptops()">Search</button>
             </form>
             <p id="offcanvasContent">Row Number: </p>
@@ -495,6 +542,48 @@
         });
     </script>
     <script>
+        // Wait for the document to be ready
+        $(document).ready(function () {
+            // Handle the change event on the equipment dropdown
+            $('#equipment').change(function () {
+
+                // Get the selected equipment id
+                var equipmentId = $(this).val();
+                console.log("changed", equipmentId)
+                // Disable the types dropdown until data is loaded
+                $('#type1').prop('disabled', true);
+
+                // Make an asynchronous request to fetch types for the selected equipment
+                $.ajax({
+                    url: '/price-list/api/get_types/',  // Replace with your Django view URL
+                    method: 'GET',
+                    data: {equipment_id: equipmentId},
+                    dataType: 'json',
+                    success: function (data) {
+
+                        // Clear existing options in the types dropdown
+                        $('#type1').empty();
+
+                        // Add a default blank option
+                        $('#type1').append('<option value="">Select Type</option>');
+
+                        // Add new options based on the response
+                        $.each(data.types, function (index, type) {
+                            $('#type1').append('<option value="' + type.id + '">' + type.name + '</option>');
+                        });
+
+                        // Enable the types dropdown
+                        $('#type1').prop('disabled', false);
+                    },
+                    error: function (error) {
+                        console.error('Error fetching types:', error);
+                        // Handle errors if needed
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
         var rowNumber = 1;
 
         function openOffcanvas(button) {
@@ -512,7 +601,6 @@
             offcanvasContent.textContent = 'Row Number: ' + rowNumber;
 
 
-
             // Trigger the Offcanvas
             var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasExample'));
             offcanvas.show();
@@ -521,14 +609,18 @@
 
         function searchLaptops() {
             // Get the input value
-            var productName = document.getElementById('productName').value;
+            var equipment = document.getElementById('equipment').value;
+            var currency = document.getElementById('currency').value;
+            var fields = document.getElementById('fields').value;
+            var q = document.getElementById('q').value;
+            var type1 = document.getElementById('type1').value;
 
             // Perform the search (you can customize this based on your needs)
             // For simplicity, let's assume you're using jQuery for AJAX
             $.ajax({
                 url: '/price-list/search_js/',  // Update the URL to your search endpoint
                 method: 'POST',
-                data: {product_name: productName},
+                data: {equipment: equipment, type1: type1, currency: currency, q: q, fields: fields},
                 success: function (data) {
                     // Update the table with the search results
                     var searchResultsBody = document.getElementById('searchResultsBody');
@@ -596,4 +688,5 @@
         }
 
     </script>
+
 {% endblock %}

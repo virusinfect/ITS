@@ -16,6 +16,7 @@ from its.models import Company, Task
 
 from .models import SalesTickets, SalesQuotes, Orders, ProformaInvoice, OurBanks, SalesQuoteProducts, OrderProducts, \
     SalesTicketProducts, ProformaInvoiceProducts
+from prices.models import Equipment, Type
 
 
 @login_required
@@ -928,6 +929,9 @@ def create_ticket(request):
     companies = Company.objects.all().order_by('name')
     sales_group = Group.objects.get(name='Sales')
     users = sales_group.user_set.all()
+    all_equipment = Equipment.objects.all().order_by('name')
+    all_types = Type.objects.all()
+    allowed_fields = ['processor', 'brand__name', 'series', 'description', 'product_name']
 
     if request.method == 'POST':
         company_id = request.POST.get('company_id')
@@ -1066,7 +1070,7 @@ def create_ticket(request):
         return redirect('edit_sales_ticket', ticket.ticket_id)
 
     # If the request method is not POST, render the form for creating a ticket
-    return render(request, 'sales/create_ticket.html', {'companies': companies, 'users': users})
+    return render(request, 'sales/create_ticket.html', {'companies': companies, 'users': users,'all_equipment': all_equipment, 'all_types': all_types,'allowed_fields':allowed_fields})
 
 
 @login_required
