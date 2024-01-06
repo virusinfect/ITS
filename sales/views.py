@@ -223,7 +223,6 @@ def duplicate_sales_ticket(request, ticket_id):
             created=product.created,
             updated=product.updated,
             ticket=new_ticket,
-            ticket_handler=product.ticket_handler,
         )
         new_product.save()
 

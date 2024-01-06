@@ -536,12 +536,15 @@
 
                     // Iterate over the JSON data and append rows to the table
                     data.forEach(function (laptop) {
+                        const cleanedDescription = laptop.description.replace(/"/g, "");
+                        console.log(laptop.description)
+                        console.log(cleanedDescription)
                         var row = '<tr>' +
                             '<td>' + laptop.product_name + '</td>' +
-                            '<td>' + laptop.description + '</td>' +
+                            '<td>' + cleanedDescription + '</td>' +
                             '<td>' + laptop.supplier + '</td>' +
                             '<td>' + laptop.price + '</td>' +
-                            '<td><a class="" title="add product" tabindex="0" data-plugin="tippy" data-tippy-interactive="true"  onclick="addToOriginalTable(&#39;' + laptop.product_name + '&#39;, &#39;' + laptop.description + '&#39;, &#39;' + laptop.price + '&#39;, &quot;' + laptop.supplier + '&quot;)"><i class="mdi mdi-plus-circle mdi-18px"></i></a></td>' +
+                            '<td><a class="" title="add product" tabindex="0" data-plugin="tippy" data-tippy-interactive="true"  onclick="addToOriginalTable(&#39;' + laptop.product_name + '&#39;, &#39;' + cleanedDescription + '&#39;, &#39;' + laptop.price + '&#39;, &quot;' + laptop.supplier + '&quot;)"><i class="mdi mdi-plus-circle mdi-18px"></i></a></td>' +
                             '</tr>';
                         searchResultsBody.innerHTML += row;
                     });
