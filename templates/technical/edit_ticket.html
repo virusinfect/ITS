@@ -115,7 +115,7 @@
                                         </div>
                                         <div class="mb-3 col-lg-6">
                                             <label for="tech" class="form-label"><strong>Technician:</strong></label>
-                                            <select id="tech" name="tech" class="form-select">
+                                            <select id="tech" name="tech" class="form-select" {% if not user|is_helpdesk %}disabled{% endif %}>
                                                 {% for tech_option in users %}
                                                     <option value="{{ tech_option.id }}"
                                                             {% if tech_option.id == ticket.tech.id %}selected{% endif %}>
