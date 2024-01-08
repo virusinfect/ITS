@@ -609,10 +609,10 @@ def edit_ticket(request, ticket_id):
             if image3:  # Check if image3 is not empty
                 TicketImage.objects.create(ticket=ticket, tag="recommendation", image=image3)
 
-            if selected_technician != saved_technician:
-                if ticket.task:  # Check if a task exists for the ticket
-                    ticket.task.user = selected_technician
-                    ticket.task.save()
+            #if selected_technician != saved_technician:
+                #if ticket.task:  # Check if a task exists for the ticket
+                    #ticket.task.user = selected_technician
+                    #ticket.task.save()
 
             messages.success(request, 'Ticket Edited successfully')
             return redirect('edit-ticket', ticket_id=ticket_id)
