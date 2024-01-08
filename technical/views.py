@@ -574,6 +574,8 @@ def edit_ticket(request, ticket_id):
         form_type = request.POST.get('form_type')
         if form_type == 'form1':
             selected_technician_id = request.POST.get('tech')
+            print("data")
+            print(selected_technician_id)
             saved_technician = ticket.tech
             ticket.type = request.POST.get('type')
             client = request.POST.get('client')

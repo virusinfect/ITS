@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+{% load helpdesk_tags %}
+{% block title %}Tasks   List{% endblock %}
+{% block header %}Tasks List{% endblock %}
+{% block content %}
+    <style>
+        .static-action {
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            background-color: white;
+        }
+    </style>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'all_tasks' %}">All Tasks</a></li>
+                </ol>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <div class="card">
+        <div class="card-body table-responsive">
+            <h4 class="mt-0 header-title">Tasks List</h4>
+            <table id="responsive-datatable" class="table table-bordered table-bordered dt-responsive nowrap">
+
+                <thead class="table-dark">
+                <tr>
+                    <th>No.</th>
+                    <th>Created</th>
+                    <th>Title</th>
+                    <th>Created By</th>
+                    <th>Assigned To</th>
+                    <th>CC Users</th>
+                    <th>Status</th>
+                    <th>Completed Date</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>{{ task.created }}</td>
+                        <td>{{ task.title }}</td>
+                        <td>{{ task.created_by }}</td>
+                        <td>{{ task.user }}</td>
+                        <td>{{ task.cc_users }}</td>
+                        <td>
+                            {% if task.status == "Completed" %}
+                                <i class=" mdi mdi-check-circle-outline mdi-18px btn-outline-success"></i> Completed
+                            {% elif task.status == "Pending" %}
+                                <i class=" mdi mdi-alert-circle-outline mdi-18px btn-outline-warning"></i> Pending
+                            {% elif task.status == "In Progress" %}
+                                <i class=" mdi mdi-alert-circle-check mdi-18px btn-outline-danger"></i> In Progress
+                            {% endif %}
+                        </td>
+                        <td>{{ task.completed_date }}</td>
+
+                        <td>
+                            <a href="{% url 'view_task_details' task.id %}" title="view" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="mdi mdi-eye mdi-18px"></i>
+                            </a>
+                            <a href="#" title="edit" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="mdi mdi-square-edit-outline mdi-18px"></i>
+                            </a>
+                            <a href="{% url 'delete_task' task.id %}" title="delete" tabindex="0"
+                               data-plugin="tippy" data-tippy-interactive="true">
+                                <i class="mdi mdi-delete-outline mdi-18px"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="{% static 'libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    {#    <link href="{% static 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />#}
+    <link href="{% static 'libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'libs/datatables.net-select-bs5/css/select.bootstrap5.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <!-- third party js -->
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.css"
+          rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.js"></script>
+    <!-- third party js ends -->
+    <!-- Datatables init -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+    <script>
+        jQuery(document).ready(function ($) {
+            $('#responsive-datatable').DataTable({
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        text: 'Add Part', // Custom button text
+                        text: '<i class="fas fa-plus"> </i>',
+                        action: function () {
+                            window.location.href = '{% url "create_task" %}';
+                        },
+                        className: 'btn btn-danger mb-1 waves-effect waves-light'
+                    },
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        className: 'btn btn-danger btn-bg-light mb-1'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i>',
+                        className: 'btn btn-danger mb-1',
+                        title: 'Ticket List',
+                        customize: function (doc) {
+                            doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'];
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        className: 'btn btn-danger mb-1'
+                    },
+
+                ]
+            });
+        });
+        jQuery(document).ready(function ($) {
+            var table = $('#responsive-datatable').DataTable();
+
+            $('#print-table').on('click', function () {
+                var win = window.open('', 'Print', 'width=800,height=600');
+                win.document.write('<html><head><title>Print</title></head><body>');
+                win.document.write('<h1>Ticket List</h1>');
+                win.document.write('<table style="border-collapse: collapse; width: 100%;">');
+
+                // Add table headers
+                win.document.write('<tr>');
+                table.columns().header().each(function (th) {
+                    win.document.write('<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">' + $(th).html() + '</th>');
+                });
+                win.document.write('</tr>');
+
+                // Loop through the DataTable rows and copy them to the new window
+                table.rows().every(function () {
+                    var row = this.data();
+                    win.document.write('<tr>');
+                    for (var i = 0; i < row.length; i++) {
+                        win.document.write('<td style="border: 1px solid #ddd; padding: 8px; text-align: left;">' + row[i] + '</td>');
+                    }
+                    win.document.write('</tr>');
+                });
+
+                win.document.write('</table>');
+                win.document.write('</body></html>');
+                win.document.close();
+                win.print();
+                win.close();
+            });
+        });
+
+    </script>
+
+{% endblock %}
+

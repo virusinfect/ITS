@@ -74,7 +74,8 @@ class Task(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     created = models.DateTimeField(auto_now_add=True)  # Automatically set upon creation
-    updated = models.DateTimeField(auto_now=True)  # Automatically updated on each save
+    updated = models.DateTimeField(auto_now=True)
+    completed_date = models.DateTimeField(blank=True,null=True)# Automatically updated on each save
     is_active = models.BooleanField(default=True)
     status = models.CharField(max_length=20)
     cc_users = models.ManyToManyField(User, related_name='cc_tasks', blank=True)
@@ -108,11 +109,20 @@ class Task(models.Model):
 class Comment(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.TextField()
+    comment = models.CharField(max_length=255)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Comment on {self.task.title} by {self.user.username}'
+
+class Remark(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    remark = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Remark on {self.task.title} by {self.user.username}'
 
 
 class Personal(models.Model):

@@ -1,6 +1,8 @@
 import base64
 from datetime import timedelta, datetime
 
+from django.core.exceptions import ValidationError
+from django.forms import formset_factory, BaseFormSet
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.views import View
@@ -23,6 +25,7 @@ from service.models import Equipment
 from technical.models import Signature, Delivery, CallCards, CSignature, FSignature, FormatApproval, UniqueToken, \
     Tickets
 
+from .forms import CommentForm, RemarkForm, EmailForm, RowForm
 from .models import PartsCategory, Parts, Company, Clients, Task, Personal, Notification
 
 
@@ -89,7 +92,6 @@ def save_signature_view_format(request):
         print("data")
         print(approved)
 
-
         # Extract the Base64 data after the comma
         base64_data = signature_data.split(',')[1]
 
@@ -131,7 +133,6 @@ def save_signature_view_call(request):
         call_card.type = request.POST.get('type')
         call_card.save()
 
-
         if signature_data:
             try:
                 # Split the base64 data and get the second part
@@ -143,7 +144,7 @@ def save_signature_view_call(request):
             base64_data = ''
 
         # Extract the Base64 data after the comma
-        #base64_data = signature_data.split(',')[1]
+        # base64_data = signature_data.split(',')[1]
 
         # Decode the Base64 data
         signature_binary = base64.b64decode(base64_data)
@@ -157,7 +158,6 @@ def save_signature_view_call(request):
             if signature_data:
                 signature.approved = approved  # Associate the delivery with the signature
                 signature.signature_image.save('signature.png', ContentFile(signature_binary), save=True)
-
 
             if status1 == "Pending" and status2 == "Done":
                 management_group = Group.objects.get(name='Helpdesk')
@@ -350,6 +350,7 @@ def create_company(request):
 
     return render(request, 'create_company.html')
 
+
 @login_required
 def modal_create_company(request):
     if request.method == 'POST':
@@ -381,6 +382,7 @@ def modal_create_company(request):
 
     # Handle non-POST requests (e.g., GET requests)
     return render(request, 'create_company.html')
+
 
 @login_required
 def edit_company(request, company_id):
@@ -567,7 +569,7 @@ def create_task(request):
         message = (
             f"Dear {user},<br><br>"
             f"You have been allocated Task : {task.title} . Created By : {creator} . <br><br>"
-            "This is an auto-generated email | © 2023 ITS. All rights reserved."
+            "This is an auto-generated email | © 2024 ITS. All rights reserved."
         )
         subject = f"Allocated Task : {task.title}"
         recipient_list = [user.email]
@@ -582,12 +584,11 @@ def create_task(request):
             users = User.objects.get(id=user_ids)  # Replace with your actual user lookup logic
             task.cc_users.add(users)
 
-
             # Use the 'table' string in the email message
             message = (
                 f"Dear {users},<br><br>"
                 f"You have been added to  Task : {task.title} . Created By : {creator} . <br><br>"
-                "This is an auto-generated email | © 2023 ITS. All rights reserved."
+                "This is an auto-generated email | © 2024 ITS. All rights reserved."
             )
             subject = f"Allocated Task : {task.title}"
             recipient_list = [users.email]
@@ -597,7 +598,6 @@ def create_task(request):
             email_message = EmailMessage(subject, message, from_email, recipient_list)
             email_message.content_subtype = 'html'  # Set content type to HTML
             email_message.send()
-
 
         messages.success(request, 'Task Created successfully')
         return redirect('tasks')  # Redirect to a task list view or another appropriate URL
@@ -613,32 +613,32 @@ def Tasks(request):
     # Filter for pending tasks where you are either the 'cc_user' or 'user'
     pending_tasks = Task.objects.filter(
         Q(status='Pending', is_active=True, cc_users=current_user) |
-        Q(status='Pending', is_active=True, user=current_user)|
+        Q(status='Pending', is_active=True, user=current_user) |
         Q(status='Pending', is_active=True, created_by=current_user)
     ).annotate(
-        comment_count=Count('comment'),
-        cc_users_count=Count('cc_users')
+        comment_count=Count('comment', distinct=True),
+        cc_users_count=Count('cc_users', distinct=True)
     )
 
     # Filter for in-progress tasks where you are either the 'cc_user' or 'user'
     in_progress_tasks = Task.objects.filter(
         Q(status='In Progress', is_active=True, cc_users=current_user) |
-        Q(status='In Progress', is_active=True, user=current_user)|
+        Q(status='In Progress', is_active=True, user=current_user) |
         Q(status='In Progress', is_active=True, created_by=current_user)
     ).annotate(
-        comment_count=Count('comment'),
-        cc_users_count=Count('cc_users')
+        comment_count=Count('comment', distinct=True),
+        cc_users_count=Count('cc_users', distinct=True)
     )
 
     # Filter for completed tasks where you are either the 'cc_user' or 'user'
     completed_tasks = Task.objects.filter(
         Q(status='Completed', is_active=True, cc_users=current_user) |
-        Q(status='Completed', is_active=True, user=current_user)|
+        Q(status='Completed', is_active=True, user=current_user) |
         Q(status='Completed', is_active=True, created_by=current_user),
         updated__date=specific_date  # Filter tasks updated on the specific date
     ).annotate(
-        comment_count=Count('comment'),
-        cc_users_count=Count('cc_users')
+        comment_count=Count('comment', distinct=True),
+        cc_users_count=Count('cc_users', distinct=True)
     )
 
     return render(request, 'tasks.html', {
@@ -648,21 +648,79 @@ def Tasks(request):
     })
 
 
+def all_tasks(request):
+    current_user = request.user
+    tasks = Task.objects.filter(
+        Q(is_active=True, cc_users=current_user) |
+        Q(is_active=True, user=current_user) |
+        Q(is_active=True, created_by=current_user)
+    )
+    return render(request, 'all_tasks.html', {'tasks': tasks })
+
 @login_required
 def view_task_details(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     asignees = User.objects.all()
     if request.method == 'POST':
+        status = request.POST.get('status')
         user_ids = request.POST.get('assignee')
         task.user = User.objects.get(id=user_ids)
-        task.status = request.POST.get('status')
+        task.status = status
+        if status == "Completed":
+            task.completed_date = timezone.now()
         task.save()
         messages.success(request, 'Task Updated successfully')
         return redirect('tasks')
+    else:
+        form1 = CommentForm()
+        form2 = RemarkForm()
 
-    return render(request, 'task_details.html', {'task': task,'asignees': asignees})
+    return render(request, 'task_details.html', {'task': task, 'asignees': asignees, 'form1': form1, 'form2': form2})
+
+@login_required
+def add_comment(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.task = task
+            comment.user = request.user  # Assuming you have user authentication
+            comment.save()
+            messages.success(request, 'Commented successfully')
+            return redirect('view_task_details', task_id=task_id)  # Adjust the URL name
+
+    return render(request, 'task_details.html')
+
+@login_required
+def add_remark(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+
+    if request.method == 'POST':
+        form = RemarkForm(request.POST)
+        if form.is_valid():
+            remark = form.save(commit=False)
+            remark.task = task
+            remark.user = request.user  # Assuming you have user authentication
+            remark.save()
+            messages.success(request, 'Remark added successfully')
+            return redirect('view_task_details', task_id=task_id)  # Adjust the URL name
+
+    return render(request, 'task_details.html')
 
 
+def delete_task_view(request, task_id):
+    task = get_object_or_404(Task, id=task_id, user=request.user)
+
+    if request.method == 'POST':
+        # Set is_active to False and save the task
+        task.is_active = False
+        task.save()
+        messages.warning(request, 'Task deleted successfully')
+        return redirect('all_tasks')  # Replace with the name of your task list view
+
+    return render(request, 'delete_task.html', {'task': task})
 
 def form_with_uuid(request, token):
     try:
@@ -813,6 +871,7 @@ def equipment_lookup(request):
 
     return JsonResponse({})
 
+
 class CompanyAutocompleteView(View):
     def get(self, request):
         query = request.GET.get('query', '')
@@ -820,21 +879,20 @@ class CompanyAutocompleteView(View):
         company_names = [company.name for company in companies]
         return JsonResponse({'company_names': company_names})
 
+
 @login_required
 def daily_report(request):
     # Filter tasks with "pending" and "in-progress" status for the current day
     today = timezone.now().date()
-    pending_tasks = Task.objects.filter(status='Pending',user=request.user,is_active=True)
-    InProgres = Task.objects.filter(status='In Progress', user=request.user,is_active=True)
-    completed_tasks = Task.objects.filter(status='completed', updated__date=today,user=request.user,is_active=True)
-
-
+    pending_tasks = Task.objects.filter(status='Pending', user=request.user, is_active=True)
+    InProgres = Task.objects.filter(status='In Progress', user=request.user, is_active=True)
+    completed_tasks = Task.objects.filter(status='completed', updated__date=today, user=request.user, is_active=True)
 
     # Prepare data for the template
     context = {
         'pending_tasks': pending_tasks,
         'completed_tasks': completed_tasks,
-        'InProgres':InProgres
+        'InProgres': InProgres
     }
 
     management_group = Group.objects.get(name='Management')
@@ -860,20 +918,104 @@ def daily_report(request):
         f"<ol>{InProgres_list}</ol><br>"
         f"Pending tasks . <br><br>"
         f"<ol>{pending_tasks_list}</ol><br>"
-        "This is an auto-generated email | © 2023 ITS. All rights reserved."
+        "This is an auto-generated email | © 2024 ITS. All rights reserved."
     )
     subject = f"Daily report for {request.user} - {today} "
     recipient_list = management_emails
     from_email = 'its-noreply@intellitech.co.ke'
-    print("before")
-    print(recipient_list)
     recipient_list.append(request.user.email)
-    print("after")
-    print(recipient_list)
     # Create an EmailMessage instance for HTML content
     email_message = EmailMessage(subject, message, from_email, recipient_list)
     email_message.content_subtype = 'html'  # Set content type to HTML
     email_message.send()
 
-    messages.success(request,'Daily report sent successfully')
+    messages.success(request, 'Daily report sent successfully')
     return redirect('tasks')
+
+
+def create_daily_report(request):
+    today = timezone.now().date()
+    pending_tasks = Task.objects.filter(status='Pending', user=request.user, is_active=True)
+    InProgres = Task.objects.filter(status='In Progress', user=request.user, is_active=True)
+    completed_tasks = Task.objects.filter(status='completed', updated__date=today, user=request.user, is_active=True)
+
+    RowFormSet = formset_factory(RowForm, extra=1, formset=BaseRowFormSet)
+    if request.method == 'POST':
+        form = EmailForm(request.POST, request.FILES)
+        formset = RowFormSet(request.POST, request.FILES, prefix='rows')
+        if form.is_valid() and formset.is_valid():
+            # Print the total number of files received in the formset
+            print("Total Files in Formset:", sum(1 for form in formset))
+            body = form.cleaned_data['message']
+            # Process your main form data
+            to_email = 'rd@intellitech.co.ke'  # Replace with your email
+            subject = f"Daily report for {request.user} - {today} "  # Replace with your subject
+            InProgres_list = "\n".join(
+                [f"-{Progres.title}: " for Progres in InProgres])
+            pending_tasks_list = "\n".join(
+                [f"-{pending.title}: " for pending in pending_tasks])
+            completed_tasks_list = "\n".join(
+                [f"-{completed.title}: " for completed in completed_tasks])
+            message = (
+                f"Dear Sir/Madam,\n\n"
+                f"Here is my daily task report . \n\n"
+                f"Completed tasks . \n"
+                f"{completed_tasks_list}\n\n"
+                f"In-Progress tasks . \n"
+                f"{InProgres_list}\n\n"
+                f"Pending tasks . \n"
+                f"{pending_tasks_list}\n\n"
+
+            )
+            message += body
+            message += f"\n\n Attached Files"
+            # Process the formset data (rows)
+            for i, row_form in enumerate(formset):
+                if row_form.is_valid():
+                    title = row_form.cleaned_data['title']
+                    file = row_form.cleaned_data['file']
+                    # Add formset data to the email body
+                    message += f"\n Task: {title} -  File Name: {file.name}"
+
+            message += f"\n\n This is an auto-generated email | © 2024 ITS. All rights reserved."
+            # Create the email message
+            email = EmailMessage(subject, message, 'its-noreply@intellitech.co.ke', [to_email])
+
+            # Process the formset data (rows)
+            for i, row_form in enumerate(formset):
+                if row_form.is_valid():
+                    file = row_form.cleaned_data['file']
+                    email.attach(f'{file.name}', file.read(), file.content_type)
+
+            # Send the email
+            email.send()
+
+            messages.success(request, 'Daily report sent successfully')
+            return redirect('tasks')
+    else:
+        form = EmailForm()
+        formset = RowFormSet(prefix='rows')
+
+    return render(request, 'create_daily_report.html', {'form': form, 'formset': formset,'pending_tasks': pending_tasks,
+        'completed_tasks': completed_tasks,
+        'InProgres': InProgres})
+
+
+class BaseRowFormSet(BaseFormSet):
+    def clean(self):
+        """Check that at least one row has data."""
+        if any(self.errors):
+            # Don't bother validating the formset unless each form is valid on its own
+            return
+
+        rows_with_data = 0
+        for form in self.forms:
+            if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                rows_with_data += 1
+
+        if rows_with_data == 0:
+            raise ValidationError('At least one row must have data.')
+
+    def total_form_count(self):
+        """Ensure at least one form is displayed."""
+        return max(1, super().total_form_count())
