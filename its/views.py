@@ -955,11 +955,11 @@ def create_daily_report(request):
             to_email = 'rd@intellitech.co.ke'  # Replace with your email
             subject = f"Daily report for {request.user} - {today} "  # Replace with your subject
             InProgres_list = "\n".join(
-                [f"-{Progres.title}   #Remark : {get_latest_remark(Progres)}  " for Progres in InProgres])
+                [f"-{Progres.title}   \n#Remark : {get_latest_remark(Progres)}  " for Progres in InProgres])
             pending_tasks_list = "\n".join(
-                [f"-{pending.title}   #Remark : {get_latest_remark(pending)}  " for pending in pending_tasks])
+                [f"-{pending.title}   \n#Remark : {get_latest_remark(pending)}  " for pending in pending_tasks])
             completed_tasks_list = "\n".join(
-                [f"-{completed.title}   #Remark : {get_latest_remark(completed)} " for completed in completed_tasks])
+                [f"-{completed.title}   \n#Remark : {get_latest_remark(completed)} " for completed in completed_tasks])
             message = (
                 f"Dear Sir/Madam,\n\n"
                 f"Here is my daily task report . \n\n"
