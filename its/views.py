@@ -952,7 +952,7 @@ def create_daily_report(request):
             print("Total Files in Formset:", sum(1 for form in formset))
             body = form.cleaned_data['message']
             # Process your main form data
-            to_email = ['support@intellitech.co.ke','rd@intellitech.co.ke']  # Replace with your email
+            to_email = ['md@intellitech.co.ke','accounts@intellitech.co.ke']  # Replace with your email
             subject = f"Daily report for {request.user} - {today} "  # Replace with your subject
             InProgres_list = "\n".join(
                 [f"-{Progres.title}   \n#Remark : {get_latest_remark(Progres)}  " for Progres in InProgres])
@@ -980,10 +980,10 @@ def create_daily_report(request):
                         file = row_form.cleaned_data['file']
                         # Add formset data to the email body
                         message += f"\n Task: {title} -  File Name: {file.name}"
-    
+
             message += f"\n\n This is an auto-generated email | © 2024 ITS. All rights reserved."
             # Create the email message
-            email = EmailMessage(subject, message, 'its-noreply@intellitech.co.ke', [to_email])
+            email = EmailMessage(subject, message, 'its-noreply@intellitech.co.ke', to_email)
 
             # Process the formset data (rows)
             for i, row_form in enumerate(formset):
