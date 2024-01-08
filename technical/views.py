@@ -576,7 +576,6 @@ def edit_ticket(request, ticket_id):
             selected_technician_id = request.POST.get('tech')
             selected_technician = User.objects.get(pk=selected_technician_id)
             saved_technician = ticket.tech
-            # Update the ticket fields based on the POST data
             ticket.type = request.POST.get('type')
             client = request.POST.get('client')
             ticket.recommendation = request.POST.get('recommendation')
@@ -587,7 +586,8 @@ def edit_ticket(request, ticket_id):
             ticket.diagnosis = request.POST.get('diagnosis')
             ticket.action = request.POST.get('action')
             ticket.accessories = request.POST.get('accessories')
-            ticket.tech = selected_technician
+            if selected_technician_id:
+                ticket.tech_id = selected_technician_id
             ticket.updated = timezone.now()
             ticket.accessories = request.POST.get('accessories')
             ticket.updated = timezone.now()
