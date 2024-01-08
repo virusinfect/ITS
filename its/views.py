@@ -26,7 +26,7 @@ from technical.models import Signature, Delivery, CallCards, CSignature, FSignat
     Tickets
 
 from .forms import CommentForm, RemarkForm, EmailForm, RowForm
-from .models import PartsCategory, Parts, Company, Clients, Task, Personal, Notification
+from .models import PartsCategory, Parts, Company, Clients, Task, Personal, Notification, Remark
 
 
 def server_error(request):
@@ -932,6 +932,9 @@ def daily_report(request):
     messages.success(request, 'Daily report sent successfully')
     return redirect('tasks')
 
+def get_latest_remark(task):
+    latest_remark = Remark.objects.filter(task=task).order_by('-created').first()
+    return latest_remark.remark if latest_remark else "No remarks"
 
 def create_daily_report(request):
     today = timezone.now().date()
@@ -941,6 +944,7 @@ def create_daily_report(request):
 
     RowFormSet = formset_factory(RowForm, extra=1, formset=BaseRowFormSet)
     if request.method == 'POST':
+
         form = EmailForm(request.POST, request.FILES)
         formset = RowFormSet(request.POST, request.FILES, prefix='rows')
         if form.is_valid() and formset.is_valid():
@@ -951,11 +955,11 @@ def create_daily_report(request):
             to_email = 'rd@intellitech.co.ke'  # Replace with your email
             subject = f"Daily report for {request.user} - {today} "  # Replace with your subject
             InProgres_list = "\n".join(
-                [f"-{Progres.title}: " for Progres in InProgres])
+                [f"-{Progres.title}   #Remark : {get_latest_remark(Progres)}  " for Progres in InProgres])
             pending_tasks_list = "\n".join(
-                [f"-{pending.title}: " for pending in pending_tasks])
+                [f"-{pending.title}   #Remark : {get_latest_remark(pending)}  " for pending in pending_tasks])
             completed_tasks_list = "\n".join(
-                [f"-{completed.title}: " for completed in completed_tasks])
+                [f"-{completed.title}   #Remark : {get_latest_remark(completed)} " for completed in completed_tasks])
             message = (
                 f"Dear Sir/Madam,\n\n"
                 f"Here is my daily task report . \n\n"
@@ -971,11 +975,11 @@ def create_daily_report(request):
             message += f"\n\n Attached Files"
             # Process the formset data (rows)
             for i, row_form in enumerate(formset):
-                if row_form.is_valid():
-                    title = row_form.cleaned_data['title']
-                    file = row_form.cleaned_data['file']
-                    # Add formset data to the email body
-                    message += f"\n Task: {title} -  File Name: {file.name}"
+                    if row_form.is_valid() and row_form.has_changed():
+                        title = row_form.cleaned_data['title']
+                        file = row_form.cleaned_data['file']
+                        # Add formset data to the email body
+                        message += f"\n Task: {title} -  File Name: {file.name}"
 
             message += f"\n\n This is an auto-generated email | © 2024 ITS. All rights reserved."
             # Create the email message
@@ -983,9 +987,9 @@ def create_daily_report(request):
 
             # Process the formset data (rows)
             for i, row_form in enumerate(formset):
-                if row_form.is_valid():
-                    file = row_form.cleaned_data['file']
-                    email.attach(f'{file.name}', file.read(), file.content_type)
+                    if row_form.is_valid() and row_form.has_changed():
+                        file = row_form.cleaned_data['file']
+                        email.attach(f'{file.name}', file.read(), file.content_type)
 
             # Send the email
             email.send()
@@ -1013,8 +1017,8 @@ class BaseRowFormSet(BaseFormSet):
             if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
                 rows_with_data += 1
 
-        if rows_with_data == 0:
-            raise ValidationError('At least one row must have data.')
+        #if rows_with_data == 0:
+           # raise ValidationError('At least one row must have data.')
 
     def total_form_count(self):
         """Ensure at least one form is displayed."""
