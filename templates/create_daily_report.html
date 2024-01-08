@@ -12,7 +12,7 @@
                         <div class="col-4">
                             <h4 class="header-title mt-0 mb-3">Pending</h4>
                             {% for pending in pending_tasks %}
-                                <ol>
+                                <ul>
                                     <li>{{ pending.title }}<br> {% with latest_remark=pending.remark_set.last %}
                                         {% if latest_remark %}
                                             <p> <strong>Remark:  </strong>{{ latest_remark.remark }} </p>
@@ -20,13 +20,13 @@
                                             <p>No remarks available for this task.</p>
                                         {% endif %}
                                     {% endwith %}</li>
-                                </ol>
+                                </ul>
                             {% endfor %}
                         </div>
                         <div class="col-4">
                             <h4 class="header-title mt-0 mb-3">In Progress</h4>
                             {% for progress in InProgres %}
-                                <ol>
+                                <ul>
                                     <li>{{ progress.title }}<br> {% with latest_remark=progress.remark_set.last %}
                                         {% if latest_remark %}
                                             <p> <strong>Remark:  </strong>{{ latest_remark.remark }} </p>
@@ -34,13 +34,13 @@
                                             <p>No remarks available for this task.</p>
                                         {% endif %}
                                     {% endwith %}</li>
-                                </ol>
+                                </ul>
                             {% endfor %}
                         </div>
                         <div class="col-4">
-                            <h4 class="header-title mt-0 mb-3">Compeleted</h4>
+                            <h4 class="header-title mt-0 mb-3">Completed</h4>
                             {% for completed in completed_tasks %}
-                                <ol>
+                                <ul>
                                     <li>{{ completed.title }} <br> {% with latest_remark=completed.remark_set.last %}
                                         {% if latest_remark %}
                                             <p> <strong>Remark:  </strong>{{ latest_remark.remark }} </p>
@@ -48,7 +48,7 @@
                                             <p>No remarks available for this task.</p>
                                         {% endif %}
                                     {% endwith %}</li>
-                                </ol>
+                                </ul>
                             {% endfor %}
                         </div>
                     </div>
