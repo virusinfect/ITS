@@ -13,7 +13,13 @@
                             <h4 class="header-title mt-0 mb-3">Pending</h4>
                             {% for pending in pending_tasks %}
                                 <ol>
-                                    <li>{{ pending.title }}</li>
+                                    <li>{{ pending.title }}<br> {% with latest_remark=pending.remark_set.last %}
+                                        {% if latest_remark %}
+                                            <p> <strong>Remark:  </strong>{{ latest_remark.remark }} </p>
+                                        {% else %}
+                                            <p>No remarks available for this task.</p>
+                                        {% endif %}
+                                    {% endwith %}</li>
                                 </ol>
                             {% endfor %}
                         </div>
@@ -21,7 +27,13 @@
                             <h4 class="header-title mt-0 mb-3">In Progress</h4>
                             {% for progress in InProgres %}
                                 <ol>
-                                    <li>{{ progress.title }}</li>
+                                    <li>{{ progress.title }}<br> {% with latest_remark=progress.remark_set.last %}
+                                        {% if latest_remark %}
+                                            <p> <strong>Remark:  </strong>{{ latest_remark.remark }} </p>
+                                        {% else %}
+                                            <p>No remarks available for this task.</p>
+                                        {% endif %}
+                                    {% endwith %}</li>
                                 </ol>
                             {% endfor %}
                         </div>
