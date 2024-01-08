@@ -952,7 +952,7 @@ def create_daily_report(request):
             print("Total Files in Formset:", sum(1 for form in formset))
             body = form.cleaned_data['message']
             # Process your main form data
-            to_email = 'rd@intellitech.co.ke'  # Replace with your email
+            to_email = 'support@intellitech.co.ke'  # Replace with your email
             subject = f"Daily report for {request.user} - {today} "  # Replace with your subject
             InProgres_list = "\n".join(
                 [f"-{Progres.title}   \n#Remark : {get_latest_remark(Progres)}  " for Progres in InProgres])
