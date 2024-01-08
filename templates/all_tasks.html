@@ -70,10 +70,12 @@
                                data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="mdi mdi-square-edit-outline mdi-18px"></i>
                             </a>
+                            {% if task.created_by == request.user %}
                             <a href="{% url 'delete_task' task.id %}" title="delete" tabindex="0"
                                data-plugin="tippy" data-tippy-interactive="true">
                                 <i class="mdi mdi-delete-outline mdi-18px"></i>
                             </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
